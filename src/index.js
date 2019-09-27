@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import RenderChatComponent from './RenderChatComponent';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+/*** IF YOU WANT TO TEST LOCALLY, UNCOMMENT ***/
+// ReactDOM.render(<RenderChatComponent />, document.getElementById('root'));
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+window.renderChatComponent = function renderChatComponent() {
+  ReactDOM.render(
+    <RenderChatComponent chatId={window.CHAT_ID} />,
+    document.getElementById("chat-component-div")
+  );
+  serviceWorker.unregister();
+};

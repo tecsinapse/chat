@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {FixedWrapper, ThemeProvider} from '@livechat/ui-kit'
 import Maximized from "./Maximized";
 
@@ -29,11 +29,9 @@ const themes = {
   },
 };
 
-const chatId = 'bb7f1fe6-6a8e-4975-9b5f-20635673e542@tunnel.msging.net';
-const fromId = chatId;
 let clientRef;
 
-const buildChatMessageObject = (externalMessage) => {
+const buildChatMessageObject = (externalMessage, fromId) => {
   let message = {
     at: moment(externalMessage.at).format('DD/MM/YYYY HH:mm'),
     own: externalMessage.from !== fromId,
@@ -56,7 +54,10 @@ const buildChatMessageObject = (externalMessage) => {
   return message;
 };
 
-function App() {
+function RenderChatComponent(chatId) {
+
+  // const chatId = 'bb7f1fe6-6a8e-4975-9b5f-20635673e542@tunnel.msging.net';
+  const fromId = chatId;
 
   const [messages, setMessages] = useState([]);
 
@@ -65,16 +66,16 @@ function App() {
   useEffect(() => {
     defaultFetch(`/api/messages/${chatId}?page=0&size=100`, 'GET', {}).then(pageResults => {
       const messages = pageResults.content.map((externalMessage) => {
-        return buildChatMessageObject(externalMessage);
+        return buildChatMessageObject(externalMessage, fromId);
       });
       setMessages(messages);
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+      messagesEndRef.current.scrollIntoView({behavior: "smooth"})
     });
   }, [setMessages, messagesEndRef]);
 
   const handleNewExternalMessage = (newMessage) => {
-    if (newMessage.type === 'CHAT' && newMessage.from !== fromId) {
-      let message = buildChatMessageObject(newMessage);
+    if (newMessage.type === 'CHAT') {
+      let message = buildChatMessageObject(newMessage, fromId);
       let newMessages = [...messages, message];
       setMessages(newMessages);
     }
@@ -114,16 +115,6 @@ function App() {
               <Maximized messages={messages}
                          onMessageSend={text => {
                            handleNewUserMessage(text);
-
-                           let message = {
-                             at: moment(Date.now()).format('DD/MM/YYYY HH:mm'),
-                             own: true,
-                             id: '' + Date.now(),
-                             text: text,
-                           };
-
-                           let newMessages = [...messages, message];
-                           setMessages(newMessages);
                          }}
                          messagesEndRef={messagesEndRef}/>
             </FixedWrapper.Maximized>
@@ -144,4 +135,4 @@ function App() {
   );
 }
 
-export default App;
+export default RenderChatComponent;
