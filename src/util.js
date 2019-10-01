@@ -14,7 +14,7 @@ export default async function defaultFetch(path, method, data) {
     init.body = JSON.stringify(data);
   }
 
-  const res = await fetch(process.env.REACT_APP_BACKEND_URL + path, init);
+  const res = await fetch(path, init);
 
   if (!res.ok) {
     if (res.status === 400 || res.status === 500) {

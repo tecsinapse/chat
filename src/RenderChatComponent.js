@@ -11,19 +11,40 @@ const themes = {
   defaultTheme: {
     FixedWrapperMaximized: {
       css: {
-        height: '600px',
-        width: '500px',
         boxShadow: '0 0 1em rgba(0, 0, 0, 0.1)',
+        fontFamily: "'Roboto',sans-serif",
+        fontSize: '10pt',
+        color: '#262626',
       },
     },
-    Bubble: {
+    MessageList: {
       css: {
-        backgroundColor: '#ccc',
+        backgroundColor: '#eceff1',
+        maxHeight: '404px',
       }
     },
     TextComposer: {
       css: {
         borderTop: '1px solic #ccc',
+      }
+    },
+    TitleBar: {
+      css: {
+        backgroundColor: '#404040',
+        color: '#fff',
+        height: '2em',
+        marginBottom: 0,
+      }
+    },
+    Bubble: {
+      css: {
+        padding: '0.6em',
+      }
+    },
+    MessageText: {
+      css: {
+        padding: '0.3em',
+        color: '#262626',
       }
     }
   },
@@ -54,24 +75,30 @@ const buildChatMessageObject = (externalMessage, fromId) => {
   return message;
 };
 
-function RenderChatComponent(chatId) {
-
-  // const chatId = 'bb7f1fe6-6a8e-4975-9b5f-20635673e542@tunnel.msging.net';
+function RenderChatComponent(props) {
+  const {chatApiUrl, chatId, disabled} = props;
   const fromId = chatId;
 
   const [messages, setMessages] = useState([]);
+  const [lastMessageAt, setLastMessageAt] = useState(null);
+
+  const [webSocketError, setWebSocketError] = useState(false);
 
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    defaultFetch(`/api/messages/${chatId}?page=0&size=100`, 'GET', {}).then(pageResults => {
+    defaultFetch(`${chatApiUrl}/api/messages/${chatId}?page=0&size=100`, 'GET', {}).then(pageResults => {
       const messages = pageResults.content.map((externalMessage) => {
         return buildChatMessageObject(externalMessage, fromId);
       });
       setMessages(messages);
-      messagesEndRef.current.scrollIntoView({behavior: "smooth"})
+      setLastMessageAt(messages.length > 0 ? messages[messages.length - 1].at : null);
+      setTimeout(function () {
+        // workaround to wait for all elements to render
+        messagesEndRef.current.scrollIntoView({block: 'end', behavior: "smooth"})
+      }, 700);
     });
-  }, [setMessages, messagesEndRef]);
+  }, [setMessages, messagesEndRef, fromId, chatApiUrl, chatId, lastMessageAt]);
 
   const handleNewExternalMessage = (newMessage) => {
     if (newMessage.type === 'CHAT') {
@@ -91,6 +118,7 @@ function RenderChatComponent(chatId) {
       '/chat/addUser/room/' + chatId,
       JSON.stringify(chatMessage)
     );
+
   };
 
   const handleNewUserMessage = (newMessage) => {
@@ -100,10 +128,18 @@ function RenderChatComponent(chatId) {
       text: newMessage,
     };
 
-    clientRef.sendMessage(
-      '/chat/sendMessage/room/' + chatId,
-      JSON.stringify(chatMessage)
-    );
+    try {
+      clientRef.sendMessage(
+        '/chat/sendMessage/room/' + chatId,
+        JSON.stringify(chatMessage)
+      );
+      if (webSocketError) {
+        setWebSocketError(false);
+      }
+    } catch (e) {
+      console.log('Error with Websocket connection', e);
+      setWebSocketError(true);
+    }
   };
 
   return (
@@ -116,14 +152,17 @@ function RenderChatComponent(chatId) {
                          onMessageSend={text => {
                            handleNewUserMessage(text);
                          }}
-                         messagesEndRef={messagesEndRef}/>
+                         messagesEndRef={messagesEndRef}
+                         disabled={disabled}
+                         webSocketError={webSocketError}
+                         lastMessageAt={lastMessageAt}/>
             </FixedWrapper.Maximized>
           </FixedWrapper.Root>
         </div>
       </ThemeProvider>
 
       <SockJsClient
-        url={`http://localhost:8080/ws`}
+        url={`${chatApiUrl}/ws`}
         topics={['/topic/' + chatId]}
         onMessage={handleNewExternalMessage}
         onConnect={onConnect}

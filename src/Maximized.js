@@ -12,6 +12,7 @@ import {
   SendButton,
   TextComposer,
   TextInput,
+  TitleBar,
 } from '@livechat/ui-kit'
 
 // forcing border radius. @livechat/ui-kit is not working when it's own message
@@ -21,15 +22,20 @@ const forceBorderRadiusOwnMessage = (isOwn) => {
     borderTopLeftRadius: isOwn ? '1.4em' : '0.3em',
     borderTopRightRadius: isOwn ? '0.3em' : '1.4em',
     borderBottomLeftRadius: isOwn ? '1.4em' : '0.3em',
-    borderBottomRightRadius: isOwn ? '0.3em' : '1.4em'
+    borderBottomRightRadius: isOwn ? '0.3em' : '1.4em',
+    backgroundColor: isOwn ? '#cfd8dc' : '#fff',
   };
 };
 
 const Maximized = ({
                      messages,
+                     lastMessageAt,
                      onMessageSend,
                      messagesEndRef,
+                     disabled,
+                     webSocketError,
                    }) => {
+
   return (
     <div
       style={{
@@ -45,7 +51,9 @@ const Maximized = ({
           height: '100%',
         }}
       >
-        <MessageList active containScrollInSubtree>
+        <TitleBar
+          title={`Última mensagem: ${lastMessageAt == null ? 'nenhuma mensagem' : lastMessageAt}`}/>
+        <MessageList active>
           {messages.map((message) => (
             <Message
               date={message.at}
@@ -68,6 +76,9 @@ const Maximized = ({
                     <video controls height={200}>
                       <source src={media.url}/>
                     </video>}
+                    {media.mediaType.startsWith('application') &&
+                    <a href={media.url} target="_blank" rel="noopener noreferrer">Download</a>
+                    }
                   </MessageMedia>
                 )}
               </Bubble>
@@ -76,16 +87,21 @@ const Maximized = ({
           <div ref={messagesEndRef}/>
         </MessageList>
       </div>
+      {!disabled &&
       <TextComposer onSend={onMessageSend}>
         <Row align="center">
           <Fill>
-            <TextInput placeholder="Digite a mensagem..."/>
+            <TextInput
+              placeholder={webSocketError ? 'Problema ao se conectar ao chat. Tente novamente em alguns minutos' : 'Digite uma mensagem'}/>
           </Fill>
+          {!webSocketError &&
           <Fit>
             <SendButton/>
           </Fit>
+          }
         </Row>
       </TextComposer>
+      }
     </div>
   )
 };
