@@ -9,18 +9,36 @@ import defaultFetch from "./util";
 
 const themes = {
   defaultTheme: {
-    FixedWrapperMaximized: {
+    FixedWrapperRoot: {
       css: {
-        boxShadow: '0 0 1em rgba(0, 0, 0, 0.1)',
+        position: 'inherit',
+        right: 0,
+        left: 0,
+        top: 0,
+        bottom: 0,
         fontFamily: "'Roboto',sans-serif",
         fontSize: '10pt',
         color: '#262626',
+        padding: 0,
+        margin: 0,
+      },
+    },
+    FixedWrapperMaximized: {
+      css: {
+        position: 'inherit',
+        right: 0,
+        left: 0,
+        width: '100%',
+        padding: 0,
+        margin: 0,
       },
     },
     MessageList: {
       css: {
         backgroundColor: '#eceff1',
-        maxHeight: '404px',
+        height: '100%',
+        padding: 0,
+        margin: 0,
       }
     },
     TextComposer: {
@@ -32,8 +50,8 @@ const themes = {
       css: {
         backgroundColor: '#404040',
         color: '#fff',
-        height: '2em',
-        marginBottom: 0,
+        height: '100%',
+        padding: 0,
       }
     },
     Bubble: {
@@ -145,20 +163,18 @@ function RenderChatComponent(props) {
   return (
     <div className="App">
       <ThemeProvider theme={themes.defaultTheme}>
-        <div>
-          <FixedWrapper.Root maximizedOnInit>
-            <FixedWrapper.Maximized>
-              <Maximized messages={messages}
-                         onMessageSend={text => {
-                           handleNewUserMessage(text);
-                         }}
-                         messagesEndRef={messagesEndRef}
-                         disabled={disabled}
-                         webSocketError={webSocketError}
-                         lastMessageAt={lastMessageAt}/>
-            </FixedWrapper.Maximized>
-          </FixedWrapper.Root>
-        </div>
+        <FixedWrapper.Root maximizedOnInit>
+          <FixedWrapper.Maximized>
+            <Maximized messages={messages}
+                       onMessageSend={text => {
+                         handleNewUserMessage(text);
+                       }}
+                       messagesEndRef={messagesEndRef}
+                       disabled={disabled}
+                       webSocketError={webSocketError}
+                       lastMessageAt={lastMessageAt}/>
+          </FixedWrapper.Maximized>
+        </FixedWrapper.Root>
       </ThemeProvider>
 
       <SockJsClient

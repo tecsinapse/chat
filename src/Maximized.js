@@ -1,4 +1,5 @@
 import * as React from 'react'
+import {Fragment} from 'react'
 import {
   Bubble,
   Fill,
@@ -37,22 +38,20 @@ const Maximized = ({
                    }) => {
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-      }}
-    >
+    <Fragment>
       <div
         style={{
-          flexGrow: 1,
-          minHeight: 0,
-          height: '100%',
+          height: '15%',
         }}
       >
         <TitleBar
           title={`Última mensagem: ${lastMessageAt == null ? 'nenhuma mensagem' : lastMessageAt}`}/>
+      </div>
+      <div
+        style={{
+          height: '70%',
+        }}
+      >
         <MessageList active>
           {messages.map((message) => (
             <Message
@@ -87,22 +86,28 @@ const Maximized = ({
           <div ref={messagesEndRef}/>
         </MessageList>
       </div>
-      {!disabled &&
-      <TextComposer onSend={onMessageSend}>
-        <Row align="center">
-          <Fill>
-            <TextInput
-              placeholder={webSocketError ? 'Problema ao se conectar ao chat. Tente novamente em alguns minutos' : 'Digite uma mensagem'}/>
-          </Fill>
-          {!webSocketError &&
-          <Fit>
-            <SendButton/>
-          </Fit>
-          }
-        </Row>
-      </TextComposer>
-      }
-    </div>
+      <div
+        style={{
+          height: '15%',
+        }}
+      >
+        {!disabled &&
+        <TextComposer onSend={onMessageSend}>
+          <Row align="center">
+            <Fill>
+              <TextInput
+                placeholder={webSocketError ? 'Problema ao se conectar ao chat. Tente novamente em alguns minutos' : 'Digite uma mensagem'}/>
+            </Fill>
+            {!webSocketError &&
+            <Fit>
+              <SendButton/>
+            </Fit>
+            }
+          </Row>
+        </TextComposer>
+        }
+      </div>
+    </Fragment>
   )
 };
 
