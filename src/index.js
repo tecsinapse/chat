@@ -14,7 +14,7 @@ window.renderChatComponent = function renderChatComponent() {
   let chatApiUrl = window.CHAT_API_URL;
   if (!chatApiUrl) {
     // fixed for local tests
-    chatApiUrl = 'http://localhost:8080';
+    chatApiUrl = 'http://localhost:8081';
   }
   let disabled = false;
   if (window.CHAT_DISABLED) {
