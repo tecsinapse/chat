@@ -44,6 +44,8 @@ const themes = {
     TextComposer: {
       css: {
         borderTop: '1px solic #ccc',
+        borderBottomLeftRadius: '8px',
+        borderBottomRightRadius: '8px',
       }
     },
     TitleBar: {
@@ -52,6 +54,8 @@ const themes = {
         color: '#fff',
         height: '100%',
         padding: 0,
+        borderTopLeftRadius: '8px',
+        borderTopRightRadius: '8px',
       }
     },
     Bubble: {

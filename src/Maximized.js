@@ -41,7 +41,7 @@ const Maximized = ({
     <Fragment>
       <div
         style={{
-          height: '15%',
+          height: '10%',
         }}
       >
         <TitleBar
@@ -49,7 +49,7 @@ const Maximized = ({
       </div>
       <div
         style={{
-          height: '70%',
+          height: '80%',
         }}
       >
         <MessageList active>
@@ -88,7 +88,7 @@ const Maximized = ({
       </div>
       <div
         style={{
-          height: '15%',
+          height: '10%',
         }}
       >
         {!disabled &&
