@@ -1002,6 +1002,11 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@cleandersonlobo/react-mic@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@cleandersonlobo/react-mic/-/react-mic-1.1.1.tgz#2a4b05a50b1d68588bb75f9b652c578465f2d387"
+  integrity sha512-5LLPV002qM0lRI9q1zoc36gLBpPHV57sYcLC+11ozr0OkLiQQ7wUNUvdt04R3Sqilb7xguJ562OGVVQY0w0xAA==
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.3.tgz#099139eaec7ebf07a27c1786a3ff64f39464d2ef"

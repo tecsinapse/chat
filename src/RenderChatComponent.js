@@ -68,6 +68,12 @@ const themes = {
         padding: '0.3em',
         color: '#262626',
       }
+    },
+    MessageTitle: {
+      css: {
+        padding: '0.3em',
+        color: '#262626',
+      }
     }
   },
 };

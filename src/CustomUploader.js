@@ -1,11 +1,8 @@
 import React, {forwardRef, useState} from 'react';
 import uniqid from 'uniqid';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import {Uploader} from '@tecsinapse/ui-kit/build/UploadFile/Uploader';
-import {Loading} from "./Loading";
 import defaultFetch from "./util";
+import {UploaderDialog} from "./UploaderDialog";
 
 export const CustomUploader = forwardRef(
   ({type, variant, silent = false, chatApiUrl, chatId}, ref) => {
@@ -58,16 +55,7 @@ export const CustomUploader = forwardRef(
           ref={ref}
           messages={messages}
         />
-        <Dialog
-          onClose={() => setOpen(false)}
-          open={open}
-          aria-labelledby="simple-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">Enviando Arquivos</DialogTitle>
-          <DialogContent>
-            <Loading/>
-          </DialogContent>
-        </Dialog>
+        <UploaderDialog open={open} setOpen={setOpen}/>
       </React.Fragment>
     );
   }

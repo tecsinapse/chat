@@ -18,6 +18,7 @@ import {IconButton, ThemeProvider} from "@tecsinapse/ui-kit";
 import {mdiPaperclip} from '@mdi/js';
 import Icon from "@mdi/react";
 import {CustomUploader} from "./CustomUploader";
+import {MicRecorder} from "./MicRecorder";
 
 // forcing border radius. @livechat/ui-kit is not working when it's own message
 // check in the future if they fix the problema
@@ -52,7 +53,7 @@ const Maximized = ({
               fancyRef.current.open();
             }}
           >
-            <Icon path={mdiPaperclip} size={1} color="white" />
+            <Icon path={mdiPaperclip} size={1} color="white"/>
           </IconButton>
           <CustomUploader silent ref={fancyRef} chatApiUrl={chatApiUrl} chatId={chatId}/>
         </div>
@@ -102,7 +103,10 @@ const Maximized = ({
                       <source src={media.url}/>
                     </video>}
                     {media.mediaType.startsWith('application') &&
-                    <a href={media.url} target="_blank" rel="noopener noreferrer">Download</a>
+                    <p style={{textAlign: 'center'}}>
+                      <a href={media.url} target="_blank"
+                         rel="noopener noreferrer">Download</a>
+                    </p>
                     }
                   </MessageMedia>
                 )}
@@ -127,6 +131,7 @@ const Maximized = ({
             {!webSocketError &&
             <Fit>
               <SendButton/>
+              <MicRecorder chatId={chatId} chatApiUrl={chatApiUrl}/>
             </Fit>
             }
           </Row>
