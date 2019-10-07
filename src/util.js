@@ -1,4 +1,4 @@
-export default async function defaultFetch(path, method, data) {
+export default async function defaultFetch(path, method, data, formData) {
 
   let headers = new Headers({
     'Content-Type': 'application/json',
@@ -12,6 +12,12 @@ export default async function defaultFetch(path, method, data) {
 
   if (data && Object.keys(data).length > 0) {
     init.body = JSON.stringify(data);
+  } else {
+    if (formData) {
+      init.body = formData;
+      headers.append('enctype', 'multipart/form-data')
+      headers.delete('Content-Type');
+    }
   }
 
   const res = await fetch(path, init);

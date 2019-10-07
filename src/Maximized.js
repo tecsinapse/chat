@@ -1,5 +1,4 @@
-import * as React from 'react'
-import {Fragment} from 'react'
+import React, {Fragment, useRef} from 'react';
 import {
   Bubble,
   Fill,
@@ -13,8 +12,12 @@ import {
   SendButton,
   TextComposer,
   TextInput,
-  TitleBar,
+  TitleBar
 } from '@livechat/ui-kit'
+import {IconButton, ThemeProvider} from "@tecsinapse/ui-kit";
+import {mdiPaperclip} from '@mdi/js';
+import Icon from "@mdi/react";
+import {CustomUploader} from "./CustomUploader";
 
 // forcing border radius. @livechat/ui-kit is not working when it's own message
 // check in the future if they fix the problema
@@ -29,6 +32,8 @@ const forceBorderRadiusOwnMessage = (isOwn) => {
 };
 
 const Maximized = ({
+                     chatApiUrl,
+                     chatId,
                      messages,
                      lastMessageAt,
                      onMessageSend,
@@ -36,6 +41,24 @@ const Maximized = ({
                      disabled,
                      webSocketError,
                    }) => {
+
+  const Uploader = () => {
+    const fancyRef = useRef(null);
+    return (
+      <ThemeProvider variant='green'>
+        <div>
+          <IconButton
+            onClick={() => {
+              fancyRef.current.open();
+            }}
+          >
+            <Icon path={mdiPaperclip} size={1} color="white" />
+          </IconButton>
+          <CustomUploader silent ref={fancyRef} chatApiUrl={chatApiUrl} chatId={chatId}/>
+        </div>
+      </ThemeProvider>
+    );
+  };
 
   return (
     <Fragment>
@@ -45,7 +68,10 @@ const Maximized = ({
         }}
       >
         <TitleBar
-          title={`Última mensagem: ${lastMessageAt == null ? 'nenhuma mensagem' : lastMessageAt}`}/>
+          title={`Última mensagem: ${lastMessageAt == null ? 'nenhuma mensagem' : lastMessageAt}`}
+          rightIcons={[
+            <Uploader key="uploader1"/>
+          ]}/>
       </div>
       <div
         style={{

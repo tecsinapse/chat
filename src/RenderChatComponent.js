@@ -169,7 +169,9 @@ function RenderChatComponent(props) {
       <ThemeProvider theme={themes.defaultTheme}>
         <FixedWrapper.Root maximizedOnInit>
           <FixedWrapper.Maximized>
-            <Maximized messages={messages}
+            <Maximized chatApiUrl={chatApiUrl}
+                       chatId={chatId}
+                       messages={messages}
                        onMessageSend={text => {
                          handleNewUserMessage(text);
                        }}
