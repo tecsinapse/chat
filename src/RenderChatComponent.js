@@ -115,10 +115,10 @@ function RenderChatComponent(props) {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    defaultFetch(`${chatApiUrl}/api/messages/${chatId}?page=0&size=100`, 'GET', {}).then(pageResults => {
+    defaultFetch(`${chatApiUrl}/api/messages/${chatId}?page=0&size=50`, 'GET', {}).then(pageResults => {
       const messages = pageResults.content.map((externalMessage) => {
         return buildChatMessageObject(externalMessage, fromId);
-      });
+      }).reverse();
       setMessages(messages);
       setLastMessageAt(messages.length > 0 ? messages[messages.length - 1].at : null);
       setTimeout(function () {
@@ -126,7 +126,7 @@ function RenderChatComponent(props) {
         messagesEndRef.current.scrollIntoView({block: 'end', behavior: "smooth"})
       }, 700);
     });
-  }, [setMessages, messagesEndRef, fromId, chatApiUrl, chatId, lastMessageAt]);
+  }, [setMessages, messagesEndRef, fromId, chatApiUrl, chatId, setLastMessageAt]);
 
   const handleNewExternalMessage = (newMessage) => {
     if (newMessage.type === 'CHAT') {
@@ -178,6 +178,8 @@ function RenderChatComponent(props) {
             <Maximized chatApiUrl={chatApiUrl}
                        chatId={chatId}
                        messages={messages}
+                       setMessages={setMessages}
+                       buildChatMessageObject={buildChatMessageObject}
                        onMessageSend={text => {
                          handleNewUserMessage(text);
                        }}
