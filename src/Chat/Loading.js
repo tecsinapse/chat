@@ -1,6 +1,5 @@
 import React from 'react';
 import { styled } from '@material-ui/styles';
-
 import { CircularProgress } from '@material-ui/core';
 
 const StyledDiv = styled('div')({

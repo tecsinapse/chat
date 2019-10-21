@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState, useLayoutEffect} from 'react';
 import {FixedWrapper, ThemeProvider} from '@livechat/ui-kit'
 import Maximized from "./Maximized";
 
@@ -114,17 +114,14 @@ function RenderChatComponent(props) {
 
   const messagesEndRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     defaultFetch(`${chatApiUrl}/api/messages/${chatId}?page=0&size=100`, 'GET', {}).then(pageResults => {
       const messages = pageResults.content.map((externalMessage) => {
         return buildChatMessageObject(externalMessage, fromId);
       });
       setMessages(messages);
       setLastMessageAt(messages.length > 0 ? messages[messages.length - 1].at : null);
-      setTimeout(function () {
-        // workaround to wait for all elements to render
-        messagesEndRef.current.scrollIntoView({block: 'end', behavior: "smooth"})
-      }, 700);
+      messagesEndRef.current.scrollIntoView({block: 'end', behavior: "smooth"})
     });
   }, [setMessages, messagesEndRef, fromId, chatApiUrl, chatId, lastMessageAt]);
 
@@ -142,6 +139,11 @@ function RenderChatComponent(props) {
       type: 'JOIN',
     };
 
+
+
+    clientRef.chatApiUrl(
+      '/cjat/addUser/room/'  
+    )
     clientRef.sendMessage(
       '/chat/addUser/room/' + chatId,
       JSON.stringify(chatMessage)

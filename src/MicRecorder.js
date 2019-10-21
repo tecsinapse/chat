@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {ReactMic} from '@cleandersonlobo/react-mic';
 import Icon from "@mdi/react";
 import {mdiMicrophone, mdiStopCircleOutline} from "@mdi/js";
-import {UploaderDialog} from "./UploaderDialog";
+import {UploaderDialog} from "./Chat/UploaderDialog";
 import defaultFetch from "./util";
 
 export const MicRecorder = ({

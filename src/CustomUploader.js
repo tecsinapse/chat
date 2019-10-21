@@ -2,7 +2,7 @@ import React, {forwardRef, useState} from 'react';
 import uniqid from 'uniqid';
 import {Uploader} from '@tecsinapse/ui-kit/build/UploadFile/Uploader';
 import defaultFetch from "./util";
-import {UploaderDialog} from "./UploaderDialog";
+import {UploaderDialog} from './Chat/UploaderDialog'
 
 export const CustomUploader = forwardRef(
   ({type, variant, silent = false, chatApiUrl, chatId}, ref) => {
