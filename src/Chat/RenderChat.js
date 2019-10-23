@@ -7,7 +7,10 @@ import { buildChatMessageObject } from "../Util/message";
 import {UploaderDialog} from "./UploaderDialog";
 
 export const RenderChat = ({ chatApiUrl, chatId, disabled }) => {
-  
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
   const [messages, setMessages] = useState([]);
   const [lastMessageAt, setLastMessageAt] = useState(null);
   const [open, setOpen] = useState(false);
@@ -99,9 +102,27 @@ export const RenderChat = ({ chatApiUrl, chatId, disabled }) => {
     });
   }
 
+  const loadMore = () => {
+        if (isLoading || !hasMore) {
+          return;
+        }
+        setIsLoading(true);
+        defaultFetch(`${chatApiUrl}/api/messages/${chatId}?page=${page}&size=50`, 'GET', {}).then(pageResults => {
+          const loadedMessages = pageResults.content.map((externalMessage) => {
+            return buildChatMessageObject(externalMessage, chatId);
+          }).reverse();
+          setMessages(loadedMessages.concat(messages));
+          setIsLoading(false);
+          setHasMore(!pageResults.last);
+          setPage(page + 1);
+        });
+  };
+
   return (
     <div className="App">
       <Chat
+        isLoading={isLoading}
+        loadMore={loadMore}
         disabled={disabled}
         isMaximizedOnly
         messages={messages}
