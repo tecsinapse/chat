@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import RenderChatComponent from './RenderChatComponent';
+import {RenderChat} from "./Chat/RenderChat";
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<RenderChatComponent />, div);
+  ReactDOM.render(<RenderChat />, div);
   ReactDOM.unmountComponentAtNode(div);
 });

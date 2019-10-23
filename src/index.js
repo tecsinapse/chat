@@ -26,11 +26,17 @@ window.renderChatComponent = function renderChatComponent() {
     disabled = true;
   }
 
+  let clientName = '';
+  if (window.CLIENT_NAME) {
+    clientName = window.CLIENT_NAME;
+  }
+
   ReactDOM.render(
     <ThemeProvider variant={'orange'}>
       <RenderChat
         chatId={chatId}
         chatApiUrl={chatApiUrl}
+        clientName={clientName}
         disabled={disabled}
       />
     </ThemeProvider>,
