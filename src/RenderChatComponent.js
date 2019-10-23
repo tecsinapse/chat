@@ -115,15 +115,15 @@ function RenderChatComponent(props) {
   const messagesEndRef = useRef(null);
 
   useLayoutEffect(() => {
-    defaultFetch(`${chatApiUrl}/api/messages/${chatId}?page=0&size=100`, 'GET', {}).then(pageResults => {
+    defaultFetch(`${chatApiUrl}/api/messages/${chatId}?page=0&size=50`, 'GET', {}).then(pageResults => {
       const messages = pageResults.content.map((externalMessage) => {
         return buildChatMessageObject(externalMessage, fromId);
-      });
+      }).reverse();
       setMessages(messages);
       setLastMessageAt(messages.length > 0 ? messages[messages.length - 1].at : null);
       messagesEndRef.current.scrollIntoView({block: 'end', behavior: "smooth"})
     });
-  }, [setMessages, messagesEndRef, fromId, chatApiUrl, chatId, lastMessageAt]);
+  }, [setMessages, messagesEndRef, fromId, chatApiUrl, chatId, setLastMessageAt]);
 
   const handleNewExternalMessage = (newMessage) => {
     if (newMessage.type === 'CHAT') {
@@ -139,16 +139,13 @@ function RenderChatComponent(props) {
       type: 'JOIN',
     };
 
-
-
-    clientRef.chatApiUrl(
-      '/cjat/addUser/room/'  
-    )
+    // clientRef.chatApiUrl(
+    //   '/cjat/addUser/room/'
+    // );
     clientRef.sendMessage(
       '/chat/addUser/room/' + chatId,
       JSON.stringify(chatMessage)
     );
-
   };
 
   const handleNewUserMessage = (newMessage) => {
@@ -180,6 +177,8 @@ function RenderChatComponent(props) {
             <Maximized chatApiUrl={chatApiUrl}
                        chatId={chatId}
                        messages={messages}
+                       setMessages={setMessages}
+                       buildChatMessageObject={buildChatMessageObject}
                        onMessageSend={text => {
                          handleNewUserMessage(text);
                        }}

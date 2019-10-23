@@ -1,4 +1,4 @@
-import React, {Fragment, useRef} from 'react';
+import React, {Fragment, useRef, useState} from 'react';
 import {
   Bubble,
   Fill,
@@ -19,6 +19,8 @@ import {mdiPaperclip} from '@mdi/js';
 import Icon from "@mdi/react";
 import {CustomUploader} from "./CustomUploader";
 import {MicRecorder} from "./MicRecorder";
+import defaultFetch from "./util";
+import {Loading} from "./Loading";
 
 // forcing border radius. @livechat/ui-kit is not working when it's own message
 // check in the future if they fix the problema
@@ -36,12 +38,34 @@ const Maximized = ({
                      chatApiUrl,
                      chatId,
                      messages,
+                     setMessages,
+                     buildChatMessageObject,
                      lastMessageAt,
                      onMessageSend,
                      messagesEndRef,
                      disabled,
                      webSocketError,
                    }) => {
+
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadMore = () => {
+    if (isLoading || !hasMore) {
+      return;
+    }
+    setIsLoading(true);
+    defaultFetch(`${chatApiUrl}/api/messages/${chatId}?page=${page}&size=50`, 'GET', {}).then(pageResults => {
+      const loadedMessages = pageResults.content.map((externalMessage) => {
+        return buildChatMessageObject(externalMessage, chatId);
+      }).reverse();
+      setMessages(loadedMessages.concat(messages));
+      setIsLoading(false);
+      setHasMore(!pageResults.last);
+      setPage(page + 1);
+    });
+  };
 
   const Uploader = () => {
     const fancyRef = useRef(null);
@@ -79,7 +103,8 @@ const Maximized = ({
           height: '80%',
         }}
       >
-        <MessageList active>
+        {isLoading && <Loading/>}
+        <MessageList active onScrollTop={loadMore}>
           {messages.map((message) => (
             <Message
               date={message.at}
