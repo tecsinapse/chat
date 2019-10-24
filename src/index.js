@@ -46,4 +46,4 @@ window.renderChatComponent = function renderChatComponent() {
 };
 
 // uncomment for local tests
-window.renderChatComponent();
+// window.renderChatComponent();
