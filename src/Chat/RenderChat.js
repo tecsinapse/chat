@@ -36,7 +36,7 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
           return externalMessage.name && externalMessage.name !== '';
         });
         if (clientNamesFromMessages.length > 0) {
-          setName(clientNamesFromMessages[0]);
+          setName(clientNamesFromMessages[0].name);
         }
       }
       setLastMessageAt(messages.length > 0 ? messages[messages.length - 1].at : null);
