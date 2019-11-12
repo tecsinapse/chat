@@ -15,6 +15,7 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
   const [lastMessageAt, setLastMessageAt] = useState(null);
   const [name, setName] = useState('Cliente');
   const [open, setOpen] = useState(false);
+  const [blocked, setBlocked] = useState(false);
 
   const messagesEndRef = useRef(null);
   let clientRef = useRef();
@@ -22,7 +23,17 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
 
   useEffect(() => {
     defaultFetch(
-      `${chatApiUrl}/api/messages/${chatId}?page=0&size=50`,
+      `${chatApiUrl}/api/chats/${chatId}/status`,
+      "GET",
+      {}
+    ).then(status => {
+      if (status === 'BLOCKED') {
+        setBlocked(true);
+      }
+    });
+
+    defaultFetch(
+      `${chatApiUrl}/api/chats/${chatId}/messages?page=0&size=50`,
       "GET",
       {}
     ).then(pageResults => {
@@ -49,7 +60,7 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
         });
       }, 700);
     });
-  }, [messagesEndRef, lastMessageAt, setName, fromId, chatApiUrl, chatId]);
+  }, [messagesEndRef, lastMessageAt, setName, fromId, chatApiUrl, chatId, setBlocked]);
 
   const handleNewExternalMessage = newMessage => {
     if (newMessage.type === "CHAT") {
@@ -78,15 +89,10 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
       text: newMessage
     };
 
-    try {
-      clientRef.sendMessage(
-        "/chat/sendMessage/room/" + chatId,
-        JSON.stringify(chatMessage)
-      );
-    } catch (e) {
-      // TODO: Implement error ui feedback
-      console.log("Error with Websocket connection", e);
-    }
+    clientRef.sendMessage(
+      "/chat/sendMessage/room/" + chatId,
+      JSON.stringify(chatMessage)
+    );
   };
 
   const handleNewUserAudio = recordedBlob => {
@@ -94,9 +100,13 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
     setOpen(true);
     const formData = new FormData();
     formData.append('file', recordedBlob.blob);
-    defaultFetch(`${chatApiUrl}/api/messages/${chatId}/upload`, 'POST', {}, formData).then(result => {
+    defaultFetch(`${chatApiUrl}/api/chats/${chatId}/upload`, 'POST', {}, formData).then(result => {
       // TODO: implement ui to warn user that the audio has been uploaded
       setOpen(false);
+    }).catch(err => {
+      if (err.status === 403) {
+        setBlocked(true);
+      }
     });
   };
 
@@ -106,8 +116,12 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
       const formData = new FormData();
       formData.append('file', files[uid].file);
       formData.append('title', title);
-      defaultFetch(`${chatApiUrl}/api/messages/${chatId}/upload`, 'POST', {}, formData).then(result => {
+      defaultFetch(`${chatApiUrl}/api/chats/${chatId}/upload`, 'POST', {}, formData).then(result => {
         setOpen(false);
+      }).catch(err => {
+        if (err.status === 403) {
+          setBlocked(true);
+        }
       });
     });
   };
@@ -117,7 +131,7 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
       return;
     }
     setIsLoading(true);
-    defaultFetch(`${chatApiUrl}/api/messages/${chatId}?page=${page}&size=50`, 'GET', {}).then(pageResults => {
+    defaultFetch(`${chatApiUrl}/api/chats/${chatId}/messages?page=${page}&size=50`, 'GET', {}).then(pageResults => {
       const loadedMessages = pageResults.content.map((externalMessage) => {
         return buildChatMessageObject(externalMessage, chatId);
       }).reverse();
@@ -150,6 +164,10 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
         subtitle={`Última mensagem: ${lastMessageAt == null ? 'nenhuma mensagem' : lastMessageAt}`}
         messagesEndRef={messagesEndRef}
         onMediaSend={handleNewUserFiles}
+        isBlocked={blocked}
+        blockedMessage={`Já se passaram 24h desde a última mensagem enviada pelo cliente, 
+        por isso não é possível enviar nova mensagem por esse canal de comunicação. 
+        Por favor, entre em contato com o cliente por outro meio`}
       />
 
       <SockJsClient
