@@ -1379,31 +1379,6 @@
     resize-observer-polyfill "^1.5.0"
     stylis-custom-properties "0.0.3"
 
-"@livechat/ui-kit@^0.4.0-7":
-  version "0.4.0-7"
-  resolved "https://registry.yarnpkg.com/@livechat/ui-kit/-/ui-kit-0.4.0-7.tgz#5a5f3950eec50b65edd2a913bcd9b6db420dd903"
-  integrity sha512-3M/goMiOIM4CyuMBPfeM82+GXGgB1a9Fb+QIK4LpVjbEmGJFVhGNDOiYsEkJDlWQqn+C3WWK2GhZBFYTrhFlHQ==
-  dependencies:
-    "@babel/runtime" "^7.2.0"
-    "@emotion/is-prop-valid" "^0.6.8"
-    "@livechat/data-utils" "^0.2.7"
-    "@popmotion/easing" "^1.0.1"
-    callbag-duration-progress "^1.0.0"
-    callbag-for-each "^1.0.1"
-    callbag-map "^1.0.1"
-    callbag-pipe "^1.1.1"
-    create-emotion "^9.2.6"
-    create-emotion-styled "^9.2.6"
-    emotion-theming "^9.2.6"
-    polished "^3.4.1"
-    prop-types "^15.5.8"
-    react-textarea-autosize "^7.1.0"
-    react-toggled "^1.2.7"
-    react-transition-group "^4.0.1"
-    recompose "^0.23.4"
-    resize-observer-polyfill "^1.5.0"
-    stylis-custom-properties "0.0.3"
-
 "@material-ui/core@^4.2.1":
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.5.0.tgz#7e57cc40988c71b6340e3b2569b47dbac1820351"
@@ -1725,11 +1700,7 @@
     recompose "^0.30.0"
 
 "@tecsinapse/ui-kit@file:.yalc/@tecsinapse/ui-kit":
-  version "2.0.5-f3cc3da9"
-  dependencies:
-    "@cleandersonlobo/react-mic" "^1.1.1"
-    "@livechat/ui-kit" "^0.4.0-7"
-    react-compound-timer "^1.1.14"
+  version "2.0.5-da30630f"
 
 "@tinymce/tinymce-react@^3.1.1":
   version "3.3.2"
@@ -9643,13 +9614,6 @@ polished@1.9.0:
   resolved "https://registry.yarnpkg.com/polished/-/polished-1.9.0.tgz#76d277d6610dbcb85477dbba1bd1aa8e642741b6"
   integrity sha512-xCteonGa+5eDt2lcbVg0jzh7GLRoejljfh0bP3XBymCHz1uAsi1IjW5T0XrDGRbUzb/f7vXUS+Tz2Ipw3S/w8A==
 
-polished@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/polished/-/polished-3.4.1.tgz#1eb5597ec1792206365635811d465751f5cbf71c"
-  integrity sha512-GflTnlP5rrpDoigjczEkS6Ye7NDA4sFvAnlr5hSDrEvjiVj97Xzev3hZlLi3UB27fpxyTS9rWU64VzVLWkG+mg==
-  dependencies:
-    "@babel/runtime" "^7.4.5"
-
 popper.js@^1.14.1, popper.js@^1.15.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.15.0.tgz#5560b99bbad7647e9faa475c6b8056621f5a4ff2"
@@ -10658,7 +10622,7 @@ react-color@^2.17.0:
     reactcss "^1.2.0"
     tinycolor2 "^1.4.1"
 
-react-compound-timer@^1.1.14:
+react-compound-timer@^1.1.15:
   version "1.1.15"
   resolved "https://registry.yarnpkg.com/react-compound-timer/-/react-compound-timer-1.1.15.tgz#19ce6772839840f8e1432e6a7fa8f968ea273638"
   integrity sha512-a2jqQZgLQt84Qkygk03lSqih7E9AZZwSxyVz4V7hhNOFrtczxWRimEQFqa+rH0J+2AvSrH2uYdgq1D/UrOE/jQ==
@@ -11086,9 +11050,9 @@ react@16.8.0:
     scheduler "^0.13.0"
 
 react@^16.8.6:
-  version "16.10.2"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.10.2.tgz#a5ede5cdd5c536f745173c8da47bda64797a4cf0"
-  integrity sha512-MFVIq0DpIhrHFyqLU0S3+4dIcBhhOvBE8bJ/5kHPVOVaGdo0KuiQzpcjCPsf585WvhypqtrMILyoE2th6dT+Lw==
+  version "16.11.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.11.0.tgz#d294545fe62299ccee83363599bf904e4a07fdbb"
+  integrity sha512-M5Y8yITaLmU0ynd0r1Yvfq98Rmll6q8AxaEe88c8e7LxO8fZ2cNgmFt0aGAS9wzf1Ao32NKXtCl+/tVVtkxq6g==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"

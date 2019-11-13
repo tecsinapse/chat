@@ -13,7 +13,7 @@ window.renderChatComponent = function renderChatComponent() {
   if (!chatId) {
     // fixed for local tests
     // Mobile João Bassinello
-    chatId = 'bb7f1fe6-6a8e-4975-9b5f-20635673e542@tunnel.msging.net';
+    chatId = '88f8c44a-4cf4-4ae3-89bd-3d96be3c8161@tunnel.msging.net';
   }
   let chatApiUrl = window.CHAT_API_URL;
   if (!chatApiUrl) {
@@ -46,4 +46,4 @@ window.renderChatComponent = function renderChatComponent() {
 };
 
 // uncomment for local tests
-// window.renderChatComponent();
+ window.renderChatComponent();

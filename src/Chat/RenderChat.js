@@ -1,24 +1,29 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Chat} from "@tecsinapse/ui-kit/build/Chat/Chat";
+import React, { useEffect, useRef, useState } from "react";
+import { Chat } from "@tecsinapse/ui-kit/build/Chat/Chat";
 import SockJsClient from "react-stomp";
 
-import {defaultFetch} from "../Util/fetch";
-import {buildChatMessageObject} from "../Util/message";
-import {UploaderDialog} from "./UploaderDialog";
+import { defaultFetch } from "../Util/fetch";
+import {
+  buildChatMessageObject,
+  buildSendingMessage,
+  setStatusMessageFunc,
+} from "../Util/message";
+import { UploaderDialog } from "./UploaderDialog";
 
-export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
+export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const [messages, setMessages] = useState([]);
   const [lastMessageAt, setLastMessageAt] = useState(null);
-  const [name, setName] = useState('Cliente');
+  const [name, setName] = useState("Cliente");
   const [open, setOpen] = useState(false);
 
   const messagesEndRef = useRef(null);
   let clientRef = useRef();
   const fromId = chatId;
+  const setStatusMessage = setStatusMessageFunc(setMessages);
 
   useEffect(() => {
     defaultFetch(
@@ -26,22 +31,28 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
       "GET",
       {}
     ).then(pageResults => {
-      const messages = pageResults.content.map(externalMessage => {
-        return buildChatMessageObject(externalMessage, fromId);
-      }).reverse();
+      const messages = pageResults.content
+        .map(externalMessage => {
+          return buildChatMessageObject(externalMessage, fromId);
+        })
+        .reverse();
       setMessages(messages);
       if (messages.length > 0) {
         setLastMessageAt(messages[messages.length - 1].at);
-        const clientNamesFromMessages = pageResults.content.filter(externalMessage => {
-          return externalMessage.name && externalMessage.name !== '';
-        });
+        const clientNamesFromMessages = pageResults.content.filter(
+          externalMessage => {
+            return externalMessage.name && externalMessage.name !== "";
+          }
+        );
         if (clientNamesFromMessages.length > 0) {
           setName(clientNamesFromMessages[0].name);
         }
       }
-      setLastMessageAt(messages.length > 0 ? messages[messages.length - 1].at : null);
+      setLastMessageAt(
+        messages.length > 0 ? messages[messages.length - 1].at : null
+      );
 
-      setTimeout(function () {
+      setTimeout(function() {
         // workaround to wait for all elements to render
         messagesEndRef.current.scrollIntoView({
           block: "end",
@@ -52,10 +63,13 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
   }, [messagesEndRef, lastMessageAt, setName, fromId, chatApiUrl, chatId]);
 
   const handleNewExternalMessage = newMessage => {
-    if (newMessage.type === "CHAT") {
+    if (newMessage.type === "CHAT" && newMessage.from === fromId) {
       let message = buildChatMessageObject(newMessage, fromId);
       let newMessages = [...messages, message];
       setMessages(newMessages);
+    } else if (newMessage.type === "CHAT") {
+      // own message only gets its id and changes its status
+      setStatusMessage(newMessage, "delivered");
     }
   };
 
@@ -71,11 +85,12 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
     );
   };
 
-  const handleNewUserMessage = newMessage => {
+  const handleNewUserMessage = (newMessage, localId) => {
     const chatMessage = {
       from: fromId,
       type: "CHAT",
-      text: newMessage
+      text: newMessage,
+      localId,
     };
 
     try {
@@ -84,31 +99,43 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
         JSON.stringify(chatMessage)
       );
     } catch (e) {
-      // TODO: Implement error ui feedback
-      console.log("Error with Websocket connection", e);
+      setStatusMessage({localId}, "error");
     }
   };
 
-  const handleNewUserAudio = recordedBlob => {
-    console.log(recordedBlob);
-    setOpen(true);
+  const handleNewUserAudio = (recordedBlob, id) => {
     const formData = new FormData();
-    formData.append('file', recordedBlob.blob);
-    defaultFetch(`${chatApiUrl}/api/messages/${chatId}/upload`, 'POST', {}, formData).then(result => {
-      // TODO: implement ui to warn user that the audio has been uploaded
-      setOpen(false);
-    });
+    formData.append("file", recordedBlob.blob);
+    formData.append("localId", id);
+    defaultFetch(
+      `${chatApiUrl}/api/messages/${chatId}/upload`,
+      "POST",
+      {},
+      formData
+    ).then(result => {});
   };
 
   const handleNewUserFiles = (title, files) => {
     Object.keys(files).forEach((uid, i) => {
-      setOpen(true);
-      const formData = new FormData();
-      formData.append('file', files[uid].file);
-      formData.append('title', title);
-      defaultFetch(`${chatApiUrl}/api/messages/${chatId}/upload`, 'POST', {}, formData).then(result => {
-        setOpen(false);
+      let id;
+      setMessages(prevMessages => {
+        const copyPrevMessages = [...prevMessages];
+        id =
+          copyPrevMessages.push(buildSendingMessage(undefined, files[uid])) - 1;
+        return copyPrevMessages;
       });
+
+      const formData = new FormData();
+      formData.append("file", files[uid].file);
+      formData.append("title", title);
+      formData.append("localId", id);
+
+      defaultFetch(
+        `${chatApiUrl}/api/messages/${chatId}/upload`,
+        "POST",
+        {},
+        formData
+      ).then(result => {});
     });
   };
 
@@ -117,10 +144,16 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
       return;
     }
     setIsLoading(true);
-    defaultFetch(`${chatApiUrl}/api/messages/${chatId}?page=${page}&size=50`, 'GET', {}).then(pageResults => {
-      const loadedMessages = pageResults.content.map((externalMessage) => {
-        return buildChatMessageObject(externalMessage, chatId);
-      }).reverse();
+    defaultFetch(
+      `${chatApiUrl}/api/messages/${chatId}?page=${page}&size=50`,
+      "GET",
+      {}
+    ).then(pageResults => {
+      const loadedMessages = pageResults.content
+        .map(externalMessage => {
+          return buildChatMessageObject(externalMessage, chatId);
+        })
+        .reverse();
       setMessages(loadedMessages.concat(messages));
       setIsLoading(false);
       setHasMore(!pageResults.last);
@@ -128,7 +161,7 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
     });
   };
 
-  const title = clientName !== '' ? clientName : name;
+  const title = clientName !== "" ? clientName : name;
 
   return (
     <div className="App">
@@ -139,15 +172,34 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
         isMaximizedOnly
         messages={messages}
         onMessageSend={text => {
-          // TODO: should it add to message array ?!
-          handleNewUserMessage(text);
+          let id;
+          setMessages(prevMessages => {
+            const copyPrevMessages = [...prevMessages];
+            id = copyPrevMessages.push(buildSendingMessage(text)) - 1;
+            return copyPrevMessages;
+          });
+
+          // send to user and waits for response
+          handleNewUserMessage(text, id);
         }}
         onAudio={blob => {
-          // TODO: should it add to message array ?!
-          handleNewUserAudio(blob);
+          let id;
+          setMessages(prevMessages => {
+            const copyPrevMessages = [...prevMessages];
+            id = copyPrevMessages.push(buildSendingMessage(undefined, {
+              mediaType: 'audio',
+              data: blob.blobURL,
+            })) - 1;
+            return copyPrevMessages;
+          });
+          
+          // send to user and waits for response
+          handleNewUserAudio(blob, id);
         }}
         title={title}
-        subtitle={`Última mensagem: ${lastMessageAt == null ? 'nenhuma mensagem' : lastMessageAt}`}
+        subtitle={`Última mensagem: ${
+          lastMessageAt == null ? "nenhuma mensagem" : lastMessageAt
+        }`}
         messagesEndRef={messagesEndRef}
         onMediaSend={handleNewUserFiles}
       />
@@ -157,12 +209,11 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
         topics={["/topic/" + chatId]}
         onMessage={handleNewExternalMessage}
         onConnect={onConnect}
-        ref={client => clientRef = client}
+        ref={client => (clientRef = client)}
       />
 
       {/* TODO: improve the ux/ui for showing progress uploading files  */}
-      <UploaderDialog open={open} setOpen={setOpen}/>
-
+      <UploaderDialog open={open} setOpen={setOpen} />
     </div>
   );
 };

@@ -22,6 +22,7 @@
     "prop-types": "^15.7.2",
     "react-app-polyfill": "^1.0.1",
     "react-chat-widget": "^2.1.5",
+    "react-compound-timer": "^1.1.15",
     "react-dropzone": "10.1.5",
     "react-facebook": "^8.0.4",
     "react-google-maps": "^9.4.5",
