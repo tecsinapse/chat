@@ -6,7 +6,7 @@ import { defaultFetch } from "../Util/fetch";
 import {
   buildChatMessageObject,
   buildSendingMessage,
-  setStatusMessageFunc,
+  setStatusMessageFunc
 } from "../Util/message";
 import { UploaderDialog } from "./UploaderDialog";
 
@@ -19,6 +19,7 @@ export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
   const [lastMessageAt, setLastMessageAt] = useState(null);
   const [name, setName] = useState("Cliente");
   const [open, setOpen] = useState(false);
+  const [blocked, setBlocked] = useState(false);
 
   const messagesEndRef = useRef(null);
   let clientRef = useRef();
@@ -26,8 +27,16 @@ export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
   const setStatusMessage = setStatusMessageFunc(setMessages);
 
   useEffect(() => {
+    defaultFetch(`${chatApiUrl}/api/chats/${chatId}/status`, "GET", {}).then(
+      status => {
+        if (status === "BLOCKED") {
+          setBlocked(true);
+        }
+      }
+    );
+
     defaultFetch(
-      `${chatApiUrl}/api/messages/${chatId}?page=0&size=50`,
+      `${chatApiUrl}/api/chats/${chatId}/messages?page=0&size=50`,
       "GET",
       {}
     ).then(pageResults => {
@@ -60,10 +69,20 @@ export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
         });
       }, 700);
     });
-  }, [messagesEndRef, lastMessageAt, setName, fromId, chatApiUrl, chatId]);
+  }, [
+    messagesEndRef,
+    lastMessageAt,
+    setName,
+    fromId,
+    chatApiUrl,
+    chatId,
+    setBlocked
+  ]);
 
   const handleNewExternalMessage = newMessage => {
-    if (newMessage.type === "CHAT" && newMessage.from === fromId) {
+    // Append received message when client message or
+    // it comes from tec-chat (not create by the user)
+    if ((newMessage.type === "CHAT" && newMessage.from === fromId) || newMessage.localId === undefined) {
       let message = buildChatMessageObject(newMessage, fromId);
       let newMessages = [...messages, message];
       setMessages(newMessages);
@@ -99,45 +118,49 @@ export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
         JSON.stringify(chatMessage)
       );
     } catch (e) {
-      setStatusMessage({localId}, "error");
+      setStatusMessage({ localId }, "error");
     }
   };
 
-  const handleNewUserAudio = (recordedBlob, id) => {
-    const formData = new FormData();
-    formData.append("file", recordedBlob.blob);
-    formData.append("localId", id);
-    defaultFetch(
-      `${chatApiUrl}/api/messages/${chatId}/upload`,
-      "POST",
-      {},
-      formData
-    ).then(result => {});
+  const handleNewUserAudio = (recordedBlob, localId) => {
+    sendData(undefined, recordedBlob.blob, localId);
   };
 
   const handleNewUserFiles = (title, files) => {
     Object.keys(files).forEach((uid, i) => {
-      let id;
+      let localId;
       setMessages(prevMessages => {
         const copyPrevMessages = [...prevMessages];
-        id =
-          copyPrevMessages.push(buildSendingMessage(undefined, files[uid])) - 1;
+        localId =
+          copyPrevMessages.push(buildSendingMessage(undefined, title, files[uid], files[uid])) - 1;
         return copyPrevMessages;
       });
-
-      const formData = new FormData();
-      formData.append("file", files[uid].file);
-      formData.append("title", title);
-      formData.append("localId", id);
-
-      defaultFetch(
-        `${chatApiUrl}/api/messages/${chatId}/upload`,
-        "POST",
-        {},
-        formData
-      ).then(result => {});
+      sendData(title, files[uid], localId);
     });
   };
+
+  const sendData = (title, file, localId) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("localId", localId);
+    if(title) {
+      formData.append("title", title);
+    }
+
+    defaultFetch(
+      `${chatApiUrl}/api/chats/${chatId}/upload`,
+      "POST",
+      {},
+      formData
+    )
+      .then(() => {})
+      .catch(err => {
+        if (err.status === 403) {
+          setBlocked(true);
+        }
+        setStatusMessage({ localId }, "error");
+      });
+  }
 
   const loadMore = () => {
     if (isLoading || !hasMore) {
@@ -145,7 +168,7 @@ export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
     }
     setIsLoading(true);
     defaultFetch(
-      `${chatApiUrl}/api/messages/${chatId}?page=${page}&size=50`,
+      `${chatApiUrl}/api/chats/${chatId}/messages?page=${page}&size=50`,
       "GET",
       {}
     ).then(pageResults => {
@@ -186,13 +209,16 @@ export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
           let id;
           setMessages(prevMessages => {
             const copyPrevMessages = [...prevMessages];
-            id = copyPrevMessages.push(buildSendingMessage(undefined, {
-              mediaType: 'audio',
-              data: blob.blobURL,
-            })) - 1;
+            id =
+              copyPrevMessages.push(
+                buildSendingMessage(undefined, undefined, {
+                  mediaType: "audio",
+                  data: blob.blobURL,
+                }, blob.blob)
+              ) - 1;
             return copyPrevMessages;
           });
-          
+
           // send to user and waits for response
           handleNewUserAudio(blob, id);
         }}
@@ -202,6 +228,21 @@ export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
         }`}
         messagesEndRef={messagesEndRef}
         onMediaSend={handleNewUserFiles}
+        isBlocked={blocked}
+        blockedMessage={`Já se passaram 24h desde a última mensagem enviada pelo cliente, 
+        por isso não é possível enviar nova mensagem por esse canal de comunicação. 
+        Por favor, entre em contato com o cliente por outro meio`}
+        onMessageResend={id => {
+          // Change message status
+          setStatusMessage({localId: id}, "sending");
+
+          // Resend to backend
+          if(messages[id].medias && messages[id].medias.length > 0) {
+            messages[id].medias.forEach((media) => sendData(messages[id].title, media.data, id));
+          } else if(messages[id].text) {
+            handleNewUserMessage(messages[id].text, id);
+          }
+        }}
       />
 
       <SockJsClient

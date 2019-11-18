@@ -26,10 +26,24 @@ export async function defaultFetch(path, method, data, formData) {
     if (res.status === 400 || res.status === 500) {
       const errors = await res.json();
       console.log('Error while fetching data from server: ' + errors.join(','));
-      return Promise.reject(errors);
+      return Promise.reject({
+        status: res.status,
+        errors: errors.join(',')
+      });
+    }
+    if (res.status === 403) {
+      // chat is blocked. Perhaps user can't send message because of vendor (Blip) rules of active messages
+      // https://tecsinapse.tpondemand.com/entity/125511-bloquear-envio-de-mensagens-apos-24h
+      return Promise.reject({
+        status: res.status,
+        errors: 'Chat bloqueado'
+      });
     }
     console.log(`Server returning with error ${res.status} while fetching data from path ${path}`);
-    return Promise.reject();
+    return Promise.reject({
+      status: res.status,
+      error: 'Erro inesperado'
+    });
   }
   return res.text().then(text => (text ? JSON.parse(text) : {}));
 }
