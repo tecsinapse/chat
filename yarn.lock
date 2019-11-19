@@ -1699,10 +1699,8 @@
     react-color "^2.17.0"
     recompose "^0.30.0"
 
-"@tecsinapse/ui-kit@^2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-2.1.2.tgz#5fffc1ba54a81b5816fb26da9e0cfafb8aadabec"
-  integrity sha512-I7KZqNo++ERt0fbdIAni3neoS+0IAObEWKe+IIFU1DZdToxJ1mQO0bgpgNmFJ75uony40eSJ/NbUBhRZ+yEAwA==
+"@tecsinapse/ui-kit@file:.yalc/@tecsinapse/ui-kit":
+  version "2.1.2-485ee6b0"
 
 "@tinymce/tinymce-react@^3.1.1":
   version "3.3.2"
