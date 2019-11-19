@@ -8,7 +8,7 @@
     "@livechat/ui-kit": "^0.4.0-5",
     "@material-ui/pickers": "^3.1.2",
     "@tecsinapse/material-ui-color-picker": "^4.3.0",
-    "@tecsinapse/ui-kit": "^2.1.2",
+    "@tecsinapse/ui-kit": "file:.yalc/@tecsinapse/ui-kit",
     "@tinymce/tinymce-react": "^3.1.1",
     "enumify": "^1.0.4",
     "formik": "^1.4.3",
@@ -37,8 +37,7 @@
     "tinymce-i18n": "^19.5.15",
     "typeface-roboto": "^0.0.54",
     "uniqid": "^5.0.3",
-    "yup": "^0.26.10",
-    "react-compound-timer": "^1.1.15"
+    "yup": "^0.26.10"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
