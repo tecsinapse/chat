@@ -11,13 +11,16 @@ export const buildChatMessageObject = (externalMessage, fromId) => {
   if (externalMessage.medias && externalMessage.medias.length > 0) {
     // when with media, show title instead of text
     delete message.text;
-    message.title = externalMessage.title;
+    message.title = externalMessage.text;
 
     message.medias = externalMessage.medias.map((media) => {
+      if (media.mediaType.startsWith('application')) {
+        delete message.title;
+      }
       return {
         url: media.url,
         mediaType: media.mediaType,
-        name: externalMessage.text,
+        name: media.mediaType.startsWith('application') ? externalMessage.text : '',
       };
     });
   }
@@ -25,45 +28,28 @@ export const buildChatMessageObject = (externalMessage, fromId) => {
   return message;
 };
 
-export const buildSendingMessage = (text, title, file, data) => ({
-    at: moment().format('DD/MM/YYYY HH:mm'),
-    own: true,
-    id: Date.now().toString(),
-    authorName: 'Você',
-    status: 'sending',
-    text,
-    title,
-    medias: file ? [{
-      mediaType: file.mediaType,
-      url: file.data,
-      name: file.name,
-      size: file.size,
-      data,
-    }] : undefined,
+export const buildSendingMessage = (localId, text, title, file) => ({
+  localId: localId,
+  at: moment().format('DD/MM/YYYY HH:mm'),
+  own: true,
+  id: Date.now().toString(),
+  authorName: 'Você',
+  status: 'sending',
+  text,
+  title,
+  medias: file ? [{
+    mediaType: file.mediaType,
+    url: file.data,
+    name: file.name,
+    size: file.size,
+    data: file.file,
+  }] : undefined,
 });
 
-export const setStatusMessageFunc = (setMessages) => (externalMessage, status) => {
-  console.log(externalMessage);
+export const setStatusMessageFunc = (setMessages) => (localId, status) => {
   setMessages(prevMessages => {
-    let id = externalMessage.localId;
     const copyMessages = [...prevMessages];
-    copyMessages[id].status = status;
-
-    if (externalMessage.medias && externalMessage.medias.length > 0) {
-      // when with media, show title instead of text
-      delete copyMessages[id].text;
-      copyMessages[id].title = externalMessage.title;
-  
-      copyMessages[id].medias = externalMessage.medias.map((media) => {
-        return {
-          url: media.url,
-          mediaType: media.mediaType,
-          name: externalMessage.text,
-        };
-      });
-    }
-  
-    
+    copyMessages.find(m => m.localId === localId).status = status;
     return copyMessages;
   });
 };

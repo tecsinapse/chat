@@ -37,6 +37,7 @@
     "tinymce-i18n": "^19.5.15",
     "typeface-roboto": "^0.0.54",
     "uniqid": "^5.0.3",
+    "uuid": "^3.3.3",
     "yup": "^0.26.10"
   },
   "devDependencies": {
