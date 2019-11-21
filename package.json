@@ -1,9 +1,26 @@
 {
   "name": "@tecsinapse/chat",
   "description": "TecSinapse UI-KIT",
-  "version": "0.0.1",
+  "homepage": "https://github.com/tecsinapse/chat#readme",
+  "version": "0.0.2",
   "main": "dist/index.cjs.js",
   "module": "build/index.js",
+  "author": {
+    "name": "lip"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tecsinapse/chat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tecsinapse/chat/issues"
+  },
+  "keywords": [
+    "chat",
+    "react",
+    "tecsinapse",
+    "ui-kit"
+  ],
   "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -106,6 +123,7 @@
     "storybook:build": "build-storybook -c .storybook -o docs/",
     "test": "NODE_ENV=test jest test/"
   },
+  "license": "ISC",
   "husky": {
     "hooks": {
       "post-commit": "git update-index --again",
@@ -166,25 +184,5 @@
     "tinymce-i18n": "^19.5.15",
     "typeface-roboto": "^0.0.54"
   },
-  "sideEffects": false,
-  "directories": {
-    "example": "example",
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tecsinapse/chat.git"
-  },
-  "keywords": [
-    "chat",
-    "react",
-    "tecsinapse",
-    "ui-kit"
-  ],
-  "author": "lip",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/tecsinapse/chat/issues"
-  },
-  "homepage": "https://github.com/tecsinapse/chat#readme"
+  "sideEffects": false
 }

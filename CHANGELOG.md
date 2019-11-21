@@ -1,3 +1,22 @@
+<a name="0.0.2"></a>
+## <small>0.0.2 (2019-11-21)</small>
+
+* #124853 Changing notification colour. ([cafe941](https://github.com/tecsinapse/chat/commit/cafe941)), closes [#124853](https://github.com/tecsinapse/chat/issues/124853) [#125395](https://github.com/tecsinapse/chat/issues/125395)
+* Add button for social login (just one/google for now) ([05e8721](https://github.com/tecsinapse/chat/commit/05e8721))
+* Add themes ([f349445](https://github.com/tecsinapse/chat/commit/f349445))
+* Added "default sort" display on table header. ([6910839](https://github.com/tecsinapse/chat/commit/6910839))
+* Added remove option to advanced filters table ([30fa549](https://github.com/tecsinapse/chat/commit/30fa549))
+* Fixed blueGrey breadcrumb color ([93ba322](https://github.com/tecsinapse/chat/commit/93ba322))
+* Fixed chip color on AutoComplete. ([0f035e6](https://github.com/tecsinapse/chat/commit/0f035e6))
+* Publish npm first version ([6fade3a](https://github.com/tecsinapse/chat/commit/6fade3a))
+* Resolving return consistency. ([ed82461](https://github.com/tecsinapse/chat/commit/ed82461))
+* Resolving suggestion by changing forEach to filter().map() ([7876585](https://github.com/tecsinapse/chat/commit/7876585))
+* Resolving value checking condition. ([048ee06](https://github.com/tecsinapse/chat/commit/048ee06))
+* Set apply filters function. ([944e4f1](https://github.com/tecsinapse/chat/commit/944e4f1))
+* Update .travis.yml ([73f92f4](https://github.com/tecsinapse/chat/commit/73f92f4))
+
+
+
 <a name="2.1.2"></a>
 ## <small>2.1.2 (2019-11-12)</small>
 
