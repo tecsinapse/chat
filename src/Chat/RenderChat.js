@@ -1,13 +1,17 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Chat} from "@tecsinapse/ui-kit/build/Chat/Chat";
+import React, { useEffect, useRef, useState } from "react";
+import { Chat } from "@tecsinapse/ui-kit/build/Chat/Chat";
 import SockJsClient from "react-stomp";
 
-import {defaultFetch} from "../Util/fetch";
-import {buildChatMessageObject, buildSendingMessage, setStatusMessageFunc} from "../Util/message";
-import {UploaderDialog} from "./UploaderDialog";
+import { defaultFetch } from "../Util/fetch";
+import {
+  buildChatMessageObject,
+  buildSendingMessage,
+  setStatusMessageFunc
+} from "../Util/message";
+import { UploaderDialog } from "./UploaderDialog";
 import uuidv1 from "uuid/v1";
 
-export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
+export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -55,7 +59,7 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
         }
       }
 
-      setTimeout(function () {
+      setTimeout(function() {
         // workaround to wait for all elements to render
         messagesEndRef.current.scrollIntoView({
           block: "end",
@@ -115,13 +119,16 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
     } catch (e) {
       setStatusMessage(localId, "error");
     }
+    //setTimeout(() => setStatusMessage(localId, "error"), 60000)
   };
 
   const handleNewUserFiles = (title, files) => {
     Object.keys(files).forEach((uid, i) => {
       setMessages(prevMessages => {
         const copyPrevMessages = [...prevMessages];
-        copyPrevMessages.push(buildSendingMessage(uid, undefined, title, files[uid]));
+        copyPrevMessages.push(
+          buildSendingMessage(uid, undefined, title, files[uid])
+        );
         return copyPrevMessages;
       });
       sendData(uid, title, files[uid].file);
@@ -142,8 +149,7 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
       {},
       formData
     )
-      .then(() => {
-      })
+      .then(() => {})
       .catch(err => {
         if (err.status === 403) {
           setBlocked(true);
@@ -200,16 +206,22 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
           setMessages(prevMessages => {
             const copyPrevMessages = [...prevMessages];
             copyPrevMessages.push(
-              buildSendingMessage(localId, undefined, undefined, {
-                mediaType: "audio",
-                data: blob.blobURL,
-              }, blob.blob)
+              buildSendingMessage(
+                localId,
+                undefined,
+                undefined,
+                {
+                  mediaType: "audio",
+                  data: blob.blobURL
+                },
+                blob.blob
+              )
             );
             return copyPrevMessages;
           });
 
           // send to user and waits for response
-          sendData(localId, undefined, blob.blob)
+          sendData(localId, undefined, blob.blob);
         }}
         title={title}
         subtitle={`Última mensagem: ${
@@ -227,9 +239,11 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
 
           // Resend to backend
           const message = messages.find(m => m.localId === localId);
-          if (message.medias && message.medias.length > 0) {
-            message.medias.forEach((media) => sendData(localId, message.title, media.data));
-          } else if (message.text) {
+          if (message && message.medias && message.medias.length > 0) {
+            message.medias.forEach(media =>
+              sendData(localId, message.title, media.data)
+            );
+          } else if (message && message.text) {
             handleNewUserMessage(message.text, localId);
           }
         }}
@@ -244,7 +258,7 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
       />
 
       {/* TODO: improve the ux/ui for showing progress uploading files  */}
-      <UploaderDialog open={open} setOpen={setOpen}/>
+      <UploaderDialog open={open} setOpen={setOpen} />
     </div>
   );
 };
