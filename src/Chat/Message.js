@@ -245,7 +245,7 @@ export const Message = ({
             fill
             key="send again"
             onClick={() => {
-              onMessageResend(id);
+              onMessageResend(message.localId);
             }}
             style={{
               padding: '4px',

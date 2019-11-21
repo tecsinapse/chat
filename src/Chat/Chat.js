@@ -88,6 +88,7 @@ Chat.defaultProps = {
 Chat.propTypes = {
   messages: PropTypes.arrayOf(
     PropTypes.shape({
+      localId: PropTypes.string,
       at: PropTypes.string,
       own: PropTypes.bool,
       id: PropTypes.string,

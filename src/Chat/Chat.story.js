@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { storiesOf } from '@storybook/react';
+import uuidv1 from 'uuid/v1';
 
 import { Chat } from './Chat';
 import { DivFlex } from '../withFlexCenter';
@@ -16,7 +17,8 @@ const ChatWrapper = ({
   const mockStatusMessage = (id, status) => {
     setMessages(prevMessages => {
       const copyMessages = [...prevMessages];
-      copyMessages[id].status = status;
+      const message = copyMessages.find(m => m.localId === id);
+      message.status = status;
       return copyMessages;
     });
   };
@@ -107,47 +109,48 @@ const ChatWrapper = ({
       title="Felipe Rodrigues"
       subtitle="Última mensagem 10/10/2019 10:10"
       onMessageSend={text => {
+        const localId = uuidv1();
         setMessages(prevMessages => {
           const copyPrevMessages = [...prevMessages];
-          const id =
+          copyPrevMessages.push({
+            at: '02/03/2019 10:12',
+            own: true,
+            id: Date.now().toString(),
+            authorName: 'Você',
+            status: 'sending',
+            text,
+            localId,
+          });
+          return copyPrevMessages;
+        });
+        if (!error) {
+          sendToBackend(text, localId);
+        }
+      }}
+      onAudio={blob => {
+        if (blob !== null) {
+          const localId = uuidv1();
+          setMessages(prevMessages => {
+            const copyPrevMessages = [...prevMessages];
             copyPrevMessages.push({
               at: '02/03/2019 10:12',
               own: true,
               id: Date.now().toString(),
               authorName: 'Você',
               status: 'sending',
-              text,
-            }) - 1;
-          if (!error) {
-            sendToBackend(text, id);
-          }
-          return copyPrevMessages;
-        });
-      }}
-      onAudio={blob => {
-        if (blob !== null) {
-          let id;
-          setMessages(prevMessages => {
-            const copyPrevMessages = [...prevMessages];
-            id =
-              copyPrevMessages.push({
-                at: '02/03/2019 10:12',
-                own: true,
-                id: Date.now().toString(),
-                authorName: 'Você',
-                status: 'sending',
-                medias: [
-                  {
-                    mediaType: 'audio',
-                    url: blob.blobURL,
-                  },
-                ],
-              }) - 1;
+              localId,
+              medias: [
+                {
+                  mediaType: 'audio',
+                  url: blob.blobURL,
+                },
+              ],
+            });
             return copyPrevMessages;
           });
 
           if (!error) {
-            sendAudioToBackend(blob, id);
+            sendAudioToBackend(blob, localId);
           }
         }
       }}
@@ -156,32 +159,30 @@ const ChatWrapper = ({
       onMediaSend={(title, files) => {
         if (files !== null) {
           Object.keys(files).forEach((uid, i) => {
-            let id;
+            const localId = uuidv1();
             setMessages(prevMessages => {
               const copyPrevMessages = [...prevMessages];
-
-              id =
-                copyPrevMessages.push({
-                  at: '02/03/2019 10:12',
-                  own: true,
-                  id: Date.now().toString(),
-                  authorName: 'Você',
-                  status: 'sending',
-                  medias: [
-                    {
-                      mediaType: files[uid].mediaType,
-                      url: files[uid].data,
-                      name: files[uid].name,
-                      size: files[uid].size,
-                    },
-                  ],
-                  title,
-                }) - 1;
+              copyPrevMessages.push({
+                at: '02/03/2019 10:12',
+                own: true,
+                id: Date.now().toString(),
+                authorName: 'Você',
+                status: 'sending',
+                medias: [
+                  {
+                    mediaType: files[uid].mediaType,
+                    url: files[uid].data,
+                    name: files[uid].name,
+                    size: files[uid].size,
+                  },
+                ],
+                title,
+              });
               return copyPrevMessages;
             });
 
             if (!error) {
-              sendMediaToBackend(files[uid], title, id);
+              sendMediaToBackend(files[uid], title, localId);
             }
           });
         }
@@ -234,6 +235,7 @@ storiesOf(`Chat`, module)
             authorName: 'Felipe Rodrigues',
             text: 'Olá, tudo bem?!',
             status: 'delivered',
+            localId: uuidv1(),
           },
           {
             at: '02/03/2019 10:15',
@@ -242,6 +244,7 @@ storiesOf(`Chat`, module)
             authorName: 'Você',
             text: 'Tudo sim!',
             status: 'delivered',
+            localId: uuidv1(),
           },
           {
             at: '02/03/2019 10:14',
@@ -250,6 +253,7 @@ storiesOf(`Chat`, module)
             authorName: 'Você',
             text: 'O que desaja solicitar ?',
             status: 'error',
+            localId: uuidv1(),
           },
           {
             at: '02/03/2019 10:14',
@@ -258,6 +262,7 @@ storiesOf(`Chat`, module)
             authorName: 'Você',
             text: 'Abraço!',
             status: 'sending',
+            localId: uuidv1(),
           },
         ]}
       />
@@ -282,6 +287,7 @@ storiesOf(`Chat`, module)
             id: `${Date.now().toString()}0`,
             authorName: 'Felipe Rodrigues',
             status: 'delivered',
+            localId: uuidv1(),
             medias: [
               {
                 mediaType: 'image/png',
@@ -294,6 +300,7 @@ storiesOf(`Chat`, module)
             own: true,
             id: `${Date.now().toString()}2`,
             authorName: 'Você',
+            localId: uuidv1(),
             medias: [
               {
                 mediaType: 'image/png',
@@ -307,6 +314,7 @@ storiesOf(`Chat`, module)
             own: true,
             id: `${Date.now().toString()}2`,
             authorName: 'Você',
+            localId: uuidv1(),
             medias: [
               {
                 mediaType: 'image/png',
