@@ -88,6 +88,7 @@
     "analyze": "npx source-map-explorer 'dist/*.js'",
     "test": "NODE_ENV=test jest"
   },
+  "license": "ISC",
   "husky": {
     "hooks": {
       "post-commit": "git update-index --again",
