@@ -4,6 +4,7 @@ import uuidv1 from 'uuid/v1';
 
 import { Chat } from './Chat';
 import { DivFlex } from '../withFlexCenter';
+import { dummyMessagesText, dummyMessagesMedia } from './dummyMessages';
 
 const ChatWrapper = ({
   initialMessages = [],
@@ -28,10 +29,7 @@ const ChatWrapper = ({
     setTimeout(() => mockStatusMessage(id, 'delivered'), 1000);
 
     // Mocking send to a local echo backend
-    if ((id + 1) % 2 === 0) {
-      setTimeout(() => echoBackend(text), 2000);
-      setTimeout(() => echoBackend(text), 3000);
-    }
+    setTimeout(() => echoBackend(text), 3000);
   };
 
   const echoBackend = newMessage => {
@@ -99,16 +97,57 @@ const ChatWrapper = ({
     ]);
   };
 
-  return (
-    <Chat
-      error={error}
-      isMaximizedOnly={isMaximizedOnly}
-      isBlocked={isBlocked}
-      blockedMessage={blockedMessage}
-      messages={messages}
-      title="Felipe Rodrigues"
-      subtitle="Última mensagem 10/10/2019 10:10"
-      onMessageSend={text => {
+  const onMessageSend = text => {
+    const localId = uuidv1();
+    setMessages(prevMessages => {
+      const copyPrevMessages = [...prevMessages];
+      copyPrevMessages.push({
+        at: '02/03/2019 10:12',
+        own: true,
+        id: Date.now().toString(),
+        authorName: 'Você',
+        status: 'sending',
+        text,
+        localId,
+      });
+      return copyPrevMessages;
+    });
+    if (!error) {
+      sendToBackend(text, localId);
+    }
+  };
+
+  const onAudioSend = blob => {
+    if (blob !== null) {
+      const localId = uuidv1();
+      setMessages(prevMessages => {
+        const copyPrevMessages = [...prevMessages];
+        copyPrevMessages.push({
+          at: '02/03/2019 10:12',
+          own: true,
+          id: Date.now().toString(),
+          authorName: 'Você',
+          status: 'sending',
+          localId,
+          medias: [
+            {
+              mediaType: 'audio',
+              url: blob.blobURL,
+            },
+          ],
+        });
+        return copyPrevMessages;
+      });
+
+      if (!error) {
+        sendAudioToBackend(blob, localId);
+      }
+    }
+  };
+
+  const onMediaSend = (title, files) => {
+    if (files !== null) {
+      Object.keys(files).forEach((uid, i) => {
         const localId = uuidv1();
         setMessages(prevMessages => {
           const copyPrevMessages = [...prevMessages];
@@ -118,246 +157,80 @@ const ChatWrapper = ({
             id: Date.now().toString(),
             authorName: 'Você',
             status: 'sending',
-            text,
             localId,
+            medias: [
+              {
+                mediaType: files[uid].mediaType,
+                url: files[uid].data,
+                name: files[uid].name,
+                size: files[uid].size,
+              },
+            ],
+            title,
           });
           return copyPrevMessages;
         });
+
         if (!error) {
-          sendToBackend(text, localId);
+          sendMediaToBackend(files[uid], title, localId);
         }
-      }}
-      onAudio={blob => {
-        if (blob !== null) {
-          const localId = uuidv1();
-          setMessages(prevMessages => {
-            const copyPrevMessages = [...prevMessages];
-            copyPrevMessages.push({
-              at: '02/03/2019 10:12',
-              own: true,
-              id: Date.now().toString(),
-              authorName: 'Você',
-              status: 'sending',
-              localId,
-              medias: [
-                {
-                  mediaType: 'audio',
-                  url: blob.blobURL,
-                },
-              ],
-            });
-            return copyPrevMessages;
-          });
+      });
+    }
+  };
 
-          if (!error) {
-            sendAudioToBackend(blob, localId);
-          }
-        }
-      }}
-      // onCloseChat={(e) => console.log(e)}
+  const onMessageResend = id => {
+    // mock sending to backend
+    mockStatusMessage(id, 'sending');
 
-      onMediaSend={(title, files) => {
-        if (files !== null) {
-          Object.keys(files).forEach((uid, i) => {
-            const localId = uuidv1();
-            setMessages(prevMessages => {
-              const copyPrevMessages = [...prevMessages];
-              copyPrevMessages.push({
-                at: '02/03/2019 10:12',
-                own: true,
-                id: Date.now().toString(),
-                authorName: 'Você',
-                status: 'sending',
-                medias: [
-                  {
-                    mediaType: files[uid].mediaType,
-                    url: files[uid].data,
-                    name: files[uid].name,
-                    size: files[uid].size,
-                  },
-                ],
-                title,
-              });
-              return copyPrevMessages;
-            });
+    // mock error again sending the message
+    setTimeout(() => mockStatusMessage(id, 'error'), 1000);
+  };
 
-            if (!error) {
-              sendMediaToBackend(files[uid], title, localId);
-            }
-          });
-        }
+  return (
+    <div
+      style={{
+        width: '400px',
+        height: '550px',
+        position: 'fixed',
+        right: '1em',
+        bottom: '-50px',
       }}
-      onMessageResend={id => {
-        // mock sending to backend
-        mockStatusMessage(id, 'sending');
-
-        // mock error again sending the message
-        setTimeout(() => mockStatusMessage(id, 'error'), 1000);
-      }}
-    />
+    >
+      <Chat
+        error={error}
+        isMaximizedOnly={isMaximizedOnly}
+        isBlocked={isBlocked}
+        blockedMessage={blockedMessage}
+        messages={messages}
+        title="Felipe Rodrigues"
+        subtitle="Última mensagem 10/10/2019 10:10"
+        onMessageSend={onMessageSend}
+        onAudio={onAudioSend}
+        onMediaSend={onMediaSend}
+        onMessageResend={onMessageResend}
+      />
+    </div>
   );
 };
 
 storiesOf(`Chat`, module)
   .addDecorator(story => <DivFlex>{story()}</DivFlex>)
-  .add('Chat Echo', () => (
-    <div
-      style={{
-        width: '400px',
-        height: '550px',
-        position: 'fixed',
-        right: '1em',
-        bottom: '-50px',
-      }}
-    >
-      {/* Only renders inside the given div */}
-      <ChatWrapper isMaximizedOnly />
-    </div>
-  ))
+  .add('Chat Echo', () => <ChatWrapper isMaximizedOnly />)
   .add('Status Text', () => (
-    <div
-      style={{
-        width: '400px',
-        height: '550px',
-        position: 'fixed',
-        right: '1em',
-        bottom: '-50px',
-      }}
-    >
-      {/* Only renders inside the given div */}
-      <ChatWrapper
-        isMaximizedOnly
-        initialMessages={[
-          {
-            at: '02/03/2019 10:12',
-            own: false,
-            id: `${Date.now().toString()}0`,
-            authorName: 'Felipe Rodrigues',
-            text: 'Olá, tudo bem?!',
-            status: 'delivered',
-            localId: uuidv1(),
-          },
-          {
-            at: '02/03/2019 10:15',
-            own: true,
-            id: `${Date.now().toString()}2`,
-            authorName: 'Você',
-            text: 'Tudo sim!',
-            status: 'delivered',
-            localId: uuidv1(),
-          },
-          {
-            at: '02/03/2019 10:14',
-            own: true,
-            id: `${Date.now().toString()}2`,
-            authorName: 'Você',
-            text: 'O que desaja solicitar ?',
-            status: 'error',
-            localId: uuidv1(),
-          },
-          {
-            at: '02/03/2019 10:14',
-            own: true,
-            id: `${Date.now().toString()}2`,
-            authorName: 'Você',
-            text: 'Abraço!',
-            status: 'sending',
-            localId: uuidv1(),
-          },
-        ]}
-      />
-    </div>
+    <ChatWrapper isMaximizedOnly initialMessages={dummyMessagesText} />
   ))
   .add('Status Image', () => (
-    <div
-      style={{
-        width: '400px',
-        height: '550px',
-        position: 'fixed',
-        right: '1em',
-        bottom: '-50px',
-      }}
-    >
-      {/* Only renders inside the given div */}
-      <ChatWrapper
-        initialMessages={[
-          {
-            at: '02/03/2019 10:12',
-            own: false,
-            id: `${Date.now().toString()}0`,
-            authorName: 'Felipe Rodrigues',
-            status: 'delivered',
-            localId: uuidv1(),
-            medias: [
-              {
-                mediaType: 'image/png',
-                url: 'http://www.invalidUrl123.com.br',
-              },
-            ],
-          },
-          {
-            at: '02/03/2019 10:14',
-            own: true,
-            id: `${Date.now().toString()}2`,
-            authorName: 'Você',
-            localId: uuidv1(),
-            medias: [
-              {
-                mediaType: 'image/png',
-                url: 'http://www.invalidUrl123.com.br',
-              },
-            ],
-            status: 'error',
-          },
-          {
-            at: '02/03/2019 10:14',
-            own: true,
-            id: `${Date.now().toString()}2`,
-            authorName: 'Você',
-            localId: uuidv1(),
-            medias: [
-              {
-                mediaType: 'image/png',
-                url: 'http://www.invalidUrl123.com.br',
-              },
-            ],
-            status: 'sending',
-          },
-        ]}
-        isMaximizedOnly
-      />
-    </div>
+    <ChatWrapper initialMessages={dummyMessagesMedia} isMaximizedOnly />
   ))
   .add('Error Connection', () => (
-    <div
-      style={{
-        width: '400px',
-        height: '550px',
-        position: 'fixed',
-        right: '1em',
-        bottom: '-50px',
-      }}
-    >
-      <ChatWrapper isMaximizedOnly error="Erro de conexão. Tente mais tarde!" />
-    </div>
+    <ChatWrapper isMaximizedOnly error="Erro de conexão. Tente mais tarde!" />
   ))
   .add('Chat Blocked', () => (
-    <div
-      style={{
-        width: '400px',
-        height: '550px',
-        position: 'fixed',
-        right: '1em',
-        bottom: '-50px',
-      }}
-    >
-      {/* Only renders inside the given div */}
-      <ChatWrapper
-        isMaximizedOnly
-        isBlocked
-        blockedMessage="Já se passaram 24h desde a última mensagem enviada pelo cliente, 
+    <ChatWrapper
+      isMaximizedOnly
+      isBlocked
+      blockedMessage="Já se passaram 24h desde a última mensagem enviada pelo cliente, 
           por isso não é possível enviar nova mensagem por esse canal de comunicação, por favor, 
           entre em contato com o cliente por outro meio."
-      />
-    </div>
+    />
   ));

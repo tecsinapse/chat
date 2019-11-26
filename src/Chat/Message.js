@@ -6,24 +6,22 @@ import {
   Bubble,
   Message as LiveChatMessage,
 } from '@livechat/ui-kit';
-import { Typography, Avatar } from '@material-ui/core';
-import {
-  mdiFile,
-  mdiDownload,
-  mdiAlertCircleOutline,
-  mdiImageOff,
-} from '@mdi/js';
+import { Typography } from '@material-ui/core';
+import { isStringNotBlank } from '@tecsinapse/es-utils/build/object';
+
+import { mdiAlertCircleOutline, mdiImageOff } from '@mdi/js';
+import clsx from 'clsx';
 import Icon from '@mdi/react';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 import { IconButton as IconButtonMaterial } from '../Buttons/IconButton';
 
-import ImageLoader from './ImageLoader';
+import { DeliveryStatus } from './DeliveryStatus';
+
+import { ImageLoader } from './ImageLoader';
+import { ApplicationLoader } from './ApplicationLoader';
+import { VideoLoader } from './VideoLoader';
+import { AudioLoader } from './AudioLoader';
 
 export const Message = ({
   title,
@@ -39,62 +37,33 @@ export const Message = ({
 
   return (
     <div
-      style={{
-        display: message.own ? 'flex' : undefined,
-        justifyContent: message.own ? 'flex-end' : undefined,
-        marginRight:
-          message.status === 'error' && message.own ? '-8px' : undefined,
-      }}
+      className={clsx({
+        [classes.messageRootOwn]: message.own,
+        [classes.messageRootError]: message.status === 'error' && message.own,
+      })}
     >
       <LiveChatMessage
-        style={{
-          marginRight:
-            message.status === 'error' && message.own ? 0 : undefined,
-          marginTop: addMessageName ? undefined : 0,
-          marginBottom: addMessageDate ? undefined : 0,
-        }}
+        className={clsx({
+          [classes.messageWithoutName]: !addMessageName,
+          [classes.messageWithoutDate]: !addMessageDate,
+        })}
         date={
           addMessageName && (
             <Typography variant="caption" className={classes.authorName}>
               {/* Workaround to overcome lack of authorName on message object */}
               {message.authorName}
-              {(message.authorName === '' ||
-                message.authorName === undefined) &&
-                message.own &&
-                'Você'}
-              {(message.authorName === '' ||
-                message.authorName === undefined) &&
-                !message.own &&
-                title}
+              {!isStringNotBlank(message.authorName) && message.own && 'Você'}
+              {!isStringNotBlank(message.authorName) && !message.own && title}
             </Typography>
           )
         }
         deliveryStatus={
-          <>
-            {(message.status !== 'sending' && message.status !== 'error') ||
-            message.own === false ? (
-              <>
-                {(addMessageDate || showDate) && (
-                  <Typography variant="caption" className={classes.at}>
-                    {message.at}
-                  </Typography>
-                )}
-              </>
-            ) : (
-              <>
-                {message.status === 'sending' && (
-                  <Typography variant="caption" className={classes.at}>
-                    Enviando...
-                  </Typography>
-                )}
-                {message.status === 'error' && (
-                  <Typography variant="caption" color="error">
-                    Erro no envio
-                  </Typography>
-                )}
-              </>
-            )}
-          </>
+          <DeliveryStatus
+            message={message}
+            classes={classes}
+            addMessageDate={addMessageDate}
+            showDate={showDate}
+          />
         }
         isOwn={message.own}
         key={message.id}
@@ -106,21 +75,6 @@ export const Message = ({
               ? undefined
               : () => setShowDate(currentShowDate => !currentShowDate)
           }
-
-          // TODO: Implement remove bubble when it is a image without title
-          // (take care) of loading media url which needs the bubble.
-          //
-          // className={clsx({
-          //   [classes.bubbleTransparent]:
-          //   message.status !== 'sending' && message.status !== 'error' && message.medias &&
-          //     message.medias.filter(
-          //       media =>
-          //         media.mediaType.startsWith('video') ||
-          //         media.mediaType.startsWith('image')
-          //     ).length > 0 &&
-          //     !message.text &&
-          //     !message.title,
-          // })}
         >
           {message.text && (
             <MessageText>
@@ -132,8 +86,6 @@ export const Message = ({
               title={<Typography variant="body1">{message.title}</Typography>}
             />
           )}
-
-          {/* TODO: Use a media object instead of a array, given that it has only one media by message */}
           {message.medias &&
             message.medias.length > 0 &&
             message.medias.map(media => (
@@ -159,23 +111,11 @@ export const Message = ({
                     ) : (
                       <>
                         {media.mediaType.startsWith('image') && (
-                          <ImageLoader
-                            url={media.url}
-                            classes={classes}
-                            own={message.own}
-                          />
+                          <ImageLoader url={media.url} classes={classes} />
                         )}
 
                         {media.mediaType.startsWith('video') && (
-                          <video
-                            controls
-                            width={200}
-                            className={classes.thumbnail}
-                          >
-                            <source src={media.url} />
-                            {/* TODO: ADD A REAL TRACK OBJECT */}
-                            <track default kind="captions" src={media.url} />
-                          </video>
+                          <VideoLoader media={media} classes={classes} />
                         )}
                       </>
                     )}
@@ -183,56 +123,11 @@ export const Message = ({
                 )}
 
                 {media.mediaType.startsWith('audio') && (
-                  <audio controls className={classes.audio}>
-                    <source src={media.url} />
-                    {/* TODO: ADD A REAL TRACK OBJECT */}
-                    <track default kind="captions" src={media.url} />
-                  </audio>
+                  <AudioLoader media={media} classes={classes} />
                 )}
 
                 {media.mediaType.startsWith('application') && (
-                  <List style={{ padding: 0 }}>
-                    <ListItem
-                      style={{
-                        paddingTop: media.size ? 0 : undefined,
-                        paddingBottom: media.size ? 0 : undefined,
-                        paddingLeft: 8,
-                      }}
-                    >
-                      <ListItemAvatar>
-                        <Avatar>
-                          <Icon
-                            path={mdiFile}
-                            size={1.0}
-                            color={message.own ? 'white' : 'black'}
-                          />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={media.name}
-                        secondary={media.size && `${media.size} Kb`}
-                        style={{
-                          textOverflow: 'ellipsis',
-                          overflow: 'hidden',
-                        }}
-                      />
-                      <ListItemSecondaryAction
-                        style={{
-                          right: 0,
-                        }}
-                      >
-                        <a href={media.url} download>
-                          <IconButtonMaterial aria-label="download">
-                            <Icon
-                              path={mdiDownload}
-                              size={1.2}
-                              color={message.own ? 'white' : 'black'}
-                            />
-                          </IconButtonMaterial>
-                        </a>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  </List>
+                  <ApplicationLoader message={message} media={media} />
                 )}
               </MessageMedia>
             ))}

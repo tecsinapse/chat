@@ -90,8 +90,7 @@
     "text-mask-core": "^5.1.2",
     "tinymce": "^5.0.4",
     "tinymce-i18n": "^19.5.15",
-    "typeface-roboto": "^0.0.54",
-    "uniqid": "^5.0.3"
+    "typeface-roboto": "^0.0.54"
   },
   "files": [
     "build",
