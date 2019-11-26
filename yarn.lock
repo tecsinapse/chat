@@ -2822,10 +2822,10 @@
     react-color "^2.17.0"
     recompose "^0.30.0"
 
-"@tecsinapse/ui-kit@3.0.0-alpha.0":
-  version "3.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-3.0.0-alpha.0.tgz#be2329fe2b9597cc5b0955aed96f3da24a42f6b5"
-  integrity sha512-5dKaVOdYf34RCn2V+T2FwBsqDRGBevuA5+IX+x49S8EjiXx6h1uguG5BTtgx4zumUajQQIdcDCcwl53pLfTmtw==
+"@tecsinapse/ui-kit@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-3.3.1.tgz#d2ad933754d934c7566de4cb6e4f79f243b58e2a"
+  integrity sha512-39UMVgdrIF4tJXRLZtoqfXqgeyl/IvlUvIRjpLPM4+34BAP4cVQjEhvDTEikeKtKYM/3E6DMySKNv8Q2GpT2/w==
   dependencies:
     "@date-io/luxon" "^1.1.0"
     "@material-ui/core" "^4.2.1"
