@@ -4,9 +4,6 @@
   "version": "1.0.0",
   "main": "dist/index.cjs.js",
   "module": "build/index.js",
-  "engines": {
-    "node": ">=12.0.0"
-  },
   "dependencies": {
     "@cleandersonlobo/react-mic": "^1.1.1",
     "@livechat/ui-kit": "^0.4.0-10",
