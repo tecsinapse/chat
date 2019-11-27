@@ -1,3 +1,10 @@
+<a name="1.1.1"></a>
+## <small>1.1.1 (2019-11-27)</small>
+
+* Fix add a function instead calling it ([f65859a](https://github.com/tecsinapse/chat/commit/f65859a))
+
+
+
 <a name="1.1.0"></a>
 ## 1.1.0 (2019-11-27)
 
