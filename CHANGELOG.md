@@ -1,3 +1,15 @@
+<a name="1.1.0"></a>
+## 1.1.0 (2019-11-27)
+
+* Add Status of message and its stories ([e3d6390](https://github.com/tecsinapse/chat/commit/e3d6390))
+* Fix general pull request comments and separate logic components ([0b7ae68](https://github.com/tecsinapse/chat/commit/0b7ae68))
+* Fix resend message with localId ([b5cfa80](https://github.com/tecsinapse/chat/commit/b5cfa80))
+* Improve css style of loader and tooltip ([8e9348b](https://github.com/tecsinapse/chat/commit/8e9348b))
+* Separate message from maximed and add grouped message logic ([5a4dead](https://github.com/tecsinapse/chat/commit/5a4dead))
+* yarn.lock ([7dfc101](https://github.com/tecsinapse/chat/commit/7dfc101))
+
+
+
 <a name="1.0.0"></a>
 ## 1.0.0 (2019-11-26)
 
