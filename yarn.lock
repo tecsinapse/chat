@@ -2784,10 +2784,10 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@tecsinapse/es-utils@^6.0.1":
-  version "6.0.8"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/es-utils/-/es-utils-6.0.8.tgz#8aefae0a6600063784ddffcad04007d5a828ef81"
-  integrity sha512-fEOGBM1ZcfRoj5GQL+6HieREEb30IkXMB3qZJXY3KhXX1LkM8s2RCWU2yE/ZjFCU2ZWWSRZEvJCDFANXn0MV0Q==
+"@tecsinapse/es-utils@^6.0.1", "@tecsinapse/es-utils@^6.0.10":
+  version "6.0.10"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/es-utils/-/es-utils-6.0.10.tgz#b17adad002d2993ab1bdd9785e10fa89fa00fb12"
+  integrity sha512-OWtS/eqsQH1MVfO20jkjPR5kADrGOmX2tM2uaJLuQFwEOkgFx1VV8Ogi4Kl39x6vhz14a68xCps6T8uW5hgUOw==
   dependencies:
     accounting "^0.4.1"
     big.js latest
@@ -13409,9 +13409,9 @@ uniq@^1.0.1:
   integrity sha1-sxxa6CVIRKOoKBVBzisEuGWnNP8=
 
 uniqid@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/uniqid/-/uniqid-5.0.3.tgz#917968310edc868d50df6c44f783f32c7d80fac1"
-  integrity sha512-R2qx3X/LYWSdGRaluio4dYrPXAJACTqyUjuyXHoJLBUOIfmMcnYOyY2d6Y4clZcIz5lK6ZaI0Zzmm0cPfsIqzQ==
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/uniqid/-/uniqid-5.1.0.tgz#47e4f7567f12409fa7664f80abdfb1730fc021c3"
+  integrity sha512-iBt38h8uFnbDFrRK4E7vdzjtynBii5aSwGZ27gle7xnbYSIZzJ5x5BqughgUvMNCZ1cMhtnpcF+w7XGbqm6d9Q==
 
 unique-filename@^1.1.1:
   version "1.1.1"

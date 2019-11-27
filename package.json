@@ -11,6 +11,7 @@
     "@material-ui/styles": "^4.2.1",
     "@mdi/js": "^3.0.39",
     "@mdi/react": "^1.1.0",
+    "@tecsinapse/es-utils": "^6.0.10",
     "@tecsinapse/ui-kit": "^3.3.1",
     "classnames": "^2.2.6",
     "prop-types": "^15.6.2",
