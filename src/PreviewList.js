@@ -95,7 +95,7 @@ export function PreviewList({ files, setFiles }) {
               )}
               <IconButton
                 key="remove"
-                onClick={removeAttachment(uid)}
+                onClick={() => removeAttachment(uid)}
                 className={classes.iconButtonClose}
               >
                 <Icon path={mdiClose} size={0.5} color={defaultWhite} />
