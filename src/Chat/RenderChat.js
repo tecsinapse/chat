@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Chat } from "@tecsinapse/ui-kit/build/Chat/Chat";
+import { Chat } from "@tecsinapse/chat/build/Chat";
 import SockJsClient from "react-stomp";
 
 import { defaultFetch } from "../Util/fetch";
@@ -8,7 +8,6 @@ import {
   buildSendingMessage,
   setStatusMessageFunc
 } from "../Util/message";
-import { UploaderDialog } from "./UploaderDialog";
 import uuidv1 from "uuid/v1";
 
 export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
@@ -19,7 +18,6 @@ export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
   const [messages, setMessages] = useState([]);
   const [lastMessageAt, setLastMessageAt] = useState(null);
   const [name, setName] = useState("Cliente");
-  const [open, setOpen] = useState(false);
   const [blocked, setBlocked] = useState(false);
 
   const messagesEndRef = useRef(null);
@@ -256,9 +254,6 @@ export const RenderChat = ({ chatApiUrl, chatId, clientName, disabled }) => {
         onConnect={onConnect}
         ref={client => (clientRef = client)}
       />
-
-      {/* TODO: improve the ux/ui for showing progress uploading files  */}
-      <UploaderDialog open={open} setOpen={setOpen} />
     </div>
   );
 };
