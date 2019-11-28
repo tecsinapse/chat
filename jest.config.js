@@ -7,5 +7,4 @@ module.exports = {
   transform: {
     '^.+\\.js$': 'babel-jest',
   },
-  // automock: true, automock is causing errors on test, we should only mock react-mic dep
 };
