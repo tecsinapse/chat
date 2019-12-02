@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { storiesOf } from '@storybook/react';
 import uuidv1 from 'uuid/v1';
 
 import { DivFlex } from '@tecsinapse/ui-kit/build/withFlexCenter';
 import { Chat } from './Chat';
-import { dummyMessagesText, dummyMessagesMedia } from './dummyMessages';
+import {
+  dummyMessagesTextError,
+  dummyMessagesText,
+  dummyMessagesMedia,
+  dummyChatList,
+} from './dummyMessages';
 
 const ChatWrapper = ({
   initialMessages = [],
@@ -12,8 +17,16 @@ const ChatWrapper = ({
   error,
   isBlocked = false,
   blockedMessage = undefined,
+  initialChatList = [],
 }) => {
   const [messages, setMessages] = useState(initialMessages);
+  const [isLoading, setIsLoading] = useState(false);
+  const [chatList, setChatList] = useState(initialChatList);
+  const chatClient = useRef(null);
+  const totalUnread = useRef(
+    initialChatList.reduce((total, c) => total + c.unread, 0)
+  );
+  const isMultipleChat = chatList.length > 0;
 
   const mockStatusMessage = (id, status) => {
     setMessages(prevMessages => {
@@ -186,6 +199,44 @@ const ChatWrapper = ({
     setTimeout(() => mockStatusMessage(id, 'error'), 1000);
   };
 
+  const onBackToChatList = () => {
+    // States to unset client
+    chatClient.current = null;
+    setMessages([]);
+
+    // Dummy fetch chat list
+    setIsLoading(true);
+    setTimeout(() => {
+      // Count total unread
+      totalUnread.current = dummyChatList.reduce(
+        (total, c) => total + c.unread,
+        0
+      );
+
+      // Set the array
+      setChatList([...dummyChatList]);
+      setIsLoading(false);
+    }, 2000);
+  };
+
+  const onSelectedChat = chatClintClicked => {
+    chatClient.current = chatClintClicked;
+
+    // Dummy fetch chat messages of chatClintClicked.chatId
+    setIsLoading(true);
+    setTimeout(() => {
+      setMessages([...dummyMessagesText]);
+      setIsLoading(false);
+    }, 3000);
+  };
+
+  const getSubtitle = defaultSub => {
+    if (chatClient.current !== null) {
+      return `${chatClient.current.name} - ${chatClient.current.phone}`;
+    }
+    return defaultSub;
+  };
+
   return (
     <div
       style={{
@@ -202,12 +253,21 @@ const ChatWrapper = ({
         isBlocked={isBlocked}
         blockedMessage={blockedMessage}
         messages={messages}
-        title="Felipe Rodrigues"
-        subtitle="Última mensagem 10/10/2019 10:10"
+        title={isMultipleChat ? 'Transportadora Gomes' : 'Felipe Rodrigues'}
+        subtitle={getSubtitle(
+          isMultipleChat > 0
+            ? `${totalUnread.current} mensagens não lidas`
+            : 'Última mensagem 10/10/2019 10:10'
+        )}
         onMessageSend={onMessageSend}
         onAudio={onAudioSend}
         onMediaSend={onMediaSend}
         onMessageResend={onMessageResend}
+        isLoading={isLoading}
+        chatList={isMultipleChat > 0 ? chatList : undefined}
+        notificationNumber={totalUnread.current}
+        onBackToChatList={onBackToChatList}
+        onSelectedChat={onSelectedChat}
       />
     </div>
   );
@@ -217,7 +277,7 @@ storiesOf(`Chat`, module)
   .addDecorator(story => <DivFlex>{story()}</DivFlex>)
   .add('Chat Echo', () => <ChatWrapper isMaximizedOnly />)
   .add('Status Text', () => (
-    <ChatWrapper isMaximizedOnly initialMessages={dummyMessagesText} />
+    <ChatWrapper isMaximizedOnly initialMessages={dummyMessagesTextError} />
   ))
   .add('Status Image', () => (
     <ChatWrapper initialMessages={dummyMessagesMedia} isMaximizedOnly />
@@ -232,5 +292,12 @@ storiesOf(`Chat`, module)
       blockedMessage="Já se passaram 24h desde a última mensagem enviada pelo cliente, 
           por isso não é possível enviar nova mensagem por esse canal de comunicação, por favor, 
           entre em contato com o cliente por outro meio."
+    />
+  ))
+  .add('Chat List', () => (
+    <ChatWrapper
+      isMaximizedOnly
+      initialMessages={dummyMessagesTextError}
+      initialChatList={dummyChatList}
     />
   ));

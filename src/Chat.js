@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FixedWrapper } from '@livechat/ui-kit';
 import PropTypes from 'prop-types';
 import { useTheme } from '@material-ui/styles';
@@ -6,6 +6,7 @@ import { useTheme } from '@material-ui/styles';
 import Maximized from './Maximized';
 import Minimized from './Minimized';
 import ChatTheme from './ChatTheme';
+import { ChatLocations } from './ChatLocations';
 
 export const Chat = ({
   messages,
@@ -26,8 +27,16 @@ export const Chat = ({
   onMessageResend,
   isBlocked,
   blockedMessage,
+
+  chatList,
+  onBackToChatList,
+  onSelectedChat,
+  notificationNumber,
 }) => {
   const theme = useTheme();
+  const [location, setLocation] = useState(
+    chatList ? ChatLocations.CHAT_LIST : ChatLocations.MESSAGES
+  );
 
   return (
     <div>
@@ -54,6 +63,12 @@ export const Chat = ({
                 onMessageResend={onMessageResend}
                 isBlocked={isBlocked}
                 blockedMessage={blockedMessage}
+                chatList={chatList}
+                onBackToChatList={onBackToChatList}
+                location={location}
+                setLocation={setLocation}
+                onSelectedChat={onSelectedChat}
+                notificationNumber={notificationNumber}
               />
             </FixedWrapper.Maximized>
 
@@ -83,6 +98,10 @@ Chat.defaultProps = {
   onMessageResend: undefined,
   isBlocked: undefined,
   blockedMessage: 'The chat is blocked',
+  chatList: undefined,
+  onBackToChatList: undefined,
+  onSelectedChat: undefined,
+  notificationNumber: 0,
 };
 
 Chat.propTypes = {
@@ -135,6 +154,28 @@ Chat.propTypes = {
   maxFileUploadSize: PropTypes.number,
   isBlocked: PropTypes.bool,
   blockedMessage: PropTypes.string,
+
+  // Callback called after the ChatList view is rendered
+  onBackToChatList: PropTypes.func,
+
+  chatList: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      lastMessage: PropTypes.string,
+      unread: PropTypes.number,
+      type: PropTypes.oneOf([
+        'WHATSAPP',
+        'TELEGRAM',
+        'SKYPE',
+        // TODO: Add other channels
+      ]),
+      chatId: PropTypes.string,
+    })
+  ),
+
+  onSelectedChat: PropTypes.func,
+  notificationNumber: PropTypes.number,
 };
 
 export default Chat;
