@@ -1,8 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { ThemeProvider } from '@tecsinapse/ui-kit';
-import { Chat } from '../src/Chat';
+import { TestComponent } from '../src/TestComponent';
 
 jest.mock('@cleandersonlobo/react-mic', () => {
   return jest.fn(() => () => {
@@ -40,21 +39,16 @@ test('Render chat', () => {
     });
   };
 
-  const { getByText, container } = render(
-    <ThemeProvider variant="orange">
-      <Chat
-        isMaximizedOnly
-        title="Felipe Rodrigues"
-        subtitle="Última mensagem 10/10/2019 10:10"
-        onMessageSend={onMessageSend}
-        messages={messages}
-      />
-    </ThemeProvider>
+  const { getByText, getAllByText, container } = render(
+    <TestComponent onMessageSend={onMessageSend} messages={messages} />
   );
 
   expect(container).toContainElement(getByText('1'));
   expect(container).toContainElement(getByText('2'));
-  expect(container).toContainElement(getByText('Felipe Rodrigues'));
+
+  // Wait for page to update with query text
+  const items = getAllByText('Felipe Rodrigues');
+  expect(items).toHaveLength(2); // Header and one message
   expect(container).toContainElement(
     getByText('Última mensagem 10/10/2019 10:10')
   );
