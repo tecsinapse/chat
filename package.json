@@ -22,6 +22,7 @@
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.7.4",
     "@babel/plugin-transform-modules-commonjs": "^7.5.0",
+    "@babel/plugin-transform-runtime": "^7.7.4",
     "@babel/preset-env": "^7.7.4",
     "@babel/preset-react": "^7.0.0",
     "@storybook/addon-actions": "^5.2.0-rc.2",
@@ -80,7 +81,8 @@
     "start": "yarn install && yarn storybook",
     "storybook": "start-storybook -p 9001 -c .storybook -s ./storybook-public",
     "storybook:build": "build-storybook -c .storybook -o docs/",
-    "test": "NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest",
+    "test:windows": "set NODE_ENV=test&& jest"
   },
   "license": "ISC",
   "husky": {
