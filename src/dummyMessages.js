@@ -86,7 +86,7 @@ export const dummyMessagesMedia = [
 
 export const dummyChatList = [
   {
-    type: 'WHASTAPP',
+    type: 'WHATSAPP',
     name: 'Telefone principal',
     phone: '(11) 33240-5566',
     lastMessage: 'Olá, me responde, a peça está disponível e qual a data?',
@@ -104,7 +104,7 @@ export const dummyChatList = [
     chatId: 'abc@tunnel.msging.net',
   },
   {
-    type: 'WHASTAPP',
+    type: 'SKYPE',
     name: 'Marcela Abrão - Gerente',
     phone: '(11) 99876-22222',
     lastMessage: 'Fechado!',

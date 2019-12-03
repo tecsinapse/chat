@@ -5,12 +5,14 @@ import {
   Typography,
   List,
   ListItem,
-  Avatar,
   ListItemAvatar,
   ListItemText,
   Divider,
 } from '@material-ui/core';
 import { ChatLocations } from './ChatLocations';
+import Whatsapp from '../assets/whatsapp.svg';
+import Telegram from '../assets/telegram.svg';
+import Skype from '../assets/skype.svg';
 
 export const ChatList = ({
   chatList,
@@ -31,7 +33,57 @@ export const ChatList = ({
             }}
           >
             <ListItemAvatar>
-              <Avatar src="https://imagepng.org/wp-content/uploads/2017/08/WhatsApp-icone.png" />
+              {chatClient.type === 'WHATSAPP' && (
+                <Whatsapp
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    display: 'flex',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    fontSize: '1.25rem',
+                    alignItems: 'center',
+                    flexShrink: '0',
+                    lineHeight: '1',
+                    userSelect: 'none',
+                    justifyContent: 'center',
+                  }}
+                />
+              )}
+              {chatClient.type === 'TELEGRAM' && (
+                <Telegram
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    display: 'flex',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    fontSize: '1.25rem',
+                    alignItems: 'center',
+                    flexShrink: '0',
+                    lineHeight: '1',
+                    userSelect: 'none',
+                    justifyContent: 'center',
+                  }}
+                />
+              )}
+              {chatClient.type === 'SKYPE' && (
+                <Skype
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    display: 'flex',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    fontSize: '1.25rem',
+                    alignItems: 'center',
+                    flexShrink: '0',
+                    lineHeight: '1',
+                    userSelect: 'none',
+                    justifyContent: 'center',
+                  }}
+                />
+              )}
             </ListItemAvatar>
 
             <ListItemText
@@ -42,12 +94,12 @@ export const ChatList = ({
                       {chatClient.name}
                     </Typography>
 
-                    <Typography noWrap variant="caption">
+                    <Typography noWrap variant="caption" color="textSecondary">
                       {chatClient.phone}
                     </Typography>
                   </Column>
                   <Subtitle nowrap>
-                    <Typography noWrap variant="caption">
+                    <Typography noWrap variant="caption" color="textSecondary">
                       {chatClient.lastMessageAt}
                     </Typography>
                   </Subtitle>
@@ -56,7 +108,14 @@ export const ChatList = ({
               secondary={
                 <Subtitle nowrap>
                   <Row className={classes.contactListMessage}>
-                    <Typography noWrap variant="body1">
+                    <Typography
+                      color="textPrimary"
+                      variant="body2"
+                      noWrap
+                      style={{
+                        paddingRight: '10px',
+                      }}
+                    >
                       {chatClient.lastMessage}
                     </Typography>
 
