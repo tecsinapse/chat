@@ -64,28 +64,26 @@ export const ChatList = ({
                 </Row>
               }
               secondary={
-                <Subtitle nowrap>
-                  <Row className={classes.contactListMessage}>
-                    <Typography
-                      color="textPrimary"
-                      variant="body2"
-                      noWrap
-                      style={{
-                        paddingRight: '10px',
-                      }}
-                    >
-                      {chatClient.lastMessage}
-                    </Typography>
+                <Row className={classes.contactListMessage}>
+                  <Typography
+                    color="textPrimary"
+                    variant="body2"
+                    noWrap
+                    style={{
+                      paddingRight: '10px',
+                    }}
+                  >
+                    {chatClient.lastMessage}
+                  </Typography>
 
-                    {chatClient.unread !== undefined && chatClient.unread > 0 && (
-                      <div className={classes.contactListNotification}>
-                        <Typography variant="caption">
-                          {chatClient.unread}
-                        </Typography>
-                      </div>
-                    )}
-                  </Row>
-                </Subtitle>
+                  {chatClient.unread !== undefined && chatClient.unread > 0 && (
+                    <div className={classes.contactListNotification}>
+                      <Typography variant="caption">
+                        {chatClient.unread}
+                      </Typography>
+                    </div>
+                  )}
+                </Row>
               }
             />
           </ListItem>
