@@ -237,6 +237,12 @@ const ChatWrapper = ({
     return defaultSub;
   };
 
+  // Defined according how is using the chat: with contact list or simple
+  const defaultSub =
+    isMultipleChat > 0
+      ? `${totalUnread.current} mensagens não lidas`
+      : 'Última mensagem 10/10/2019 10:10';
+
   return (
     <div
       style={{
@@ -254,11 +260,7 @@ const ChatWrapper = ({
         blockedMessage={blockedMessage}
         messages={messages}
         title={isMultipleChat ? 'Transportadora Gomes' : 'Felipe Rodrigues'}
-        subtitle={getSubtitle(
-          isMultipleChat > 0
-            ? `${totalUnread.current} mensagens não lidas`
-            : 'Última mensagem 10/10/2019 10:10'
-        )}
+        subtitle={getSubtitle(defaultSub)}
         onMessageSend={onMessageSend}
         onAudio={onAudioSend}
         onMediaSend={onMediaSend}

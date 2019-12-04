@@ -92,7 +92,7 @@ export const dummyChatList = [
     lastMessage: 'Olá, me responde, a peça está disponível e qual a data?',
     unread: 10,
     lastMessageAt: '02/03/2019 10:14',
-    chatId: 'bb7f1fe6-6a8e-4975-9b5f-20635673e542@tunnel.msging.net',
+    chatId: 'dummy1@chatid',
   },
   {
     type: 'TELEGRAM',

@@ -34,55 +34,13 @@ export const ChatList = ({
           >
             <ListItemAvatar>
               {chatClient.type === 'WHATSAPP' && (
-                <Whatsapp
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    display: 'flex',
-                    overflow: 'hidden',
-                    position: 'relative',
-                    fontSize: '1.25rem',
-                    alignItems: 'center',
-                    flexShrink: '0',
-                    lineHeight: '1',
-                    userSelect: 'none',
-                    justifyContent: 'center',
-                  }}
-                />
+                <Whatsapp className={classes.channelAvatar} />
               )}
               {chatClient.type === 'TELEGRAM' && (
-                <Telegram
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    display: 'flex',
-                    overflow: 'hidden',
-                    position: 'relative',
-                    fontSize: '1.25rem',
-                    alignItems: 'center',
-                    flexShrink: '0',
-                    lineHeight: '1',
-                    userSelect: 'none',
-                    justifyContent: 'center',
-                  }}
-                />
+                <Telegram className={classes.channelAvatar} />
               )}
               {chatClient.type === 'SKYPE' && (
-                <Skype
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    display: 'flex',
-                    overflow: 'hidden',
-                    position: 'relative',
-                    fontSize: '1.25rem',
-                    alignItems: 'center',
-                    flexShrink: '0',
-                    lineHeight: '1',
-                    userSelect: 'none',
-                    justifyContent: 'center',
-                  }}
-                />
+                <Skype className={classes.channelAvatar} />
               )}
             </ListItemAvatar>
 

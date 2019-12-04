@@ -122,6 +122,19 @@ const useStyle = makeStyles(theme => ({
     color: 'white',
     flexShrink: 0,
   },
+  channelAvatar: {
+    width: '40px',
+    height: '40px',
+    display: 'flex',
+    overflow: 'hidden',
+    position: 'relative',
+    fontSize: '1.25rem',
+    alignItems: 'center',
+    flexShrink: '0',
+    lineHeight: '1',
+    userSelect: 'none',
+    justifyContent: 'center',
+  },
 }));
 
 const Maximized = ({
@@ -154,6 +167,16 @@ const Maximized = ({
   const theme = useTheme();
   const [showError, setShowError] = useState(true);
 
+  const onBackward =
+    location === ChatLocations.MESSAGES &&
+    chatList !== undefined &&
+    (() => {
+      setLocation(ChatLocations.CHAT_LIST);
+      onBackToChatList();
+    });
+
+  const padding = location === ChatLocations.CHAT_LIST && 0;
+
   return (
     <div className={classes.root}>
       <ChatHeader
@@ -163,14 +186,7 @@ const Maximized = ({
         subtitle={subtitle}
         onCloseChat={onCloseChat}
         theme={theme}
-        onBackward={
-          location === ChatLocations.MESSAGES && chatList !== undefined
-            ? () => {
-                setLocation(ChatLocations.CHAT_LIST);
-                onBackToChatList();
-              }
-            : undefined
-        }
+        onBackward={onBackward}
         notificationNumber={notificationNumber}
         classes={classes}
       />
@@ -178,7 +194,7 @@ const Maximized = ({
         <MessageList
           active
           style={{
-            padding: location === ChatLocations.CHAT_LIST ? 0 : undefined,
+            padding,
           }}
         >
           <Loading />
@@ -188,7 +204,7 @@ const Maximized = ({
           active
           onScrollTop={location === ChatLocations.MESSAGES && loadMore}
           style={{
-            padding: location === ChatLocations.CHAT_LIST ? 0 : undefined,
+            padding,
           }}
         >
           {isStringNotBlank(error) && showError && (
@@ -200,7 +216,7 @@ const Maximized = ({
             />
           )}
 
-          {location === ChatLocations.MESSAGES ? (
+          {location === ChatLocations.MESSAGES && (
             <MessageView
               messages={messages}
               onMessageSend={onMessageSend}
@@ -218,7 +234,8 @@ const Maximized = ({
               classes={classes}
               theme={theme}
             />
-          ) : (
+          )}
+          {location === ChatLocations.CHAT_LIST && (
             <ChatList
               chatList={chatList}
               onSelectedChat={onSelectedChat}

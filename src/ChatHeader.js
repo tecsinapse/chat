@@ -71,7 +71,7 @@ export const ChatHeader = ({
             </Typography>
           </Subtitle>
         </Column>
-        {true && (
+        {hasCloseButton && (
           <Column style={{ justifyContent: 'center' }}>
             <IconButtonMaterial key="close" onClick={onCloseChatClicked}>
               <Icon
