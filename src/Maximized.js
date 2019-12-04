@@ -10,10 +10,12 @@ import {
 } from '@tecsinapse/ui-kit/build/colors';
 
 import { Loading } from './Loading';
-import { Message } from './Message';
 import { ChatHeader } from './ChatHeader';
 import { ErrorDialog } from './ErrorDialog';
 import { InputComposer } from './InputComposer';
+import { ChatLocations } from './ChatLocations';
+import MessageView from './MessageView';
+import { ChatList } from './ChatList';
 
 const useStyle = makeStyles(theme => ({
   root: {
@@ -92,10 +94,46 @@ const useStyle = makeStyles(theme => ({
     marginRight: '-8px',
   },
   messageWithoutName: {
-    marginTop: 0,
+    marginTop: '0 !important',
   },
   messageWithoutDate: {
-    marginBottom: 0,
+    marginBottom: '0 !important',
+  },
+  badgeNotification: {
+    padding: 0,
+  },
+  contactListRoot: {
+    padding: 0,
+  },
+  contactListName: {
+    paddingBottom: '5px',
+  },
+  contactListMessage: {
+    justifyContent: 'space-between',
+  },
+  contactListNotification: {
+    height: '20px',
+    width: '20px',
+    borderRadius: '10px',
+    backgroundColor: 'red',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: 'white',
+    flexShrink: 0,
+  },
+  channelAvatar: {
+    width: '40px',
+    height: '40px',
+    display: 'flex',
+    overflow: 'hidden',
+    position: 'relative',
+    fontSize: '1.25rem',
+    alignItems: 'center',
+    flexShrink: '0',
+    lineHeight: '1',
+    userSelect: 'none',
+    justifyContent: 'center',
   },
 }));
 
@@ -118,10 +156,26 @@ const Maximized = ({
   onMessageResend,
   isBlocked,
   blockedMessage,
+  chatList,
+  onBackToChatList,
+  location,
+  setLocation,
+  onSelectedChat,
+  notificationNumber,
 }) => {
   const classes = useStyle();
   const theme = useTheme();
   const [showError, setShowError] = useState(true);
+
+  const onBackward =
+    location === ChatLocations.MESSAGES &&
+    chatList !== undefined &&
+    (() => {
+      setLocation(ChatLocations.CHAT_LIST);
+      onBackToChatList();
+    });
+
+  const padding = location === ChatLocations.CHAT_LIST && 0;
 
   return (
     <div className={classes.root}>
@@ -132,43 +186,67 @@ const Maximized = ({
         subtitle={subtitle}
         onCloseChat={onCloseChat}
         theme={theme}
+        onBackward={onBackward}
+        notificationNumber={notificationNumber}
+        classes={classes}
       />
+      {isLoading ? (
+        <MessageList
+          active
+          style={{
+            padding,
+          }}
+        >
+          <Loading />
+        </MessageList>
+      ) : (
+        <MessageList
+          active
+          onScrollTop={location === ChatLocations.MESSAGES && loadMore}
+          style={{
+            padding,
+          }}
+        >
+          {isStringNotBlank(error) && showError && (
+            <ErrorDialog
+              classes={classes}
+              theme={theme}
+              error={error}
+              setShowError={setShowError}
+            />
+          )}
 
-      {isLoading && <Loading />}
+          {location === ChatLocations.MESSAGES && (
+            <MessageView
+              messages={messages}
+              onMessageSend={onMessageSend}
+              messagesEndRef={messagesEndRef}
+              disabled={disabled}
+              onAudio={onAudio}
+              title={title}
+              onMediaSend={onMediaSend}
+              isLoading={isLoading}
+              loadMore={loadMore}
+              maxFileUploadSize={maxFileUploadSize}
+              onMessageResend={onMessageResend}
+              isBlocked={isBlocked}
+              blockedMessage={blockedMessage}
+              classes={classes}
+              theme={theme}
+            />
+          )}
+          {location === ChatLocations.CHAT_LIST && (
+            <ChatList
+              chatList={chatList}
+              onSelectedChat={onSelectedChat}
+              setLocation={setLocation}
+              classes={classes}
+            />
+          )}
+        </MessageList>
+      )}
 
-      <MessageList active onScrollTop={loadMore}>
-        {isStringNotBlank(error) && showError && (
-          <ErrorDialog
-            classes={classes}
-            theme={theme}
-            error={error}
-            setShowError={setShowError}
-          />
-        )}
-
-        {messages.map((message, id) => (
-          <Message
-            title={title}
-            onMessageResend={onMessageResend}
-            classes={classes}
-            message={message}
-            addMessageName={
-              messages[id - 1] === undefined ||
-              messages[id].own !== messages[id - 1].own
-            }
-            addMessageDate={
-              messages[id + 1] === undefined ||
-              messages[id].own !== messages[id + 1].own
-            }
-            theme={theme}
-            id={id}
-          />
-        ))}
-
-        <div ref={messagesEndRef} />
-      </MessageList>
-
-      {!disabled && (
+      {!disabled && location === ChatLocations.MESSAGES && (
         <InputComposer
           onMessageSend={onMessageSend}
           onAudio={onAudio}
