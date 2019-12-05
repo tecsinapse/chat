@@ -1,3 +1,17 @@
+<a name="1.2.0"></a>
+## 1.2.0 (2019-12-04)
+
+* Add chat list view with dummy storybook ([0f9aecb](https://github.com/tecsinapse/chat/commit/0f9aecb))
+* Chat list message without opacity ([615c0ca](https://github.com/tecsinapse/chat/commit/615c0ca))
+* Fix general pull request comments ([382942f](https://github.com/tecsinapse/chat/commit/382942f))
+* Fix italo design ([0b96d51](https://github.com/tecsinapse/chat/commit/0b96d51))
+* fix test by using material theme ([c6e3c03](https://github.com/tecsinapse/chat/commit/c6e3c03))
+* Fixed mock, need fix palette being null from provider ([1f3c130](https://github.com/tecsinapse/chat/commit/1f3c130))
+* Move TestComponet to test dir and update jest config test files ([0bb942e](https://github.com/tecsinapse/chat/commit/0bb942e))
+* Starting to fix test ([0434aa5](https://github.com/tecsinapse/chat/commit/0434aa5))
+
+
+
 <a name="1.1.1"></a>
 ## <small>1.1.1 (2019-11-27)</small>
 

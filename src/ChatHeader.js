@@ -1,7 +1,7 @@
 import React from 'react';
-import { AgentBar, Title, Subtitle, Row, Column } from '@livechat/ui-kit';
-import { Typography } from '@material-ui/core';
-import { mdiClose } from '@mdi/js';
+import { AgentBar, Column, Row, Subtitle, Title } from '@livechat/ui-kit';
+import { Badge, Typography } from '@material-ui/core';
+import { mdiArrowLeft, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit/build/Buttons/IconButton';
 
@@ -12,6 +12,9 @@ export const ChatHeader = ({
   subtitle,
   onCloseChat,
   theme,
+  onBackward,
+  notificationNumber,
+  classes,
 }) => {
   const onCloseChatClicked = e => {
     if (onCloseChat) {
@@ -23,11 +26,37 @@ export const ChatHeader = ({
   return (
     <AgentBar>
       <Row flexFill>
+        {onBackward && (
+          <Column style={{ justifyContent: 'center' }}>
+            <IconButtonMaterial
+              key="close"
+              onClick={onBackward}
+              style={{
+                marginLeft: theme.spacing(-1),
+              }}
+            >
+              <Badge
+                badgeContent={notificationNumber}
+                color="error"
+                classes={{
+                  badge: classes.badgeNotification,
+                }}
+              >
+                <Icon
+                  path={mdiArrowLeft}
+                  size={1.0}
+                  color={theme.palette.primary.contrastText}
+                />
+              </Badge>
+            </IconButtonMaterial>
+          </Column>
+        )}
         <Column flexFill>
           <Title>
             <Typography
               variant="h6"
               style={{ color: theme.palette.primary.contrastText }}
+              noWrap
             >
               {title}
             </Typography>
@@ -36,6 +65,7 @@ export const ChatHeader = ({
             <Typography
               variant="subtitle2"
               style={{ color: theme.palette.primary.contrastText }}
+              noWrap
             >
               {subtitle}
             </Typography>

@@ -1,7 +1,7 @@
 import { Meta, Story, Props, Preview } from '@storybook/addon-docs/blocks';
 import { Chat } from './Chat';
 import { ChatStory } from './ChatStory';
-import { dummyMessagesMedia, dummyMessagesText } from './dummyMessages';
+import { dummyMessagesMedia, dummyMessagesText, dummyMessagesTextError, dummyChatList } from './dummyMessages';
 
 <Meta title="Chat" component={Chat} />
 
@@ -24,7 +24,7 @@ Here you can check the code snippet for each story.
 ## Status Text
 <Preview>
   <Story name="Status Text" parameters={{ docs: { disable: true }}}>
-    <ChatStory isMaximizedOnly initialMessages={dummyMessagesText} />
+    <ChatStory isMaximizedOnly initialMessages={dummyMessagesTextError} />
   </Story>
 </Preview>
 
@@ -52,5 +52,16 @@ Here you can check the code snippet for each story.
               por isso não é possível enviar nova mensagem por esse canal de comunicação, por favor,
               entre em contato com o cliente por outro meio."
       />
+  </Story>
+</Preview>
+
+## Chat List
+<Preview>
+  <Story name="Chat List" parameters={{ docs: { disable: true }}}>
+    <ChatStory
+          isMaximizedOnly
+          initialMessages={dummyMessagesTextError}
+          initialChatList={dummyChatList}
+        />
   </Story>
 </Preview>
