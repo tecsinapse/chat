@@ -25,19 +25,5 @@ module.exports = async ({ config }) => {
     exclude: [/node_modules/],
     enforce: 'pre',
   });
-  /* config.module.rules.push({
-    test: /\.css$/,
-    use: [
-      {
-        loader: 'style-loader',
-      },
-      {
-        loader: 'css-loader',
-        options: {
-          sourceMap: true,
-        },
-      },
-    ],
-  }); */
   return config;
 };
