@@ -1,11 +1,56 @@
-import { Meta, Story } from '@storybook/addon-docs/blocks';
-import * as stories from './Chat.story.js';
-import Chat from './Chat';
-import { ChatWrapper } from './ChatWrapper';
-import { dummyMessagesText, dummyMessagesMedia } from './dummyMessages';
+import { Meta, Story, Props, Preview } from '@storybook/addon-docs/blocks';
+import { Chat } from './Chat';
+import { ChatStory } from './ChatStory';
+import { dummyMessagesMedia, dummyMessagesText } from './dummyMessages';
+
+<Meta title="Chat" component={Chat} />
 
 # Chat
 
-This is a test
+The Chat component can receive the following props:
 
+<Props of={Chat} />
 
+# Code snippets
+Here you can check the code snippet for each story.
+
+## Chat Echo
+<Preview>
+  <Story name="Chat Echo" parameters={{ docs: { disable: true }}}>
+    <ChatStory isMaximizedOnly />
+  </Story>
+</Preview>
+
+## Status Text
+<Preview>
+  <Story name="Status Text" parameters={{ docs: { disable: true }}}>
+    <ChatStory isMaximizedOnly initialMessages={dummyMessagesText} />
+  </Story>
+</Preview>
+
+## Status Image
+<Preview>
+  <Story name="Status Image" parameters={{ docs: { disable: true }}}>
+    <ChatStory initialMessages={dummyMessagesMedia} isMaximizedOnly />
+  </Story>
+</Preview>
+
+## Error Connection
+<Preview>
+  <Story name="Error Connection" parameters={{ docs: { disable: true }}}>
+    <ChatStory isMaximizedOnly error="Erro de conexão. Tente mais tarde!" />
+  </Story>
+</Preview>
+
+## Chat Blocked
+<Preview>
+  <Story name="Chat Blocked" parameters={{ docs: { disable: true }}}>
+    <ChatStory
+        isMaximizedOnly
+        isBlocked
+        blockedMessage="Já se passaram 24h desde a última mensagem enviada pelo cliente,
+              por isso não é possível enviar nova mensagem por esse canal de comunicação, por favor,
+              entre em contato com o cliente por outro meio."
+      />
+  </Story>
+</Preview>

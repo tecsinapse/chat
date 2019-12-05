@@ -22,11 +22,10 @@ addParameters({
 const withThemeProvider = storyFn => (
   <ThemeProvider variant="orange">{storyFn()}</ThemeProvider>
 );
-const req = require.context('../src', true, /\.story\.js$/);
+const req = require.context('../src', true, /\.story\.(js|mdx)$/);
 
 function loadStories() {
   addDecorator(withThemeProvider);
-  // req.keys().forEach(filename => req(filename));
   return req
     .keys()
     .map(fname => req(fname))

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import uuidv1 from 'uuid/v1';
 import { Chat } from './Chat';
 
-export const ChatWrapper = ({
+export const ChatStory = ({
   initialMessages = [],
   isMaximizedOnly = false,
   error,
