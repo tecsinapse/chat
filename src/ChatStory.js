@@ -1,17 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { storiesOf } from '@storybook/react';
+import React, { useRef, useState } from 'react';
 import uuidv1 from 'uuid/v1';
-
-import { DivFlex } from '@tecsinapse/ui-kit/build/withFlexCenter';
 import { Chat } from './Chat';
-import {
-  dummyMessagesTextError,
-  dummyMessagesText,
-  dummyMessagesMedia,
-  dummyChatList,
-} from './dummyMessages';
+import { dummyChatList, dummyMessagesText } from './dummyMessages';
 
-const ChatWrapper = ({
+export const ChatStory = ({
   initialMessages = [],
   isMaximizedOnly = false,
   error,
@@ -274,32 +266,3 @@ const ChatWrapper = ({
     </div>
   );
 };
-
-storiesOf(`Chat`, module)
-  .addDecorator(story => <DivFlex>{story()}</DivFlex>)
-  .add('Chat Echo', () => <ChatWrapper isMaximizedOnly />)
-  .add('Status Text', () => (
-    <ChatWrapper isMaximizedOnly initialMessages={dummyMessagesTextError} />
-  ))
-  .add('Status Image', () => (
-    <ChatWrapper initialMessages={dummyMessagesMedia} isMaximizedOnly />
-  ))
-  .add('Error Connection', () => (
-    <ChatWrapper isMaximizedOnly error="Erro de conexão. Tente mais tarde!" />
-  ))
-  .add('Chat Blocked', () => (
-    <ChatWrapper
-      isMaximizedOnly
-      isBlocked
-      blockedMessage="Já se passaram 24h desde a última mensagem enviada pelo cliente, 
-          por isso não é possível enviar nova mensagem por esse canal de comunicação, por favor, 
-          entre em contato com o cliente por outro meio."
-    />
-  ))
-  .add('Chat List', () => (
-    <ChatWrapper
-      isMaximizedOnly
-      initialMessages={dummyMessagesTextError}
-      initialChatList={dummyChatList}
-    />
-  ));

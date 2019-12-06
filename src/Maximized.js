@@ -5,8 +5,8 @@ import { makeStyles, useTheme } from '@material-ui/styles';
 import { isStringNotBlank } from '@tecsinapse/es-utils/build/object';
 
 import {
-  defaultGreyLight5,
   defaultGrey2,
+  defaultGreyLight5,
 } from '@tecsinapse/ui-kit/build/colors';
 
 import { Loading } from './Loading';

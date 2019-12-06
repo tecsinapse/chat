@@ -1,7 +1,7 @@
 import React from 'react';
-import { AgentBar, Title, Subtitle, Row, Column } from '@livechat/ui-kit';
-import { Typography, Badge } from '@material-ui/core';
-import { mdiClose, mdiArrowLeft } from '@mdi/js';
+import { AgentBar, Column, Row, Subtitle, Title } from '@livechat/ui-kit';
+import { Badge, Typography } from '@material-ui/core';
+import { mdiArrowLeft, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit/build/Buttons/IconButton';
 

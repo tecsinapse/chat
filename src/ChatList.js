@@ -1,13 +1,13 @@
 import React from 'react';
-import { Row, Subtitle, Column } from '@livechat/ui-kit';
+import { Column, Row, Subtitle } from '@livechat/ui-kit';
 
 import {
-  Typography,
+  Divider,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Divider,
+  Typography,
 } from '@material-ui/core';
 import { ChatLocations } from './ChatLocations';
 import Whatsapp from '../assets/whatsapp.svg';
