@@ -1,3 +1,13 @@
+## <small>1.2.1 (2019-12-06)</small>
+
+* Added SB story as Docs ([ee5ab83](https://github.com/tecsinapse/chat/commit/ee5ab83))
+* Initial setup to SB docs ([81f4de6](https://github.com/tecsinapse/chat/commit/81f4de6))
+* Moving from preview to source code ([3fd48b3](https://github.com/tecsinapse/chat/commit/3fd48b3))
+* Removing unused stuff ([411bc7c](https://github.com/tecsinapse/chat/commit/411bc7c))
+* Reverting icons svg ([26c9ef0](https://github.com/tecsinapse/chat/commit/26c9ef0))
+
+
+
 <a name="1.2.0"></a>
 ## 1.2.0 (2019-12-04)
 
