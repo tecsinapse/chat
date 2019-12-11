@@ -9,12 +9,18 @@ import * as serviceWorker from './serviceWorker';
 
 window.renderChatComponent = function renderChatComponent() {
 
-  let chatObj = window.CHAT;
-  if (!chatObj) {
+  let chatsInitialInfo = window.CHAT;
+  if (!chatsInitialInfo) {
     // fixed for local tests
-    chatObj = {
+    chatsInitialInfo = {
       name: 'Título do Chat',
       chats: [
+        {
+          name: 'João Paulo Bassinello',
+          phone: '(19) 99456-8196',
+          // Mobile João Bassinello
+          chatId: 'bb7f1fe6-6a8e-4975-9b5f-20635673e542@tunnel.msging.net'
+        },
         {
           name: 'João Paulo Bassinello',
           phone: '(19) 99456-8196',
@@ -39,7 +45,7 @@ window.renderChatComponent = function renderChatComponent() {
   ReactDOM.render(
     <ThemeProvider variant={'orange'}>
       <RenderChat
-        chatObj={chatObj}
+        initialInfo={chatsInitialInfo}
         chatApiUrl={chatApiUrl}
         disabled={disabled}
       />
@@ -50,4 +56,4 @@ window.renderChatComponent = function renderChatComponent() {
 };
 
 // uncomment for local tests
-window.renderChatComponent();
+// window.renderChatComponent();

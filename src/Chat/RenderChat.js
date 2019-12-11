@@ -7,109 +7,71 @@ import {buildChatMessageObject, buildSendingMessage, setStatusMessageFunc} from 
 import uuidv1 from "uuid/v1";
 import moment from "moment";
 
-export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+const emptyChat = {
+  chatId: null,
+  status: null,
+  name: null,
+  phone: null,
+  lastMessage: null,
+  unread: 0,
+};
 
+const loadChatList = (initialInfo, chatApiUrl, setChats, setIsLoading) => {
+  const chatIds = initialInfo.chats.map(chat => chat.chatId).join(',');
+  defaultFetch(`${chatApiUrl}/api/chats/${chatIds}/infos`, "GET", {}).then(
+    completeChatInfos => {
+      const chats = [];
+      completeChatInfos.forEach(completeInfo => {
+        // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
+        // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
+        const info = initialInfo.chats.filter(chat => chat.chatId === completeInfo.chatId)[0];
+        completeInfo.name = info.name || completeInfo.name;
+        completeInfo.phone = info.phone || completeInfo.phone;
+        completeInfo.lastMessageAt = moment(completeInfo.lastMessageAt).format('DD/MM/YYYY HH:mm');
+
+        chats.push(completeInfo);
+      });
+      setChats(chats);
+      setIsLoading(false);
+    }
+  );
+};
+
+export const RenderChat = ({
+                             chatApiUrl,
+                             initialInfo,
+                             disabled,
+                           }) => {
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [chats, setChats] = useState([]);
+  const [currentChat, setCurrentChat] = useState(emptyChat);
+
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [messages, setMessages] = useState([]);
-  const [lastMessageAt, setLastMessageAt] = useState(null);
-  const [name, setName] = useState("Cliente");
   const [blocked, setBlocked] = useState(false);
 
   const messagesEndRef = useRef(null);
   let clientRef = useRef();
-  const chatId = chatObj.chats[0].chatId;
-  const fromId = chatId;
   const setStatusMessage = setStatusMessageFunc(setMessages);
-  const [completeChatObj, setCompleteChatObj] = useState({});
 
   useEffect(() => {
-    const chatIds = chatObj.chats.map(chat => chat.chatId).join(',');
-    defaultFetch(`${chatApiUrl}/api/chats/${chatIds}/infos`, "GET", {}).then(
-      completeChatsInfos => {
-        const chats = [];
-        completeChatsInfos.forEach(completeInfo => {
-          const info = chatObj.chats.filter(chat => chat.chatId === completeInfo.chatId)[0];
-          completeInfo.name = info.name || completeInfo.name;
-          completeInfo.phone = info.phone || completeInfo.phone;
 
-          // TODO: remover
-          setName(completeInfo.name);
-          setLastMessageAt(completeInfo.lastMessageAt);
-
-          chats.push(completeInfo);
-        });
-        setCompleteChatObj({
-          name: chatObj.name,
-          chats: chats
-        });
-      }
-    );
-
-// TODO: remover
-    // defaultFetch(`${chatApiUrl}/api/chats/${chatId}/info`, "GET", {}).then(
-    //   status => {
-    //     if (status === "BLOCKED") {
-    //       setBlocked(true);
-    //     }
-    //   }
-    // );
-    //
-    // defaultFetch(
-    //   `${chatApiUrl}/api/chats/${chatId}/messages?page=0&size=50`,
-    //   "GET",
-    //   {}
-    // ).then(pageResults => {
-    //   const messages = pageResults.content
-    //     .map(externalMessage => {
-    //       return buildChatMessageObject(externalMessage, fromId);
-    //     })
-    //     .reverse();
-    //   setMessages(messages);
-    //   if (messages.length > 0) {
-    //     setLastMessageAt(messages[messages.length - 1].at);
-    //     const clientNamesFromMessages = pageResults.content.filter(
-    //       externalMessage => {
-    //         return externalMessage.name && externalMessage.name !== "";
-    //       }
-    //     );
-    //     if (clientNamesFromMessages.length > 0) {
-    //       setName(clientNamesFromMessages[0].name);
-    //     }
-    //   }
-    //
-    //   setTimeout(function () {
-    //     // workaround to wait for all elements to render
-    //     messagesEndRef.current.scrollIntoView({
-    //       block: "end",
-    //       behavior: "smooth"
-    //     });
-    //   }, 700);
-    // });
+    loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading);
   }, [
-    messagesEndRef,
-    // lastMessageAt,
-    setLastMessageAt,
-    setName,
-    // fromId,
+    initialInfo,
     chatApiUrl,
-    // chatId,
-    // setBlocked
-    chatObj,
-    setCompleteChatObj
+    setChats
   ]);
-
-  console.log(completeChatObj);
 
   const handleNewExternalMessage = newMessage => {
     // Append received message when client message or
     // it comes from tec-chat (not create by the user)
     if (newMessage.type === "CHAT") {
-      if (newMessage.from === fromId || newMessage.localId === undefined) {
-        let message = buildChatMessageObject(newMessage, fromId);
-        let newMessages = [...messages, message];
-        setMessages(newMessages);
+      if (newMessage.from === currentChat.chatId || newMessage.localId === undefined) {
+        let message = buildChatMessageObject(newMessage, currentChat.chatId);
+        setMessages([...messages, message])
       } else {
         setStatusMessage(newMessage.localId, "delivered");
       }
@@ -118,19 +80,19 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
 
   const onConnect = () => {
     const chatMessage = {
-      from: fromId,
+      from: currentChat.chatId,
       type: "JOIN"
     };
 
     clientRef.sendMessage(
-      "/chat/addUser/room/" + chatId,
+      "/chat/addUser/room/" + currentChat.chatId,
       JSON.stringify(chatMessage)
     );
   };
 
   const handleNewUserMessage = (newMessage, localId) => {
     const chatMessage = {
-      from: fromId,
+      from: currentChat.chatId,
       type: "CHAT",
       text: newMessage,
       localId: localId
@@ -138,13 +100,12 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
 
     try {
       clientRef.sendMessage(
-        "/chat/sendMessage/room/" + chatId,
+        "/chat/sendMessage/room/" + currentChat.chatId,
         JSON.stringify(chatMessage)
       );
     } catch (e) {
-      setStatusMessage(localId, "error");
+      setStatusMessage(localId, 'error');
     }
-    //setTimeout(() => setStatusMessage(localId, "error"), 60000)
   };
 
   const handleNewUserFiles = (title, files) => {
@@ -169,7 +130,7 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
     }
 
     defaultFetch(
-      `${chatApiUrl}/api/chats/${chatId}/upload`,
+      `${chatApiUrl}/api/chats/${currentChat.chatId}/upload`,
       "POST",
       {},
       formData
@@ -190,13 +151,13 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
     }
     setIsLoading(true);
     defaultFetch(
-      `${chatApiUrl}/api/chats/${chatId}/messages?page=${page}&size=50`,
+      `${chatApiUrl}/api/chats/${currentChat.chatId}/messages?page=${page}&size=50`,
       "GET",
       {}
     ).then(pageResults => {
       const loadedMessages = pageResults.content
         .map(externalMessage => {
-          return buildChatMessageObject(externalMessage, chatId);
+          return buildChatMessageObject(externalMessage, currentChat.chatId);
         })
         .reverse();
       setMessages(loadedMessages.concat(messages));
@@ -206,15 +167,49 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
     });
   };
 
-  const title = chatObj.name || name;
+  const onSelectedChat = (chat) => {
+    setIsLoading(true);
+
+    defaultFetch(
+      `${chatApiUrl}/api/chats/${chat.chatId}/messages?page=0&size=50`,
+      "GET",
+      {}
+    ).then(pageResults => {
+      const messages = pageResults.content
+        .map(externalMessage => {
+          return buildChatMessageObject(externalMessage, chat.chatId);
+        })
+        .reverse();
+      setMessages(messages);
+      setCurrentChat(chat);
+      setBlocked(chat.status === 'BLOCKED');
+      setIsLoading(false);
+
+      setTimeout(function () {
+        // workaround to wait for all elements to render
+        messagesEndRef.current.scrollIntoView({
+          block: "end",
+          behavior: "smooth"
+        });
+      }, 700);
+    });
+  };
+
+  const onBackToChatList = () => {
+    loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading);
+    setMessages([]);
+    setCurrentChat(emptyChat);
+    setBlocked(false);
+    setPage(1);
+    setHasMore(true);
+  };
+
+  const title = initialInfo.name || 'Cliente';
+  let subTitle = [currentChat.name, currentChat.phone].filter(s => s !== undefined && s !== null).join(' - ');
 
   return (
     <div className="App">
       <Chat
-        isLoading={isLoading}
-        loadMore={loadMore}
-        disabled={disabled}
-        isMaximizedOnly
         messages={messages}
         onMessageSend={text => {
           const localId = uuidv1();
@@ -223,10 +218,12 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
             copyPrevMessages.push(buildSendingMessage(localId, text));
             return copyPrevMessages;
           });
-
           // send to user and waits for response
           handleNewUserMessage(text, localId);
         }}
+        messagesEndRef={messagesEndRef}
+        disabled={disabled}
+        isMaximizedOnly
         onAudio={blob => {
           const localId = uuidv1();
           setMessages(prevMessages => {
@@ -250,15 +247,10 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
           sendData(localId, undefined, blob.blob);
         }}
         title={title}
-        subtitle={`Última mensagem: ${
-          lastMessageAt == null ? "nenhuma mensagem" : moment(lastMessageAt).format('DD/MM/YYYY HH:mm')
-        }`}
-        messagesEndRef={messagesEndRef}
+        subtitle={subTitle}
         onMediaSend={handleNewUserFiles}
-        isBlocked={blocked}
-        blockedMessage={`Já se passaram 24h desde a última mensagem enviada pelo cliente, 
-        por isso não é possível enviar nova mensagem por esse canal de comunicação. 
-        Por favor, entre em contato com o cliente por outro meio`}
+        isLoading={isLoading}
+        loadMore={loadMore}
         onMessageResend={localId => {
           // Change message status
           setStatusMessage(localId, "sending");
@@ -273,15 +265,24 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
             handleNewUserMessage(message.text, localId);
           }
         }}
+        isBlocked={blocked}
+        blockedMessage={`Já se passaram 24h desde a última mensagem enviada pelo cliente, 
+        por isso não é possível enviar nova mensagem por esse canal de comunicação. 
+        Por favor, entre em contato com o cliente por outro meio`}
+        chatList={chats}
+        onBackToChatList={onBackToChatList}
+        onSelectedChat={onSelectedChat}
       />
 
+      {currentChat.chatId &&
       <SockJsClient
         url={`${chatApiUrl}/ws`}
-        topics={["/topic/" + chatId]}
+        topics={["/topic/" + currentChat.chatId]}
         onMessage={handleNewExternalMessage}
         onConnect={onConnect}
         ref={client => (clientRef = client)}
       />
+      }
     </div>
   );
 };

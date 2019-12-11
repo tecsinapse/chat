@@ -41,14 +41,14 @@ export const buildSendingMessage = (localId, text, title, file) => ({
   title,
   medias: file
     ? [
-        {
-          mediaType: file.mediaType,
-          url: file.data,
-          name: file.name,
-          size: file.size,
-          data: file.file
-        }
-      ]
+      {
+        mediaType: file.mediaType,
+        url: file.data,
+        name: file.name,
+        size: file.size,
+        data: file.file
+      }
+    ]
     : undefined
 });
 

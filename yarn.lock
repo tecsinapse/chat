@@ -1668,10 +1668,10 @@
     "@svgr/plugin-svgo" "^4.0.3"
     loader-utils "^1.1.0"
 
-"@tecsinapse/chat@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-1.1.1.tgz#3ee0cb5cfc63c7827967fabf6bb4f4b9cb343781"
-  integrity sha512-MchYgqQFajOaVmZnx9olJtODUH1flvbou91kgzy3YpxYXP2zSGPuB61zNTANp3KOcd+f/cUugEjdYSexy2opTw==
+"@tecsinapse/chat@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-1.2.1.tgz#5aa627072e08819af51151d00d311022fc08995c"
+  integrity sha512-qf+xFfDiIUeLfrOhsQXqqeXo50lVG8CTv+RZOGNqlSidCO4qd1/OzdWVm84KBklfyQUVmmq3QYipnEbhI/vfug==
   dependencies:
     "@cleandersonlobo/react-mic" "^1.1.1"
     "@livechat/ui-kit" "^0.4.0-10"
@@ -1681,7 +1681,6 @@
     "@mdi/react" "^1.1.0"
     "@tecsinapse/es-utils" "^6.0.10"
     "@tecsinapse/ui-kit" "^3.3.1"
-    classnames "^2.2.6"
     prop-types "^15.6.2"
     react-compound-timer "^1.1.15"
     uniqid "^5.0.3"
@@ -1766,6 +1765,38 @@
     text-mask-core "^5.1.2"
     tinymce "^5.0.4"
     tinymce-i18n "^19.5.15"
+    uniqid "^5.0.3"
+
+"@tecsinapse/ui-kit@^3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-3.3.2.tgz#f09d44daeea0a2169d06d3ab36a8448a19733820"
+  integrity sha512-7GnJ5Fj2xa/gUSz0uy4o1s3ytBFiGfxDpkKI/1l9PmS3UY0XIyLdkdhUEiCOantIyXU5fwYvB2e127ASC7Il1A==
+  dependencies:
+    "@date-io/luxon" "^1.1.0"
+    "@material-ui/core" "^4.2.1"
+    "@material-ui/icons" "^4.2.1"
+    "@material-ui/pickers" "^3.1.2"
+    "@material-ui/styles" "^4.2.1"
+    "@mdi/js" "^3.0.39"
+    "@mdi/react" "^1.1.0"
+    "@tecsinapse/es-utils" "^6.0.10"
+    "@tecsinapse/material-ui-color-picker" "^4.3.0"
+    classnames "^2.2.6"
+    clsx "^1.0.4"
+    graphql-hooks "^3.4.0"
+    luxon "^1.11.2"
+    material-ui-dots "^2.0.0"
+    material-ui-search-bar "1.0.0-beta.13"
+    prop-types "^15.6.2"
+    react-dropzone "^10.0.2"
+    react-select "^2.3.0"
+    react-sizeme "^2.5.2"
+    react-swipeable-views "^0.13.1"
+    react-text-mask "^5.4.3"
+    react-virtualized "^9.21.0"
+    react-window "^1.5.1"
+    text-mask-addons "^3.8.0"
+    text-mask-core "^5.1.2"
     uniqid "^5.0.3"
 
 "@tinymce/tinymce-react@^3.0.1":
