@@ -1,10 +1,9 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Chat} from "@tecsinapse/ui-kit/build/Chat/Chat";
+import {Chat} from "@tecsinapse/chat/build/Chat";
 import SockJsClient from "react-stomp";
 
 import {defaultFetch} from "../Util/fetch";
 import {buildChatMessageObject, buildSendingMessage, setStatusMessageFunc} from "../Util/message";
-import {UploaderDialog} from "./UploaderDialog";
 import uuidv1 from "uuid/v1";
 import moment from "moment";
 
@@ -16,7 +15,6 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
   const [messages, setMessages] = useState([]);
   const [lastMessageAt, setLastMessageAt] = useState(null);
   const [name, setName] = useState("Cliente");
-  const [open, setOpen] = useState(false);
   const [blocked, setBlocked] = useState(false);
 
   const messagesEndRef = useRef(null);
@@ -146,13 +144,16 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
     } catch (e) {
       setStatusMessage(localId, "error");
     }
+    //setTimeout(() => setStatusMessage(localId, "error"), 60000)
   };
 
   const handleNewUserFiles = (title, files) => {
     Object.keys(files).forEach((uid, i) => {
       setMessages(prevMessages => {
         const copyPrevMessages = [...prevMessages];
-        copyPrevMessages.push(buildSendingMessage(uid, undefined, title, files[uid]));
+        copyPrevMessages.push(
+          buildSendingMessage(uid, undefined, title, files[uid])
+        );
         return copyPrevMessages;
       });
       sendData(uid, title, files[uid].file);
@@ -231,16 +232,22 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
           setMessages(prevMessages => {
             const copyPrevMessages = [...prevMessages];
             copyPrevMessages.push(
-              buildSendingMessage(localId, undefined, undefined, {
-                mediaType: "audio",
-                data: blob.blobURL,
-              }, blob.blob)
+              buildSendingMessage(
+                localId,
+                undefined,
+                undefined,
+                {
+                  mediaType: "audio",
+                  data: blob.blobURL
+                },
+                blob.blob
+              )
             );
             return copyPrevMessages;
           });
 
           // send to user and waits for response
-          sendData(localId, undefined, blob.blob)
+          sendData(localId, undefined, blob.blob);
         }}
         title={title}
         subtitle={`Última mensagem: ${
@@ -258,9 +265,11 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
 
           // Resend to backend
           const message = messages.find(m => m.localId === localId);
-          if (message.medias && message.medias.length > 0) {
-            message.medias.forEach((media) => sendData(localId, message.title, media.data));
-          } else if (message.text) {
+          if (message && message.medias && message.medias.length > 0) {
+            message.medias.forEach(media =>
+              sendData(localId, message.title, media.data)
+            );
+          } else if (message && message.text) {
             handleNewUserMessage(message.text, localId);
           }
         }}
@@ -273,9 +282,6 @@ export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
         onConnect={onConnect}
         ref={client => (clientRef = client)}
       />
-
-      {/* TODO: improve the ux/ui for showing progress uploading files  */}
-      <UploaderDialog open={open} setOpen={setOpen}/>
     </div>
   );
 };
