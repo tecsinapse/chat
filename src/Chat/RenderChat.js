@@ -6,8 +6,9 @@ import {defaultFetch} from "../Util/fetch";
 import {buildChatMessageObject, buildSendingMessage, setStatusMessageFunc} from "../Util/message";
 import {UploaderDialog} from "./UploaderDialog";
 import uuidv1 from "uuid/v1";
+import moment from "moment";
 
-export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
+export const RenderChat = ({chatApiUrl, chatObj, disabled}) => {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -20,58 +21,88 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
 
   const messagesEndRef = useRef(null);
   let clientRef = useRef();
+  const chatId = chatObj.chats[0].chatId;
   const fromId = chatId;
   const setStatusMessage = setStatusMessageFunc(setMessages);
+  const [completeChatObj, setCompleteChatObj] = useState({});
 
   useEffect(() => {
-    defaultFetch(`${chatApiUrl}/api/chats/${chatId}/status`, "GET", {}).then(
-      status => {
-        if (status === "BLOCKED") {
-          setBlocked(true);
-        }
+    const chatIds = chatObj.chats.map(chat => chat.chatId).join(',');
+    defaultFetch(`${chatApiUrl}/api/chats/${chatIds}/infos`, "GET", {}).then(
+      completeChatsInfos => {
+        const chats = [];
+        completeChatsInfos.forEach(completeInfo => {
+          const info = chatObj.chats.filter(chat => chat.chatId === completeInfo.chatId)[0];
+          completeInfo.name = info.name || completeInfo.name;
+          completeInfo.phone = info.phone || completeInfo.phone;
+
+          // TODO: remover
+          setName(completeInfo.name);
+          setLastMessageAt(completeInfo.lastMessageAt);
+
+          chats.push(completeInfo);
+        });
+        setCompleteChatObj({
+          name: chatObj.name,
+          chats: chats
+        });
       }
     );
 
-    defaultFetch(
-      `${chatApiUrl}/api/chats/${chatId}/messages?page=0&size=50`,
-      "GET",
-      {}
-    ).then(pageResults => {
-      const messages = pageResults.content
-        .map(externalMessage => {
-          return buildChatMessageObject(externalMessage, fromId);
-        })
-        .reverse();
-      setMessages(messages);
-      if (messages.length > 0) {
-        setLastMessageAt(messages[messages.length - 1].at);
-        const clientNamesFromMessages = pageResults.content.filter(
-          externalMessage => {
-            return externalMessage.name && externalMessage.name !== "";
-          }
-        );
-        if (clientNamesFromMessages.length > 0) {
-          setName(clientNamesFromMessages[0].name);
-        }
-      }
-
-      setTimeout(function () {
-        // workaround to wait for all elements to render
-        messagesEndRef.current.scrollIntoView({
-          block: "end",
-          behavior: "smooth"
-        });
-      }, 700);
-    });
+// TODO: remover
+    // defaultFetch(`${chatApiUrl}/api/chats/${chatId}/info`, "GET", {}).then(
+    //   status => {
+    //     if (status === "BLOCKED") {
+    //       setBlocked(true);
+    //     }
+    //   }
+    // );
+    //
+    // defaultFetch(
+    //   `${chatApiUrl}/api/chats/${chatId}/messages?page=0&size=50`,
+    //   "GET",
+    //   {}
+    // ).then(pageResults => {
+    //   const messages = pageResults.content
+    //     .map(externalMessage => {
+    //       return buildChatMessageObject(externalMessage, fromId);
+    //     })
+    //     .reverse();
+    //   setMessages(messages);
+    //   if (messages.length > 0) {
+    //     setLastMessageAt(messages[messages.length - 1].at);
+    //     const clientNamesFromMessages = pageResults.content.filter(
+    //       externalMessage => {
+    //         return externalMessage.name && externalMessage.name !== "";
+    //       }
+    //     );
+    //     if (clientNamesFromMessages.length > 0) {
+    //       setName(clientNamesFromMessages[0].name);
+    //     }
+    //   }
+    //
+    //   setTimeout(function () {
+    //     // workaround to wait for all elements to render
+    //     messagesEndRef.current.scrollIntoView({
+    //       block: "end",
+    //       behavior: "smooth"
+    //     });
+    //   }, 700);
+    // });
   }, [
     messagesEndRef,
-    lastMessageAt,
+    // lastMessageAt,
+    setLastMessageAt,
     setName,
-    fromId,
+    // fromId,
     chatApiUrl,
-    chatId,
-    setBlocked
+    // chatId,
+    // setBlocked
+    chatObj,
+    setCompleteChatObj
   ]);
+
+  console.log(completeChatObj);
 
   const handleNewExternalMessage = newMessage => {
     // Append received message when client message or
@@ -174,7 +205,7 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
     });
   };
 
-  const title = clientName !== "" ? clientName : name;
+  const title = chatObj.name || name;
 
   return (
     <div className="App">
@@ -213,7 +244,7 @@ export const RenderChat = ({chatApiUrl, chatId, clientName, disabled}) => {
         }}
         title={title}
         subtitle={`Última mensagem: ${
-          lastMessageAt == null ? "nenhuma mensagem" : lastMessageAt
+          lastMessageAt == null ? "nenhuma mensagem" : moment(lastMessageAt).format('DD/MM/YYYY HH:mm')
         }`}
         messagesEndRef={messagesEndRef}
         onMediaSend={handleNewUserFiles}
