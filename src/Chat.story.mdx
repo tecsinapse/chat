@@ -1,7 +1,11 @@
 import { Meta, Story, Props, Source } from '@storybook/addon-docs/blocks';
 import { Chat } from './Chat';
 import { ChatStory } from './ChatStory';
-import { dummyMessagesMedia, dummyMessagesTextError, dummyChatList } from './dummyMessages';
+import {
+  dummyMessagesMedia,
+  dummyMessagesTextError,
+  dummyChatList,
+} from './dummyMessages';
 
 <Meta title="Chat" component={Chat} />
 
@@ -12,11 +16,12 @@ The Chat component can receive the following props:
 <Props of={Chat} />
 
 # Code snippets
+
 Here you can check the code snippet for each story.
 
 ## Chat Echo
 
-<Story name="Chat Echo" parameters={{ docs: { disable: true }}}>
+<Story name="Chat Echo" parameters={{ docs: { disable: true } }}>
   <ChatStory isMaximizedOnly />
 </Story>
 
@@ -24,7 +29,7 @@ Here you can check the code snippet for each story.
 
 ## Status Text
 
-<Story name="Status Text" parameters={{ docs: { disable: true }}}>
+<Story name="Status Text" parameters={{ docs: { disable: true } }}>
   <ChatStory isMaximizedOnly initialMessages={dummyMessagesTextError} />
 </Story>
 
@@ -32,7 +37,7 @@ Here you can check the code snippet for each story.
 
 ## Status Image
 
-<Story name="Status Image" parameters={{ docs: { disable: true }}}>
+<Story name="Status Image" parameters={{ docs: { disable: true } }}>
   <ChatStory initialMessages={dummyMessagesMedia} isMaximizedOnly />
 </Story>
 
@@ -40,7 +45,7 @@ Here you can check the code snippet for each story.
 
 ## Error Connection
 
-<Story name="Error Connection" parameters={{ docs: { disable: true }}}>
+<Story name="Error Connection" parameters={{ docs: { disable: true } }}>
   <ChatStory isMaximizedOnly error="Erro de conexão. Tente mais tarde!" />
 </Story>
 
@@ -48,26 +53,26 @@ Here you can check the code snippet for each story.
 
 ## Chat Blocked
 
-<Story name="Chat Blocked" parameters={{ docs: { disable: true }}}>
+<Story name="Chat Blocked" parameters={{ docs: { disable: true } }}>
   <ChatStory
-      isMaximizedOnly
-      isBlocked
-      blockedMessage="Já se passaram 24h desde a última mensagem enviada pelo cliente,
+    isMaximizedOnly
+    isBlocked
+    blockedMessage="Já se passaram 24h desde a última mensagem enviada pelo cliente,
             por isso não é possível enviar nova mensagem por esse canal de comunicação, por favor,
             entre em contato com o cliente por outro meio."
-    />
+  />
 </Story>
 
 <Source id="chat--chat-blocked" />
 
 ## Chat List
 
-<Story name="Chat List" parameters={{ docs: { disable: true }}}>
+<Story name="Chat List" parameters={{ docs: { disable: true } }}>
   <ChatStory
-        isMaximizedOnly
-        initialMessages={dummyMessagesTextError}
-        initialChatList={dummyChatList}
-      />
+    isMaximizedOnly
+    initialMessages={dummyMessagesTextError}
+    initialChatList={dummyChatList}
+  />
 </Story>
 
 <Source id="chat--chat-list" />
