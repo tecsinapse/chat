@@ -17,7 +17,7 @@ window.renderChatComponent = function renderChatComponent() {
       chats: [
         {
           name: 'João Paulo Bassinello',
-          phone: '(19) 99456-8196',
+          phone: '(19) 99456-8196 - ASSISTENTE',
           // Mobile João Bassinello
           chatId: 'bb7f1fe6-6a8e-4975-9b5f-20635673e542@tunnel.msging.net'
         },
@@ -34,8 +34,8 @@ window.renderChatComponent = function renderChatComponent() {
   let chatApiUrl = window.CHAT_API_URL;
   if (!chatApiUrl) {
     // fixed for local tests
-    chatApiUrl = 'http://localhost:8081';
-    // chatApiUrl = 'https://chathomolog.tecsinapse.com.br';
+    // chatApiUrl = 'http://localhost:8081';
+    chatApiUrl = 'https://chathomolog.tecsinapse.com.br';
   }
   let disabled = false;
   if (window.CHAT_DISABLED) {

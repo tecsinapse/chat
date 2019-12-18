@@ -204,8 +204,8 @@ export const RenderChat = ({
     setHasMore(true);
   };
 
-  const title = initialInfo.name || 'Cliente';
-  let subTitle = [currentChat.name, currentChat.phone].filter(s => s !== undefined && s !== null).join(' - ');
+  const title = currentChat.name || initialInfo.name || 'Cliente';
+  let subTitle = currentChat.phone ? currentChat.phone : '';
 
   return (
     <div className="App">
