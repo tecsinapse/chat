@@ -74,15 +74,15 @@ export const ChatStory = ({
     ]);
   };
 
-  const sendMediaToBackend = (file, title, id) => {
+  const sendMediaToBackend = (file, title, id, noTitle) => {
     // Mocking change state to delivered
     setTimeout(() => mockStatusMessage(id, 'delivered'), 2000);
 
     // Mocking send to a local echo backend
-    setTimeout(() => echoMediaBackend(file, title), 5000);
+    setTimeout(() => echoMediaBackend(file, title, noTitle), 5000);
   };
 
-  const echoMediaBackend = (file, title) => {
+  const echoMediaBackend = (file, title, noTitle) => {
     setMessages(prevMessage => [
       ...prevMessage,
       {
@@ -97,7 +97,7 @@ export const ChatStory = ({
             // size: file.size, emulate scenario without size from backend
           },
         ],
-        title,
+        title: noTitle ? undefined : title,
       },
     ]);
   };
@@ -152,6 +152,11 @@ export const ChatStory = ({
 
   const onMediaSend = (title, files) => {
     if (files !== null) {
+      const titleAsMessage =
+        Object.keys(files).length > 1 ||
+        (files[Object.keys(files)[0]] !== undefined &&
+          files[Object.keys(files)[0]].mediaType.startsWith('application'));
+
       Object.keys(files).forEach((uid, i) => {
         const localId = uuidv1();
         setMessages(prevMessages => {
@@ -171,15 +176,18 @@ export const ChatStory = ({
                 size: files[uid].size,
               },
             ],
-            title,
+            title: titleAsMessage ? undefined : title,
           });
           return copyPrevMessages;
         });
 
         if (!error) {
-          sendMediaToBackend(files[uid], title, localId);
+          sendMediaToBackend(files[uid], title, localId, titleAsMessage);
         }
       });
+      if (titleAsMessage) {
+        onMessageSend(title);
+      }
     }
   };
 
