@@ -1,5 +1,6 @@
 import React from 'react';
 import { Message } from './Message';
+import { Loading } from './Loading';
 
 const MessageView = ({
   messages,
@@ -8,9 +9,11 @@ const MessageView = ({
   onMessageResend,
   classes,
   theme,
+  isLoading,
 }) => {
   return (
     <>
+      {isLoading && <Loading />}
       {messages.map((message, id) => (
         <Message
           title={title}

@@ -9,7 +9,6 @@ import {
   defaultGreyLight5,
 } from '@tecsinapse/ui-kit/build/colors';
 
-import { Loading } from './Loading';
 import { ChatHeader } from './ChatHeader';
 import { ErrorDialog } from './ErrorDialog';
 import { InputComposer } from './InputComposer';
@@ -190,61 +189,43 @@ const Maximized = ({
         notificationNumber={notificationNumber}
         classes={classes}
       />
-      {isLoading ? (
-        <MessageList
-          active
-          style={{
-            padding,
-          }}
-        >
-          <Loading />
-        </MessageList>
-      ) : (
-        <MessageList
-          active
-          onScrollTop={location === ChatLocations.MESSAGES && loadMore}
-          style={{
-            padding,
-          }}
-        >
-          {isStringNotBlank(error) && showError && (
-            <ErrorDialog
-              classes={classes}
-              theme={theme}
-              error={error}
-              setShowError={setShowError}
-            />
-          )}
+      <MessageList
+        active
+        onScrollTop={location === ChatLocations.MESSAGES && loadMore}
+        style={{
+          padding,
+        }}
+      >
+        {isStringNotBlank(error) && showError && (
+          <ErrorDialog
+            classes={classes}
+            theme={theme}
+            error={error}
+            setShowError={setShowError}
+          />
+        )}
 
-          {location === ChatLocations.MESSAGES && (
-            <MessageView
-              messages={messages}
-              onMessageSend={onMessageSend}
-              messagesEndRef={messagesEndRef}
-              disabled={disabled}
-              onAudio={onAudio}
-              title={title}
-              onMediaSend={onMediaSend}
-              isLoading={isLoading}
-              loadMore={loadMore}
-              maxFileUploadSize={maxFileUploadSize}
-              onMessageResend={onMessageResend}
-              isBlocked={isBlocked}
-              blockedMessage={blockedMessage}
-              classes={classes}
-              theme={theme}
-            />
-          )}
-          {location === ChatLocations.CHAT_LIST && (
-            <ChatList
-              chatList={chatList}
-              onSelectedChat={onSelectedChat}
-              setLocation={setLocation}
-              classes={classes}
-            />
-          )}
-        </MessageList>
-      )}
+        {location === ChatLocations.MESSAGES && (
+          <MessageView
+            messages={messages}
+            messagesEndRef={messagesEndRef}
+            title={title}
+            onMessageResend={onMessageResend}
+            classes={classes}
+            theme={theme}
+            isLoading={isLoading}
+          />
+        )}
+        {location === ChatLocations.CHAT_LIST && (
+          <ChatList
+            chatList={chatList}
+            onSelectedChat={onSelectedChat}
+            setLocation={setLocation}
+            classes={classes}
+            isLoading={isLoading}
+          />
+        )}
+      </MessageList>
 
       {!disabled && location === ChatLocations.MESSAGES && (
         <InputComposer
