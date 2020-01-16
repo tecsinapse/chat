@@ -1,3 +1,9 @@
+## <small>1.2.2 (2020-01-13)</small>
+
+* Update story to remove title on application media; Fix loading state ([16d3165](https://github.com/tecsinapse/chat/commit/16d3165))
+
+
+
 ## <small>1.2.1 (2019-12-06)</small>
 
 * Added SB story as Docs ([ee5ab83](https://github.com/tecsinapse/chat/commit/ee5ab83))
