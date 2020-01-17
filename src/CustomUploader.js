@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import uniqid from 'uniqid';
 
-import { Uploader } from '@tecsinapse/ui-kit/build/UploadFile/Uploader';
+import { Uploader } from '@tecsinapse/uploader';
 
 export const CustomUploader = forwardRef(
   ({ files, setFiles, mediaType, focusRef, maxFileUploadSize }, ref) => {

@@ -105,6 +105,7 @@ Chat.defaultProps = {
 };
 
 Chat.propTypes = {
+  /** Messages array */
   messages: PropTypes.arrayOf(
     PropTypes.shape({
       localId: PropTypes.string,
@@ -128,36 +129,44 @@ Chat.propTypes = {
           data: PropTypes.object,
         })
       ),
-      status: PropTypes.objectOf(['sending', 'error', 'delivered']),
+      status: PropTypes.oneOf(['sending', 'error', 'delivered']),
     })
   ).isRequired,
+  /** Message sender */
   onMessageSend: PropTypes.func.isRequired,
+  /** Message resend */
   onMessageResend: PropTypes.func,
-
-  // onAudio is not required, when it is not informed the chat doesn't support audio though!
+  /** onAudio is not required, when it is not informed the chat doesn't support audio */
   onAudio: PropTypes.func,
-
-  // Event handler closing the chat
+  /** Event handler closing the chat */
   onCloseChat: PropTypes.func,
-
-  // onMwedia is not required, when it is not informed the chat doesn't support media
+  /** onMedia is not required, when it is not informed the chat doesn't support media */
   onMediaSend: PropTypes.func,
-
+  /** Disable the chat */
   disabled: PropTypes.bool,
+  /** Chat stays maximized */
   isMaximizedOnly: PropTypes.bool,
+  /** Chat title */
   title: PropTypes.string,
+  /** Chat subtitle */
   subtitle: PropTypes.string,
+  /** Display error message */
   error: PropTypes.string,
+  /** Number of notifications */
   notifyNumber: PropTypes.number,
+  /** Loading state */
   isLoading: PropTypes.bool,
+  /** Loader when more content is requested */
   loadMore: PropTypes.func,
+  /** Max file size upload */
   maxFileUploadSize: PropTypes.number,
+  /** Chat blocked state */
   isBlocked: PropTypes.bool,
+  /** Message displayed when chat is blocked */
   blockedMessage: PropTypes.string,
-
-  // Callback called after the ChatList view is rendered
+  /** Callback called after the ChatList view is rendered */
   onBackToChatList: PropTypes.func,
-
+  /** ChatList with recipients */
   chatList: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
@@ -173,8 +182,9 @@ Chat.propTypes = {
       chatId: PropTypes.string,
     })
   ),
-
+  /** Action performed when chat is selected */
   onSelectedChat: PropTypes.func,
+  /** Number of notification */
   notificationNumber: PropTypes.number,
 };
 
