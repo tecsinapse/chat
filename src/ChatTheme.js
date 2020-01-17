@@ -11,7 +11,7 @@ const getTheme = materialTheme => ({
   AgentBar: {
     Avatar: {},
     css: {
-      backgroundColor: materialTheme.palette.primary.main,
+      backgroundColor: materialTheme.palette.secondary.main,
       borderRadius: materialTheme.spacing(0.5, 0.5, 0, 0),
     },
   },
