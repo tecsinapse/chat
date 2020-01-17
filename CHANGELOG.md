@@ -1,3 +1,10 @@
+## <small>1.2.3 (2020-01-17)</small>
+
+* Prettier support for MDX ([a5f7af1](https://github.com/tecsinapse/chat/commit/a5f7af1))
+* Updated uploader ([0e3d5c6](https://github.com/tecsinapse/chat/commit/0e3d5c6))
+
+
+
 ## <small>1.2.2 (2020-01-13)</small>
 
 * Update story to remove title on application media; Fix loading state ([16d3165](https://github.com/tecsinapse/chat/commit/16d3165))
