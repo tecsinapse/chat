@@ -1,3 +1,9 @@
+## <small>1.2.4 (2020-01-17)</small>
+
+* Fix theme to use secondary ([db6a727](https://github.com/tecsinapse/chat/commit/db6a727))
+
+
+
 ## <small>1.2.3 (2020-01-17)</small>
 
 * Prettier support for MDX ([a5f7af1](https://github.com/tecsinapse/chat/commit/a5f7af1))
