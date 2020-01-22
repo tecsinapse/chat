@@ -12,8 +12,8 @@
     "@mdi/js": "^3.0.39",
     "@mdi/react": "^1.1.0",
     "@tecsinapse/es-utils": "^6.0.10",
-    "@tecsinapse/ui-kit": "^3.3.1",
-    "@tecsinapse/uploader": "^1.0.0",
+    "@tecsinapse/ui-kit": "^4.0.0",
+    "@tecsinapse/uploader": "^1.1.0",
     "prop-types": "^15.6.2",
     "react-compound-timer": "^1.1.15",
     "uniqid": "^5.0.3"
