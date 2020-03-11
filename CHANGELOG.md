@@ -1,3 +1,10 @@
+## <small>1.3.1 (2020-03-11)</small>
+
+* Updating deps ([85f565c](https://github.com/tecsinapse/chat/commit/85f565c))
+* Updating ui-kit ([d4442da](https://github.com/tecsinapse/chat/commit/d4442da))
+
+
+
 ## 1.3.0 (2020-01-22)
 
 * @tecsinapse/ui-kit@4.0.0 ([5857755](https://github.com/tecsinapse/chat/commit/5857755))
