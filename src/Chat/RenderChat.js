@@ -18,7 +18,7 @@ const emptyChat = {
 
 const loadChatList = (initialInfo, chatApiUrl, setChats, setIsLoading) => {
   const chatIds = initialInfo.chats.map(chat => chat.chatId).join(',');
-  defaultFetch(`${chatApiUrl}/api/chats/${chatIds}/infos`, "GET", {}).then(
+  defaultFetch(`${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chatIds}/infos`, "GET", {}).then(
     completeChatInfos => {
       const chats = [];
       completeChatInfos.forEach(completeInfo => {
@@ -57,7 +57,6 @@ export const RenderChat = ({
   const setStatusMessage = setStatusMessageFunc(setMessages);
 
   useEffect(() => {
-
     loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading);
   }, [
     initialInfo,
@@ -85,7 +84,7 @@ export const RenderChat = ({
     };
 
     clientRef.sendMessage(
-      "/chat/addUser/room/" + currentChat.chatId,
+      `/chat/addUser/room/${initialInfo.connectionKey}/${currentChat.chatId}`,
       JSON.stringify(chatMessage)
     );
   };
@@ -100,7 +99,7 @@ export const RenderChat = ({
 
     try {
       clientRef.sendMessage(
-        "/chat/sendMessage/room/" + currentChat.chatId,
+        `/chat/sendMessage/room/${initialInfo.connectionKey}/${currentChat.chatId}`,
         JSON.stringify(chatMessage)
       );
     } catch (e) {
@@ -109,7 +108,7 @@ export const RenderChat = ({
   };
 
   const handleNewUserFiles = (title, files) => {
-    Object.keys(files).forEach((uid, i) => {
+    Object.keys(files).forEach((uid) => {
       setMessages(prevMessages => {
         const copyPrevMessages = [...prevMessages];
         copyPrevMessages.push(
@@ -130,7 +129,7 @@ export const RenderChat = ({
     }
 
     defaultFetch(
-      `${chatApiUrl}/api/chats/${currentChat.chatId}/upload`,
+      `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${currentChat.chatId}/upload`,
       "POST",
       {},
       formData
@@ -151,7 +150,7 @@ export const RenderChat = ({
     }
     setIsLoading(true);
     defaultFetch(
-      `${chatApiUrl}/api/chats/${currentChat.chatId}/messages?page=${page}&size=50`,
+      `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${currentChat.chatId}/messages?page=${page}&size=50`,
       "GET",
       {}
     ).then(pageResults => {
@@ -171,7 +170,7 @@ export const RenderChat = ({
     setIsLoading(true);
 
     defaultFetch(
-      `${chatApiUrl}/api/chats/${chat.chatId}/messages?page=0&size=50`,
+      `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chat.chatId}/messages?page=0&size=50`,
       "GET",
       {}
     ).then(pageResults => {
@@ -277,7 +276,7 @@ export const RenderChat = ({
       {currentChat.chatId &&
       <SockJsClient
         url={`${chatApiUrl}/ws`}
-        topics={["/topic/" + currentChat.chatId]}
+        topics={[`/topic/${initialInfo.connectionKey}.${currentChat.chatId}`]}
         onMessage={handleNewExternalMessage}
         onConnect={onConnect}
         ref={client => (clientRef = client)}
