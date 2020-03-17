@@ -13,7 +13,7 @@ window.renderChatComponent = function renderChatComponent() {
   if (!chatsInitialInfo) {
     // fixed for local tests
     chatsInitialInfo = {
-      name: 'Título do Chat',
+      name: 'Conversa',
       environment: 'dev',
       connectionKey: 'man',
       chats: [
@@ -58,4 +58,4 @@ window.renderChatComponent = function renderChatComponent() {
 };
 
 // uncomment for local tests
-window.renderChatComponent();
+// window.renderChatComponent();
