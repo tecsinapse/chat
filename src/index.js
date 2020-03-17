@@ -14,7 +14,6 @@ window.renderChatComponent = function renderChatComponent() {
     // fixed for local tests
     chatsInitialInfo = {
       name: 'Conversa',
-      environment: 'dev',
       connectionKey: 'man',
       chats: [
         {
