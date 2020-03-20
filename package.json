@@ -5,22 +5,23 @@
   "dependencies": {
     "@material-ui/core": "^4.2.1",
     "@material-ui/styles": "^4.2.1",
-    "moment": "^2.24.0",
     "@tecsinapse/chat": "^1.2.1",
     "@tecsinapse/ui-kit": "^3.3.2",
+    "moment": "^2.24.0",
+    "react-app-polyfill": "^1.0.6",
     "react-stomp": "^4.2.0",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@lingui/cli": "^2.7.3",
-    "babel-eslint": "10.0.1",
-    "babel-jest": "24.8.0",
     "@lingui/macro": "^2.7.3",
     "@sentry/browser": "^5.2.1",
     "@tecsinapse/es-utils": "^6.0.1",
     "@tecsinapse/eslint-config-tecsinapse-js": "2.2.1",
     "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "10.0.1",
+    "babel-jest": "24.8.0",
     "eslint": "^5.16.0",
     "eslint-plugin-meteor": "5.1.0",
     "grunt": "^1.0.1",
@@ -52,7 +53,8 @@
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
-      "last 1 safari version"
+      "last 1 safari version",
+      "ie 11"
     ]
   }
 }

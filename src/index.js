@@ -1,3 +1,6 @@
+import 'react-app-polyfill/ie9'
+import "react-app-polyfill/stable"
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ThemeProvider from '@tecsinapse/ui-kit/build/ThemeProvider';
@@ -35,8 +38,8 @@ window.renderChatComponent = function renderChatComponent() {
   let chatApiUrl = window.CHAT_API_URL;
   if (!chatApiUrl) {
     // fixed for local tests
-    chatApiUrl = 'http://localhost:8081';
-    // chatApiUrl = 'https://chathomolog.tecsinapse.com.br';
+    // chatApiUrl = 'http://localhost:8081';
+    chatApiUrl = 'https://chathomolog.tecsinapse.com.br';
   }
   let disabled = false;
   if (window.CHAT_DISABLED) {
