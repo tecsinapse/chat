@@ -1,3 +1,9 @@
+## <small>1.3.2 (2020-03-24)</small>
+
+* Group by day with front ([e78c241](https://github.com/tecsinapse/chat/commit/e78c241))
+
+
+
 ## <small>1.3.1 (2020-03-11)</small>
 
 * Updating deps ([85f565c](https://github.com/tecsinapse/chat/commit/85f565c))
