@@ -152,3 +152,42 @@ export const dummyMessagesText = [
     localId: uuidv1(),
   },
 ];
+
+export const dummyGroupedMessages = [
+  {
+    at: '02/03/2019 10:12',
+    own: false,
+    id: `${Date.now().toString()}0`,
+    authorName: 'Felipe Rodrigues',
+    text: 'Olá, tudo bem?!',
+    status: 'delivered',
+    localId: uuidv1(),
+  },
+  {
+    at: '02/03/2019 10:15',
+    own: true,
+    id: `${Date.now().toString()}2`,
+    authorName: 'Você',
+    text: 'Tudo sim!',
+    status: 'delivered',
+    localId: uuidv1(),
+  },
+  {
+    at: '03/03/2019 10:14',
+    own: true,
+    id: `${Date.now().toString()}2`,
+    authorName: 'Você',
+    text: 'O que desaja solicitar ?',
+    status: 'delivered',
+    localId: uuidv1(),
+  },
+  {
+    at: '03/03/2019 10:15',
+    own: true,
+    id: `${Date.now().toString()}2`,
+    authorName: 'Você',
+    text: 'Abraço!',
+    status: 'delivered',
+    localId: uuidv1(),
+  },
+];
