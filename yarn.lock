@@ -1668,10 +1668,10 @@
     "@svgr/plugin-svgo" "^4.0.3"
     loader-utils "^1.1.0"
 
-"@tecsinapse/chat@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-1.2.1.tgz#5aa627072e08819af51151d00d311022fc08995c"
-  integrity sha512-qf+xFfDiIUeLfrOhsQXqqeXo50lVG8CTv+RZOGNqlSidCO4qd1/OzdWVm84KBklfyQUVmmq3QYipnEbhI/vfug==
+"@tecsinapse/chat@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-1.2.4.tgz#0a65705d585fd3788b76849175dacb5038cdc97a"
+  integrity sha512-2cZxjdYoyK2cwV0fSKIEft+i8K2Vy5inCBDncr30ItQgbka6sYknWMm9BoqummIJk4x5ejgevGKwvwtvlYBg0A==
   dependencies:
     "@cleandersonlobo/react-mic" "^1.1.1"
     "@livechat/ui-kit" "^0.4.0-10"
@@ -1681,6 +1681,7 @@
     "@mdi/react" "^1.1.0"
     "@tecsinapse/es-utils" "^6.0.10"
     "@tecsinapse/ui-kit" "^3.3.1"
+    "@tecsinapse/uploader" "^1.0.0"
     prop-types "^15.6.2"
     react-compound-timer "^1.1.15"
     uniqid "^5.0.3"
@@ -1797,6 +1798,49 @@
     react-window "^1.5.1"
     text-mask-addons "^3.8.0"
     text-mask-core "^5.1.2"
+    uniqid "^5.0.3"
+
+"@tecsinapse/ui-kit@^4.2.1-beta.0":
+  version "4.2.1-beta.0"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-4.2.1-beta.0.tgz#5ad165bbd9b1fa76c249f54fed986d3cddeb8488"
+  integrity sha512-MioW7knNU18uNpWroifm5Mus71iZ8Ok8xIVzwapMG+tM+SkWfD5oc5nhv8mq+HPsM7cqPGxu/aMfgLxYOp6m3g==
+  dependencies:
+    "@material-ui/core" "^4.2.1"
+    "@material-ui/icons" "^4.2.1"
+    "@material-ui/styles" "^4.2.1"
+    "@mdi/js" "^3.0.39"
+    "@mdi/react" "^1.1.0"
+    "@tecsinapse/es-utils" "^6.0.10"
+    clsx "^1.0.4"
+    graphql-hooks "^3.4.0"
+    material-ui-dots "^2.0.0"
+    material-ui-search-bar "1.0.0-beta.13"
+    prop-types "^15.6.2"
+    react-dropzone "^10.0.2"
+    react-select "^2.3.0"
+    react-sizeme "^2.5.2"
+    react-swipeable-views "^0.13.1"
+    react-text-mask "^5.4.3"
+    react-virtualized "^9.21.0"
+    react-window "^1.5.1"
+    text-mask-addons "^3.8.0"
+    text-mask-core "^5.1.2"
+    uniqid "^5.0.3"
+
+"@tecsinapse/uploader@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-1.0.0.tgz#c724f35aa642f9f3be16b2c72619d80d4b63248e"
+  integrity sha512-DxRkFmYXgMtHdqdFIfz/j7gyiVj5iN8TbRnsNRayXs4AdHl+hF59asoL9vSeFiWqy4Jo01S4jiDjkKObTUFBDw==
+  dependencies:
+    "@material-ui/core" "^4.2.1"
+    "@material-ui/icons" "^4.2.1"
+    "@material-ui/styles" "^4.2.1"
+    "@mdi/js" "^3.0.39"
+    "@mdi/react" "^1.1.0"
+    "@tecsinapse/ui-kit" "^4.2.1-beta.0"
+    clsx "^1.0.4"
+    prop-types "^15.6.2"
+    react-dropzone "^10.0.2"
     uniqid "^5.0.3"
 
 "@tinymce/tinymce-react@^3.0.1":
