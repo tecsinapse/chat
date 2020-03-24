@@ -5,6 +5,7 @@ import {
   dummyMessagesMedia,
   dummyMessagesTextError,
   dummyChatList,
+  dummyGroupedMessages,
 } from './dummyMessages';
 
 <Meta title="Chat" component={Chat} />
@@ -72,6 +73,17 @@ Here you can check the code snippet for each story.
     isMaximizedOnly
     initialMessages={dummyMessagesTextError}
     initialChatList={dummyChatList}
+  />
+</Story>
+
+<Source id="chat--chat-list" />
+
+## Chat Grouped
+
+<Story name="Chat Grouped" parameters={{ docs: { disable: true } }}>
+  <ChatStory
+    isMaximizedOnly
+    initialMessages={dummyGroupedMessages}
   />
 </Story>
 
