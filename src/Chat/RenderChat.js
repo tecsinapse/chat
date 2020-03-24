@@ -42,6 +42,7 @@ const loadChatList = (initialInfo, chatApiUrl, setChats, setIsLoading) => {
 };
 
 const onSelectedChatMaker = (
+  initialInfo,
   setIsLoading,
   setCurrentChat,
   setMessages,
@@ -90,6 +91,7 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled}) => {
   let clientRef = useRef();
   const setStatusMessage = setStatusMessageFunc(setMessages);
   const onSelectedChat = onSelectedChatMaker(
+    initialInfo,
     setIsLoading,
     setCurrentChat,
     setMessages,
@@ -101,6 +103,7 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled}) => {
   useEffect(() => {
     if (initialInfo.chats.length === 1) {
       onSelectedChatMaker(
+        initialInfo,
         setIsLoading,
         setCurrentChat,
         setMessages,

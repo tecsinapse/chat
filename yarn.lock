@@ -1009,10 +1009,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cleandersonlobo/react-mic@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@cleandersonlobo/react-mic/-/react-mic-1.1.1.tgz#2a4b05a50b1d68588bb75f9b652c578465f2d387"
-  integrity sha512-5LLPV002qM0lRI9q1zoc36gLBpPHV57sYcLC+11ozr0OkLiQQ7wUNUvdt04R3Sqilb7xguJ562OGVVQY0w0xAA==
+"@cleandersonlobo/react-mic@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@cleandersonlobo/react-mic/-/react-mic-1.2.0.tgz#0e3c0cfc66b76ccbb23e9004f499b4dad34bc2df"
+  integrity sha512-PH04n7BUUA3w6jjtwgXhy9lWni0eJy6Sn3/v7yPPEZRBdknTkA0WwzUPZtjjmJKDzuTphdZTxo9Bt2SNcxx4GQ==
 
 "@cnakazawa/watch@^1.0.3":
   version "1.0.3"
@@ -1668,20 +1668,20 @@
     "@svgr/plugin-svgo" "^4.0.3"
     loader-utils "^1.1.0"
 
-"@tecsinapse/chat@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-1.2.4.tgz#0a65705d585fd3788b76849175dacb5038cdc97a"
-  integrity sha512-2cZxjdYoyK2cwV0fSKIEft+i8K2Vy5inCBDncr30ItQgbka6sYknWMm9BoqummIJk4x5ejgevGKwvwtvlYBg0A==
+"@tecsinapse/chat@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-1.3.1.tgz#7881c104fc25f259e0cf9496fa0d4af16ae4bac2"
+  integrity sha512-5FuJy5khWxYxkMfJv4YvZK4Gvqfvf50e9WYgX/FQ4BnOEDXTbshk38zy4cNOhH7sVK17ffFTyMDhxfX5Lfk5uQ==
   dependencies:
-    "@cleandersonlobo/react-mic" "^1.1.1"
+    "@cleandersonlobo/react-mic" "^1.2.0"
     "@livechat/ui-kit" "^0.4.0-10"
     "@material-ui/core" "^4.2.1"
     "@material-ui/styles" "^4.2.1"
     "@mdi/js" "^3.0.39"
     "@mdi/react" "^1.1.0"
     "@tecsinapse/es-utils" "^6.0.10"
-    "@tecsinapse/ui-kit" "^3.3.1"
-    "@tecsinapse/uploader" "^1.0.0"
+    "@tecsinapse/ui-kit" "^4.1.1"
+    "@tecsinapse/uploader" "^1.1.0"
     prop-types "^15.6.2"
     react-compound-timer "^1.1.15"
     uniqid "^5.0.3"
@@ -1733,41 +1733,6 @@
     react-color "^2.17.0"
     recompose "^0.30.0"
 
-"@tecsinapse/ui-kit@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-3.3.1.tgz#d2ad933754d934c7566de4cb6e4f79f243b58e2a"
-  integrity sha512-39UMVgdrIF4tJXRLZtoqfXqgeyl/IvlUvIRjpLPM4+34BAP4cVQjEhvDTEikeKtKYM/3E6DMySKNv8Q2GpT2/w==
-  dependencies:
-    "@date-io/luxon" "^1.1.0"
-    "@material-ui/core" "^4.2.1"
-    "@material-ui/icons" "^4.2.1"
-    "@material-ui/pickers" "^3.1.2"
-    "@material-ui/styles" "^4.2.1"
-    "@mdi/js" "^3.0.39"
-    "@mdi/react" "^1.1.0"
-    "@tecsinapse/es-utils" "^6.0.1"
-    "@tecsinapse/material-ui-color-picker" "^4.3.0"
-    "@tinymce/tinymce-react" "^3.0.1"
-    classnames "^2.2.6"
-    clsx "^1.0.4"
-    graphql-hooks "^3.4.0"
-    luxon "^1.11.2"
-    material-ui-dots "^2.0.0"
-    material-ui-search-bar "1.0.0-beta.13"
-    prop-types "^15.6.2"
-    react-dropzone "^10.0.2"
-    react-select "^2.3.0"
-    react-sizeme "^2.5.2"
-    react-swipeable-views "^0.13.1"
-    react-text-mask "^5.4.3"
-    react-virtualized "^9.21.0"
-    react-window "^1.5.1"
-    text-mask-addons "^3.8.0"
-    text-mask-core "^5.1.2"
-    tinymce "^5.0.4"
-    tinymce-i18n "^19.5.15"
-    uniqid "^5.0.3"
-
 "@tecsinapse/ui-kit@^3.3.2":
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-3.3.2.tgz#f09d44daeea0a2169d06d3ab36a8448a19733820"
@@ -1800,10 +1765,10 @@
     text-mask-core "^5.1.2"
     uniqid "^5.0.3"
 
-"@tecsinapse/ui-kit@^4.2.1-beta.0":
-  version "4.2.1-beta.0"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-4.2.1-beta.0.tgz#5ad165bbd9b1fa76c249f54fed986d3cddeb8488"
-  integrity sha512-MioW7knNU18uNpWroifm5Mus71iZ8Ok8xIVzwapMG+tM+SkWfD5oc5nhv8mq+HPsM7cqPGxu/aMfgLxYOp6m3g==
+"@tecsinapse/ui-kit@^4.1.1":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-4.1.2.tgz#fb1a203543ff7ae7f34a0aa238da655ddf86c55b"
+  integrity sha512-+2uh2cfWzgL4O8qWjnPKMhBYZMuGgAw0rBHMfdfRLdJygxp8GRtSCUvN43eYn36H2oi2wXTfzmMAtgMGEmVeTA==
   dependencies:
     "@material-ui/core" "^4.2.1"
     "@material-ui/icons" "^4.2.1"
@@ -1812,43 +1777,31 @@
     "@mdi/react" "^1.1.0"
     "@tecsinapse/es-utils" "^6.0.10"
     clsx "^1.0.4"
-    graphql-hooks "^3.4.0"
-    material-ui-dots "^2.0.0"
     material-ui-search-bar "1.0.0-beta.13"
     prop-types "^15.6.2"
-    react-dropzone "^10.0.2"
     react-select "^2.3.0"
     react-sizeme "^2.5.2"
-    react-swipeable-views "^0.13.1"
     react-text-mask "^5.4.3"
     react-virtualized "^9.21.0"
     react-window "^1.5.1"
     text-mask-addons "^3.8.0"
     text-mask-core "^5.1.2"
-    uniqid "^5.0.3"
 
-"@tecsinapse/uploader@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-1.0.0.tgz#c724f35aa642f9f3be16b2c72619d80d4b63248e"
-  integrity sha512-DxRkFmYXgMtHdqdFIfz/j7gyiVj5iN8TbRnsNRayXs4AdHl+hF59asoL9vSeFiWqy4Jo01S4jiDjkKObTUFBDw==
+"@tecsinapse/uploader@^1.1.0":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-1.2.1.tgz#3d073df96a207ccf50e01900832d4afb5ef13dbb"
+  integrity sha512-UBYreXmomNIH9KYksYswUOY26ggRtX1RJCJGHylgyOXAJ4JpkYGNJgs22sr6mydhpt2N6tsOvr5s5b5vjmPMCg==
   dependencies:
     "@material-ui/core" "^4.2.1"
     "@material-ui/icons" "^4.2.1"
     "@material-ui/styles" "^4.2.1"
     "@mdi/js" "^3.0.39"
     "@mdi/react" "^1.1.0"
-    "@tecsinapse/ui-kit" "^4.2.1-beta.0"
+    "@tecsinapse/ui-kit" "^4.1.1"
     clsx "^1.0.4"
     prop-types "^15.6.2"
     react-dropzone "^10.0.2"
     uniqid "^5.0.3"
-
-"@tinymce/tinymce-react@^3.0.1":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-3.3.2.tgz#044e21c54f123d0d85933e7e994a6ed20702297b"
-  integrity sha512-5STyLVPtkvYwKrd5srXC++vrhoOhC8cx525PGVGOWIYK2Oqe5ey6o5s31Abg79XPJsCxiWU4daHBL5eaMBBhEg==
-  dependencies:
-    prop-types "^15.6.2"
 
 "@types/babel__core@^7.1.0":
   version "7.1.3"
@@ -12281,16 +12234,6 @@ tinycolor2@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
   integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
-
-tinymce-i18n@^19.5.15:
-  version "19.9.17"
-  resolved "https://registry.yarnpkg.com/tinymce-i18n/-/tinymce-i18n-19.9.17.tgz#528e08b4488c829e0edd7c1831c87ef9f5026fe9"
-  integrity sha512-2+Feqllj8clf068xvSUw6uG3GNBkt7mPITzHpT8tPqKK5JIOW8RqnTjuLzxD8MYdcX3F7G2BL0OROLP9K1JURg==
-
-tinymce@^5.0.4:
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.1.2.tgz#7eb44d5dccfa17910f668a2d858a4d66b80b526a"
-  integrity sha512-P61Odc3O2IDvC1qBmd7xkh1uRDKtfn8YNvh3sone84H9/W527HNbATbXpin/ewzZHxhw67hKRe9FzOBhQzFQig==
 
 tmp@^0.0.33:
   version "0.0.33"
