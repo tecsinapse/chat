@@ -17,19 +17,19 @@ window.renderChatComponent = function renderChatComponent() {
     // fixed for local tests
     chatsInitialInfo = {
       name: 'Conversa',
-      connectionKey: 'man',
+      connectionKey: 'dyn-bot',
       chats: [
         {
           name: 'João Paulo Bassinello',
           phone: '(19) 99456-8196 - ASSISTENTE',
           // Mobile João Bassinello
-          chatId: '5519994568196@wa.gw.msging.net'
+          chatId: 'ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net'
         },
         {
           name: 'João Paulo Bassinello',
           phone: '(19) 99456-8196',
           // Mobile João Bassinello
-          chatId: '5519994568196@wa.gw.msging.net'
+          chatId: 'ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net'
         }
       ]
     };

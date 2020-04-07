@@ -16,30 +16,30 @@ const emptyChat = {
   unread: 0
 };
 
-const loadChatList = (initialInfo, chatApiUrl, setChats, setIsLoading) => {
+async function loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading) {
   const chatIds = initialInfo.chats.map(chat => chat.chatId).join(",");
-  defaultFetch(`${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chatIds}/infos`, "GET", {}).then(
-    completeChatInfos => {
-      const chats = [];
-      completeChatInfos.forEach(completeInfo => {
-        // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
-        // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
-        const info = initialInfo.chats.filter(
-          chat => chat.chatId === completeInfo.chatId
-        )[0];
-        completeInfo.name = info.name || completeInfo.name;
-        completeInfo.phone = info.phone || completeInfo.phone;
-        completeInfo.lastMessageAt = moment(completeInfo.lastMessageAt).format(
-          "DD/MM/YYYY HH:mm"
-        );
+  const completeChatInfos = await defaultFetch(`${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chatIds}/infos`, "GET", {});
 
-        chats.push(completeInfo);
-      });
-      setChats(chats);
-      setIsLoading(false);
-    }
-  );
-};
+  const chats = [];
+  completeChatInfos.forEach(completeInfo => {
+    // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
+    // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
+    const info = initialInfo.chats.filter(
+      chat => chat.chatId === completeInfo.chatId
+    )[0];
+    completeInfo.name = info.name || completeInfo.name;
+    completeInfo.phone = info.phone || completeInfo.phone;
+    completeInfo.lastMessageAt = moment(completeInfo.lastMessageAt).format(
+      "DD/MM/YYYY HH:mm"
+    );
+
+    chats.push(completeInfo);
+  });
+  setChats(chats);
+  setIsLoading(false);
+
+  return chats;
+}
 
 const onSelectedChatMaker = (
   initialInfo,
@@ -101,23 +101,25 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled}) => {
   );
 
   useEffect(() => {
-    if (initialInfo.chats.length === 1) {
-      onSelectedChatMaker(
-        initialInfo,
-        setIsLoading,
-        setCurrentChat,
-        setMessages,
-        setBlocked,
-        chatApiUrl,
-        messagesEndRef
-      )(initialInfo.chats[0]);
-    } else {
-      loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading);
-    }
+    loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading)
+      .then(chats => {
+        if (chats.length === 1) {
+          onSelectedChatMaker(
+            initialInfo,
+            setIsLoading,
+            setCurrentChat,
+            setMessages,
+            setBlocked,
+            chatApiUrl,
+            messagesEndRef
+          )(chats[0]);
+        }
+      })
   }, [
     initialInfo,
     chatApiUrl,
-    setChats
+    setChats,
+    setIsLoading,
   ]);
 
   const handleNewExternalMessage = newMessage => {
