@@ -1,9 +1,13 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Chat} from "@tecsinapse/chat/build/Chat";
+import React, { useEffect, useRef, useState } from "react";
+import { Chat } from "@tecsinapse/chat/build/Chat";
 import SockJsClient from "react-stomp";
 
-import {defaultFetch} from "../Util/fetch";
-import {buildChatMessageObject, buildSendingMessage, setStatusMessageFunc} from "../Util/message";
+import { defaultFetch } from "../Util/fetch";
+import {
+  buildChatMessageObject,
+  buildSendingMessage,
+  setStatusMessageFunc
+} from "../Util/message";
 import uuidv1 from "uuid/v1";
 import moment from "moment";
 
@@ -18,7 +22,11 @@ const emptyChat = {
 
 async function loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading) {
   const chatIds = initialInfo.chats.map(chat => chat.chatId).join(",");
-  const completeChatInfos = await defaultFetch(`${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chatIds}/infos`, "GET", {});
+  const completeChatInfos = await defaultFetch(
+    `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chatIds}/infos`,
+    "GET",
+    {}
+  );
 
   const chats = [];
   completeChatInfos.forEach(completeInfo => {
@@ -64,10 +72,10 @@ const onSelectedChatMaker = (
       })
       .reverse();
     setMessages(messages);
-    setBlocked(chat.status === 'BLOCKED');
+    setBlocked(chat.status === "BLOCKED");
     setIsLoading(false);
 
-    setTimeout(function () {
+    setTimeout(function() {
       // workaround to wait for all elements to render
       messagesEndRef.current.scrollIntoView({
         block: "end",
@@ -77,7 +85,7 @@ const onSelectedChatMaker = (
   });
 };
 
-export const RenderChat = ({chatApiUrl, initialInfo, disabled}) => {
+export const RenderChat = ({ chatApiUrl, initialInfo, disabled }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(emptyChat);
@@ -101,8 +109,8 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled}) => {
   );
 
   useEffect(() => {
-    loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading)
-      .then(chats => {
+    loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading).then(
+      chats => {
         if (chats.length === 1) {
           onSelectedChatMaker(
             initialInfo,
@@ -114,13 +122,9 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled}) => {
             messagesEndRef
           )(chats[0]);
         }
-      })
-  }, [
-    initialInfo,
-    chatApiUrl,
-    setChats,
-    setIsLoading,
-  ]);
+      }
+    );
+  }, [initialInfo, chatApiUrl, setChats, setIsLoading]);
 
   const handleNewExternalMessage = newMessage => {
     // Append received message when client message or
@@ -176,7 +180,7 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled}) => {
         files[Object.keys(files)[0]].mediaType.startsWith("application"));
     const fileTitle = titleAsMessage ? undefined : title;
 
-    Object.keys(files).forEach((uid) => {
+    Object.keys(files).forEach(uid => {
       setMessages(prevMessages => {
         const copyPrevMessages = [...prevMessages];
         copyPrevMessages.push(
@@ -207,8 +211,7 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled}) => {
       {},
       formData
     )
-      .then(() => {
-      })
+      .then(() => {})
       .catch(err => {
         if (err.status === 403) {
           setBlocked(true);
@@ -262,6 +265,44 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled}) => {
   const title = currentChat.name || initialInfo.name || "Cliente";
   let subTitle = currentChat.phone ? currentChat.phone : "";
 
+  const onAudio = blob => {
+    const localId = uuidv1();
+    setMessages(prevMessages => {
+      const copyPrevMessages = [...prevMessages];
+      copyPrevMessages.push(
+        buildSendingMessage(
+          localId,
+          undefined,
+          undefined,
+          {
+            mediaType: "audio",
+            data: blob.blobURL
+          },
+          blob.blob
+        )
+      );
+      return copyPrevMessages;
+    });
+
+    // send to user and waits for response
+    sendData(localId, undefined, blob.blob);
+  };
+
+  const onMessageResend = localId => {
+    // Change message status
+    setStatusMessage(localId, "sending");
+
+    // Resend to backend
+    const message = messages.find(m => m.localId === localId);
+    if (message && message.medias && message.medias.length > 0) {
+      message.medias.forEach(media =>
+        sendData(localId, message.title, media.data)
+      );
+    } else if (message && message.text) {
+      handleNewUserMessage(message.text, localId);
+    }
+  };
+
   return (
     <div className="App">
       <Chat
@@ -270,47 +311,13 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled}) => {
         messagesEndRef={messagesEndRef}
         disabled={disabled}
         isMaximizedOnly
-        onAudio={blob => {
-          const localId = uuidv1();
-          setMessages(prevMessages => {
-            const copyPrevMessages = [...prevMessages];
-            copyPrevMessages.push(
-              buildSendingMessage(
-                localId,
-                undefined,
-                undefined,
-                {
-                  mediaType: "audio",
-                  data: blob.blobURL
-                },
-                blob.blob
-              )
-            );
-            return copyPrevMessages;
-          });
-
-          // send to user and waits for response
-          sendData(localId, undefined, blob.blob);
-        }}
+        onAudio={onAudio}
         title={title}
         subtitle={subTitle}
         onMediaSend={handleNewUserFiles}
         isLoading={isLoading}
         loadMore={loadMore}
-        onMessageResend={localId => {
-          // Change message status
-          setStatusMessage(localId, "sending");
-
-          // Resend to backend
-          const message = messages.find(m => m.localId === localId);
-          if (message && message.medias && message.medias.length > 0) {
-            message.medias.forEach(media =>
-              sendData(localId, message.title, media.data)
-            );
-          } else if (message && message.text) {
-            handleNewUserMessage(message.text, localId);
-          }
-        }}
+        onMessageResend={onMessageResend}
         isBlocked={blocked}
         blockedMessage={`Já se passaram 24h desde a última mensagem enviada pelo cliente, 
         por isso não é possível enviar nova mensagem por esse canal de comunicação. 
@@ -318,6 +325,7 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled}) => {
         chatList={initialInfo.chats.length > 1 ? chats : undefined}
         onBackToChatList={onBackToChatList}
         onSelectedChat={onSelectedChat}
+        disabledSend={isLoading && messages.length === 0}
       />
 
       {currentChat.chatId && (
