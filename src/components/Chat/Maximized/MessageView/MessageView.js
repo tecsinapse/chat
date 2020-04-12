@@ -1,7 +1,7 @@
 import React from 'react';
 import { Divider, Typography } from '@material-ui/core';
-import { Message } from './Message';
-import { Loading } from './Loading';
+import { Message } from './Message/Message';
+import { Loading } from '../../Loading/Loading';
 
 const MessageView = ({
   messages,

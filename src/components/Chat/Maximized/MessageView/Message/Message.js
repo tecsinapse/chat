@@ -16,12 +16,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit/build/Buttons/IconButton';
 
-import { DeliveryStatus } from './DeliveryStatus';
+import { DeliveryStatus } from './DeliveryStatus/DeliveryStatus';
 
-import { ImageLoader } from './ImageLoader';
-import { ApplicationLoader } from './ApplicationLoader';
-import { VideoLoader } from './VideoLoader';
-import { AudioLoader } from './AudioLoader';
+import { ImageLoader } from './ImageLoader/ImageLoader';
+import { ApplicationLoader } from './ApplicationLoader/ApplicationLoader';
+import { VideoLoader } from './VideoLoader/VideoLoader';
+import { AudioLoader } from './AudioLoader/AudioLoader';
 
 export const Message = ({
   title,

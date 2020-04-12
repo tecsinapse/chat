@@ -1,5 +1,5 @@
 import { Meta, Story, Props, Source } from '@storybook/addon-docs/blocks';
-import { Chat } from './Chat';
+import { Chat } from './../Chat';
 import { ChatStory } from './ChatStory';
 import {
   dummyMessagesMedia,
@@ -58,9 +58,9 @@ Here you can check the code snippet for each story.
   <ChatStory
     isMaximizedOnly
     isBlocked
-    blockedMessage="Já se passaram 24h desde a última mensagem enviada pelo cliente,
-            por isso não é possível enviar nova mensagem por esse canal de comunicação, por favor,
-            entre em contato com o cliente por outro meio."
+    loadingEnabled
+    initialMessages={[]}
+    blockedMessage="Chat bloqueado"
   />
 </Story>
 
