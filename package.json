@@ -81,7 +81,8 @@
     "storybook:build": "build-storybook -c .storybook -o docs/",
     "test": "NODE_ENV=test jest",
     "test:windows": "set NODE_ENV=test&& jest",
-    "hooks": "bash .git/hooks/pre-commit"
+    "hooks": "bash .git/hooks/pre-commit",
+    "publish:beta": "npm publish --tag beta"
   },
   "license": "ISC",
   "husky": {
