@@ -1,15 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Chat } from "@tecsinapse/chat/build/Chat";
+import React, {useEffect, useRef, useState} from "react";
+import {Chat} from "@tecsinapse/chat";
 import SockJsClient from "react-stomp";
 
-import { defaultFetch } from "../Util/fetch";
-import {
-  buildChatMessageObject,
-  buildSendingMessage,
-  setStatusMessageFunc
-} from "../Util/message";
+import {defaultFetch} from "../Util/fetch";
+import {buildChatMessageObject, buildSendingMessage, setStatusMessageFunc} from "../Util/message";
 import uuidv1 from "uuid/v1";
-import moment from "moment";
+// import {loadChatsInfos} from "./loadChatsInfos";
 
 const emptyChat = {
   chatId: null,
@@ -20,34 +16,40 @@ const emptyChat = {
   unread: 0
 };
 
-async function loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading) {
-  const chatIds = initialInfo.chats.map(chat => chat.chatId).join(",");
-  const completeChatInfos = await defaultFetch(
-    `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chatIds}/infos`,
-    "GET",
-    {}
-  );
-
-  const chats = [];
-  completeChatInfos.forEach(completeInfo => {
-    // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
-    // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
-    const info = initialInfo.chats.filter(
-      chat => chat.chatId === completeInfo.chatId
-    )[0];
-    completeInfo.name = info.name || completeInfo.name;
-    completeInfo.phone = info.phone || completeInfo.phone;
-    completeInfo.lastMessageAt = moment(completeInfo.lastMessageAt).format(
-      "DD/MM/YYYY HH:mm"
-    );
-
-    chats.push(completeInfo);
-  });
-  setChats(chats);
-  setIsLoading(false);
-
-  return chats;
-}
+// async function loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading) {
+//
+//   let chats = await loadChatsInfos(initialInfo, chatApiUrl);
+//   setChats(chats);
+//   setIsLoading(false);
+//   return chats;
+  //
+  // const chatIds = initialInfo.chats.map(chat => chat.chatId).join(",");
+  // const completeChatInfos = await defaultFetch(
+  //   `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chatIds}/infos`,
+  //   "GET",
+  //   {}
+  // );
+  //
+  // const chats = [];
+  // completeChatInfos.forEach(completeInfo => {
+  //   // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
+  //   // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
+  //   const info = initialInfo.chats.filter(
+  //     chat => chat.chatId === completeInfo.chatId
+  //   )[0];
+  //   completeInfo.name = info.name || completeInfo.name;
+  //   completeInfo.phone = info.phone || completeInfo.phone;
+  //   completeInfo.lastMessageAt = moment(completeInfo.lastMessageAt).format(
+  //     "DD/MM/YYYY HH:mm"
+  //   );
+  //
+  //   chats.push(completeInfo);
+  // });
+  // setChats(chats);
+  // setIsLoading(false);
+  //
+  // return chats;
+// }
 
 const onSelectedChatMaker = (
   initialInfo,
@@ -75,7 +77,7 @@ const onSelectedChatMaker = (
     setBlocked(chat.status === "BLOCKED");
     setIsLoading(false);
 
-    setTimeout(function() {
+    setTimeout(function () {
       // workaround to wait for all elements to render
       messagesEndRef.current.scrollIntoView({
         block: "end",
@@ -85,9 +87,9 @@ const onSelectedChatMaker = (
   });
 };
 
-export const RenderChat = ({ chatApiUrl, initialInfo, disabled }) => {
+export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [chats, setChats] = useState([]);
+  // const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(emptyChat);
 
   const [page, setPage] = useState(1);
@@ -109,22 +111,23 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled }) => {
   );
 
   useEffect(() => {
-    loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading).then(
-      chats => {
-        if (chats.length === 1) {
-          onSelectedChatMaker(
-            initialInfo,
-            setIsLoading,
-            setCurrentChat,
-            setMessages,
-            setBlocked,
-            chatApiUrl,
-            messagesEndRef
-          )(chats[0]);
-        }
-      }
-    );
-  }, [initialInfo, chatApiUrl, setChats, setIsLoading]);
+    // loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading).then(
+    //   chats => {
+    if (initialInfo.chats.length === 1) {
+      onSelectedChatMaker(
+        initialInfo,
+        setIsLoading,
+        setCurrentChat,
+        setMessages,
+        setBlocked,
+        chatApiUrl,
+        messagesEndRef
+      )(initialInfo.chats[0]);
+    }
+    setIsLoading(false);
+    // }
+    // );
+  }, [initialInfo, chatApiUrl, setIsLoading]);
 
   const handleNewExternalMessage = newMessage => {
     // Append received message when client message or
@@ -211,7 +214,8 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled }) => {
       {},
       formData
     )
-      .then(() => {})
+      .then(() => {
+      })
       .catch(err => {
         if (err.status === 403) {
           setBlocked(true);
@@ -243,7 +247,7 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled }) => {
   };
 
   const onBackToChatList = () => {
-    loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading);
+    // loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading);
     setMessages([]);
     setCurrentChat(emptyChat);
     setBlocked(false);
@@ -322,10 +326,12 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled }) => {
         blockedMessage={`Já se passaram 24h desde a última mensagem enviada pelo cliente, 
         por isso não é possível enviar nova mensagem por esse canal de comunicação. 
         Por favor, entre em contato com o cliente por outro meio`}
-        chatList={initialInfo.chats.length > 1 ? chats : undefined}
+        chatList={initialInfo.chats.length > 1 ? initialInfo.chats : undefined}
         onBackToChatList={onBackToChatList}
         onSelectedChat={onSelectedChat}
         disabledSend={isLoading && messages.length === 0}
+        roundedCorners={false}
+        containerHeight={"75vH"}
       />
 
       {currentChat.chatId && (

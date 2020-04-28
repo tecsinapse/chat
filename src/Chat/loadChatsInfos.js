@@ -1,36 +1,57 @@
-import { defaultFetch } from "../Util/fetch";
+import {defaultFetch} from "../Util/fetch";
 import moment from "moment";
+import {mockUnreadInitialState} from "./mockUnreadInitialState";
 
 /**
- * Fetch complete data from server
+ * Busca dos dados para inicializar o componente
  *
- * @param initialChatsInfos initial information about chats. Should contain at least the connectionKey and chats IDs
- * @param chatApiUrl api URL
- * @returns {Promise<[]>} with the complete chats informations
+ * @param chatApiUrl            URL da api do tec-chat
+ * @param getInitialStatePath   caminho para o endpoint do produto de informações iniciais dos chats
+ * @returns {Promise<[]>}       informações completas do objeto que representa esse componente
  */
-export async function loadChatsInfos(initialChatsInfos, chatApiUrl) {
-  const chatIds = initialChatsInfos.chats.map(chat => chat.chatId).join(",");
+export async function load(chatApiUrl, getInitialStatePath) {
+  // primeiro busca a informação do produto local. É essa informação que fará a inicialização do chat
+  // é essa informação que carrega quais chats são do usuário que está acessando o componente
+  let initialInfoFromProduct;
+  if (process.env.NODE_ENV === 'development') {
+    initialInfoFromProduct = {...mockUnreadInitialState};
+    // initialInfoFromProduct = {...mockClientChatInitialState};
+  } else {
+    initialInfoFromProduct = await defaultFetch(getInitialStatePath,
+      "GET",
+      {})
+  }
+
+  const chatIds = initialInfoFromProduct.allChats.map(chat => chat.chatId).join(",");
   const completeChatInfos = await defaultFetch(
-    `${chatApiUrl}/api/chats/${initialChatsInfos.connectionKey}/infos`,
+    `${chatApiUrl}/api/chats/${initialInfoFromProduct.connectionKey}/infos`,
     "POST",
-    { chatIds: chatIds }
+    {chatIds: chatIds}
   );
 
   const chats = [];
   completeChatInfos.forEach(completeInfo => {
     // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
     // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
-    const info = initialChatsInfos.chats.filter(
+    const info = initialInfoFromProduct.allChats.filter(
       chat => chat.chatId === completeInfo.chatId
     )[0];
-    completeInfo.name = info.name || completeInfo.name;
-    completeInfo.phone = info.phone || completeInfo.phone;
-    completeInfo.lastMessageAt = moment(completeInfo.lastMessageAt).format(
-      "DD/MM/YYYY HH:mm"
-    );
+
+    completeInfo = completeChatInfoWith(info, completeInfo);
 
     chats.push(completeInfo);
   });
 
-  return chats;
+  initialInfoFromProduct.allChats = chats;
+  return initialInfoFromProduct;
+}
+
+export function completeChatInfoWith(initialInfo, updatedInfo) {
+  updatedInfo.name = initialInfo.name || updatedInfo.name;
+  updatedInfo.phone = initialInfo.phone || updatedInfo.phone;
+  const m = moment(updatedInfo.lastMessageAt);
+  updatedInfo.lastMessageAt = m.isValid() ?
+    m.format("DD/MM/YYYY HH:mm")
+    : updatedInfo.lastMessageAt; // already formatted
+  return updatedInfo;
 }

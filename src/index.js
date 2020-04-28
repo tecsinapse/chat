@@ -10,40 +10,13 @@ import "./index.css";
 import uuidv1 from "uuid/v1";
 
 import * as serviceWorker from "./serviceWorker";
-import { Init } from "./Chat/Init";
+import {Init} from "./Chat/Init";
 
 window.renderChatComponent = function renderChatComponent() {
-  let reloadInitialState = true;
-  if (window.RELOAD_INITIAL_STATE) {
-    reloadInitialState = true;
-  }
 
-  let componentId = window.COMPONENT_ID;
-  if (!componentId) {
-    componentId = uuidv1();
-  }
-
-  let chatsInitialInfo = window.CHAT;
-  if (!chatsInitialInfo) {
-    // fixed for local tests
-    chatsInitialInfo = {
-      name: "Conversa",
-      connectionKey: "dyn-bot",
-      chats: [
-        {
-          name: "João Paulo Bassinello",
-          phone: "(19) 99456-8196 - ASSISTENTE",
-          // Mobile João Bassinello
-          chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net"
-        },
-        {
-          name: "João Paulo Bassinello",
-          phone: "(19) 99456-8196",
-          // Mobile João Bassinello
-          chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net"
-        }
-      ]
-    };
+  let userkeycloakId = window.USER_KEYCLOAK_ID;
+  if (!userkeycloakId) {
+    userkeycloakId = uuidv1();
   }
 
   let chatApiUrl = window.CHAT_API_URL;
@@ -52,19 +25,18 @@ window.renderChatComponent = function renderChatComponent() {
     chatApiUrl = "http://localhost:8081";
     // chatApiUrl = 'https://chathomolog.tecsinapse.com.br';
   }
-  let disabled = false;
-  if (window.CHAT_DISABLED) {
-    disabled = true;
+
+  let getInitialStatePath = window.GET_INITIAL_STATE_PATH;
+  if (!getInitialStatePath) {
+    getInitialStatePath = '/rest/chat/initialState';
   }
 
   ReactDOM.render(
     <ThemeProvider variant={"orange"}>
       <Init
-        componentId={componentId}
-        reloadInitialState={reloadInitialState}
-        initialInfo={chatsInitialInfo}
+        userkeycloakId={userkeycloakId}
         chatApiUrl={chatApiUrl}
-        disabled={disabled}
+        getInitialStatePath={getInitialStatePath}
       />
     </ThemeProvider>,
     document.getElementById("chat-component-div")
