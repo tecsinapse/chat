@@ -5,7 +5,6 @@ import SockJsClient from "react-stomp";
 import {defaultFetch} from "../Util/fetch";
 import {buildChatMessageObject, buildSendingMessage, setStatusMessageFunc} from "../Util/message";
 import uuidv1 from "uuid/v1";
-// import {loadChatsInfos} from "./loadChatsInfos";
 
 const emptyChat = {
   chatId: null,
@@ -15,41 +14,6 @@ const emptyChat = {
   lastMessage: null,
   unread: 0
 };
-
-// async function loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading) {
-//
-//   let chats = await loadChatsInfos(initialInfo, chatApiUrl);
-//   setChats(chats);
-//   setIsLoading(false);
-//   return chats;
-  //
-  // const chatIds = initialInfo.chats.map(chat => chat.chatId).join(",");
-  // const completeChatInfos = await defaultFetch(
-  //   `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chatIds}/infos`,
-  //   "GET",
-  //   {}
-  // );
-  //
-  // const chats = [];
-  // completeChatInfos.forEach(completeInfo => {
-  //   // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
-  //   // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
-  //   const info = initialInfo.chats.filter(
-  //     chat => chat.chatId === completeInfo.chatId
-  //   )[0];
-  //   completeInfo.name = info.name || completeInfo.name;
-  //   completeInfo.phone = info.phone || completeInfo.phone;
-  //   completeInfo.lastMessageAt = moment(completeInfo.lastMessageAt).format(
-  //     "DD/MM/YYYY HH:mm"
-  //   );
-  //
-  //   chats.push(completeInfo);
-  // });
-  // setChats(chats);
-  // setIsLoading(false);
-  //
-  // return chats;
-// }
 
 const onSelectedChatMaker = (
   initialInfo,
@@ -89,7 +53,6 @@ const onSelectedChatMaker = (
 
 export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
   const [isLoading, setIsLoading] = useState(true);
-  // const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(emptyChat);
 
   const [page, setPage] = useState(1);
@@ -111,8 +74,6 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
   );
 
   useEffect(() => {
-    // loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading).then(
-    //   chats => {
     if (initialInfo.chats.length === 1) {
       onSelectedChatMaker(
         initialInfo,
@@ -125,8 +86,6 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
       )(initialInfo.chats[0]);
     }
     setIsLoading(false);
-    // }
-    // );
   }, [initialInfo, chatApiUrl, setIsLoading]);
 
   const handleNewExternalMessage = newMessage => {
@@ -247,7 +206,6 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
   };
 
   const onBackToChatList = () => {
-    // loadChatList(initialInfo, chatApiUrl, setChats, setIsLoading);
     setMessages([]);
     setCurrentChat(emptyChat);
     setBlocked(false);

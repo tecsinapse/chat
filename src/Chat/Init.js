@@ -1,14 +1,14 @@
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import {mdiArrowLeft, mdiChevronLeft, mdiChevronRight, mdiClose, mdiForum} from "@mdi/js";
 import Icon from "@mdi/react";
 import {Divider, FloatingButton} from "@tecsinapse/ui-kit";
 import {makeStyles, useTheme} from "@material-ui/styles";
 import {Badge, CircularProgress, Drawer, Grid, Typography} from "@material-ui/core";
 import {completeChatInfoWith, load} from "./loadChatsInfos";
-import SockJsClient from "react-stomp";
 import {ComponentLocations} from "./ComponentLocations";
 import {UnreadChats} from "./UnreadChats";
 import {RenderChat} from "./RenderChat";
+import {InitWebsockets} from "./InitWebsockets";
 
 const useStyle = makeStyles(theme => ({
   fabContainer: {
@@ -39,6 +39,25 @@ const useStyle = makeStyles(theme => ({
   }
 }));
 
+async function loadComponent(chatApiUrl, getInitialStatePath, setComponentInfo, setIsLoadingInitialState, setView, setCurrentChat) {
+  const info = await load(chatApiUrl, getInitialStatePath);
+  setComponentInfo(info);
+  setIsLoadingInitialState(false);
+  if (info.currentClient && Object.keys(info.currentClient).length > 0) {
+    // quando a visualização é de um cliente específico, então define as informações
+    // desse cliente como currentChat e exibe o chat direto
+    setView(ComponentLocations.CHAT);
+    const chats = info.allChats
+      .filter(chat => info.currentClient.clientChatIds.includes(chat.chatId));
+    setCurrentChat({
+      name: info.currentClient.clientName,
+      connectionKey: info.connectionKey,
+      disabled: info.currentClient.disabled,
+      chats: chats
+    });
+  }
+}
+
 export const Init = ({
                        userkeycloakId,
                        chatApiUrl,
@@ -54,23 +73,9 @@ export const Init = ({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   React.useEffect(() => {
-    load(chatApiUrl, getInitialStatePath).then(info => {
-      setComponentInfo(info);
-      setIsLoadingInitialState(false);
-      if (info.currentClient && Object.keys(info.currentClient).length > 0) {
-        // quando a visualização é de um cliente específico, então define as informações
-        // desse cliente como currentChat e exibe o chat direto
-        setView(ComponentLocations.CHAT);
-        const chats = info.allChats
-          .filter(chat => info.currentClient.clientChatIds.includes(chat.chatId));
-        setCurrentChat({
-          name: info.currentClient.clientName,
-          connectionKey: info.connectionKey,
-          disabled: info.currentClient.disabled,
-          chats: chats
-        });
-      }
-    });
+    loadComponent(chatApiUrl, getInitialStatePath, setComponentInfo, setIsLoadingInitialState, setView, setCurrentChat)
+      .then(() => {
+      });
   }, [
     chatApiUrl,
     getInitialStatePath,
@@ -79,37 +84,35 @@ export const Init = ({
     setIsLoadingInitialState
   ]);
 
-  let mainSocketClientRef = useRef();
   const chatIds = (componentInfo.allChats || []).map(chat => chat.chatId).join(",");
   const connectionKey = componentInfo.connectionKey;
   let unreadTotal = (componentInfo.allChats || []).reduce((acc, chat) => acc + chat.unread, 0);
 
-  const onConnectMainSocket = () => {
-    mainSocketClientRef.sendMessage(
-      `/chat/addUser/main/${connectionKey}/${userkeycloakId}`,
-      JSON.stringify({chatIds: chatIds}) // informação dos chats que esse usuário está acompanhando
-    );
-  };
-
-  const handleNewMainWebsocketMessage = updatedChatInfo => {
+  const onChatUpdated = (updatedChat) => {
     let chatsToUpdate = [];
     let newChat = true;
     const toUpdateInfo = {...componentInfo};
     componentInfo.allChats.forEach(chat => {
-      if (chat.chatId === updatedChatInfo.chatId) {
-        updatedChatInfo = completeChatInfoWith(chat, updatedChatInfo);
+      if (chat.chatId === updatedChat.chatId) {
+        updatedChat = completeChatInfoWith(chat, updatedChat);
 
-        chatsToUpdate.push(updatedChatInfo);
+        chatsToUpdate.push(updatedChat);
         newChat = false;
       } else {
         chatsToUpdate.push(chat);
       }
     });
     if (newChat) {
-      chatsToUpdate.push(updatedChatInfo);
+      chatsToUpdate.push(updatedChat);
     }
     toUpdateInfo.allChats = chatsToUpdate;
     setComponentInfo(toUpdateInfo);
+  };
+
+  const reloadComponent = () => {
+    loadComponent(chatApiUrl, getInitialStatePath, setComponentInfo, setIsLoadingInitialState, setView, setCurrentChat)
+      .then(() => {
+      });
   };
 
   const onSelectChat = (chat) => {
@@ -238,13 +241,13 @@ export const Init = ({
       </Drawer>
 
       {!isLoadingInitialState && (
-        <SockJsClient
-          url={`${chatApiUrl}/ws`}
-          topics={[`/topic/main.${userkeycloakId}`]}
-          onMessage={handleNewMainWebsocketMessage}
-          onConnect={onConnectMainSocket}
-          ref={client => (mainSocketClientRef = client)}
-        />
+        <InitWebsockets
+          chatApiUrl={chatApiUrl}
+          userkeycloakId={userkeycloakId}
+          chatIds={chatIds}
+          connectionKey={connectionKey}
+          onChatUpdated={onChatUpdated}
+          reloadComponent={reloadComponent}/>
       )}
     </div>
   );
