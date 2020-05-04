@@ -126,7 +126,7 @@ export const Init = ({
     setView(ComponentLocations.CHAT);
   };
 
-  let drawerWidth = window.innerWidth * 0.4;
+  let drawerWidth = window.innerWidth * 0.35;
   if (view === ComponentLocations.MESSAGE_MANAGEMENT) {
     drawerWidth = window.innerWidth * 0.8;
   }
@@ -203,33 +203,35 @@ export const Init = ({
           </div>
           <Divider variant="inset" component="li"/>
 
-          <div className={classes.messageManagementLinkContainer}
-               onClick={() => setView(ComponentLocations.MESSAGE_MANAGEMENT)}>
-            <Grid container justify="space-between">
-              <Grid item>
-                <Grid container spacing={1}>
-                  <Grid item>
-                    <Icon path={mdiForum} size={0.75} color={theme.palette.text.primary}
-                          style={{marginTop: '3px'}}/>
-                  </Grid>
-                  <Grid item>
-                    <Typography color="textPrimary" variant="body1" display="inline" style={{fontWeight: "bold"}}>
-                      Gestão de mensagens
-                    </Typography>
+          {view !== ComponentLocations.MESSAGE_MANAGEMENT && (
+            <div className={classes.messageManagementLinkContainer}
+                 onClick={() => setView(ComponentLocations.MESSAGE_MANAGEMENT)}>
+              <Grid container justify="space-between">
+                <Grid item>
+                  <Grid container spacing={1}>
+                    <Grid item>
+                      <Icon path={mdiForum} size={0.75} color={theme.palette.text.primary}
+                            style={{marginTop: '3px'}}/>
+                    </Grid>
+                    <Grid item>
+                      <Typography color="textPrimary" variant="body1" display="inline" style={{fontWeight: "bold"}}>
+                        Gestão de mensagens
+                      </Typography>
+                    </Grid>
                   </Grid>
                 </Grid>
+                <Grid item>
+                  <Icon
+                    onClick={() => setIsDrawerOpen(false)}
+                    color={theme.palette.text.primary}
+                    size={1}
+                    style={{cursor: 'pointer'}}
+                    path={mdiChevronRight}
+                  />
+                </Grid>
               </Grid>
-              <Grid item>
-                <Icon
-                  onClick={() => setIsDrawerOpen(false)}
-                  color={theme.palette.text.primary}
-                  size={1}
-                  style={{cursor: 'pointer'}}
-                  path={mdiChevronRight}
-                />
-              </Grid>
-            </Grid>
-          </div>
+            </div>
+          )}
           <Divider variant="inset" component="li"/>
 
           {view === ComponentLocations.UNREAD && (
@@ -246,7 +248,7 @@ export const Init = ({
           )}
           {view === ComponentLocations.MESSAGE_MANAGEMENT && (
             <MessageManagement
-              chats={componentInfo.allChats}
+              componentInfo={componentInfo}
               onSelectChat={onSelectChat}
             />
           )}

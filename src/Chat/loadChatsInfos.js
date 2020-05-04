@@ -47,11 +47,17 @@ export async function load(chatApiUrl, getInitialStatePath) {
 }
 
 export function completeChatInfoWith(initialInfo, updatedInfo) {
-  updatedInfo.name = initialInfo.name || updatedInfo.name;
-  updatedInfo.phone = initialInfo.phone || updatedInfo.phone;
-  const m = moment(updatedInfo.lastMessageAt);
-  updatedInfo.lastMessageAt = m.isValid() ?
-    m.format("DD/MM/YYYY HH:mm")
+  const finalInfo = {...updatedInfo, ...initialInfo};
+
+  const m1 = moment(finalInfo.lastMessageAt);
+  finalInfo.lastMessageAt = m1.isValid() ?
+    m1.format("DD/MM/YYYY HH:mm")
     : updatedInfo.lastMessageAt; // already formatted
-  return updatedInfo;
+
+  const m2 = moment(finalInfo.contactAt);
+  finalInfo.contactAt = m2.isValid() ?
+    m2.format("DD/MM/YYYY HH:mm")
+    : finalInfo.contactAt; // already formatted
+
+  return finalInfo;
 }

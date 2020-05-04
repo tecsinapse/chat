@@ -1,27 +1,87 @@
 import React from "react";
 import {makeStyles, useTheme} from "@material-ui/styles";
-import {cars} from "@tecsinapse/table/build/Table/exampleData";
-import {columnsSimple} from '@tecsinapse/table/build/Table/storyHelper';
 import {Table} from '@tecsinapse/table';
 
 const useStyle = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(0, 0, 2, 2),
+    padding: theme.spacing(0, 2),
   },
 }));
 
 export const MessageManagement = ({
-                                    chats,
+                                    componentInfo,
                                     onSelectChat
                                   }) => {
   const classes = useStyle();
   const theme = useTheme();
 
+  const columns = [{
+    title: 'Data do Contato',
+    field: 'contactAt',
+    options: {
+      filter: true
+    },
+  }, {
+    title: 'Cliente',
+    field: 'name',
+    options: {
+      filter: true,
+    }
+  }, {
+    title: 'Telefone',
+    field: 'phone',
+    options: {
+      filter: true
+    }
+  }];
+
+  const {extraInfoColumns} = componentInfo;
+  if (extraInfoColumns && Object.keys(extraInfoColumns).length > 0) {
+    Object.keys(extraInfoColumns).forEach((key) => {
+      columns.push({
+        title: extraInfoColumns[key],
+        field: `extraInfo.${key}`,
+        options: {
+          filter: true
+        }
+      });
+    });
+  }
+
+  const actions = [{
+    label: 'Visualizar Mensagens',
+    onClick: (rowData) => {
+      onSelectChat(rowData);
+    }
+  }];
+  const {actionLinks} = componentInfo;
+  if (actionLinks && actionLinks.length > 0) {
+    actionLinks.forEach((actionLink) => {
+      actions.push({
+        label: actionLink.label,
+        onClick: (rowData) => {
+          window.open(`${actionLink.path}?data=${JSON.stringify(rowData)}`, '_self');
+        }
+      })
+    })
+  }
+
   return (
     <div className={classes.root}>
-      <Table columns={columnsSimple} data={cars} rowId={row => row.id} onRowClick={rowData => {
-        console.log(rowData);
-      }}/>
+      <Table columns={columns}
+             data={componentInfo.allChats}
+             rowId={row => row.id}
+             pagination
+             exportOptions={{
+               exportTypes: [{
+                 type: 'csv'
+               }]
+             }}
+             toolbarOptions={{
+               title: 'Clientes do Chat'
+             }}
+             verticalActions
+             actions={actions}/>
     </div>
   );
 };

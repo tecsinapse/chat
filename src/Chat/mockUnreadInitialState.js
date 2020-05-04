@@ -10,18 +10,6 @@ export const mockUnreadInitialState = {
       extraInfo: {
         responsavel: 'Vendedor 01',
         dealer: 'Dealer XPTO',
-        segmento: 'Van'
-      }
-    },
-    {
-      name: "João Paulo Bassinello",
-      phone: "ASSISTENTE - (19) 99456-8196",
-      // Mobile João Bassinello
-      chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net",
-      contactAt: '2020-05-04T12:58:54Z',
-      extraInfo: {
-        responsavel: 'Rafael Dutra',
-        dealer: 'Divena São Paulo',
         segmento: 'Caminhão'
       }
     }
@@ -30,5 +18,15 @@ export const mockUnreadInitialState = {
     responsavel: 'Responsável',
     dealer: 'Dealer',
     segmento: 'Segmento'
-  }
+  },
+  actionLinks: [
+    {
+      label: 'Link 1',
+      path: '/link1'
+    },
+    {
+      label: 'Link 2',
+      path: '/link2'
+    },
+  ]
 };
