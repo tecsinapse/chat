@@ -1,7 +1,6 @@
 import {defaultFetch} from "../Util/fetch";
 import moment from "moment";
 import {mockUnreadInitialState} from "./mockUnreadInitialState";
-import {mockClientChatInitialState} from "./mockClientChatInitialState";
 
 /**
  * Busca dos dados para inicializar o componente
@@ -15,12 +14,12 @@ export async function load(chatApiUrl, getInitialStatePath) {
   // é essa informação que carrega quais chats são do usuário que está acessando o componente
   let initialInfoFromProduct;
   if (process.env.NODE_ENV === 'development') {
-    // initialInfoFromProduct = {...mockUnreadInitialState};
-    initialInfoFromProduct = {...mockClientChatInitialState};
+    initialInfoFromProduct = {...mockUnreadInitialState};
+    // initialInfoFromProduct = {...mockClientChatInitialState};
   } else {
     initialInfoFromProduct = await defaultFetch(getInitialStatePath,
       "GET",
-      {})
+      {});
   }
 
   const chatIds = initialInfoFromProduct.allChats.map(chat => chat.chatId).join(",");

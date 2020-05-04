@@ -14,11 +14,17 @@ import {Init} from "./Chat/Init";
 
 window.renderChatComponent = function renderChatComponent() {
 
+  /**
+   * ID do usuário logado no produto que está abrindo o chat
+   */
   let userkeycloakId = window.USER_KEYCLOAK_ID;
   if (!userkeycloakId) {
     userkeycloakId = uuidv1();
   }
 
+  /**
+   * URL do tecsinapse-chat
+   */
   let chatApiUrl = window.CHAT_API_URL;
   if (!chatApiUrl) {
     // fixed for local tests
@@ -26,9 +32,25 @@ window.renderChatComponent = function renderChatComponent() {
     // chatApiUrl = 'https://chathomolog.tecsinapse.com.br';
   }
 
+  /**
+   * Parâmetro de inicialização do componente que será enviado
+   * na requisição REST ao produto
+   */
+  let initParam = window.INIT_PARAM;
+  if (!initParam) {
+    initParam = '';
+  } else {
+    if (typeof initParam !== 'string') {
+      initParam = JSON.stringify(initParam);
+    }
+  }
+
+  /**
+   * Caminho do endpoint REST que carregará as informações iniciais do componente
+   */
   let getInitialStatePath = window.GET_INITIAL_STATE_PATH;
   if (!getInitialStatePath) {
-    getInitialStatePath = '/rest/chat/initialState';
+    getInitialStatePath = '/rest/chat/componentInfo?param=' + initParam;
   }
 
   ReactDOM.render(

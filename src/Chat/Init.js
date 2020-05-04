@@ -39,7 +39,8 @@ const useStyle = makeStyles(theme => ({
   }
 }));
 
-async function loadComponent(chatApiUrl, getInitialStatePath, setComponentInfo, setIsLoadingInitialState, setView, setCurrentChat) {
+async function loadComponent(chatApiUrl, getInitialStatePath, setComponentInfo,
+                             setIsLoadingInitialState, setView, setCurrentChat) {
   const info = await load(chatApiUrl, getInitialStatePath);
   setComponentInfo(info);
   setIsLoadingInitialState(false);
