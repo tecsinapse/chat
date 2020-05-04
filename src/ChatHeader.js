@@ -1,9 +1,9 @@
 import React from 'react';
-import { AgentBar, Column, Row, Subtitle, Title } from '@livechat/ui-kit';
-import { Badge, Typography } from '@material-ui/core';
-import { mdiArrowLeft, mdiClose } from '@mdi/js';
+import {AgentBar, Column, Row, Subtitle, Title} from '@livechat/ui-kit';
+import {Badge, Typography} from '@material-ui/core';
+import {mdiArrowLeft, mdiClose, mdiClock} from '@mdi/js';
 import Icon from '@mdi/react';
-import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit/build/Buttons/IconButton';
+import {IconButton as IconButtonMaterial} from '@tecsinapse/ui-kit/build/Buttons/IconButton';
 
 export const ChatHeader = ({
   minimize,
@@ -54,6 +54,12 @@ export const ChatHeader = ({
         <Column flexFill>
           <Title>
             <Typography
+              variant="body2"
+              style={{ color: theme.palette.primary.contrastText, fontWeight: "bold" }}
+            >
+              Cliente:
+            </Typography>
+            <Typography
               variant="h6"
               style={{ color: theme.palette.primary.contrastText }}
               noWrap
@@ -71,8 +77,15 @@ export const ChatHeader = ({
             </Typography>
           </Subtitle>
         </Column>
-        {hasCloseButton && (
-          <Column style={{ justifyContent: 'center' }}>
+        <Column style={{justifyContent: 'center'}}>
+          <IconButtonMaterial key="close" onClick={() => {}}>
+            <Icon
+              path={mdiClock}
+              size={1.0}
+              color={theme.palette.primary.contrastText}
+            />
+          </IconButtonMaterial>
+          {hasCloseButton && (
             <IconButtonMaterial key="close" onClick={onCloseChatClicked}>
               <Icon
                 path={mdiClose}
@@ -80,8 +93,8 @@ export const ChatHeader = ({
                 color={theme.palette.primary.contrastText}
               />
             </IconButtonMaterial>
-          </Column>
-        )}
+          )}
+        </Column>
       </Row>
     </AgentBar>
   );

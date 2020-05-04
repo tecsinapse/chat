@@ -27,11 +27,12 @@ export const Chat = ({
   onMessageResend,
   isBlocked,
   blockedMessage,
-
+  roundedCorners,
   chatList,
   onBackToChatList,
   onSelectedChat,
   notificationNumber,
+  containerHeight,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
@@ -40,7 +41,7 @@ export const Chat = ({
 
   return (
     <div>
-      <ChatTheme materialTheme={theme}>
+      <ChatTheme materialTheme={theme} roundedCorners={roundedCorners} containerHeight={containerHeight}>
         <div>
           <FixedWrapper.Root maximizedOnInit={isMaximizedOnly}>
             <FixedWrapper.Maximized>
@@ -186,6 +187,10 @@ Chat.propTypes = {
   onSelectedChat: PropTypes.func,
   /** Number of notification */
   notificationNumber: PropTypes.number,
+  /** Disable default rounded corners of divs */
+  roundedCorners: PropTypes.bool,
+  /** Message Chat Container height */
+  containerHeight: PropTypes.string,
 };
 
 export default Chat;
