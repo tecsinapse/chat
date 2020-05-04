@@ -9,6 +9,7 @@ import {ComponentLocations} from "./ComponentLocations";
 import {UnreadChats} from "./UnreadChats";
 import {RenderChat} from "./RenderChat";
 import {InitWebsockets} from "./InitWebsockets";
+import {MessageManagement} from "./MessageManagement";
 
 const useStyle = makeStyles(theme => ({
   fabContainer: {
@@ -24,8 +25,7 @@ const useStyle = makeStyles(theme => ({
   },
   drawerContainer: {
     margin: theme.spacing(2, 0, 2),
-    overflowX: "hidden",
-    width: theme.spacing(40)
+    overflowX: "hidden"
   },
   drawerHeader: {
     margin: theme.spacing(0, 2, 2, 2)
@@ -126,6 +126,11 @@ export const Init = ({
     setView(ComponentLocations.CHAT);
   };
 
+  let drawerWidth = window.innerWidth * 0.4;
+  if (view === ComponentLocations.MESSAGE_MANAGEMENT) {
+    drawerWidth = window.innerWidth * 0.8;
+  }
+
   return (
     <div className="Chat">
       <div className={classes.fabContainer}>
@@ -161,7 +166,7 @@ export const Init = ({
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
       >
-        <div className={classes.drawerContainer}>
+        <div className={classes.drawerContainer} style={{width: drawerWidth}}>
           <div className={classes.drawerHeader}>
             <Grid container justify="space-between">
               <Grid item>
@@ -198,7 +203,8 @@ export const Init = ({
           </div>
           <Divider variant="inset" component="li"/>
 
-          <div className={classes.messageManagementLinkContainer}>
+          <div className={classes.messageManagementLinkContainer}
+               onClick={() => setView(ComponentLocations.MESSAGE_MANAGEMENT)}>
             <Grid container justify="space-between">
               <Grid item>
                 <Grid container spacing={1}>
@@ -236,6 +242,12 @@ export const Init = ({
             <RenderChat
               initialInfo={currentChat}
               chatApiUrl={chatApiUrl}
+            />
+          )}
+          {view === ComponentLocations.MESSAGE_MANAGEMENT && (
+            <MessageManagement
+              chats={componentInfo.allChats}
+              onSelectChat={onSelectChat}
             />
           )}
         </div>
