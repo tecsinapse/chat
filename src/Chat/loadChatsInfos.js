@@ -1,6 +1,7 @@
 import {defaultFetch} from "../Util/fetch";
 import moment from "moment";
 import {mockUnreadInitialState} from "./mockUnreadInitialState";
+import {mockClientChatInitialState} from "./mockClientChatInitialState";
 
 /**
  * Busca dos dados para inicializar o componente
@@ -14,8 +15,10 @@ export async function load(chatApiUrl, getInitialStatePath) {
   // é essa informação que carrega quais chats são do usuário que está acessando o componente
   let initialInfoFromProduct;
   if (process.env.NODE_ENV === 'development') {
-    initialInfoFromProduct = {...mockUnreadInitialState};
-    // initialInfoFromProduct = {...mockClientChatInitialState};
+    // mock para tela de UNREAD
+    // initialInfoFromProduct = {...mockUnreadInitialState};
+    // mock para tela com currentClient
+    initialInfoFromProduct = {...mockClientChatInitialState};
   } else {
     initialInfoFromProduct = await defaultFetch(getInitialStatePath,
       "GET",
@@ -28,6 +31,18 @@ export async function load(chatApiUrl, getInitialStatePath) {
     "POST",
     {chatIds: chatIds}
   );
+
+  // TODO: remover
+  // complete chat info:
+  // chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net"
+  // connectionKey: "dyn-bot"
+  // lastMessage: "123"
+  // lastMessageAt: "2020-05-05T14:48:33.553664"
+  // name: "João Paulo Bassinello"
+  // phone: "5519994568196"
+  // status: "OK"
+  // type: "WHATSAPP"
+  // unread: 0
 
   const chats = [];
   completeChatInfos.forEach(completeInfo => {
@@ -47,7 +62,15 @@ export async function load(chatApiUrl, getInitialStatePath) {
 }
 
 export function completeChatInfoWith(initialInfo, updatedInfo) {
-  const finalInfo = {...updatedInfo, ...initialInfo};
+  const finalInfo = {...initialInfo, ...updatedInfo};
+
+  // deve manter somente algumas informações dos valores iniciais
+  if (initialInfo.name && initialInfo.name !== '') {
+    finalInfo.name = initialInfo.name;
+  }
+  if (initialInfo.phone && initialInfo.phone !== '') {
+    finalInfo.phone = initialInfo.phone;
+  }
 
   const m1 = moment(finalInfo.lastMessageAt);
   finalInfo.lastMessageAt = m1.isValid() ?

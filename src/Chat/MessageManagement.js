@@ -1,5 +1,5 @@
 import React from "react";
-import {makeStyles, useTheme} from "@material-ui/styles";
+import {makeStyles} from "@material-ui/styles";
 import {Table} from '@tecsinapse/table';
 
 const useStyle = makeStyles(theme => ({
@@ -13,7 +13,6 @@ export const MessageManagement = ({
                                     onSelectChat
                                   }) => {
   const classes = useStyle();
-  const theme = useTheme();
 
   const columns = [{
     title: 'Data do Contato',
@@ -26,6 +25,9 @@ export const MessageManagement = ({
     field: 'name',
     options: {
       filter: true,
+    },
+    customRender: (row) => {
+      return row.highlighted ? <strong>{row.name}</strong> : row.name;
     }
   }, {
     title: 'Telefone',

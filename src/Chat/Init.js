@@ -47,7 +47,7 @@ async function loadComponent(chatApiUrl, getInitialStatePath, setComponentInfo,
   if (info.currentClient && Object.keys(info.currentClient).length > 0) {
     // quando a visualização é de um cliente específico, então define as informações
     // desse cliente como currentChat e exibe o chat direto
-    setView(ComponentLocations.CHAT);
+    setView(ComponentLocations.SPECIFIC_CHAT);
     const chats = info.allChats
       .filter(chat => info.currentClient.clientChatIds.includes(chat.chatId));
     setCurrentChat({
@@ -171,21 +171,33 @@ export const Init = ({
             <Grid container justify="space-between">
               <Grid item>
                 <Grid container>
-                  {view === ComponentLocations.CHAT &&
+                  {(view === ComponentLocations.CHAT || view === ComponentLocations.MESSAGE_MANAGEMENT) &&
                   <Grid item style={{marginRight: theme.spacing(1)}}>
-                    <Icon
-                      onClick={() => {
+                    <Badge
+                      color="error"
+                      overlap={"circle"}
+                      variant={"dot"}
+                      badgeContent={unreadTotal}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "left"
                       }}
-                      color={theme.palette.primary.main}
-                      size={1.25}
-                      style={{cursor: 'pointer'}}
-                      path={mdiArrowLeft}
-                    />
+                    >
+                      <Icon
+                        onClick={() => setView(ComponentLocations.UNREAD)}
+                        color={theme.palette.primary.main}
+                        size={1.25}
+                        style={{cursor: 'pointer'}}
+                        path={mdiArrowLeft}
+                      />
+                    </Badge>
                   </Grid>
                   }
                   <Grid item>
                     <Typography variant="h5" color="primary">
-                      {view === ComponentLocations.CHAT ? 'Mensagens do Chat' : 'Painel do Chat'}
+                      {(view === ComponentLocations.CHAT || view === ComponentLocations.SPECIFIC_CHAT) && 'Mensagens do Chat'}
+                      {view === ComponentLocations.UNREAD && 'Painel do Chat'}
+                      {view === ComponentLocations.MESSAGE_MANAGEMENT && 'Gestão de Mensagens'}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -203,7 +215,7 @@ export const Init = ({
           </div>
           <Divider variant="inset" component="li"/>
 
-          {view !== ComponentLocations.MESSAGE_MANAGEMENT && (
+          {(view !== ComponentLocations.MESSAGE_MANAGEMENT && view !== ComponentLocations.SPECIFIC_CHAT) && (
             <div className={classes.messageManagementLinkContainer}
                  onClick={() => setView(ComponentLocations.MESSAGE_MANAGEMENT)}>
               <Grid container justify="space-between">
@@ -215,7 +227,7 @@ export const Init = ({
                     </Grid>
                     <Grid item>
                       <Typography color="textPrimary" variant="body1" display="inline" style={{fontWeight: "bold"}}>
-                        Gestão de mensagens
+                        Gestão de Mensagens
                       </Typography>
                     </Grid>
                   </Grid>
@@ -240,7 +252,7 @@ export const Init = ({
               onSelectChat={onSelectChat}
             />
           )}
-          {view === ComponentLocations.CHAT && (
+          {(view === ComponentLocations.CHAT || view === ComponentLocations.SPECIFIC_CHAT) && (
             <RenderChat
               initialInfo={currentChat}
               chatApiUrl={chatApiUrl}
