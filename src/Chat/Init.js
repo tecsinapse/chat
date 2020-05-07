@@ -111,6 +111,7 @@ export const Init = ({
   };
 
   const reloadComponent = () => {
+    setIsLoadingInitialState(true);
     loadComponent(chatApiUrl, getInitialStatePath, setComponentInfo, setIsLoadingInitialState, setView, setCurrentChat)
       .then(() => {
       });

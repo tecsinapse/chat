@@ -20,6 +20,23 @@ export async function defaultFetch(path, method, data, formData) {
     }
   }
 
+  return await customFetch(path, init);
+}
+
+export async function noAuthJsonFetch(path, method, data) {
+  let headers = new Headers({
+    'Content-Type': 'application/json',
+  });
+
+  let init = {
+    method,
+    headers,
+  };
+
+  return await customFetch(path, init);
+}
+
+export async function customFetch(path, init) {
   const res = await fetch(path, init);
 
   if (!res.ok) {

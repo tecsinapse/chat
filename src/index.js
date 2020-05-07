@@ -36,7 +36,7 @@ window.renderChatComponent = function renderChatComponent() {
    * Parâmetro de inicialização do componente que será enviado
    * na requisição REST ao produto
    */
-  let initParam = window.INIT_PARAM;
+  let initParam = window.CHAT_INIT_PARAM;
   if (!initParam) {
     initParam = '';
   } else {
@@ -48,7 +48,7 @@ window.renderChatComponent = function renderChatComponent() {
   /**
    * Caminho do endpoint REST que carregará as informações iniciais do componente
    */
-  let getInitialStatePath = window.GET_INITIAL_STATE_PATH;
+  let getInitialStatePath = window.CHAT_GET_INITIAL_STATE_PATH;
   if (!getInitialStatePath) {
     getInitialStatePath = '/rest/chat/componentInfo?param=' + initParam;
   }
@@ -67,4 +67,4 @@ window.renderChatComponent = function renderChatComponent() {
 };
 
 // uncomment for local tests
-window.renderChatComponent();
+// window.renderChatComponent();

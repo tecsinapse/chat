@@ -21,14 +21,11 @@ export const InitWebsockets = ({
   };
 
   const handleNewMainWebsocketMessage = updatedChatInfo => {
-    console.log(updatedChatInfo);
     onChatUpdated(updatedChatInfo);
   };
 
   const handleNewProductWebsocketMessage = () => {
-    console.log('handleNewProductWebsocketMessage');
     reloadComponent();
-    // TODO reload chat component
   };
 
   return (
@@ -43,12 +40,10 @@ export const InitWebsockets = ({
       />
       {/* Conexão WebSocket com o produto (dynamo peças / dynamo contato ativo / etc.. */}
       <SockJsClient
-        url={`${process.env.NODE_ENV === 'development' ? 'http://localhost:8282' : ''}/ws/chat`}
+        url={`${process.env.NODE_ENV === 'development' ? 'http://localhost:8282' : ''}/websocket/chat`}
         topics={[`/topic/chat.user.${userkeycloakId}`]}
         onMessage={handleNewProductWebsocketMessage}
-        onConnect={(a) => {
-          console.log(a);
-        }}
+        onConnect={() => {}}
         ref={client => (productSocketClientRef = client)}
       />
     </>

@@ -1,4 +1,4 @@
-import {defaultFetch} from "../Util/fetch";
+import {defaultFetch, noAuthJsonFetch} from "../Util/fetch";
 import moment from "moment";
 import {mockUnreadInitialState} from "./mockUnreadInitialState";
 import {mockClientChatInitialState} from "./mockClientChatInitialState";
@@ -16,11 +16,11 @@ export async function load(chatApiUrl, getInitialStatePath) {
   let initialInfoFromProduct;
   if (process.env.NODE_ENV === 'development') {
     // mock para tela de UNREAD
-    // initialInfoFromProduct = {...mockUnreadInitialState};
+    initialInfoFromProduct = {...mockUnreadInitialState};
     // mock para tela com currentClient
-    initialInfoFromProduct = {...mockClientChatInitialState};
+    // initialInfoFromProduct = {...mockClientChatInitialState};
   } else {
-    initialInfoFromProduct = await defaultFetch(getInitialStatePath,
+    initialInfoFromProduct = await noAuthJsonFetch(getInitialStatePath,
       "GET",
       {});
   }
@@ -32,30 +32,20 @@ export async function load(chatApiUrl, getInitialStatePath) {
     {chatIds: chatIds}
   );
 
-  // TODO: remover
-  // complete chat info:
-  // chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net"
-  // connectionKey: "dyn-bot"
-  // lastMessage: "123"
-  // lastMessageAt: "2020-05-05T14:48:33.553664"
-  // name: "João Paulo Bassinello"
-  // phone: "5519994568196"
-  // status: "OK"
-  // type: "WHATSAPP"
-  // unread: 0
-
   const chats = [];
-  completeChatInfos.forEach(completeInfo => {
-    // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
-    // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
-    const info = initialInfoFromProduct.allChats.filter(
-      chat => chat.chatId === completeInfo.chatId
-    )[0];
+  if (completeChatInfos && Array.isArray(completeChatInfos)) {
+    completeChatInfos.forEach(completeInfo => {
+      // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
+      // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
+      const info = initialInfoFromProduct.allChats.filter(
+        chat => chat.chatId === completeInfo.chatId
+      )[0];
 
-    completeInfo = completeChatInfoWith(info, completeInfo);
+      completeInfo = completeChatInfoWith(info, completeInfo);
 
-    chats.push(completeInfo);
-  });
+      chats.push(completeInfo);
+    });
+  }
 
   initialInfoFromProduct.allChats = chats;
   return initialInfoFromProduct;
