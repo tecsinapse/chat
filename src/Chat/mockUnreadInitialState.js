@@ -12,7 +12,17 @@ export const mockUnreadInitialState = {
         responsavel: 'Vendedor 01',
         dealer: 'Dealer XPTO',
         segmento: 'Caminhão',
-      }
+      },
+      actions: [
+        {
+          label: 'Link 1',
+          path: '/link1'
+        },
+        {
+          label: 'Link 2',
+          path: '/link2'
+        }
+      ]
     }
   ],
   extraInfoColumns: {
@@ -20,14 +30,4 @@ export const mockUnreadInitialState = {
     dealer: 'Dealer',
     segmento: 'Segmento',
   },
-  actionLinks: [
-    {
-      label: 'Link 1',
-      path: '/link1'
-    },
-    {
-      label: 'Link 2',
-      path: '/link2'
-    },
-  ]
 };

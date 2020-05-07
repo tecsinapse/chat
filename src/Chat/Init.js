@@ -145,7 +145,11 @@ export const Init = ({
         >
           <FloatingButton
             className={classes.fab}
-            onClick={() => setIsDrawerOpen(true)}
+            onClick={() => {
+              if (!isLoadingInitialState) {
+                setIsDrawerOpen(true);
+              }
+            }}
             variant="secondary"
             size="small"
           >
