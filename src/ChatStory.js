@@ -10,6 +10,7 @@ export const ChatStory = ({
   isBlocked = false,
   blockedMessage = undefined,
   initialChatList = [],
+  warningMessage,
 }) => {
   const [messages, setMessages] = useState(initialMessages);
   const [isLoading, setIsLoading] = useState(false);
@@ -270,6 +271,11 @@ export const ChatStory = ({
         notificationNumber={totalUnread.current}
         onBackToChatList={onBackToChatList}
         onSelectedChat={onSelectedChat}
+        warningMessage={warningMessage}
+        customHeader={{
+          headerBackground: '#f7f7f7',
+          headerText: '#000',
+        }}
       />
     </div>
   );

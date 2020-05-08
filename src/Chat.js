@@ -33,15 +33,24 @@ export const Chat = ({
   onSelectedChat,
   notificationNumber,
   containerHeight,
+  chatOptions,
+  customHeader,
+  warningMessage,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
     chatList ? ChatLocations.CHAT_LIST : ChatLocations.MESSAGES
   );
+  const { headerBackground, headerText, headerLabel } = customHeader;
 
   return (
     <div>
-      <ChatTheme materialTheme={theme} roundedCorners={roundedCorners} containerHeight={containerHeight}>
+      <ChatTheme
+        materialTheme={theme}
+        roundedCorners={roundedCorners}
+        containerHeight={containerHeight}
+        headerBackground={headerBackground}
+      >
         <div>
           <FixedWrapper.Root maximizedOnInit={isMaximizedOnly}>
             <FixedWrapper.Maximized>
@@ -70,6 +79,10 @@ export const Chat = ({
                 setLocation={setLocation}
                 onSelectedChat={onSelectedChat}
                 notificationNumber={notificationNumber}
+                chatOptions={chatOptions}
+                headerLabel={headerLabel}
+                headerText={headerText}
+                warningMessage={warningMessage}
               />
             </FixedWrapper.Maximized>
 
@@ -103,6 +116,19 @@ Chat.defaultProps = {
   onBackToChatList: undefined,
   onSelectedChat: undefined,
   notificationNumber: 0,
+  chatOptions: {
+    show: false,
+    color: '#fff',
+    handleFunc: () => {},
+  },
+  customHeader: {
+    headerLabel: undefined,
+    headerBackground: undefined,
+    headerText: undefined,
+  },
+  warningMessage: undefined,
+  roundedCorners: true,
+  containerHeight: '500px',
 };
 
 Chat.propTypes = {
@@ -191,6 +217,20 @@ Chat.propTypes = {
   roundedCorners: PropTypes.bool,
   /** Message Chat Container height */
   containerHeight: PropTypes.string,
+  /** Show vertical dots on chat window for options */
+  chatOptions: PropTypes.shape({
+    show: PropTypes.bool,
+    color: PropTypes.string,
+    handleFunc: PropTypes.func,
+  }),
+  /** Change header label (text), background color and text color */
+  customHeader: PropTypes.shape({
+    headerLabel: PropTypes.string,
+    headerBackground: PropTypes.string,
+    headerText: PropTypes.string,
+  }),
+  /** Display a message in warning format */
+  warningMessage: PropTypes.string,
 };
 
 export default Chat;

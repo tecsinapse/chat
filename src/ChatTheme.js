@@ -1,17 +1,22 @@
 import React from 'react';
 import { ThemeProvider } from '@livechat/ui-kit';
 import {
-  defaultGreyDark,
-  defaultWhite,
-  defaultGreyLight4,
   defaultBlack,
+  defaultGreyDark,
+  defaultGreyLight4,
+  defaultWhite,
 } from '@tecsinapse/ui-kit/build/colors';
 
-const getTheme = (materialTheme, roundedCorners = true, containerHeight = '500px') => ({
+const getTheme = (
+  materialTheme,
+  roundedCorners = true,
+  containerHeight = '500px',
+  headerBackground = false
+) => ({
   AgentBar: {
     Avatar: {},
     css: {
-      backgroundColor: materialTheme.palette.secondary.main,
+      backgroundColor: headerBackground || materialTheme.palette.secondary.main,
       borderRadius: roundedCorners ? materialTheme.spacing(0.5, 0.5, 0, 0) : 0,
     },
   },
@@ -117,7 +122,22 @@ const getTheme = (materialTheme, roundedCorners = true, containerHeight = '500px
   MessageTitle: {},
 });
 
-const ChatTheme = ({ children, materialTheme, roundedCorners, containerHeight }) => (
-  <ThemeProvider theme={getTheme(materialTheme, roundedCorners, containerHeight)}>{children}</ThemeProvider>
+const ChatTheme = ({
+  children,
+  materialTheme,
+  roundedCorners,
+  containerHeight,
+  headerBackground,
+}) => (
+  <ThemeProvider
+    theme={getTheme(
+      materialTheme,
+      roundedCorners,
+      containerHeight,
+      headerBackground
+    )}
+  >
+    {children}
+  </ThemeProvider>
 );
 export default ChatTheme;

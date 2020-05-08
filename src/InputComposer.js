@@ -1,17 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
-  TextInput,
-  TextComposer,
-  Row,
   IconButton,
+  Row,
   SendButton,
+  TextComposer,
+  TextInput,
 } from '@livechat/ui-kit';
 import { Typography } from '@material-ui/core';
 import {
-  mdiMicrophone,
-  mdiPaperclip,
   mdiImage,
   mdiLibraryVideo,
+  mdiMicrophone,
+  mdiPaperclip,
   mdiSend,
 } from '@mdi/js';
 import Icon from '@mdi/react';
@@ -53,6 +53,7 @@ export const InputComposer = ({
     }
   };
 
+  const blockedMessageSpacing = { letterSpacing: '-0.1px' };
   return (
     <>
       <PreviewList files={files} setFiles={setFiles} />
@@ -82,7 +83,11 @@ export const InputComposer = ({
       >
         {isBlocked ? (
           <Row align="center" justifyContent="space-around">
-            <Typography variant="subtitle2" color="error">
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              style={blockedMessageSpacing}
+            >
               {blockedMessage}
             </Typography>
           </Row>
@@ -93,13 +98,13 @@ export const InputComposer = ({
                 <TextInput fill placeholder="Digite uma mensagem" />
               )}
 
-              {/* 
-                  It's using the <SendButton/ /> to handle the send when typing 
+              {/*
+                  It's using the <SendButton/ /> to handle the send when typing
                   some text (easier because it is implemented by the livechat).
                   This scenario cannot handle the attachment files with no text (active bug), though.
-                  So, we are using the <Icon /> to handle the bug scenario and keeping the 
+                  So, we are using the <Icon /> to handle the bug scenario and keeping the
                   livechat for user text scenario (with or without attachment).
-                  TODO: Keep only one handler, either by fixing the active bug or implementing the text 
+                  TODO: Keep only one handler, either by fixing the active bug or implementing the text
                   handler on our <Icon /> (using controlled component passing 'value ' to TextComposer)
                 */}
               {(writing || !isThereAudioSupport) && <SendButton fill />}

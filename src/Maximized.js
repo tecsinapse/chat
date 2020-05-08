@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import { MessageList } from '@livechat/ui-kit';
-
 import { makeStyles, useTheme } from '@material-ui/styles';
-import { isStringNotBlank } from '@tecsinapse/es-utils/build/object';
-
 import {
   defaultGrey2,
   defaultGreyLight5,
 } from '@tecsinapse/ui-kit/build/colors';
 
 import { ChatHeader } from './ChatHeader';
-import { ErrorDialog } from './ErrorDialog';
 import { InputComposer } from './InputComposer';
 import { ChatLocations } from './ChatLocations';
 import MessageView from './MessageView';
@@ -24,6 +20,8 @@ const useStyle = makeStyles(theme => ({
   },
   at: {
     color: defaultGreyLight5,
+    fontSize: '9px',
+    letterSpacing: '-0.1px',
   },
   authorName: {
     color: defaultGrey2,
@@ -161,6 +159,10 @@ const Maximized = ({
   setLocation,
   onSelectedChat,
   notificationNumber,
+  chatOptions,
+  headerLabel,
+  headerText,
+  warningMessage,
 }) => {
   const classes = useStyle();
   const theme = useTheme();
@@ -188,6 +190,14 @@ const Maximized = ({
         onBackward={onBackward}
         notificationNumber={notificationNumber}
         classes={classes}
+        chatOptions={chatOptions}
+        headerLabel={headerLabel}
+        headerText={headerText}
+        isBlocked={isBlocked}
+        showError={showError}
+        setShowError={setShowError}
+        errorMessage={error}
+        warningMessage={warningMessage}
       />
       <MessageList
         active
@@ -196,15 +206,6 @@ const Maximized = ({
           padding,
         }}
       >
-        {isStringNotBlank(error) && showError && (
-          <ErrorDialog
-            classes={classes}
-            theme={theme}
-            error={error}
-            setShowError={setShowError}
-          />
-        )}
-
         {location === ChatLocations.MESSAGES && (
           <MessageView
             messages={messages}

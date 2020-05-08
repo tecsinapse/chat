@@ -58,9 +58,7 @@ Here you can check the code snippet for each story.
   <ChatStory
     isMaximizedOnly
     isBlocked
-    blockedMessage="Já se passaram 24h desde a última mensagem enviada pelo cliente,
-            por isso não é possível enviar nova mensagem por esse canal de comunicação, por favor,
-            entre em contato com o cliente por outro meio."
+    blockedMessage="Você não pode mais enviar mensagens para esse chat."
   />
 </Story>
 
@@ -87,4 +85,12 @@ Here you can check the code snippet for each story.
   />
 </Story>
 
-<Source id="chat--chat-list" />
+<Source id="chat--chat-grouped" />
+
+## Chat Warning
+
+<Story name="Chat Warning" parameters={{ docs: { disable: true } }}>
+  <ChatStory isMaximizedOnly warningMessage="O envio de mensagem irá expirar em 12 horas." />
+</Story>
+
+<Source id="chat--chat-warning" />
