@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AgentBar, Column, Row, Subtitle, Title } from '@livechat/ui-kit';
 import { Badge, makeStyles, Typography } from '@material-ui/core';
 import { mdiArrowLeft, mdiClose, mdiDotsVertical } from '@mdi/js';
@@ -42,11 +42,14 @@ export const ChatHeader = ({
   errorMessage,
   warningMessage,
 }) => {
-  const initialState =
-    isBlocked ||
-    (showError && isStringNotBlank(errorMessage)) ||
-    isStringNotBlank(warningMessage);
-  const [showWarning, setShowWarning] = useState(initialState);
+  const [showWarning, setShowWarning] = useState(false);
+  useEffect(() => {
+    setShowWarning(
+      isBlocked ||
+        (showError && isStringNotBlank(errorMessage)) ||
+        isStringNotBlank(warningMessage)
+    );
+  }, [isBlocked, showError, warningMessage, errorMessage]);
 
   const handleWarning = state => {
     setShowWarning(state);
