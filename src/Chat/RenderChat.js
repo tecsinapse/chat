@@ -229,7 +229,10 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
 
   const title = currentChat.name || initialInfo.name || "Cliente";
   let subTitle = currentChat.phone ? currentChat.phone : "";
-  const timeToExpire = `O envio de mensagem irá expirar em ${currentChat.hoursToBlock} horas.`;
+  const timeToExpire =
+    currentChat &&
+    currentChat.hoursToBlock &&
+    `O envio de mensagem irá expirar em ${currentChat.hoursToBlock} horas.`;
 
   const onAudio = (blob) => {
     const localId = uuidv1();
