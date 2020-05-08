@@ -1,7 +1,7 @@
-import {defaultFetch, noAuthJsonFetch} from "../Util/fetch";
+import { defaultFetch, noAuthJsonFetch } from "../Util/fetch";
 import moment from "moment";
-import {mockUnreadInitialState} from "./mockUnreadInitialState";
-import {mockClientChatInitialState} from "./mockClientChatInitialState";
+import { mockUnreadInitialState } from "./mockUnreadInitialState";
+import { mockClientChatInitialState } from "./mockClientChatInitialState"; // eslint-disable-line no-unused-vars
 
 /**
  * Busca dos dados para inicializar o componente
@@ -14,31 +14,61 @@ export async function load(chatApiUrl, getInitialStatePath) {
   // primeiro busca a informação do produto local. É essa informação que fará a inicialização do chat
   // é essa informação que carrega quais chats são do usuário que está acessando o componente
   let initialInfoFromProduct;
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     // mock para tela de UNREAD
-    initialInfoFromProduct = {...mockUnreadInitialState};
+    initialInfoFromProduct = { ...mockUnreadInitialState };
     // mock para tela com currentClient
-    // initialInfoFromProduct = {...mockClientChatInitialState};
+    // initialInfoFromProduct = { ...mockClientChatInitialState };
   } else {
-    initialInfoFromProduct = await noAuthJsonFetch(getInitialStatePath,
+    initialInfoFromProduct = await noAuthJsonFetch(
+      getInitialStatePath,
       "GET",
-      {});
+      {}
+    );
   }
 
-  const chatIds = initialInfoFromProduct.allChats.map(chat => chat.chatId).join(",");
+  const chatIds = initialInfoFromProduct.allChats
+    .map((chat) => chat.chatId)
+    .join(",");
   const completeChatInfos = await defaultFetch(
     `${chatApiUrl}/api/chats/${initialInfoFromProduct.connectionKey}/infos`,
     "POST",
-    {chatIds: chatIds}
+    { chatIds: chatIds }
   );
+
+  // TODO: Remover ao terminar desenvolvimento
+  /*const completeChatInfos = [
+    {
+      chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net",
+      connectionKey: "dyn-bot",
+      lastMessage: "Ok, pode enviar a papelada hoje!",
+      lastMessageAt: "2020-05-05T14:48:33.553664",
+      name: "João Paulo Bassinello",
+      phone: "5519994568196",
+      status: "OK",
+      type: "WHATSAPP",
+      unread: 1,
+    },
+    {
+      chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net",
+      connectionKey: "dyn-bot",
+      lastMessage: "Ok, pode enviar a papelada hoje!",
+      lastMessageAt: "2020-05-05T14:48:33.553664",
+      name: "João Paulo Bassinello",
+      phone: "5519994568196",
+      status: "OK",
+      type: "WHATSAPP",
+      unread: 1,
+    },
+  ];*/
 
   const chats = [];
   if (completeChatInfos && Array.isArray(completeChatInfos)) {
-    completeChatInfos.forEach(completeInfo => {
+    completeChatInfos.forEach((completeInfo) => {
       // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
       // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
       const info = initialInfoFromProduct.allChats.filter(
-        chat => chat.chatId === completeInfo.chatId
+        (chat) => chat.chatId === completeInfo.chatId
       )[0];
 
       completeInfo = completeChatInfoWith(info, completeInfo);
@@ -52,24 +82,24 @@ export async function load(chatApiUrl, getInitialStatePath) {
 }
 
 export function completeChatInfoWith(initialInfo, updatedInfo) {
-  const finalInfo = {...initialInfo, ...updatedInfo};
+  const finalInfo = { ...initialInfo, ...updatedInfo };
 
   // deve manter somente algumas informações dos valores iniciais
-  if (initialInfo.name && initialInfo.name !== '') {
+  if (initialInfo.name && initialInfo.name !== "") {
     finalInfo.name = initialInfo.name;
   }
-  if (initialInfo.phone && initialInfo.phone !== '') {
+  if (initialInfo.phone && initialInfo.phone !== "") {
     finalInfo.phone = initialInfo.phone;
   }
 
   const m1 = moment(finalInfo.lastMessageAt);
-  finalInfo.lastMessageAt = m1.isValid() ?
-    m1.format("DD/MM/YYYY HH:mm")
+  finalInfo.lastMessageAt = m1.isValid()
+    ? m1.format("DD/MM/YYYY HH:mm")
     : updatedInfo.lastMessageAt; // already formatted
 
   const m2 = moment(finalInfo.contactAt);
-  finalInfo.contactAt = m2.isValid() ?
-    m2.format("DD/MM/YYYY HH:mm")
+  finalInfo.contactAt = m2.isValid()
+    ? m2.format("DD/MM/YYYY HH:mm")
     : finalInfo.contactAt; // already formatted
 
   return finalInfo;

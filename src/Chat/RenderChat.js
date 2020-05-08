@@ -1,9 +1,13 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Chat} from "@tecsinapse/chat";
+import React, { useEffect, useRef, useState } from "react";
+import { Chat } from "@tecsinapse/chat";
 import SockJsClient from "react-stomp";
 
-import {defaultFetch} from "../Util/fetch";
-import {buildChatMessageObject, buildSendingMessage, setStatusMessageFunc} from "../Util/message";
+import { defaultFetch } from "../Util/fetch";
+import {
+  buildChatMessageObject,
+  buildSendingMessage,
+  setStatusMessageFunc,
+} from "../Util/message";
 import uuidv1 from "uuid/v1";
 
 const emptyChat = {
@@ -12,7 +16,7 @@ const emptyChat = {
   name: null,
   phone: null,
   lastMessage: null,
-  unread: 0
+  unread: 0,
 };
 
 const onSelectedChatMaker = (
@@ -23,7 +27,7 @@ const onSelectedChatMaker = (
   setBlocked,
   chatApiUrl,
   messagesEndRef
-) => chat => {
+) => (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);
 
@@ -31,9 +35,9 @@ const onSelectedChatMaker = (
     `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chat.chatId}/messages?page=0&size=50`,
     "GET",
     {}
-  ).then(pageResults => {
+  ).then((pageResults) => {
     const messages = pageResults.content
-      .map(externalMessage => {
+      .map((externalMessage) => {
         return buildChatMessageObject(externalMessage, chat.chatId);
       })
       .reverse();
@@ -45,13 +49,13 @@ const onSelectedChatMaker = (
       // workaround to wait for all elements to render
       messagesEndRef.current.scrollIntoView({
         block: "end",
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }, 700);
   });
 };
 
-export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
+export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
 
@@ -88,7 +92,7 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
     setIsLoading(false);
   }, [initialInfo, chatApiUrl, setIsLoading]);
 
-  const handleNewExternalMessage = newMessage => {
+  const handleNewExternalMessage = (newMessage) => {
     // Append received message when client message or
     // it comes from tec-chat (not create by the user)
     if (newMessage.type === "CHAT") {
@@ -107,7 +111,7 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
   const onConnect = () => {
     const chatMessage = {
       from: currentChat.chatId,
-      type: "JOIN"
+      type: "JOIN",
     };
 
     clientRef.sendMessage(
@@ -121,7 +125,7 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
       from: currentChat.chatId,
       type: "CHAT",
       text: newMessage,
-      localId: localId
+      localId: localId,
     };
 
     try {
@@ -142,8 +146,8 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
         files[Object.keys(files)[0]].mediaType.startsWith("application"));
     const fileTitle = titleAsMessage ? undefined : title;
 
-    Object.keys(files).forEach(uid => {
-      setMessages(prevMessages => {
+    Object.keys(files).forEach((uid) => {
+      setMessages((prevMessages) => {
         const copyPrevMessages = [...prevMessages];
         copyPrevMessages.push(
           buildSendingMessage(uid, undefined, fileTitle, files[uid])
@@ -173,9 +177,8 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
       {},
       formData
     )
-      .then(() => {
-      })
-      .catch(err => {
+      .then(() => {})
+      .catch((err) => {
         if (err.status === 403) {
           setBlocked(true);
         }
@@ -192,9 +195,9 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
       `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${currentChat.chatId}/messages?page=${page}&size=50`,
       "GET",
       {}
-    ).then(pageResults => {
+    ).then((pageResults) => {
       const loadedMessages = pageResults.content
-        .map(externalMessage => {
+        .map((externalMessage) => {
           return buildChatMessageObject(externalMessage, currentChat.chatId);
         })
         .reverse();
@@ -213,9 +216,9 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
     setHasMore(true);
   };
 
-  const onMessageSend = text => {
+  const onMessageSend = (text) => {
     const localId = uuidv1();
-    setMessages(prevMessages => {
+    setMessages((prevMessages) => {
       const copyPrevMessages = [...prevMessages];
       copyPrevMessages.push(buildSendingMessage(localId, text));
       return copyPrevMessages;
@@ -226,10 +229,11 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
 
   const title = currentChat.name || initialInfo.name || "Cliente";
   let subTitle = currentChat.phone ? currentChat.phone : "";
+  const timeToExpire = `O envio de mensagem irá expirar em ${currentChat.hoursToBlock} horas.`;
 
-  const onAudio = blob => {
+  const onAudio = (blob) => {
     const localId = uuidv1();
-    setMessages(prevMessages => {
+    setMessages((prevMessages) => {
       const copyPrevMessages = [...prevMessages];
       copyPrevMessages.push(
         buildSendingMessage(
@@ -238,7 +242,7 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
           undefined,
           {
             mediaType: "audio",
-            data: blob.blobURL
+            data: blob.blobURL,
           },
           blob.blob
         )
@@ -250,14 +254,14 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
     sendData(localId, undefined, blob.blob);
   };
 
-  const onMessageResend = localId => {
+  const onMessageResend = (localId) => {
     // Change message status
     setStatusMessage(localId, "sending");
 
     // Resend to backend
-    const message = messages.find(m => m.localId === localId);
+    const message = messages.find((m) => m.localId === localId);
     if (message && message.medias && message.medias.length > 0) {
-      message.medias.forEach(media =>
+      message.medias.forEach((media) =>
         sendData(localId, message.title, media.data)
       );
     } else if (message && message.text) {
@@ -266,7 +270,7 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
   };
 
   return (
-    <div className="App">
+    <div>
       <Chat
         messages={messages}
         onMessageSend={onMessageSend}
@@ -281,15 +285,19 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
         loadMore={loadMore}
         onMessageResend={onMessageResend}
         isBlocked={blocked}
-        blockedMessage={`Já se passaram 24h desde a última mensagem enviada pelo cliente, 
-        por isso não é possível enviar nova mensagem por esse canal de comunicação. 
-        Por favor, entre em contato com o cliente por outro meio`}
+        blockedMessage="Você não pode mais enviar mensagens para esse chat."
         chatList={initialInfo.chats.length > 1 ? initialInfo.chats : undefined}
         onBackToChatList={onBackToChatList}
         onSelectedChat={onSelectedChat}
         disabledSend={isLoading && messages.length === 0}
         roundedCorners={false}
-        containerHeight={"75vH"}
+        containerHeight="80vh"
+        customHeader={{
+          headerLabel: "Cliente:",
+          headerBackground: "#f7f7f7",
+          headerText: "#000",
+        }}
+        warningMessage={timeToExpire}
       />
 
       {currentChat.chatId && (
@@ -298,7 +306,7 @@ export const RenderChat = ({chatApiUrl, initialInfo, disabled = false}) => {
           topics={[`/topic/${initialInfo.connectionKey}.${currentChat.chatId}`]}
           onMessage={handleNewExternalMessage}
           onConnect={onConnect}
-          ref={client => (clientRef = client)}
+          ref={(client) => (clientRef = client)}
         />
       )}
     </div>
