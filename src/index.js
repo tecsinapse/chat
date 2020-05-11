@@ -53,12 +53,18 @@ window.renderChatComponent = function renderChatComponent() {
     getInitialStatePath = '/rest/chat/componentInfo?param=' + initParam;
   }
 
+  let openWhenLoad = window.CHAT_OPEN_WHEN_LOAD;
+  if (!openWhenLoad) {
+    openWhenLoad = false;
+  }
+
   ReactDOM.render(
     <ThemeProvider variant={"orange"}>
       <Init
         userkeycloakId={userkeycloakId}
         chatApiUrl={chatApiUrl}
         getInitialStatePath={getInitialStatePath}
+        openWhenLoad={openWhenLoad}
       />
     </ThemeProvider>,
     document.getElementById("chat-component-div")
@@ -67,4 +73,4 @@ window.renderChatComponent = function renderChatComponent() {
 };
 
 // uncomment for local tests
-window.renderChatComponent();
+// window.renderChatComponent();

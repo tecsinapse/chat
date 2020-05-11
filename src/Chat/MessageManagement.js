@@ -2,6 +2,7 @@ import React from "react";
 import {makeStyles} from "@material-ui/styles";
 import {Table} from '@tecsinapse/table';
 import TableRowActions from "@tecsinapse/table/build/Table/TableRowActions";
+import jwt from "jwt-simple";
 
 const useStyle = makeStyles(theme => ({
   root: {
@@ -11,7 +12,8 @@ const useStyle = makeStyles(theme => ({
 
 export const MessageManagement = ({
                                     componentInfo,
-                                    onSelectChat
+                                    onSelectChat,
+                                    userkeycloakId
                                   }) => {
   const classes = useStyle();
 
@@ -66,7 +68,8 @@ export const MessageManagement = ({
           actions.push({
             label: actionLink.label,
             onClick: (rowData) => {
-              window.open(`${actionLink.path}?data=${JSON.stringify(rowData)}`, '_self');
+              const encodedData = jwt.encode({data: JSON.stringify(rowData)}, userkeycloakId, 'HS256');
+              window.open(`${actionLink.path}?data=${encodedData}`, '_self');
             }
           });
         });

@@ -62,7 +62,8 @@ async function loadComponent(chatApiUrl, getInitialStatePath, setComponentInfo,
 export const Init = ({
                        userkeycloakId,
                        chatApiUrl,
-                       getInitialStatePath
+                       getInitialStatePath,
+                       openWhenLoad = false
                      }) => {
 
   const classes = useStyle();
@@ -76,6 +77,9 @@ export const Init = ({
   React.useEffect(() => {
     loadComponent(chatApiUrl, getInitialStatePath, setComponentInfo, setIsLoadingInitialState, setView, setCurrentChat)
       .then(() => {
+        if (openWhenLoad) {
+          setIsDrawerOpen(true);
+        }
       });
   }, [
     chatApiUrl,
@@ -267,6 +271,7 @@ export const Init = ({
             <MessageManagement
               componentInfo={componentInfo}
               onSelectChat={onSelectChat}
+              userkeycloakId={userkeycloakId}
             />
           )}
         </div>
