@@ -10,10 +10,9 @@ import "./index.css";
 import uuidv1 from "uuid/v1";
 
 import * as serviceWorker from "./serviceWorker";
-import {Init} from "./Chat/Init";
+import { Init } from "./Chat/Init";
 
 window.renderChatComponent = function renderChatComponent() {
-
   /**
    * ID do usuário logado no produto que está abrindo o chat
    */
@@ -38,9 +37,9 @@ window.renderChatComponent = function renderChatComponent() {
    */
   let initParam = window.CHAT_INIT_PARAM;
   if (!initParam) {
-    initParam = '';
+    initParam = "";
   } else {
-    if (typeof initParam !== 'string') {
+    if (typeof initParam !== "string") {
       initParam = JSON.stringify(initParam);
     }
   }
@@ -50,7 +49,7 @@ window.renderChatComponent = function renderChatComponent() {
    */
   let getInitialStatePath = window.CHAT_GET_INITIAL_STATE_PATH;
   if (!getInitialStatePath) {
-    getInitialStatePath = '/rest/chat/componentInfo?param=' + initParam;
+    getInitialStatePath = "/rest/chat/componentInfo?param=" + initParam;
   }
 
   let openWhenLoad = window.CHAT_OPEN_WHEN_LOAD;
@@ -59,7 +58,7 @@ window.renderChatComponent = function renderChatComponent() {
   }
 
   ReactDOM.render(
-    <ThemeProvider variant={"orange"}>
+    <ThemeProvider variant="orange">
       <Init
         userkeycloakId={userkeycloakId}
         chatApiUrl={chatApiUrl}
