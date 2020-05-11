@@ -276,6 +276,9 @@ export const ChatStory = ({
           headerBackground: '#f7f7f7',
           headerText: '#000',
         }}
+        chatOptions={{
+          color: '#000',
+        }}
       />
     </div>
   );

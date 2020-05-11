@@ -93,7 +93,7 @@ export const ChatHeader = ({
                   <Icon
                     path={mdiArrowLeft}
                     size={1.0}
-                    color={theme.palette.primary.contrastText}
+                    color={chatOptionsColor}
                   />
                 </Badge>
               </IconButtonMaterial>
@@ -136,11 +136,7 @@ export const ChatHeader = ({
             )}
             {hasCloseButton && (
               <IconButtonMaterial key="close" onClick={onCloseChatClicked}>
-                <Icon
-                  path={mdiClose}
-                  size={1.0}
-                  color={theme.palette.primary.contrastText}
-                />
+                <Icon path={mdiClose} size={1.0} color={chatOptionsColor} />
               </IconButtonMaterial>
             )}
           </Column>
