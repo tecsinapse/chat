@@ -285,7 +285,6 @@ export const Init = ({
                   </Grid>
                   <Grid item>
                     <Icon
-                      onClick={() => setIsDrawerOpen(false)}
                       color={theme.palette.text.primary}
                       size={1}
                       style={{ cursor: "pointer" }}

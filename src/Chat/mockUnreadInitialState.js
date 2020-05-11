@@ -8,7 +8,8 @@ export const mockUnreadInitialState = {
       chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net",
       contactAt: "2020-05-04T12:58:54Z",
       highlighted: true,
-      hoursToBlock: 5,
+      minutesToBlock: 0,
+      status: 'BLOCKED',
       extraInfo: {
         responsavel: "Vendedor 01",
         dealer: "Dealer XPTO",
