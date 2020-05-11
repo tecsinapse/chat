@@ -1,16 +1,28 @@
-import React, {useState} from "react";
-import {mdiArrowLeft, mdiChevronLeft, mdiChevronRight, mdiClose, mdiForum,} from "@mdi/js";
+import React, { useState } from "react";
+import {
+  mdiArrowLeft,
+  mdiChevronLeft,
+  mdiChevronRight,
+  mdiClose,
+  mdiForum,
+} from "@mdi/js";
 import Icon from "@mdi/react";
-import {Divider, FloatingButton} from "@tecsinapse/ui-kit";
-import {makeStyles, useTheme} from "@material-ui/styles";
-import {Badge, CircularProgress, Drawer, Grid, Typography,} from "@material-ui/core";
-import {completeChatInfoWith, load} from "./loadChatsInfos";
-import {ComponentLocations} from "./ComponentLocations";
-import {UnreadChats} from "./UnreadChats";
-import {RenderChat} from "./RenderChat";
-import {InitWebsockets} from "./InitWebsockets";
-import {MessageManagement} from "./MessageManagement";
-import {defaultOrange} from "@tecsinapse/ui-kit/build/colors";
+import { Divider, FloatingButton } from "@tecsinapse/ui-kit";
+import { makeStyles, useTheme } from "@material-ui/styles";
+import {
+  Badge,
+  CircularProgress,
+  Drawer,
+  Grid,
+  Typography,
+} from "@material-ui/core";
+import { completeChatInfoWith, load } from "./loadChatsInfos";
+import { ComponentLocations } from "./ComponentLocations";
+import { UnreadChats } from "./UnreadChats";
+import { RenderChat } from "./RenderChat";
+import { InitWebsockets } from "./InitWebsockets";
+import { MessageManagement } from "./MessageManagement";
+import { defaultOrange } from "@tecsinapse/ui-kit/build/colors";
 
 const useStyle = makeStyles((theme) => ({
   fabContainer: {
@@ -78,12 +90,11 @@ async function loadComponent(
 }
 
 export const Init = ({
-                       userkeycloakId,
-                       chatApiUrl,
-                       getInitialStatePath,
-                       openWhenLoad = false
-                     }) => {
-
+  userkeycloakId,
+  chatApiUrl,
+  getInitialStatePath,
+  openWhenLoad = false,
+}) => {
   const classes = useStyle();
   const theme = useTheme();
   const [isLoadingInitialState, setIsLoadingInitialState] = useState(true);
@@ -111,6 +122,7 @@ export const Init = ({
     setComponentInfo,
     setView,
     setIsLoadingInitialState,
+    openWhenLoad,
   ]);
 
   const chatIds = (componentInfo.allChats || [])
