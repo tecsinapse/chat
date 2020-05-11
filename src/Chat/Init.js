@@ -47,6 +47,8 @@ const useStyle = makeStyles((theme) => ({
     margin: theme.spacing(2, 0, 0, 0),
     height: "100%",
     overflowX: "hidden",
+    maxWidth: "80vw",
+    minWidth: "35vw",
   },
   drawerHeader: {
     margin: theme.spacing(0, 2, 1.6, 2),
@@ -164,11 +166,6 @@ export const Init = ({ userkeycloakId, chatApiUrl, getInitialStatePath }) => {
     setView(ComponentLocations.CHAT);
   };
 
-  let drawerWidth = window.innerWidth * 0.35;
-  if (view === ComponentLocations.MESSAGE_MANAGEMENT) {
-    drawerWidth = window.innerWidth * 0.8;
-  }
-
   return (
     <div className="Chat">
       <div className={classes.fabContainer}>
@@ -206,7 +203,7 @@ export const Init = ({ userkeycloakId, chatApiUrl, getInitialStatePath }) => {
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
       >
-        <div className={classes.drawerContainer} style={{ width: drawerWidth }}>
+        <div className={classes.drawerContainer}>
           <div className={classes.drawerHeader}>
             <Grid container justify="space-between">
               <Grid item>

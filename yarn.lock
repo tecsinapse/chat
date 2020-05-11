@@ -1641,7 +1641,7 @@
     loader-utils "^1.1.0"
 
 "@tecsinapse/chat@file:.yalc/@tecsinapse/chat":
-  version "1.3.2-7105cac5"
+  version "1.3.2-7dfc6431"
   dependencies:
     "@cleandersonlobo/react-mic" "^1.2.0"
     "@livechat/ui-kit" "^0.4.0-10"
@@ -1694,10 +1694,10 @@
     eslint-plugin-react-hooks "^1.6.0"
     prettier "^1.15.2"
 
-"@tecsinapse/table@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-1.4.0.tgz#37d35def28bd1b6554681040be92a1bdcf44cb33"
-  integrity sha512-HjCm5xiGmltrAR9vtNQ8tHn8ljLq9UlfL01sGXyqSIWndSLEYIxMR2ZS9YssJK4Rl5PKJeERsZ/14aiFpFOCDA==
+"@tecsinapse/table@1.4.2-beta.0":
+  version "1.4.2-beta.0"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-1.4.2-beta.0.tgz#473881885b7bc752e006a9c98f14f72c9ba02549"
+  integrity sha512-VbQssSFJZXpY1x3l8BDVmtCMnNtEoc3KPkjeBLvaHqesa6W70B4DDv2JO++NCD4JLHGqzJ75cH7+9HWdVnBOSA==
   dependencies:
     "@material-ui/core" "^4.2.1"
     "@material-ui/icons" "^4.2.1"
@@ -1705,15 +1705,15 @@
     "@mdi/js" "^3.0.39"
     "@mdi/react" "^1.1.0"
     "@tecsinapse/es-utils" "^6.0.10"
-    "@tecsinapse/ui-kit" "^4.0.0"
+    "@tecsinapse/ui-kit" "4.3.2-beta.0"
     clsx "^1.0.4"
     prop-types "^15.6.2"
     react-virtualized "^9.21.0"
 
-"@tecsinapse/ui-kit@^4.0.0", "@tecsinapse/ui-kit@^4.3.0":
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-4.3.0.tgz#9a6056ce34f5f3e92a0cd57cec4509c5e55d59b2"
-  integrity sha512-Jcz/hMSu8p3Jtiofh0BnSeKNPyb1h+7Re3YeZrAwU7j8TU+4Zb34eUHYQdwTn/Tq+EdEJojGWHvtnFQm2cMt2w==
+"@tecsinapse/ui-kit@4.3.2-beta.0":
+  version "4.3.2-beta.0"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-4.3.2-beta.0.tgz#bdf88c87001792b91091708e01db8d848ee3d22d"
+  integrity sha512-A/5YxsdEY8XFPiuMRGn8l8HYOF7LM/Iow52q+ATFjQRXzkKnQV/7juYCJHuoiwK1YCibDBmGum+lvCjZG29U6w==
   dependencies:
     "@material-ui/core" "^4.2.1"
     "@material-ui/icons" "^4.2.1"
@@ -1736,6 +1736,28 @@
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-4.1.2.tgz#fb1a203543ff7ae7f34a0aa238da655ddf86c55b"
   integrity sha512-+2uh2cfWzgL4O8qWjnPKMhBYZMuGgAw0rBHMfdfRLdJygxp8GRtSCUvN43eYn36H2oi2wXTfzmMAtgMGEmVeTA==
+  dependencies:
+    "@material-ui/core" "^4.2.1"
+    "@material-ui/icons" "^4.2.1"
+    "@material-ui/styles" "^4.2.1"
+    "@mdi/js" "^3.0.39"
+    "@mdi/react" "^1.1.0"
+    "@tecsinapse/es-utils" "^6.0.10"
+    clsx "^1.0.4"
+    material-ui-search-bar "1.0.0-beta.13"
+    prop-types "^15.6.2"
+    react-select "^2.3.0"
+    react-sizeme "^2.5.2"
+    react-text-mask "^5.4.3"
+    react-virtualized "^9.21.0"
+    react-window "^1.5.1"
+    text-mask-addons "^3.8.0"
+    text-mask-core "^5.1.2"
+
+"@tecsinapse/ui-kit@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-4.3.0.tgz#9a6056ce34f5f3e92a0cd57cec4509c5e55d59b2"
+  integrity sha512-Jcz/hMSu8p3Jtiofh0BnSeKNPyb1h+7Re3YeZrAwU7j8TU+4Zb34eUHYQdwTn/Tq+EdEJojGWHvtnFQm2cMt2w==
   dependencies:
     "@material-ui/core" "^4.2.1"
     "@material-ui/icons" "^4.2.1"
