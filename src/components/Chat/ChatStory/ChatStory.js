@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import uuidv1 from 'uuid/v1';
-import { Chat } from './Chat';
+import { Chat } from '../Chat';
 import { dummyChatList, dummyMessagesText } from './dummyMessages';
+import { sleep } from './chatStoryFunctions';
 
 export const ChatStory = ({
   initialMessages = [],
@@ -10,16 +11,34 @@ export const ChatStory = ({
   isBlocked = false,
   blockedMessage = undefined,
   initialChatList = [],
+  loadingEnabled = false,
   warningMessage,
 }) => {
   const [messages, setMessages] = useState(initialMessages);
   const [isLoading, setIsLoading] = useState(false);
   const [chatList, setChatList] = useState(initialChatList);
+  const [blocked, setBlocked] = useState(isBlocked);
   const chatClient = useRef(null);
   const totalUnread = useRef(
     initialChatList.reduce((total, c) => total + c.unread, 0)
   );
   const isMultipleChat = chatList.length > 0;
+
+  useEffect(() => {
+    async function setTimeToWait() {
+      setBlocked(false);
+      setMessages([]);
+      setIsLoading(true);
+      await sleep(10000);
+      setBlocked(isBlocked);
+      setMessages(initialMessages);
+      setIsLoading(false);
+    }
+
+    if (loadingEnabled) {
+      setTimeToWait().then(() => {});
+    }
+  }, [loadingEnabled, isBlocked, initialMessages]);
 
   const mockStatusMessage = (id, status) => {
     setMessages(prevMessages => {
@@ -257,7 +276,8 @@ export const ChatStory = ({
       <Chat
         error={error}
         isMaximizedOnly={isMaximizedOnly}
-        isBlocked={isBlocked}
+        isBlocked={blocked}
+        disabledSend={isLoading && messages.length === 0}
         blockedMessage={blockedMessage}
         messages={messages}
         title={isMultipleChat ? 'Transportadora Gomes' : 'Felipe Rodrigues'}

@@ -1,5 +1,5 @@
 import { Meta, Story, Props, Source } from '@storybook/addon-docs/blocks';
-import { Chat } from './Chat';
+import { Chat } from './../Chat';
 import { ChatStory } from './ChatStory';
 import {
   dummyMessagesMedia,
@@ -59,6 +59,8 @@ Here you can check the code snippet for each story.
     isMaximizedOnly
     isBlocked
     blockedMessage="Você não pode mais enviar mensagens para esse chat."
+    loadingEnabled
+    initialMessages={[]}
   />
 </Story>
 

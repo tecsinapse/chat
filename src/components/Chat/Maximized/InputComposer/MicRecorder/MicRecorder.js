@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ReactMic } from '@cleandersonlobo/react-mic';
 import Icon from '@mdi/react';
 import {
-  mdiCloseCircle,
-  mdiCheckCircle,
   mdiCheckboxBlankCircle,
+  mdiCheckCircle,
+  mdiCloseCircle,
 } from '@mdi/js';
 import PropTypes from 'prop-types';
 import { IconButton } from '@livechat/ui-kit';
 import Timer from 'react-compound-timer';
-import { Typography, makeStyles } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 import {
   defaultBlack,
-  defaultWhite,
   defaultGrey2,
+  defaultWhite,
 } from '@tecsinapse/ui-kit/build/colors';
 
 const useStyle = makeStyles({

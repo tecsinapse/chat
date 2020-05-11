@@ -3,10 +3,10 @@ import { FixedWrapper } from '@livechat/ui-kit';
 import PropTypes from 'prop-types';
 import { useTheme } from '@material-ui/styles';
 
-import Maximized from './Maximized';
-import Minimized from './Minimized';
-import ChatTheme from './ChatTheme';
-import { ChatLocations } from './ChatLocations';
+import Maximized from './Maximized/Maximized';
+import Minimized from './Minimized/Minimized';
+import ChatTheme from './ChatTheme/ChatTheme';
+import { CHAT_LOCATIONS } from './constants/CHAT_LOCATIONS';
 
 export const Chat = ({
   messages,
@@ -28,6 +28,7 @@ export const Chat = ({
   isBlocked,
   blockedMessage,
   roundedCorners,
+  disabledSend = false,
   chatList,
   onBackToChatList,
   onSelectedChat,
@@ -39,7 +40,7 @@ export const Chat = ({
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
-    chatList ? ChatLocations.CHAT_LIST : ChatLocations.MESSAGES
+    chatList ? CHAT_LOCATIONS.CHAT_LIST : CHAT_LOCATIONS.MESSAGES
   );
   const { headerBackground, headerText, headerLabel } = customHeader;
 
@@ -79,6 +80,7 @@ export const Chat = ({
                 setLocation={setLocation}
                 onSelectedChat={onSelectedChat}
                 notificationNumber={notificationNumber}
+                disabledSend={disabledSend}
                 chatOptions={chatOptions}
                 headerLabel={headerLabel}
                 headerText={headerText}
@@ -100,6 +102,7 @@ Chat.defaultProps = {
   onAudio: undefined,
   disabled: false,
   isMaximizedOnly: false,
+  disabledSend: false,
   title: '',
   subtitle: '',
   onCloseChat: undefined,
@@ -173,6 +176,8 @@ Chat.propTypes = {
   disabled: PropTypes.bool,
   /** Chat stays maximized */
   isMaximizedOnly: PropTypes.bool,
+  /** Disable input functions */
+  disabledSend: PropTypes.bool,
   /** Chat title */
   title: PropTypes.string,
   /** Chat subtitle */

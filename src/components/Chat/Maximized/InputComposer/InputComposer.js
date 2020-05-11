@@ -16,9 +16,9 @@ import {
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import { defaultGreyLight2 } from '@tecsinapse/ui-kit/build/colors';
-import { MicRecorder } from './MicRecorder';
-import { CustomUploader } from './CustomUploader';
-import { PreviewList } from './PreviewList';
+import { MicRecorder } from './MicRecorder/MicRecorder';
+import { CustomUploader } from './CustomUploader/CustomUploader';
+import { PreviewList } from './PreviewList/PreviewList';
 
 const ENTER_KEYCODE = 13;
 const wasEnterPressed = function wasEnterPressed(event) {
@@ -35,6 +35,7 @@ export const InputComposer = ({
   maxFileUploadSize,
   isBlocked,
   blockedMessage,
+  disabledSend,
 }) => {
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
@@ -54,32 +55,41 @@ export const InputComposer = ({
   };
 
   const blockedMessageSpacing = { letterSpacing: '-0.1px' };
+  const onKeyDown = e => {
+    if (!writing && wasOnlyEnterPressed(e) && Object.keys(files).length > 0) {
+      onMediaSend('', files);
+      setFiles({});
+    }
+  };
+  const onSend = text => {
+    if (Object.keys(files).length > 0) {
+      onMediaSend(text, files);
+    } else {
+      onMessageSend(text);
+    }
+    setFiles({});
+    setWriting(false);
+  };
+  const onChange = e => setWriting(e.currentTarget.value !== '');
+  const inputRef1 = ref => setInputRef(ref);
+  const style = { maxHeight: 37, maxWidth: 35 };
+  const style1 = { maxHeight: 26, maxWidth: 24 };
+  const size = 1.143;
+  const onClick = () => setRecording(true);
+  const onClick1 = () => imageUpRef.current.open();
+  const iconSize = 0.75;
+  const onClick2 = () => videoUpRef.current.open();
+  const onClick3 = () => appUpRef.current.open();
+
   return (
     <>
       <PreviewList files={files} setFiles={setFiles} />
-
       <TextComposer
-        onSend={text => {
-          if (Object.keys(files).length > 0) {
-            onMediaSend(text, files);
-          } else {
-            onMessageSend(text);
-          }
-          setFiles({});
-          setWriting(false);
-        }}
-        onKeyDown={e => {
-          if (
-            !writing &&
-            wasOnlyEnterPressed(e) &&
-            Object.keys(files).length > 0
-          ) {
-            onMediaSend('', files);
-            setFiles({});
-          }
-        }}
-        onChange={e => setWriting(e.currentTarget.value !== '')}
-        inputRef={ref => setInputRef(ref)}
+        onSend={onSend}
+        onKeyDown={onKeyDown}
+        onChange={onChange}
+        inputRef={inputRef1}
+        active={!disabledSend}
       >
         {isBlocked ? (
           <Row align="center" justifyContent="space-around">
@@ -107,22 +117,25 @@ export const InputComposer = ({
                   TODO: Keep only one handler, either by fixing the active bug or implementing the text
                   handler on our <Icon /> (using controlled component passing 'value ' to TextComposer)
                 */}
-              {(writing || !isThereAudioSupport) && <SendButton fill />}
+              {(writing || !isThereAudioSupport) && (
+                <SendButton fill disabled={disabledSend} />
+              )}
               {!writing && !recording && Object.keys(files).length > 0 && (
                 <IconButton
                   fill
                   key="send"
+                  disabled={disabledSend}
                   onClick={() => {
                     onMediaSend('', files);
                     setFiles({});
                   }}
-                  style={{ maxHeight: 37, maxWidth: 35 }}
+                  style={style}
                 >
                   <Icon
                     path={mdiSend}
-                    size={1.143}
+                    size={size}
                     color="#427fe1"
-                    style={{ maxHeight: 26, maxWidth: 24 }}
+                    style={style1}
                   />
                 </IconButton>
               )}
@@ -131,7 +144,12 @@ export const InputComposer = ({
                 isThereAudioSupport &&
                 Object.keys(files).length <= 0 &&
                 !recording && (
-                  <IconButton fill key="mic" onClick={() => setRecording(true)}>
+                  <IconButton
+                    fill
+                    key="mic"
+                    onClick={onClick}
+                    disabled={disabledSend}
+                  >
                     <Icon
                       path={mdiMicrophone}
                       size={1}
@@ -148,19 +166,25 @@ export const InputComposer = ({
                 <IconButton
                   fill
                   key="image"
-                  onClick={() => imageUpRef.current.open()}
+                  onClick={onClick1}
+                  disabled={disabledSend}
                 >
-                  <Icon path={mdiImage} size={0.75} color={defaultGreyLight2} />
+                  <Icon
+                    path={mdiImage}
+                    size={iconSize}
+                    color={defaultGreyLight2}
+                  />
                 </IconButton>
 
                 <IconButton
                   fill
                   key="movie"
-                  onClick={() => videoUpRef.current.open()}
+                  onClick={onClick2}
+                  disabled={disabledSend}
                 >
                   <Icon
                     path={mdiLibraryVideo}
-                    size={0.75}
+                    size={iconSize}
                     color={defaultGreyLight2}
                   />
                 </IconButton>
@@ -168,11 +192,12 @@ export const InputComposer = ({
                 <IconButton
                   fill
                   key="paperclip"
-                  onClick={() => appUpRef.current.open()}
+                  onClick={onClick3}
+                  disabled={disabledSend}
                 >
                   <Icon
                     path={mdiPaperclip}
-                    size={0.75}
+                    size={iconSize}
                     color={defaultGreyLight2}
                   />
                 </IconButton>
@@ -191,7 +216,7 @@ export const InputComposer = ({
               ref={videoUpRef}
               files={files}
               setFiles={setFiles}
-              mediaType="video/*"
+              mediaType=".mov,video/*"
               maxFileUploadSize={maxFileUploadSize}
             />
             <CustomUploader

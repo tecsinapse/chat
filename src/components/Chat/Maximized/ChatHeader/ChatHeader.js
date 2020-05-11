@@ -5,7 +5,7 @@ import { mdiArrowLeft, mdiClose, mdiDotsVertical } from '@mdi/js';
 import Icon from '@mdi/react';
 import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit/build/Buttons/IconButton';
 import { isStringNotBlank } from '@tecsinapse/es-utils/build/object';
-import { Warning } from './Warning';
+import { Warning } from '../Warning/Warning';
 
 const useStyle = makeStyles(({ palette }) => ({
   headerLabelStyle: {
