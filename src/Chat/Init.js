@@ -1,28 +1,16 @@
-import React, { useState } from "react";
-import {
-  mdiArrowLeft,
-  mdiChevronLeft,
-  mdiChevronRight,
-  mdiClose,
-  mdiForum,
-} from "@mdi/js";
+import React, {useState} from "react";
+import {mdiArrowLeft, mdiChevronLeft, mdiChevronRight, mdiClose, mdiForum,} from "@mdi/js";
 import Icon from "@mdi/react";
-import { Divider, FloatingButton } from "@tecsinapse/ui-kit";
-import { makeStyles, useTheme } from "@material-ui/styles";
-import {
-  Badge,
-  CircularProgress,
-  Drawer,
-  Grid,
-  Typography,
-} from "@material-ui/core";
-import { completeChatInfoWith, load } from "./loadChatsInfos";
-import { ComponentLocations } from "./ComponentLocations";
-import { UnreadChats } from "./UnreadChats";
-import { RenderChat } from "./RenderChat";
-import { InitWebsockets } from "./InitWebsockets";
-import { MessageManagement } from "./MessageManagement";
-import { defaultOrange } from "@tecsinapse/ui-kit/build/colors";
+import {Divider, FloatingButton} from "@tecsinapse/ui-kit";
+import {makeStyles, useTheme} from "@material-ui/styles";
+import {Badge, CircularProgress, Drawer, Grid, Typography,} from "@material-ui/core";
+import {completeChatInfoWith, load} from "./loadChatsInfos";
+import {ComponentLocations} from "./ComponentLocations";
+import {UnreadChats} from "./UnreadChats";
+import {RenderChat} from "./RenderChat";
+import {InitWebsockets} from "./InitWebsockets";
+import {MessageManagement} from "./MessageManagement";
+import {defaultOrange} from "@tecsinapse/ui-kit/build/colors";
 
 const useStyle = makeStyles((theme) => ({
   fabContainer: {
@@ -49,6 +37,19 @@ const useStyle = makeStyles((theme) => ({
     overflowX: "hidden",
     maxWidth: "80vw",
     minWidth: "35vw",
+    /* TODO verificar uma forma melhor */
+    /* Zerando estilo do Bootstrap */
+    "& input": {
+      border: '0 !important',
+      margin: 0,
+      paddingTop: '10.5px',
+      paddingBottom: '10.5px'
+    },
+    "& input:focus": {
+      border: '0 !important',
+      borderColor: '#fff',
+      boxShadow: 'none'
+    }
   },
   drawerHeader: {
     margin: theme.spacing(0, 2, 1.6, 2),

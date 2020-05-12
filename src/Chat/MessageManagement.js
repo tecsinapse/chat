@@ -8,6 +8,10 @@ const useStyle = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(0, 2),
   },
+  highlighted: {
+    fontWeight: 'bold',
+    color: 'red'
+  }
 }));
 
 export const MessageManagement = ({
@@ -32,7 +36,7 @@ export const MessageManagement = ({
         filter: true,
       },
       customRender: (row) => {
-        return row.highlighted ? <strong>{row.name}</strong> : row.name;
+        return row.highlighted ? <span className={classes.highlighted}>{row.name}</span> : row.name;
       },
     },
     {
