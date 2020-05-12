@@ -9,6 +9,7 @@ import {
   setStatusMessageFunc,
 } from "../Util/message";
 import uuidv1 from "uuid/v1";
+import { ChatOptions } from "./ChatOptions";
 
 const emptyChat = {
   chatId: null,
@@ -58,6 +59,7 @@ const onSelectedChatMaker = (
 export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -234,6 +236,8 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
       currentChat.minutesToBlock &&
       `O envio de mensagem irá expirar em ${currentChat.minutesToBlock} minuto(s).`) ||
     undefined;
+  const { actions } = currentChat;
+  const hasActions = currentChat && actions && actions.length > 0;
 
   const onAudio = (blob) => {
     const localId = uuidv1();
@@ -273,6 +277,10 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
     }
   };
 
+  const handleOpenActions = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
   return (
     <div>
       <Chat
@@ -302,9 +310,17 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
           headerText: "#000",
         }}
         chatOptions={{
+          show: hasActions,
+          handleFunc: handleOpenActions,
           color: "#000",
         }}
         warningMessage={timeToExpire}
+      />
+
+      <ChatOptions
+        anchorEl={anchorEl}
+        setAnchorEl={setAnchorEl}
+        options={actions}
       />
 
       {currentChat.chatId && (

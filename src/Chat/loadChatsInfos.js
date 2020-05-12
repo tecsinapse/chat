@@ -48,7 +48,7 @@ export async function load(chatApiUrl, getInitialStatePath) {
       status: "OK",
       type: "WHATSAPP",
       unread: 1,
-    },
+    } /!*,
     {
       chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc2@tunnel.msging.net",
       connectionKey: "dyn-bot",
@@ -59,7 +59,7 @@ export async function load(chatApiUrl, getInitialStatePath) {
       status: "OK",
       type: "WHATSAPP",
       unread: 1,
-    },
+    }*!/,
   ];*/
 
   const chats = [];
