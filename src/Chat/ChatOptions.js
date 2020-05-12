@@ -21,7 +21,19 @@ export const ChatOptions = ({ anchorEl, options, setAnchorEl }) => {
   const open = Boolean(anchorEl);
 
   return (
-    <Popover open={open} anchorEl={anchorEl} onClose={handleClose}>
+    <Popover
+      open={open}
+      anchorEl={anchorEl}
+      onClose={handleClose}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+    >
       <List>
         {options &&
           options.map((item) => (
