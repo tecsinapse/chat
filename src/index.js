@@ -27,8 +27,8 @@ window.renderChatComponent = function renderChatComponent() {
   let chatApiUrl = window.CHAT_API_URL;
   if (!chatApiUrl) {
     // fixed for local tests
-    // chatApiUrl = "http://localhost:8081";
-    chatApiUrl = "https://chathomolog.tecsinapse.com.br";
+    chatApiUrl = "http://localhost:8081";
+    // chatApiUrl = "https://chathomolog.tecsinapse.com.br";
   }
 
   /**

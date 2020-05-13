@@ -333,7 +333,7 @@ export const RenderChat = ({
         userkeycloakId={userkeycloakId}
       />
 
-      {/*{currentChat.chatId && (
+      {currentChat.chatId && (
         <SockJsClient
           url={`${chatApiUrl}/ws`}
           topics={[`/topic/${initialInfo.connectionKey}.${currentChat.chatId}`]}
@@ -341,7 +341,7 @@ export const RenderChat = ({
           onConnect={onConnect}
           ref={(client) => (clientRef = client)}
         />
-      )}*/}
+      )}
     </>
   );
 };

@@ -29,36 +29,11 @@ export async function load(chatApiUrl, getInitialStatePath) {
   const chatIds = initialInfoFromProduct.allChats
     .map((chat) => chat.chatId)
     .join(",");
-  /*const completeChatInfos = await defaultFetch(
+  const completeChatInfos = await defaultFetch(
     `${chatApiUrl}/api/chats/${initialInfoFromProduct.connectionKey}/infos`,
     "POST",
     { chatIds: chatIds }
-  );*/
-
-  const completeChatInfos = [
-    {
-      chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net",
-      connectionKey: "dyn-bot",
-      lastMessage: "Ok, pode enviar a papelada hoje!",
-      lastMessageAt: "2020-05-05T14:48:33.553664",
-      name: "João Paulo Bassinello",
-      phone: "5519994568196",
-      status: "OK",
-      type: "WHATSAPP",
-      unread: 1,
-    } /*,
-    {
-      chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc2@tunnel.msging.net",
-      connectionKey: "dyn-bot",
-      lastMessage: "Ok, pode enviar a papelada hoje!",
-      lastMessageAt: "2020-05-05T14:48:33.553664",
-      name: "João Paulo Bassinello",
-      phone: "5519994568196",
-      status: "OK",
-      type: "WHATSAPP",
-      unread: 1,
-    }*/,
-  ];
+  );
 
   const chats = [];
   if (completeChatInfos && Array.isArray(completeChatInfos)) {

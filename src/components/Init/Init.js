@@ -288,7 +288,7 @@ export const Init = ({
         </div>
       </Drawer>
 
-      {/*{!isLoadingInitialState && (
+      {!isLoadingInitialState && (
         <InitWebsockets
           chatApiUrl={chatApiUrl}
           userkeycloakId={userkeycloakId}
@@ -297,7 +297,7 @@ export const Init = ({
           onChatUpdated={onChatUpdated}
           reloadComponent={reloadComponent}
         />
-      )}*/}
+      )}
     </div>
   );
 };

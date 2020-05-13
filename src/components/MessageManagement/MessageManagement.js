@@ -115,7 +115,7 @@ export const MessageManagement = ({
         ],
       }}
       toolbarOptions={{
-        title: "Clientes do RenderChat",
+        title: "Clientes do Chat",
       }}
       hideSelectFilterLabel
     />
