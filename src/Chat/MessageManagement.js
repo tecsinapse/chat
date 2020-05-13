@@ -5,20 +5,17 @@ import TableRowActions from "@tecsinapse/table/build/Table/TableRowActions";
 import jwt from "jwt-simple";
 
 const useStyle = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(0, 2),
-  },
   highlighted: {
-    fontWeight: 'bold',
-    color: 'red'
-  }
+    fontWeight: "bold",
+    color: "#ff0050",
+  },
 }));
 
 export const MessageManagement = ({
-                                    componentInfo,
-                                    onSelectChat,
-                                    userkeycloakId
-                                  }) => {
+  componentInfo,
+  onSelectChat,
+  userkeycloakId,
+}) => {
   const classes = useStyle();
 
   const columns = [
@@ -36,7 +33,11 @@ export const MessageManagement = ({
         filter: true,
       },
       customRender: (row) => {
-        return row.highlighted ? <span className={classes.highlighted}>{row.name}</span> : row.name;
+        return row.highlighted ? (
+          <span className={classes.highlighted}>{row.name}</span>
+        ) : (
+          row.name
+        );
       },
     },
     {
@@ -78,9 +79,13 @@ export const MessageManagement = ({
           actions.push({
             label: actionLink.label,
             onClick: (rowData) => {
-              const encodedData = jwt.encode({data: JSON.stringify(rowData)}, userkeycloakId, 'HS256');
-              window.open(`${actionLink.path}?data=${encodedData}`, '_self');
-            }
+              const encodedData = jwt.encode(
+                { data: JSON.stringify(rowData) },
+                userkeycloakId,
+                "HS256"
+              );
+              window.open(`${actionLink.path}?data=${encodedData}`, "_self");
+            },
           });
         });
       }
@@ -97,24 +102,22 @@ export const MessageManagement = ({
   });
 
   return (
-    <div className={classes.root}>
-      <Table
-        columns={columns}
-        data={componentInfo.allChats}
-        rowId={(row) => row.id}
-        pagination
-        exportOptions={{
-          exportTypes: [
-            {
-              type: "csv",
-            },
-          ],
-        }}
-        toolbarOptions={{
-          title: "Clientes do Chat",
-        }}
-        hideSelectFilterLabel
-      />
-    </div>
+    <Table
+      columns={columns}
+      data={componentInfo.allChats}
+      rowId={(row) => row.id}
+      pagination
+      exportOptions={{
+        exportTypes: [
+          {
+            type: "csv",
+          },
+        ],
+      }}
+      toolbarOptions={{
+        title: "Clientes do Chat",
+      }}
+      hideSelectFilterLabel
+    />
   );
 };

@@ -18,7 +18,7 @@ const useStyle = makeStyles((theme) => ({
     backgroundColor: theme.palette.grey[100],
   },
   header: {
-    padding: theme.spacing(1, 0),
+    padding: theme.spacing(1, 0, 3 / 4, 0),
   },
   contactListName: {
     paddingBottom: "5px",
@@ -101,7 +101,7 @@ export const UnreadChats = ({ chats, onSelectChat }) => {
                 <Grid item>
                   <Icon
                     path={mdiMessageText}
-                    size={0.75}
+                    size={0.95}
                     color={theme.palette.text.secondary}
                     style={{ marginTop: "3px" }}
                   />

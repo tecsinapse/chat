@@ -5,7 +5,7 @@ export const buildChatMessageObject = (externalMessage, fromId) => {
     at: moment(externalMessage.at).format("DD/MM/YYYY HH:mm"),
     own: externalMessage.from !== fromId,
     id: externalMessage.messageId,
-    text: externalMessage.text
+    text: externalMessage.text,
   };
 
   if (externalMessage.medias && externalMessage.medias.length > 0) {
@@ -13,7 +13,7 @@ export const buildChatMessageObject = (externalMessage, fromId) => {
     delete message.text;
     message.title = externalMessage.text;
 
-    message.medias = externalMessage.medias.map(media => {
+    message.medias = externalMessage.medias.map((media) => {
       if (media.mediaType.startsWith("application")) {
         delete message.title;
       }
@@ -22,7 +22,7 @@ export const buildChatMessageObject = (externalMessage, fromId) => {
         mediaType: media.mediaType,
         name: media.mediaType.startsWith("application")
           ? externalMessage.text
-          : ""
+          : "",
       };
     });
   }
@@ -41,21 +41,33 @@ export const buildSendingMessage = (localId, text, title, file) => ({
   title,
   medias: file
     ? [
-      {
-        mediaType: file.mediaType,
-        url: file.data,
-        name: file.name,
-        size: file.size,
-        data: file.file
-      }
-    ]
-    : undefined
+        {
+          mediaType: file.mediaType,
+          url: file.data,
+          name: file.name,
+          size: file.size,
+          data: file.file,
+        },
+      ]
+    : undefined,
 });
 
-export const setStatusMessageFunc = setMessages => (localId, status) => {
-  setMessages(prevMessages => {
+export const setStatusMessageFunc = (setMessages) => (localId, status) => {
+  setMessages((prevMessages) => {
     const copyMessages = [...prevMessages];
-    copyMessages.find(m => m.localId === localId).status = status;
+    copyMessages.find((m) => m.localId === localId).status = status;
     return copyMessages;
   });
+};
+
+export const calcRemainTime = (time) => {
+  const hours = Math.floor(time / 60);
+  const minutes = time % 60;
+  const unit = (hours > 0 && "hora(s)") || "minuto(s)";
+  if (hours > 0) {
+    const formattedMinutes =
+      minutes < 10 ? "0".concat(minutes.toString()) : minutes;
+    return `${hours}${minutes > 0 ? ":" + formattedMinutes : ""} ${unit}`;
+  }
+  return `${minutes} ${unit}`;
 };
