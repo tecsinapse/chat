@@ -35,7 +35,7 @@ export const ChatButton = ({
   const classes = useStyle();
   return (
     <div className={classes.fabContainer}>
-      <Tooltip title="Mostrar Painel do Chat">
+      <Tooltip title="Mostrar Painel do Chat" arrow placement="left">
         <Badge
           color="error"
           badgeContent={unreadTotal}
