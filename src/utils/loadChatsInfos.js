@@ -1,6 +1,6 @@
-import {defaultFetch, noAuthJsonFetch} from "../Util/fetch";
+import { defaultFetch, noAuthJsonFetch } from "./fetch";
 import moment from "moment";
-import {mockUnreadInitialState} from "./mockUnreadInitialState";
+import { mockUnreadInitialState } from "../mocks/mockUnreadInitialState";
 
 /**
  * Busca dos dados para inicializar o componente
@@ -15,7 +15,7 @@ export async function load(chatApiUrl, getInitialStatePath) {
   let initialInfoFromProduct;
   if (process.env.NODE_ENV === "development") {
     // mock para tela de UNREAD
-    initialInfoFromProduct = {...mockUnreadInitialState};
+    initialInfoFromProduct = { ...mockUnreadInitialState };
     // mock para tela com currentClient
     // initialInfoFromProduct = { ...mockClientChatInitialState };
   } else {
@@ -29,11 +29,36 @@ export async function load(chatApiUrl, getInitialStatePath) {
   const chatIds = initialInfoFromProduct.allChats
     .map((chat) => chat.chatId)
     .join(",");
-  const completeChatInfos = await defaultFetch(
+  /*const completeChatInfos = await defaultFetch(
     `${chatApiUrl}/api/chats/${initialInfoFromProduct.connectionKey}/infos`,
     "POST",
-    {chatIds: chatIds}
-  );
+    { chatIds: chatIds }
+  );*/
+
+  const completeChatInfos = [
+    {
+      chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net",
+      connectionKey: "dyn-bot",
+      lastMessage: "Ok, pode enviar a papelada hoje!",
+      lastMessageAt: "2020-05-05T14:48:33.553664",
+      name: "João Paulo Bassinello",
+      phone: "5519994568196",
+      status: "OK",
+      type: "WHATSAPP",
+      unread: 1,
+    } /*,
+    {
+      chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc2@tunnel.msging.net",
+      connectionKey: "dyn-bot",
+      lastMessage: "Ok, pode enviar a papelada hoje!",
+      lastMessageAt: "2020-05-05T14:48:33.553664",
+      name: "João Paulo Bassinello",
+      phone: "5519994568196",
+      status: "OK",
+      type: "WHATSAPP",
+      unread: 1,
+    }*/,
+  ];
 
   const chats = [];
   if (completeChatInfos && Array.isArray(completeChatInfos)) {
@@ -55,7 +80,7 @@ export async function load(chatApiUrl, getInitialStatePath) {
 }
 
 export function completeChatInfoWith(initialInfo, updatedInfo) {
-  const finalInfo = {...initialInfo, ...updatedInfo};
+  const finalInfo = { ...initialInfo, ...updatedInfo };
 
   // deve manter somente algumas informações dos valores iniciais
   if (initialInfo.name && initialInfo.name !== "") {
@@ -79,7 +104,5 @@ function format(dateTime) {
     m = moment(dateTime);
   }
 
-  return m.isValid()
-    ? m.format("DD/MM/YYYY HH:mm")
-    : dateTime; // already formatted
+  return m.isValid() ? m.format("DD/MM/YYYY HH:mm") : dateTime; // already formatted
 }

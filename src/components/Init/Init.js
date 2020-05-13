@@ -4,13 +4,13 @@ import Icon from "@mdi/react";
 import { Divider } from "@tecsinapse/ui-kit";
 import { makeStyles, useTheme } from "@material-ui/styles";
 import { Badge, Drawer, Grid, Typography } from "@material-ui/core";
-import { completeChatInfoWith, load } from "./loadChatsInfos";
-import { COMPONENT_LOCATION } from "./COMPONENT_LOCATION";
-import { UnreadChats } from "./UnreadChats";
-import { RenderChat } from "./RenderChat";
+import { completeChatInfoWith, load } from "../../utils/loadChatsInfos";
+import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { UnreadChats } from "../UnreadChats/UnreadChats";
+import { RenderChat } from "../RenderChat/RenderChat";
 import { InitWebsockets } from "./InitWebsockets";
-import { MessageManagement } from "./MessageManagement";
-import { ChatButton } from "./ChatButton";
+import { MessageManagement } from "../MessageManagement/MessageManagement";
+import { ChatButton } from "../ChatButton/ChatButton";
 
 const useStyle = makeStyles((theme) => ({
   drawerContainer: {
@@ -201,8 +201,10 @@ export const Init = ({
                   )}
                   <Grid item>
                     <Typography variant="h5" color="textPrimary">
-                      {view === COMPONENT_LOCATION.CHAT && "Mensagens do Chat"}
-                      {view === COMPONENT_LOCATION.UNREAD && "Painel do Chat"}
+                      {view === COMPONENT_LOCATION.CHAT &&
+                        "Mensagens do RenderChat"}
+                      {view === COMPONENT_LOCATION.UNREAD &&
+                        "Painel do RenderChat"}
                       {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
                         "Gestão de Mensagens"}
                     </Typography>
@@ -286,7 +288,7 @@ export const Init = ({
         </div>
       </Drawer>
 
-      {!isLoadingInitialState && (
+      {/*{!isLoadingInitialState && (
         <InitWebsockets
           chatApiUrl={chatApiUrl}
           userkeycloakId={userkeycloakId}
@@ -295,7 +297,7 @@ export const Init = ({
           onChatUpdated={onChatUpdated}
           reloadComponent={reloadComponent}
         />
-      )}
+      )}*/}
     </div>
   );
 };

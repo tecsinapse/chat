@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { Chat } from "@tecsinapse/chat";
 import SockJsClient from "react-stomp";
 
-import { defaultFetch } from "../Util/fetch";
+import { defaultFetch } from "../../utils/fetch";
 import {
   buildChatMessageObject,
   buildSendingMessage,
   calcRemainTime,
   setStatusMessageFunc,
-} from "../Util/message";
+} from "../../utils/message";
 import uuidv1 from "uuid/v1";
-import { ChatOptions } from "./ChatOptions";
+import { ChatOptions } from "./ChatOptions/ChatOptions";
 
 const emptyChat = {
   chatId: null,
@@ -333,7 +333,7 @@ export const RenderChat = ({
         userkeycloakId={userkeycloakId}
       />
 
-      {currentChat.chatId && (
+      {/*{currentChat.chatId && (
         <SockJsClient
           url={`${chatApiUrl}/ws`}
           topics={[`/topic/${initialInfo.connectionKey}.${currentChat.chatId}`]}
@@ -341,7 +341,7 @@ export const RenderChat = ({
           onConnect={onConnect}
           ref={(client) => (clientRef = client)}
         />
-      )}
+      )}*/}
     </>
   );
 };
