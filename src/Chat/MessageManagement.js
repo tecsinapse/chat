@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import { Table } from "@tecsinapse/table";
 import TableRowActions from "@tecsinapse/table/build/Table/TableRowActions";
 import jwt from "jwt-simple";
+import {format} from "../Util/dates";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -28,6 +29,7 @@ export const MessageManagement = ({
       options: {
         filter: true,
       },
+      customRender: (row) => format(row.contactAt),
     },
     {
       title: "Cliente",

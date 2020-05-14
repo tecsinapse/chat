@@ -11,6 +11,7 @@ import {
   ListItemText,
   Typography,
 } from "@material-ui/core";
+import {format} from "../Util/dates";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -146,7 +147,7 @@ export const UnreadChats = ({ chats, onSelectChat }) => {
                           color="textSecondary"
                           className={classes.itemText3}
                         >
-                          {chat.lastMessageAt}
+                          {format(chat.lastMessageAt)}
                         </Typography>
 
                         <Typography noWrap className={classes.itemText4}>

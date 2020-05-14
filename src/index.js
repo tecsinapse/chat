@@ -10,7 +10,8 @@ import "./index.css";
 import uuidv1 from "uuid/v1";
 
 import * as serviceWorker from "./serviceWorker";
-import { Init } from "./Chat/Init";
+import {Init} from "./Chat/Init";
+import {createGenerateClassName, StylesProvider} from "@material-ui/styles";
 
 window.renderChatComponent = function renderChatComponent() {
   /**
@@ -57,15 +58,21 @@ window.renderChatComponent = function renderChatComponent() {
     openWhenLoad = false;
   }
 
+  const generateClassName = createGenerateClassName({
+    productionPrefix: 'chat',
+  });
+
   ReactDOM.render(
-    <ThemeProvider variant="orange">
-      <Init
-        userkeycloakId={userkeycloakId}
-        chatApiUrl={chatApiUrl}
-        getInitialStatePath={getInitialStatePath}
-        openWhenLoad={openWhenLoad}
-      />
-    </ThemeProvider>,
+    <StylesProvider generateClassName={generateClassName}>
+      <ThemeProvider variant="orange">
+        <Init
+          userkeycloakId={userkeycloakId}
+          chatApiUrl={chatApiUrl}
+          getInitialStatePath={getInitialStatePath}
+          openWhenLoad={openWhenLoad}
+        />
+      </ThemeProvider>
+    </StylesProvider>,
     document.getElementById("chat-component-div")
   );
   serviceWorker.unregister();

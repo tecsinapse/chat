@@ -1,5 +1,4 @@
 import {defaultFetch, noAuthJsonFetch} from "../Util/fetch";
-import moment from "moment";
 import {mockUnreadInitialState} from "./mockUnreadInitialState";
 
 /**
@@ -65,21 +64,5 @@ export function completeChatInfoWith(initialInfo, updatedInfo) {
     finalInfo.phone = initialInfo.phone;
   }
 
-  finalInfo.lastMessageAt = format(finalInfo.lastMessageAt);
-  finalInfo.contactAt = format(finalInfo.contactAt);
-
   return finalInfo;
-}
-
-function format(dateTime) {
-  let m;
-  if (Array.isArray(dateTime)) {
-    m = moment(dateTime.slice(0, 6));
-  } else {
-    m = moment(dateTime);
-  }
-
-  return m.isValid()
-    ? m.format("DD/MM/YYYY HH:mm")
-    : dateTime; // already formatted
 }

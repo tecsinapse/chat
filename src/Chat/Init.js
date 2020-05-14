@@ -38,7 +38,7 @@ const useStyle = makeStyles((theme) => ({
     maxWidth: "80vw",
     minWidth: "35vw",
     /* TODO verificar uma forma melhor */
-    /* Zerando estilo do Bootstrap */
+    /* Limpando estilos do Bootstrap para os inputs */
     "& input": {
       border: '0 !important',
       margin: 0,
@@ -46,6 +46,17 @@ const useStyle = makeStyles((theme) => ({
       paddingBottom: '10.5px'
     },
     "& input:focus": {
+      border: '0 !important',
+      borderColor: '#fff',
+      boxShadow: 'none'
+    },
+    "& textarea": {
+      border: '0 !important',
+      margin: 0,
+      paddingTop: '10.5px',
+      paddingBottom: '10.5px'
+    },
+    "& textarea:focus": {
       border: '0 !important',
       borderColor: '#fff',
       boxShadow: 'none'
