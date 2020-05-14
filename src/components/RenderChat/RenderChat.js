@@ -28,7 +28,8 @@ const onSelectedChatMaker = (
   setMessages,
   setBlocked,
   chatApiUrl,
-  messagesEndRef
+  messagesEndRef,
+  onReadAllMessagesOfChatId
 ) => (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);
@@ -46,6 +47,7 @@ const onSelectedChatMaker = (
     setMessages(messages);
     setBlocked(chat.status === "BLOCKED");
     setIsLoading(false);
+    onReadAllMessagesOfChatId(chat.chatId);
 
     setTimeout(function () {
       // workaround to wait for all elements to render
@@ -62,6 +64,7 @@ export const RenderChat = ({
   initialInfo,
   disabled = false,
   userkeycloakId,
+  onReadAllMessagesOfChatId
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
@@ -82,7 +85,8 @@ export const RenderChat = ({
     setMessages,
     setBlocked,
     chatApiUrl,
-    messagesEndRef
+    messagesEndRef,
+    onReadAllMessagesOfChatId
   );
 
   useEffect(() => {
@@ -94,7 +98,8 @@ export const RenderChat = ({
         setMessages,
         setBlocked,
         chatApiUrl,
-        messagesEndRef
+        messagesEndRef,
+        onReadAllMessagesOfChatId
       )(initialInfo.chats[0]);
     }
     setIsLoading(false);

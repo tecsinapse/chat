@@ -11,7 +11,7 @@ import {
   ListItemText,
   Typography,
 } from "@material-ui/core";
-import {format} from "../Util/dates";
+import {format} from "../../utils/dates";
 
 const useStyle = makeStyles((theme) => ({
   root: {

@@ -53,7 +53,7 @@ export async function customFetch(path, init) {
       // https://tecsinapse.tpondemand.com/entity/125511-bloquear-envio-de-mensagens-apos-24h
       return Promise.reject({
         status: res.status,
-        errors: "RenderChat bloqueado",
+        errors: "Chat bloqueado",
       });
     }
     console.log(

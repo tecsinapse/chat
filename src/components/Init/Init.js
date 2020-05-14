@@ -160,6 +160,22 @@ export const Init = ({
     setComponentInfo(toUpdateInfo);
   };
 
+  const onReadAllMessagesOfChatId = (chatId) => {
+    let chatsToUpdate = [];
+    const toUpdateInfo = { ...componentInfo };
+    componentInfo.allChats.forEach((chat) => {
+      if (chat.chatId === chatId) {
+        const updatedChat = { ...chat };
+        updatedChat.unread = 0;
+        chatsToUpdate.push(updatedChat);
+      } else {
+        chatsToUpdate.push(chat);
+      }
+    });
+    toUpdateInfo.allChats = chatsToUpdate;
+    setComponentInfo(toUpdateInfo);
+  };
+
   const onSelectChat = (chat) => {
     setCurrentChat({
       name: chat.name,
@@ -213,9 +229,9 @@ export const Init = ({
                   <Grid item>
                     <Typography variant="h5" color="textPrimary">
                       {view === COMPONENT_LOCATION.CHAT &&
-                        "Mensagens do RenderChat"}
+                        "Mensagens do Chat"}
                       {view === COMPONENT_LOCATION.UNREAD &&
-                        "Painel do RenderChat"}
+                        "Painel do Chat"}
                       {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
                         "Gestão de Mensagens"}
                     </Typography>
@@ -287,6 +303,7 @@ export const Init = ({
               initialInfo={currentChat}
               chatApiUrl={chatApiUrl}
               userkeycloakId={userkeycloakId}
+              onReadAllMessagesOfChatId={onReadAllMessagesOfChatId}
             />
           )}
           {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
