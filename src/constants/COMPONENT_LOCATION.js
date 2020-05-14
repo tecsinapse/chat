@@ -1,0 +1,5 @@
+export const COMPONENT_LOCATION = {
+  UNREAD: 0,
+  CHAT: 1,
+  MESSAGE_MANAGEMENT: 3,
+};

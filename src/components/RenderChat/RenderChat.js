@@ -2,14 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { Chat } from "@tecsinapse/chat";
 import SockJsClient from "react-stomp";
 
-import { defaultFetch } from "../Util/fetch";
+import { defaultFetch } from "../../utils/fetch";
 import {
   buildChatMessageObject,
   buildSendingMessage,
+  calcRemainTime,
   setStatusMessageFunc,
-} from "../Util/message";
+} from "../../utils/message";
 import uuidv1 from "uuid/v1";
-import { ChatOptions } from "./ChatOptions";
+import { ChatOptions } from "./ChatOptions/ChatOptions";
 
 const emptyChat = {
   chatId: null,
@@ -56,7 +57,12 @@ const onSelectedChatMaker = (
   });
 };
 
-export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
+export const RenderChat = ({
+  chatApiUrl,
+  initialInfo,
+  disabled = false,
+  userkeycloakId,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -234,7 +240,9 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
   const timeToExpire =
     (currentChat &&
       currentChat.minutesToBlock &&
-      `O envio de mensagem irá expirar em ${currentChat.minutesToBlock} minuto(s).`) ||
+      `O envio de mensagem irá expirar em ${calcRemainTime(
+        currentChat.minutesToBlock
+      )}.`) ||
     undefined;
   const { actions } = currentChat;
   const hasActions = currentChat && actions && actions.length > 0;
@@ -282,7 +290,7 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
   };
 
   return (
-    <div>
+    <>
       <Chat
         messages={messages}
         onMessageSend={onMessageSend}
@@ -303,7 +311,7 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
         onSelectedChat={onSelectedChat}
         disabledSend={isLoading && messages.length === 0}
         roundedCorners={false}
-        containerHeight="80vh"
+        containerHeight="calc(100vh - 132px)"
         customHeader={{
           headerLabel: "Cliente:",
           headerBackground: "#f7f7f7",
@@ -321,6 +329,8 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
         anchorEl={anchorEl}
         setAnchorEl={setAnchorEl}
         options={actions}
+        data={currentChat}
+        userkeycloakId={userkeycloakId}
       />
 
       {currentChat.chatId && (
@@ -332,6 +342,6 @@ export const RenderChat = ({ chatApiUrl, initialInfo, disabled = false }) => {
           ref={(client) => (clientRef = client)}
         />
       )}
-    </div>
+    </>
   );
 };

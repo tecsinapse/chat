@@ -1,5 +1,5 @@
-import {defaultFetch, noAuthJsonFetch} from "../Util/fetch";
-import {mockUnreadInitialState} from "./mockUnreadInitialState";
+import { defaultFetch, noAuthJsonFetch } from "./fetch";
+import { mockUnreadInitialState } from "../mocks/mockUnreadInitialState";
 
 /**
  * Busca dos dados para inicializar o componente
@@ -14,7 +14,7 @@ export async function load(chatApiUrl, getInitialStatePath) {
   let initialInfoFromProduct;
   if (process.env.NODE_ENV === "development") {
     // mock para tela de UNREAD
-    initialInfoFromProduct = {...mockUnreadInitialState};
+    initialInfoFromProduct = { ...mockUnreadInitialState };
     // mock para tela com currentClient
     // initialInfoFromProduct = { ...mockClientChatInitialState };
   } else {
@@ -31,7 +31,7 @@ export async function load(chatApiUrl, getInitialStatePath) {
   const completeChatInfos = await defaultFetch(
     `${chatApiUrl}/api/chats/${initialInfoFromProduct.connectionKey}/infos`,
     "POST",
-    {chatIds: chatIds}
+    { chatIds: chatIds }
   );
 
   const chats = [];
@@ -54,7 +54,7 @@ export async function load(chatApiUrl, getInitialStatePath) {
 }
 
 export function completeChatInfoWith(initialInfo, updatedInfo) {
-  const finalInfo = {...initialInfo, ...updatedInfo};
+  const finalInfo = { ...initialInfo, ...updatedInfo };
 
   // deve manter somente algumas informações dos valores iniciais
   if (initialInfo.name && initialInfo.name !== "") {

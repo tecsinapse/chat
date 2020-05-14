@@ -10,8 +10,8 @@ import "./index.css";
 import uuidv1 from "uuid/v1";
 
 import * as serviceWorker from "./serviceWorker";
-import {Init} from "./Chat/Init";
-import {createGenerateClassName, StylesProvider} from "@material-ui/styles";
+import { Init } from "./components/Init/Init";
+import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
 
 window.renderChatComponent = function renderChatComponent() {
   /**
@@ -29,7 +29,7 @@ window.renderChatComponent = function renderChatComponent() {
   if (!chatApiUrl) {
     // fixed for local tests
     chatApiUrl = "http://localhost:8081";
-    // chatApiUrl = 'https://chathomolog.tecsinapse.com.br';
+    // chatApiUrl = "https://chathomolog.tecsinapse.com.br";
   }
 
   /**

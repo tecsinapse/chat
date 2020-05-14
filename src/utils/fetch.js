@@ -1,8 +1,8 @@
 export async function defaultFetch(path, method, data, formData) {
-
   let headers = new Headers({
-    'Content-Type': 'application/json',
-    'Authorization': 'rks-(j4iWna<[t)Qm?6*f^/=20y:M!YyF?76{cTbM##H/>-6|*]4!WUsD,abVj:',
+    "Content-Type": "application/json",
+    Authorization:
+      "rks-(j4iWna<[t)Qm?6*f^/=20y:M!YyF?76{cTbM##H/>-6|*]4!WUsD,abVj:",
   });
 
   let init = {
@@ -15,8 +15,8 @@ export async function defaultFetch(path, method, data, formData) {
   } else {
     if (formData) {
       init.body = formData;
-      headers.append('enctype', 'multipart/form-data')
-      headers.delete('Content-Type');
+      headers.append("enctype", "multipart/form-data");
+      headers.delete("Content-Type");
     }
   }
 
@@ -25,7 +25,7 @@ export async function defaultFetch(path, method, data, formData) {
 
 export async function noAuthJsonFetch(path, method, data) {
   let headers = new Headers({
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   });
 
   let init = {
@@ -42,10 +42,10 @@ export async function customFetch(path, init) {
   if (!res.ok) {
     if (res.status === 400 || res.status === 500) {
       const errors = await res.json();
-      console.log('Error while fetching data from server: ' + errors.join(','));
+      console.log("Error while fetching data from server: " + errors.join(","));
       return Promise.reject({
         status: res.status,
-        errors: errors.join(',')
+        errors: errors.join(","),
       });
     }
     if (res.status === 403) {
@@ -53,14 +53,16 @@ export async function customFetch(path, init) {
       // https://tecsinapse.tpondemand.com/entity/125511-bloquear-envio-de-mensagens-apos-24h
       return Promise.reject({
         status: res.status,
-        errors: 'Chat bloqueado'
+        errors: "RenderChat bloqueado",
       });
     }
-    console.log(`Server returning with error ${res.status} while fetching data from path ${path}`);
+    console.log(
+      `Server returning with error ${res.status} while fetching data from path ${path}`
+    );
     return Promise.reject({
       status: res.status,
-      error: 'Erro inesperado'
+      error: "Erro inesperado",
     });
   }
-  return res.text().then(text => (text ? JSON.parse(text) : {}));
+  return res.text().then((text) => (text ? JSON.parse(text) : {}));
 }

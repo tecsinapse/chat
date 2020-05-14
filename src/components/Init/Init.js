@@ -1,36 +1,18 @@
-import React, {useState} from "react";
-import {mdiArrowLeft, mdiChevronLeft, mdiChevronRight, mdiClose, mdiForum,} from "@mdi/js";
+import React, { useEffect, useState } from "react";
+import { mdiArrowLeft, mdiChevronRight, mdiClose, mdiForum } from "@mdi/js";
 import Icon from "@mdi/react";
-import {Divider, FloatingButton} from "@tecsinapse/ui-kit";
-import {makeStyles, useTheme} from "@material-ui/styles";
-import {Badge, CircularProgress, Drawer, Grid, Typography,} from "@material-ui/core";
-import {completeChatInfoWith, load} from "./loadChatsInfos";
-import {ComponentLocations} from "./ComponentLocations";
-import {UnreadChats} from "./UnreadChats";
-import {RenderChat} from "./RenderChat";
-import {InitWebsockets} from "./InitWebsockets";
-import {MessageManagement} from "./MessageManagement";
-import {defaultOrange} from "@tecsinapse/ui-kit/build/colors";
+import { Divider } from "@tecsinapse/ui-kit";
+import { makeStyles, useTheme } from "@material-ui/styles";
+import { Badge, Drawer, Grid, Typography } from "@material-ui/core";
+import { completeChatInfoWith, load } from "../../utils/loadChatsInfos";
+import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { UnreadChats } from "../UnreadChats/UnreadChats";
+import { RenderChat } from "../RenderChat/RenderChat";
+import { InitWebsockets } from "./InitWebsockets";
+import { MessageManagement } from "../MessageManagement/MessageManagement";
+import { ChatButton } from "../ChatButton/ChatButton";
 
 const useStyle = makeStyles((theme) => ({
-  fabContainer: {
-    position: "fixed",
-    right: 0,
-    bottom: theme.spacing(2),
-  },
-  badgeAlign: {
-    top: "7px",
-    left: "7px",
-  },
-  fab: {
-    borderRadius: "24px 0 0 24px",
-    padding: 0,
-    width: "48px",
-    backgroundColor: defaultOrange,
-  },
-  fabProgress: {
-    color: theme.palette.secondary.dark,
-  },
   drawerContainer: {
     margin: theme.spacing(2, 0, 0, 0),
     height: "100%",
@@ -40,10 +22,10 @@ const useStyle = makeStyles((theme) => ({
     /* TODO verificar uma forma melhor */
     /* Limpando estilos do Bootstrap para os inputs */
     "& input": {
-      border: '0 !important',
+      border: "0 !important",
       margin: 0,
-      paddingTop: '10.5px',
-      paddingBottom: '10.5px'
+      paddingTop: "10.5px",
+      paddingBottom: "10.5px",
     },
     "& input:focus": {
       border: '0 !important',
@@ -63,7 +45,7 @@ const useStyle = makeStyles((theme) => ({
     }
   },
   drawerHeader: {
-    margin: theme.spacing(0, 2, 1.6, 2),
+    margin: theme.spacing(0, 2, 20 / 12, 2),
   },
   messageManagementLinkContainer: {
     padding: theme.spacing(1, 2, 3 / 4, 2),
@@ -88,7 +70,7 @@ async function loadComponent(
   if (info.currentClient && Object.keys(info.currentClient).length > 0) {
     // quando a visualização é de um cliente específico, então define as informações
     // desse cliente como currentChat e exibe o chat direto
-    setView(ComponentLocations.SPECIFIC_CHAT);
+    setView(COMPONENT_LOCATION.CHAT);
     const chats = info.allChats.filter((chat) =>
       info.currentClient.clientChatIds.includes(chat.chatId)
     );
@@ -110,12 +92,12 @@ export const Init = ({
   const classes = useStyle();
   const theme = useTheme();
   const [isLoadingInitialState, setIsLoadingInitialState] = useState(true);
-  const [view, setView] = useState(ComponentLocations.UNREAD);
+  const [view, setView] = useState(COMPONENT_LOCATION.UNREAD);
   const [componentInfo, setComponentInfo] = useState({});
   const [currentChat, setCurrentChat] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadComponent(
       chatApiUrl,
       getInitialStatePath,
@@ -136,6 +118,17 @@ export const Init = ({
     setIsLoadingInitialState,
     openWhenLoad,
   ]);
+
+  const reloadComponent = () => {
+    loadComponent(
+      chatApiUrl,
+      getInitialStatePath,
+      setComponentInfo,
+      setIsLoadingInitialState,
+      setView,
+      setCurrentChat
+    ).then(() => {});
+  };
 
   const chatIds = (componentInfo.allChats || [])
     .map((chat) => chat.chatId)
@@ -167,17 +160,6 @@ export const Init = ({
     setComponentInfo(toUpdateInfo);
   };
 
-  const reloadComponent = () => {
-    loadComponent(
-      chatApiUrl,
-      getInitialStatePath,
-      setComponentInfo,
-      setIsLoadingInitialState,
-      setView,
-      setCurrentChat
-    ).then(() => {});
-  };
-
   const onSelectChat = (chat) => {
     setCurrentChat({
       name: chat.name,
@@ -185,41 +167,16 @@ export const Init = ({
       disabled: false,
       chats: [chat],
     });
-    setView(ComponentLocations.CHAT);
+    setView(COMPONENT_LOCATION.CHAT);
   };
 
   return (
     <div className="Chat">
-      <div className={classes.fabContainer}>
-        <Badge
-          color="error"
-          badgeContent={unreadTotal}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-          classes={{
-            anchorOriginTopLeftRectangle: classes.badgeAlign,
-          }}
-        >
-          <FloatingButton
-            onClick={() => {
-              if (!isLoadingInitialState) {
-                setIsDrawerOpen(true);
-              }
-            }}
-            variant="secondary"
-            className={classes.fab}
-          >
-            {isLoadingInitialState ? (
-              <CircularProgress size={20} className={classes.fabProgress} />
-            ) : (
-              <Icon path={mdiChevronLeft} size={1.25} color="#7b4e00" />
-            )}
-          </FloatingButton>
-        </Badge>
-      </div>
-
+      <ChatButton
+        isLoadingInitialState={isLoadingInitialState}
+        setIsDrawerOpen={setIsDrawerOpen}
+        unreadTotal={unreadTotal}
+      />
       <Drawer
         anchor="right"
         open={isDrawerOpen}
@@ -230,13 +187,13 @@ export const Init = ({
             <Grid container justify="space-between">
               <Grid item>
                 <Grid container>
-                  {(view === ComponentLocations.CHAT ||
-                    view === ComponentLocations.MESSAGE_MANAGEMENT) && (
+                  {(view === COMPONENT_LOCATION.CHAT ||
+                    view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT) && (
                     <Grid item style={{ marginRight: theme.spacing(1) }}>
                       <Badge
                         color="error"
-                        overlap={"circle"}
-                        variant={"dot"}
+                        overlap="circle"
+                        variant="dot"
                         badgeContent={unreadTotal}
                         anchorOrigin={{
                           vertical: "top",
@@ -244,10 +201,10 @@ export const Init = ({
                         }}
                       >
                         <Icon
-                          onClick={() => setView(ComponentLocations.UNREAD)}
+                          onClick={() => setView(COMPONENT_LOCATION.UNREAD)}
                           color={theme.palette.primary.main}
                           size={1.25}
-                          style={{ cursor: "pointer" }}
+                          style={{ cursor: "pointer", marginLeft: "-8px" }}
                           path={mdiArrowLeft}
                         />
                       </Badge>
@@ -255,11 +212,11 @@ export const Init = ({
                   )}
                   <Grid item>
                     <Typography variant="h5" color="textPrimary">
-                      {(view === ComponentLocations.CHAT ||
-                        view === ComponentLocations.SPECIFIC_CHAT) &&
-                        "Mensagens do Chat"}
-                      {view === ComponentLocations.UNREAD && "Painel do Chat"}
-                      {view === ComponentLocations.MESSAGE_MANAGEMENT &&
+                      {view === COMPONENT_LOCATION.CHAT &&
+                        "Mensagens do RenderChat"}
+                      {view === COMPONENT_LOCATION.UNREAD &&
+                        "Painel do RenderChat"}
+                      {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
                         "Gestão de Mensagens"}
                     </Typography>
                   </Grid>
@@ -278,59 +235,61 @@ export const Init = ({
           </div>
           <Divider variant="inset" component="li" />
 
-          {view !== ComponentLocations.MESSAGE_MANAGEMENT &&
-            view !== ComponentLocations.SPECIFIC_CHAT && (
-              <div
-                className={classes.messageManagementLinkContainer}
-                onClick={() => setView(ComponentLocations.MESSAGE_MANAGEMENT)}
-              >
-                <Grid container justify="space-between">
-                  <Grid item>
-                    <Grid container spacing={1}>
-                      <Grid item>
-                        <Icon
-                          path={mdiForum}
-                          size={0.8}
-                          color={theme.palette.text.secondary}
-                          style={{ marginTop: "3px" }}
-                        />
-                      </Grid>
-                      <Grid item>
-                        <Typography
-                          color="textPrimary"
-                          variant="body1"
-                          display="inline"
-                          style={{ fontWeight: "bold" }}
-                        >
-                          Gestão de mensagens
-                        </Typography>
-                      </Grid>
+          {view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
+            <div
+              className={classes.messageManagementLinkContainer}
+              onClick={() => setView(COMPONENT_LOCATION.MESSAGE_MANAGEMENT)}
+            >
+              <Grid container justify="space-between">
+                <Grid item>
+                  <Grid container spacing={1}>
+                    <Grid item>
+                      <Icon
+                        path={mdiForum}
+                        size={1}
+                        color={theme.palette.text.secondary}
+                        style={{ marginTop: "3px" }}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                        display="inline"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        Gestão de mensagens
+                      </Typography>
                     </Grid>
                   </Grid>
-                  <Grid item>
-                    <Icon
-                      color={theme.palette.text.primary}
-                      size={1}
-                      style={{ cursor: "pointer" }}
-                      path={mdiChevronRight}
-                    />
-                  </Grid>
                 </Grid>
-              </div>
-            )}
+                <Grid item>
+                  <Icon
+                    color={theme.palette.text.primary}
+                    size={1}
+                    style={{ cursor: "pointer" }}
+                    path={mdiChevronRight}
+                  />
+                </Grid>
+              </Grid>
+            </div>
+          )}
           <Divider variant="inset" component="li" />
 
-          {view === ComponentLocations.UNREAD && (
+          {view === COMPONENT_LOCATION.UNREAD && (
             <UnreadChats
               chats={componentInfo.allChats}
               onSelectChat={onSelectChat}
             />
           )}
-          {(view === ComponentLocations.CHAT ||
-            view === ComponentLocations.SPECIFIC_CHAT) && (
-            <RenderChat initialInfo={currentChat} chatApiUrl={chatApiUrl} />
+          {view === COMPONENT_LOCATION.CHAT && (
+            <RenderChat
+              initialInfo={currentChat}
+              chatApiUrl={chatApiUrl}
+              userkeycloakId={userkeycloakId}
+            />
           )}
-          {view === ComponentLocations.MESSAGE_MANAGEMENT && (
+          {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
             <MessageManagement
               componentInfo={componentInfo}
               onSelectChat={onSelectChat}

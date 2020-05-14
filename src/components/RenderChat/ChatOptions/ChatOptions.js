@@ -6,6 +6,7 @@ import {
   Popover,
 } from "@material-ui/core";
 import React from "react";
+import jwt from "jwt-simple";
 
 const useStyles = makeStyles(() => ({
   listFont: {
@@ -13,12 +14,23 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const ChatOptions = ({ anchorEl, options, setAnchorEl }) => {
+export const ChatOptions = ({
+  anchorEl,
+  options,
+  setAnchorEl,
+  data,
+  userkeycloakId,
+}) => {
   const classes = useStyles();
   const handleClose = () => {
     setAnchorEl(null);
   };
   const open = Boolean(anchorEl);
+  const encodedData = jwt.encode(
+    { data: JSON.stringify(data) },
+    userkeycloakId,
+    "HS256"
+  );
 
   return (
     <Popover
@@ -37,7 +49,11 @@ export const ChatOptions = ({ anchorEl, options, setAnchorEl }) => {
       <List>
         {options &&
           options.map((item) => (
-            <ListItem button component="a" href={item.path}>
+            <ListItem
+              button
+              component="a"
+              href={`${item.path}?data=${encodedData}`}
+            >
               <ListItemText
                 primary={item.label}
                 classes={{
