@@ -254,9 +254,9 @@ export const Init = ({
               className={classes.messageManagementLinkContainer}
               onClick={() => setView(COMPONENT_LOCATION.MESSAGE_MANAGEMENT)}
             >
-              <Grid container justify="space-between">
+              <Grid container justify="space-between" alignItems="center">
                 <Grid item>
-                  <Grid container spacing={1}>
+                  <Grid container spacing={1} alignItems="center">
                     <Grid item>
                       <Icon
                         path={mdiForum}

@@ -31,7 +31,7 @@ const useStyle = makeStyles((theme) => ({
     height: "16px",
     width: "16px",
     borderRadius: "10px",
-    backgroundColor: "#e12626",
+    backgroundColor: "#e6433f",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -95,9 +95,9 @@ export const UnreadChats = ({ chats, onSelectChat }) => {
     <>
       <div className={classes.root}>
         <div className={classes.header}>
-          <Grid container justify="space-between">
+          <Grid container justify="space-between" alignItems="center">
             <Grid item>
-              <Grid container spacing={1}>
+              <Grid container spacing={1} alignItems="center">
                 <Grid item>
                   <Icon
                     path={mdiMessageText}

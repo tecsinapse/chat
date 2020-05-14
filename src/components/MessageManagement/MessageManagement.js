@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Table } from "@tecsinapse/table";
 import TableRowActions from "@tecsinapse/table/build/Table/TableRowActions";
 import jwt from "jwt-simple";
 import { format } from "../../utils/dates";
 import { Badge } from "@material-ui/core";
+import { TableHeader } from "./TableHeader";
 
 const useStyle = makeStyles((theme) => ({
   highlighted: {
     fontWeight: "bold",
-    color: "#ff0050",
+    color: "#e6433f",
   },
   badgeAlign: {
     top: "8px",
@@ -22,6 +23,26 @@ export const MessageManagement = ({
   onSelectChat,
   userkeycloakId,
 }) => {
+  const { extraInfoColumns, allChats = [] } = componentInfo;
+  const [showClient, setShowClient] = useState(true);
+  const [showNotClient, setShowNotClient] = useState(true);
+  const [chats, setChats] = useState(allChats);
+
+  useEffect(() => {
+    setChats(
+      (allChats.length > 1 &&
+        allChats.filter((item) => {
+          const noSwitch = !showClient && !showNotClient;
+          return (
+            !noSwitch &&
+            (item.highlighted !== showClient ||
+              item.highlighted === showNotClient)
+          );
+        })) ||
+        []
+    );
+  }, [allChats, showClient, showNotClient]);
+
   const classes = useStyle();
 
   const columns = [
@@ -56,7 +77,6 @@ export const MessageManagement = ({
     },
   ];
 
-  const { extraInfoColumns } = componentInfo;
   if (extraInfoColumns && Object.keys(extraInfoColumns).length > 0) {
     Object.keys(extraInfoColumns).forEach((key) => {
       columns.push({
@@ -123,7 +143,7 @@ export const MessageManagement = ({
   return (
     <Table
       columns={columns}
-      data={componentInfo.allChats}
+      data={chats}
       rowId={(row) => row.id}
       pagination
       exportOptions={{
@@ -134,7 +154,14 @@ export const MessageManagement = ({
         ],
       }}
       toolbarOptions={{
-        title: "Clientes do Chat",
+        title: (
+          <TableHeader
+            setShowClient={setShowClient}
+            setShowNotClient={setShowNotClient}
+            showClient={showClient}
+            showNotClient={showNotClient}
+          />
+        ),
       }}
       hideSelectFilterLabel
     />
