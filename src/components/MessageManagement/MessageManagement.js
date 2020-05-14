@@ -1,10 +1,10 @@
 import React from "react";
-import {makeStyles} from "@material-ui/styles";
-import {Table} from "@tecsinapse/table";
+import { makeStyles } from "@material-ui/styles";
+import { Table } from "@tecsinapse/table";
 import TableRowActions from "@tecsinapse/table/build/Table/TableRowActions";
 import jwt from "jwt-simple";
-import {format} from "../../utils/dates";
-import {Badge} from "@material-ui/core";
+import { format } from "../../utils/dates";
+import { Badge } from "@material-ui/core";
 
 const useStyle = makeStyles((theme) => ({
   highlighted: {
@@ -13,15 +13,15 @@ const useStyle = makeStyles((theme) => ({
   },
   badgeAlign: {
     top: "8px",
-    right: "-12px",
-  }
+    right: "12px",
+  },
 }));
 
 export const MessageManagement = ({
-                                    componentInfo,
-                                    onSelectChat,
-                                    userkeycloakId,
-                                  }) => {
+  componentInfo,
+  onSelectChat,
+  userkeycloakId,
+}) => {
   const classes = useStyle();
 
   const columns = [
@@ -40,23 +40,11 @@ export const MessageManagement = ({
         filter: true,
       },
       customRender: (row) => {
-        return <Badge
-          color="error"
-          badgeContent={row.unread}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          classes={{
-            anchorOriginTopRightRectangle: classes.badgeAlign,
-          }}
-        >
-          {row.highlighted ? (
-            <span className={classes.highlighted}>{row.name}</span>
-          ) : (
-            row.name
-          )}
-        </Badge>
+        return row.highlighted ? (
+          <span className={classes.highlighted}>{row.name}</span>
+        ) : (
+          row.name
+        );
       },
     },
     {
@@ -68,7 +56,7 @@ export const MessageManagement = ({
     },
   ];
 
-  const {extraInfoColumns} = componentInfo;
+  const { extraInfoColumns } = componentInfo;
   if (extraInfoColumns && Object.keys(extraInfoColumns).length > 0) {
     Object.keys(extraInfoColumns).forEach((key) => {
       columns.push({
@@ -99,7 +87,7 @@ export const MessageManagement = ({
             label: actionLink.label,
             onClick: (rowData) => {
               const encodedData = jwt.encode(
-                {data: JSON.stringify(rowData)},
+                { data: JSON.stringify(rowData) },
                 userkeycloakId,
                 "HS256"
               );
@@ -110,12 +98,24 @@ export const MessageManagement = ({
       }
 
       return (
-        <TableRowActions
-          actions={actions}
-          row={row}
-          verticalActions={true}
-          forceCollapseActions={true}
-        />
+        <Badge
+          color="error"
+          badgeContent={row.unread}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          classes={{
+            anchorOriginTopRightRectangle: classes.badgeAlign,
+          }}
+        >
+          <TableRowActions
+            actions={actions}
+            row={row}
+            verticalActions={true}
+            forceCollapseActions={true}
+          />
+        </Badge>
       );
     },
   });

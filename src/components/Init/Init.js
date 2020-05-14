@@ -28,21 +28,21 @@ const useStyle = makeStyles((theme) => ({
       paddingBottom: "10.5px",
     },
     "& input:focus": {
-      border: '0 !important',
-      borderColor: '#fff',
-      boxShadow: 'none'
+      border: "0 !important",
+      borderColor: "#fff",
+      boxShadow: "none",
     },
     "& textarea": {
-      border: '0 !important',
+      border: "0 !important",
       margin: 0,
-      paddingTop: '10.5px',
-      paddingBottom: '10.5px'
+      paddingTop: "10.5px",
+      paddingBottom: "10.5px",
     },
     "& textarea:focus": {
-      border: '0 !important',
-      borderColor: '#fff',
-      boxShadow: 'none'
-    }
+      border: "0 !important",
+      borderColor: "#fff",
+      boxShadow: "none",
+    },
   },
   drawerHeader: {
     margin: theme.spacing(0, 2, 20 / 12, 2),
@@ -228,10 +228,8 @@ export const Init = ({
                   )}
                   <Grid item>
                     <Typography variant="h5" color="textPrimary">
-                      {view === COMPONENT_LOCATION.CHAT &&
-                        "Mensagens do Chat"}
-                      {view === COMPONENT_LOCATION.UNREAD &&
-                        "Painel do Chat"}
+                      {view === COMPONENT_LOCATION.CHAT && "Mensagens do Chat"}
+                      {view === COMPONENT_LOCATION.UNREAD && "Painel do Chat"}
                       {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
                         "Gestão de Mensagens"}
                     </Typography>

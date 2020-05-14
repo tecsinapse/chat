@@ -11,7 +11,7 @@ import {
   ListItemText,
   Typography,
 } from "@material-ui/core";
-import {format} from "../../utils/dates";
+import { format } from "../../utils/dates";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -42,13 +42,12 @@ const useStyle = makeStyles((theme) => ({
     textTransform: "uppercase",
     fontWeight: "bold",
     fontSize: "14px",
-    letterSpacing: "-0.1px",
   },
   itemText2: {
     textTransform: "capitalize",
     fontSize: "12px",
     fontWeight: "500",
-    letterSpacing: "-0.3px",
+    letterSpacing: "-0.1px",
   },
   itemText3: {
     fontWeight: "bold",

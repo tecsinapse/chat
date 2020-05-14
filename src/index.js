@@ -59,7 +59,7 @@ window.renderChatComponent = function renderChatComponent() {
   }
 
   const generateClassName = createGenerateClassName({
-    productionPrefix: 'chat',
+    productionPrefix: "chat",
   });
 
   ReactDOM.render(
