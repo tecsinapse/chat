@@ -63,11 +63,5 @@ export const setStatusMessageFunc = (setMessages) => (localId, status) => {
 export const calcRemainTime = (time) => {
   const hours = Math.floor(time / 60);
   const minutes = time % 60;
-  const unit = (hours > 0 && "hora(s)") || "minuto(s)";
-  if (hours > 0) {
-    const formattedMinutes =
-      minutes < 10 ? "0".concat(minutes.toString()) : minutes;
-    return `${hours}${minutes > 0 ? ":" + formattedMinutes : ""} ${unit}`;
-  }
-  return `${minutes} ${unit}`;
+  return (hours > 0 && `${hours} hora(s)`) || `${minutes} minuto(s)`;
 };
