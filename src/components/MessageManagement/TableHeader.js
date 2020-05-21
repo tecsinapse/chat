@@ -13,10 +13,8 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 export const TableHeader = ({
-  showClient,
-  setShowClient,
   showNotClient,
-  setShowNotClient,
+  switchToOnlyNotClients,
 }) => {
   const classes = useStyle();
 
@@ -27,19 +25,9 @@ export const TableHeader = ({
       </Typography>
       <FormControlLabel
         control={<Switch size="small" />}
-        label="Exibir clientes cadastrados"
-        checked={showClient}
-        onChange={() => setShowClient(!showClient)}
-        classes={{
-          root: classes.marginRight,
-          label: classes.label,
-        }}
-      />
-      <FormControlLabel
-        control={<Switch size="small" />}
         checked={showNotClient}
-        onChange={() => setShowNotClient(!showNotClient)}
-        label="Exibir clientes não cadastrados"
+        onChange={switchToOnlyNotClients}
+        label="Exibir apenas clientes não cadastrados no sistema"
         classes={{
           root: classes.marginRight,
           label: classes.label,

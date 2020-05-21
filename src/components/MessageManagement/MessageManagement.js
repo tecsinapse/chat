@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Table } from "@tecsinapse/table";
 import TableRowActions from "@tecsinapse/table/build/Table/TableRowActions";
@@ -24,24 +24,18 @@ export const MessageManagement = ({
   userkeycloakId,
 }) => {
   const { extraInfoColumns, allChats = [] } = componentInfo;
-  const [showClient, setShowClient] = useState(true);
-  const [showNotClient, setShowNotClient] = useState(true);
-  const [chats, setChats] = useState(allChats);
+  const [ showOnlyNotClients, setShowOnlyNotClients ] = useState(false);
+  const [ chats, setChats ] = useState(allChats);
 
-  useEffect(() => {
-    setChats(
-      (allChats.length > 1 &&
-        allChats.filter((item) => {
-          const noSwitch = !showClient && !showNotClient;
-          return (
-            !noSwitch &&
-            (item.highlighted !== showClient ||
-              item.highlighted === showNotClient)
-          );
-        })) ||
-        []
-    );
-  }, [allChats, showClient, showNotClient]);
+  const switchToOnlyNotClients = () => {
+    const showOnly = !showOnlyNotClients;
+    if (showOnly) {
+      setChats([...allChats].filter((it) => it.highlighted));
+    } else {
+      setChats([...allChats]);
+    }
+    setShowOnlyNotClients(showOnly);
+  };
 
   const classes = useStyle();
 
@@ -156,10 +150,8 @@ export const MessageManagement = ({
       toolbarOptions={{
         title: (
           <TableHeader
-            setShowClient={setShowClient}
-            setShowNotClient={setShowNotClient}
-            showClient={showClient}
-            showNotClient={showNotClient}
+            showNotClient={showOnlyNotClients}
+            switchToOnlyNotClients={switchToOnlyNotClients}
           />
         ),
       }}
