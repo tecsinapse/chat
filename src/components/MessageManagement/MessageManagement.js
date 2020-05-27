@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/styles";
-import { Table } from "@tecsinapse/table";
+import React, {useState} from "react";
+import {makeStyles} from "@material-ui/styles";
+import {Table} from "@tecsinapse/table";
 import TableRowActions from "@tecsinapse/table/build/Table/TableRowActions";
 import jwt from "jwt-simple";
-import { format } from "../../utils/dates";
-import { Badge } from "@material-ui/core";
-import { TableHeader } from "./TableHeader";
+import {format} from "../../utils/dates";
+import {Badge, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
+import {TableHeader} from "./TableHeader";
 
 const useStyle = makeStyles((theme) => ({
   highlighted: {
@@ -19,13 +19,15 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 export const MessageManagement = ({
-  componentInfo,
-  onSelectChat,
-  userkeycloakId,
-}) => {
-  const { extraInfoColumns, allChats = [] } = componentInfo;
-  const [ showOnlyNotClients, setShowOnlyNotClients ] = useState(false);
-  const [ chats, setChats ] = useState(allChats);
+                                    componentInfo,
+                                    onSelectChat,
+                                    onDeleteChat,
+                                    userkeycloakId,
+                                  }) => {
+  const {extraInfoColumns, allChats = []} = componentInfo;
+  const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
+  const [chats, setChats] = useState(allChats);
+  const [deletingChat, setDeletingChat] = useState({});
 
   const switchToOnlyNotClients = () => {
     const showOnly = !showOnlyNotClients;
@@ -101,7 +103,7 @@ export const MessageManagement = ({
             label: actionLink.label,
             onClick: (rowData) => {
               const encodedData = jwt.encode(
-                { data: JSON.stringify(rowData) },
+                {data: JSON.stringify(rowData)},
                 userkeycloakId,
                 "HS256"
               );
@@ -110,6 +112,12 @@ export const MessageManagement = ({
           });
         });
       }
+      actions.push({
+        label: "Descartar Conversa",
+        onClick: (rowData) => {
+          setDeletingChat(rowData);
+        },
+      });
 
       return (
         <Badge
@@ -134,28 +142,60 @@ export const MessageManagement = ({
     },
   });
 
+  const deleteChat = () => {
+    onDeleteChat(deletingChat)
+      .then((updatedAllChats) => {
+        setDeletingChat({});
+        setChats(updatedAllChats);
+      });
+  };
+
   return (
-    <Table
-      columns={columns}
-      data={chats}
-      rowId={(row) => row.id}
-      pagination
-      exportOptions={{
-        exportTypes: [
-          {
-            type: "csv",
-          },
-        ],
-      }}
-      toolbarOptions={{
-        title: (
-          <TableHeader
-            showNotClient={showOnlyNotClients}
-            switchToOnlyNotClients={switchToOnlyNotClients}
-          />
-        ),
-      }}
-      hideSelectFilterLabel
-    />
+    <>
+      <Table
+        columns={columns}
+        data={chats}
+        rowId={(row) => row.id}
+        pagination
+        exportOptions={{
+          exportTypes: [
+            {
+              type: "csv",
+            },
+          ],
+        }}
+        toolbarOptions={{
+          title: (
+            <TableHeader
+              showNotClient={showOnlyNotClients}
+              switchToOnlyNotClients={switchToOnlyNotClients}
+            />
+          ),
+        }}
+        hideSelectFilterLabel
+      />
+      <Dialog
+        open={deletingChat && Object.keys(deletingChat).length > 0}
+        onClose={() => setDeletingChat({})}
+        aria-labelledby="dialog-title"
+      >
+        <DialogTitle id="dialog-title">{"Confirmação"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Confirma descartar essa Conversa?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={() => setDeletingChat({})} color="primary">
+            Não
+          </Button>
+          <Button
+            onClick={deleteChat}
+            color="primary" autoFocus>
+            Sim
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };

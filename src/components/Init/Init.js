@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { mdiArrowLeft, mdiChevronRight, mdiClose, mdiForum } from "@mdi/js";
+import React, {useEffect, useState} from "react";
+import {mdiArrowLeft, mdiChevronRight, mdiClose, mdiForum} from "@mdi/js";
 import Icon from "@mdi/react";
-import { Divider } from "@tecsinapse/ui-kit";
-import { makeStyles, useTheme } from "@material-ui/styles";
-import { Badge, Drawer, Grid, Typography } from "@material-ui/core";
-import { completeChatInfoWith, load } from "../../utils/loadChatsInfos";
-import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { UnreadChats } from "../UnreadChats/UnreadChats";
-import { RenderChat } from "../RenderChat/RenderChat";
-import { InitWebsockets } from "./InitWebsockets";
-import { MessageManagement } from "../MessageManagement/MessageManagement";
-import { ChatButton } from "../ChatButton/ChatButton";
+import {Divider} from "@tecsinapse/ui-kit";
+import {makeStyles, useTheme} from "@material-ui/styles";
+import {Badge, Drawer, Grid, Typography} from "@material-ui/core";
+import {completeChatInfoWith, load} from "../../utils/loadChatsInfos";
+import {COMPONENT_LOCATION} from "../../constants/COMPONENT_LOCATION";
+import {UnreadChats} from "../UnreadChats/UnreadChats";
+import {RenderChat} from "../RenderChat/RenderChat";
+import {InitWebsockets} from "./InitWebsockets";
+import {MessageManagement} from "../MessageManagement/MessageManagement";
+import {ChatButton} from "../ChatButton/ChatButton";
+import {noAuthJsonFetch} from "../../utils/fetch";
 
 const useStyle = makeStyles((theme) => ({
   drawerContainer: {
@@ -87,12 +88,15 @@ export const Init = ({
   userkeycloakId,
   chatApiUrl,
   getInitialStatePath,
+  deleteChatPath,
   openWhenLoad = false,
 }) => {
+  const homeLocation = COMPONENT_LOCATION.UNREAD;
+
   const classes = useStyle();
   const theme = useTheme();
   const [isLoadingInitialState, setIsLoadingInitialState] = useState(true);
-  const [view, setView] = useState(COMPONENT_LOCATION.UNREAD);
+  const [view, setView] = useState(homeLocation);
   const [componentInfo, setComponentInfo] = useState({});
   const [currentChat, setCurrentChat] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -185,6 +189,25 @@ export const Init = ({
     });
     setView(COMPONENT_LOCATION.CHAT);
   };
+
+  async function onDeleteChat(deletedChat) {
+    await noAuthJsonFetch(
+      `${deleteChatPath}/${deletedChat.chatId}`,
+      "DELETE",
+      {}
+    );
+    const toUpdateInfo = {...componentInfo};
+    toUpdateInfo.allChats = componentInfo.allChats.filter(chat => chat.chatId !== deletedChat.chatId);
+
+    const {currentClient} = componentInfo;
+    if (currentClient && Object.keys(currentClient).length > 0) {
+      if (currentClient.clientChatIds.includes(deletedChat.chatId)) {
+        toUpdateInfo.currentClient = {};
+      }
+    }
+    setComponentInfo(toUpdateInfo);
+    return toUpdateInfo.allChats;
+  }
 
   return (
     <div className="Chat">
@@ -308,6 +331,7 @@ export const Init = ({
             <MessageManagement
               componentInfo={componentInfo}
               onSelectChat={onSelectChat}
+              onDeleteChat={onDeleteChat}
               userkeycloakId={userkeycloakId}
             />
           )}

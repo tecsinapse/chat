@@ -53,6 +53,14 @@ window.renderChatComponent = function renderChatComponent() {
     getInitialStatePath = "/rest/chat/componentInfo?param=" + initParam;
   }
 
+  /**
+   * Caminho do endpoint REST que faz a exclusão do chat
+   */
+  let deleteChatPath = window.CHAT_DELETE_PATH;
+  if (!deleteChatPath) {
+    deleteChatPath = "/rest/chat";
+  }
+
   let openWhenLoad = window.CHAT_OPEN_WHEN_LOAD;
   if (!openWhenLoad) {
     openWhenLoad = false;
@@ -69,6 +77,7 @@ window.renderChatComponent = function renderChatComponent() {
           userkeycloakId={userkeycloakId}
           chatApiUrl={chatApiUrl}
           getInitialStatePath={getInitialStatePath}
+          deleteChatPath={deleteChatPath}
           openWhenLoad={openWhenLoad}
         />
       </ThemeProvider>
@@ -79,4 +88,4 @@ window.renderChatComponent = function renderChatComponent() {
 };
 
 // uncomment for local tests
-// window.renderChatComponent();
+window.renderChatComponent();
