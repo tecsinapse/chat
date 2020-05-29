@@ -6,7 +6,7 @@ import {
   Popover,
 } from "@material-ui/core";
 import React from "react";
-import jwt from "jwt-simple";
+import {encodeChatData} from "../../../utils/encodeChatData";
 
 const useStyles = makeStyles(() => ({
   listFont: {
@@ -26,11 +26,7 @@ export const ChatOptions = ({
     setAnchorEl(null);
   };
   const open = Boolean(anchorEl);
-  const encodedData = jwt.encode(
-    { data: JSON.stringify(data) },
-    userkeycloakId,
-    "HS256"
-  );
+  const encodedData = encodeChatData(data, userkeycloakId);
 
   return (
     <Popover

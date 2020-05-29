@@ -10,61 +10,33 @@ import "./index.css";
 import uuidv1 from "uuid/v1";
 
 import * as serviceWorker from "./serviceWorker";
-import { Init } from "./components/Init/Init";
-import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
+import {Init} from "./components/Init/Init";
+import {createGenerateClassName, StylesProvider} from "@material-ui/styles";
 
 window.renderChatComponent = function renderChatComponent() {
-  /**
-   * ID do usuário logado no produto que está abrindo o chat
-   */
-  let userkeycloakId = window.USER_KEYCLOAK_ID;
-  if (!userkeycloakId) {
-    userkeycloakId = uuidv1();
-  }
 
-  /**
-   * URL do tecsinapse-chat
-   */
-  let chatApiUrl = window.CHAT_API_URL;
-  if (!chatApiUrl) {
-    // fixed for local tests
-    // chatApiUrl = "http://localhost:8081";
-    chatApiUrl = "https://chathomolog.tecsinapse.com.br";
-  }
+  const defaultChatInitConfig = {
+    userkeycloakId: uuidv1(),
+    chatApiUrl: "http://localhost:8081",
+    // chatApiUrl: "https://chathomolog.tecsinapse.com.br",
+    params: {},
+    getInitialStatePath: "/rest/chat/componentInfo",
+    deleteChatPath: "/rest/chat",
+    openImmediately: false,
+    clickOnUnreadOpenFirstAction: false,
+    showMessagesLabel: 'Visualizar Mensagens',
+    navigateWhenCurrentChat: true,
+    enableChats: true,
+    updateUnreadWhenOpen: true,
+    onChatTitle: 'Mensagens do Chat',
+  };
 
-  /**
-   * Parâmetro de inicialização do componente que será enviado
-   * na requisição REST ao produto
-   */
-  let initParam = window.CHAT_INIT_PARAM;
-  if (!initParam) {
-    initParam = "";
-  } else {
-    if (typeof initParam !== "string") {
-      initParam = JSON.stringify(initParam);
-    }
+  let chatInitConfig = {...defaultChatInitConfig};
+  // merge da configuração default com o objeto passado para inicialização
+  if (window.CHAT_INIT_CONFIG) {
+    chatInitConfig = {...defaultChatInitConfig, ...window.CHAT_INIT_CONFIG};
   }
-
-  /**
-   * Caminho do endpoint REST que carregará as informações iniciais do componente
-   */
-  let getInitialStatePath = window.CHAT_GET_INITIAL_STATE_PATH;
-  if (!getInitialStatePath) {
-    getInitialStatePath = "/rest/chat/componentInfo?param=" + initParam;
-  }
-
-  /**
-   * Caminho do endpoint REST que faz a exclusão do chat
-   */
-  let deleteChatPath = window.CHAT_DELETE_PATH;
-  if (!deleteChatPath) {
-    deleteChatPath = "/rest/chat";
-  }
-
-  let openWhenLoad = window.CHAT_OPEN_WHEN_LOAD;
-  if (!openWhenLoad) {
-    openWhenLoad = false;
-  }
+  console.log('Renderizando Componente de Chat com as Configurações: ', chatInitConfig);
 
   const generateClassName = createGenerateClassName({
     productionPrefix: "chat",
@@ -74,11 +46,7 @@ window.renderChatComponent = function renderChatComponent() {
     <StylesProvider generateClassName={generateClassName}>
       <ThemeProvider variant="orange">
         <Init
-          userkeycloakId={userkeycloakId}
-          chatApiUrl={chatApiUrl}
-          getInitialStatePath={getInitialStatePath}
-          deleteChatPath={deleteChatPath}
-          openWhenLoad={openWhenLoad}
+          chatInitConfig={chatInitConfig}
         />
       </ThemeProvider>
     </StylesProvider>,
@@ -88,4 +56,4 @@ window.renderChatComponent = function renderChatComponent() {
 };
 
 // uncomment for local tests
-window.renderChatComponent();
+// window.renderChatComponent();

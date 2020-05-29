@@ -33,6 +33,10 @@ export async function noAuthJsonFetch(path, method, data) {
     headers,
   };
 
+  if (data && Object.keys(data).length > 0) {
+    init.body = JSON.stringify(data);
+  }
+
   return await customFetch(path, init);
 }
 

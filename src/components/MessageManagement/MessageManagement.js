@@ -2,10 +2,10 @@ import React, {useState} from "react";
 import {makeStyles} from "@material-ui/styles";
 import {Table} from "@tecsinapse/table";
 import TableRowActions from "@tecsinapse/table/build/Table/TableRowActions";
-import jwt from "jwt-simple";
 import {format} from "../../utils/dates";
 import {Badge, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 import {TableHeader} from "./TableHeader";
+import {encodeChatData} from "../../utils/encodeChatData";
 
 const useStyle = makeStyles((theme) => ({
   highlighted: {
@@ -23,6 +23,7 @@ export const MessageManagement = ({
                                     onSelectChat,
                                     onDeleteChat,
                                     userkeycloakId,
+                                    showMessagesLabel
                                   }) => {
   const {extraInfoColumns, allChats = []} = componentInfo;
   const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
@@ -91,7 +92,7 @@ export const MessageManagement = ({
     customRender: (row) => {
       const actions = [
         {
-          label: "Visualizar Mensagens",
+          label: showMessagesLabel,
           onClick: (rowData) => {
             onSelectChat(rowData);
           },
@@ -102,11 +103,7 @@ export const MessageManagement = ({
           actions.push({
             label: actionLink.label,
             onClick: (rowData) => {
-              const encodedData = jwt.encode(
-                {data: JSON.stringify(rowData)},
-                userkeycloakId,
-                "HS256"
-              );
+              const encodedData = encodeChatData(rowData, userkeycloakId);
               window.open(`${actionLink.path}?data=${encodedData}`, "_self");
             },
           });

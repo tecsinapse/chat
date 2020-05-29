@@ -3,7 +3,18 @@ import {mdiArrowLeft, mdiChevronRight, mdiClose, mdiForum} from "@mdi/js";
 import Icon from "@mdi/react";
 import {Divider} from "@tecsinapse/ui-kit";
 import {makeStyles, useTheme} from "@material-ui/styles";
-import {Badge, Drawer, Grid, Typography} from "@material-ui/core";
+import {
+  Badge,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Drawer,
+  Grid,
+  Typography
+} from "@material-ui/core";
 import {completeChatInfoWith, load} from "../../utils/loadChatsInfos";
 import {COMPONENT_LOCATION} from "../../constants/COMPONENT_LOCATION";
 import {UnreadChats} from "../UnreadChats/UnreadChats";
@@ -12,9 +23,11 @@ import {InitWebsockets} from "./InitWebsockets";
 import {MessageManagement} from "../MessageManagement/MessageManagement";
 import {ChatButton} from "../ChatButton/ChatButton";
 import {noAuthJsonFetch} from "../../utils/fetch";
+import {encodeChatData} from "../../utils/encodeChatData";
 
 const useStyle = makeStyles((theme) => ({
   drawerContainer: {
+    fontFamily: "font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI , Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue",
     margin: theme.spacing(2, 0, 0, 0),
     height: "100%",
     overflowX: "hidden",
@@ -55,17 +68,21 @@ const useStyle = makeStyles((theme) => ({
       backgroundColor: theme.palette.grey["300"],
     },
   },
+  title: {
+    padding: 0,
+  }
 }));
 
 async function loadComponent(
   chatApiUrl,
   getInitialStatePath,
+  params,
   setComponentInfo,
   setIsLoadingInitialState,
   setView,
   setCurrentChat
 ) {
-  const info = await load(chatApiUrl, getInitialStatePath);
+  const info = await load(chatApiUrl, getInitialStatePath, params);
   setComponentInfo(info);
   setIsLoadingInitialState(false);
   if (info.currentClient && Object.keys(info.currentClient).length > 0) {
@@ -85,11 +102,7 @@ async function loadComponent(
 }
 
 export const Init = ({
-  userkeycloakId,
-  chatApiUrl,
-  getInitialStatePath,
-  deleteChatPath,
-  openWhenLoad = false,
+  chatInitConfig,
 }) => {
   const homeLocation = COMPONENT_LOCATION.UNREAD;
 
@@ -100,33 +113,36 @@ export const Init = ({
   const [componentInfo, setComponentInfo] = useState({});
   const [currentChat, setCurrentChat] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
 
   useEffect(() => {
     loadComponent(
-      chatApiUrl,
-      getInitialStatePath,
+      chatInitConfig.chatApiUrl,
+      chatInitConfig.getInitialStatePath,
+      chatInitConfig.params,
       setComponentInfo,
       setIsLoadingInitialState,
       setView,
       setCurrentChat
     ).then(() => {
-      if (openWhenLoad) {
+      if (chatInitConfig.openImmediately) {
         setIsDrawerOpen(true);
       }
     });
   }, [
-    chatApiUrl,
-    getInitialStatePath,
+    chatInitConfig,
     setComponentInfo,
-    setView,
     setIsLoadingInitialState,
-    openWhenLoad,
+    setView,
+    setCurrentChat,
+    setIsDrawerOpen
   ]);
 
   const reloadComponent = () => {
     loadComponent(
-      chatApiUrl,
-      getInitialStatePath,
+      chatInitConfig.chatApiUrl,
+      chatInitConfig.getInitialStatePath,
+      chatInitConfig.params,
       setComponentInfo,
       setIsLoadingInitialState,
       setView,
@@ -180,6 +196,14 @@ export const Init = ({
     setComponentInfo(toUpdateInfo);
   };
 
+  const onSelectUnreadChat = (chat) => {
+    if (chatInitConfig.clickOnUnreadOpenFirstAction) {
+      setChatToOpenFirstAction(chat);
+    } else {
+      onSelectChat(chat);
+    }
+  };
+
   const onSelectChat = (chat) => {
     setCurrentChat({
       name: chat.name,
@@ -192,7 +216,7 @@ export const Init = ({
 
   async function onDeleteChat(deletedChat) {
     await noAuthJsonFetch(
-      `${deleteChatPath}/${deletedChat.chatId}`,
+      `${chatInitConfig.deleteChatPath}/${deletedChat.chatId}`,
       "DELETE",
       {}
     );
@@ -207,6 +231,14 @@ export const Init = ({
     }
     setComponentInfo(toUpdateInfo);
     return toUpdateInfo.allChats;
+  }
+
+  let showBackButton = (view === COMPONENT_LOCATION.CHAT ||
+    view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT);
+  let showMessageManagement = view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT;
+  if (view === COMPONENT_LOCATION.CHAT && !chatInitConfig.navigateWhenCurrentChat) {
+    showBackButton = false;
+    showMessageManagement = false;
   }
 
   return (
@@ -226,8 +258,7 @@ export const Init = ({
             <Grid container justify="space-between">
               <Grid item>
                 <Grid container>
-                  {(view === COMPONENT_LOCATION.CHAT ||
-                    view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT) && (
+                  {showBackButton && (
                     <Grid item style={{ marginRight: theme.spacing(1) }}>
                       <Badge
                         color="error"
@@ -250,8 +281,8 @@ export const Init = ({
                     </Grid>
                   )}
                   <Grid item>
-                    <Typography variant="h5" color="textPrimary">
-                      {view === COMPONENT_LOCATION.CHAT && "Mensagens do Chat"}
+                    <Typography variant="h5" color="textPrimary" className={classes.title}>
+                      {view === COMPONENT_LOCATION.CHAT && chatInitConfig.onChatTitle}
                       {view === COMPONENT_LOCATION.UNREAD && "Painel do Chat"}
                       {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
                         "Gestão de Mensagens"}
@@ -272,7 +303,7 @@ export const Init = ({
           </div>
           <Divider variant="inset" component="li" />
 
-          {view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
+          {showMessageManagement && (
             <div
               className={classes.messageManagementLinkContainer}
               onClick={() => setView(COMPONENT_LOCATION.MESSAGE_MANAGEMENT)}
@@ -316,15 +347,18 @@ export const Init = ({
           {view === COMPONENT_LOCATION.UNREAD && (
             <UnreadChats
               chats={componentInfo.allChats}
-              onSelectChat={onSelectChat}
+              onSelectChat={onSelectUnreadChat}
             />
           )}
           {view === COMPONENT_LOCATION.CHAT && (
             <RenderChat
               initialInfo={currentChat}
-              chatApiUrl={chatApiUrl}
-              userkeycloakId={userkeycloakId}
+              chatApiUrl={chatInitConfig.chatApiUrl}
+              userkeycloakId={chatInitConfig.userkeycloakId}
               onReadAllMessagesOfChatId={onReadAllMessagesOfChatId}
+              disabled={!chatInitConfig.enableChats}
+              updateUnreadWhenOpen={chatInitConfig.updateUnreadWhenOpen}
+              navigateWhenCurrentChat={chatInitConfig.navigateWhenCurrentChat}
             />
           )}
           {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
@@ -332,7 +366,8 @@ export const Init = ({
               componentInfo={componentInfo}
               onSelectChat={onSelectChat}
               onDeleteChat={onDeleteChat}
-              userkeycloakId={userkeycloakId}
+              userkeycloakId={chatInitConfig.userkeycloakId}
+              showMessagesLabel={chatInitConfig.showMessagesLabel}
             />
           )}
         </div>
@@ -340,13 +375,41 @@ export const Init = ({
 
       {!isLoadingInitialState && (
         <InitWebsockets
-          chatApiUrl={chatApiUrl}
-          userkeycloakId={userkeycloakId}
+          chatApiUrl={chatInitConfig.chatApiUrl}
+          userkeycloakId={chatInitConfig.userkeycloakId}
           chatIds={chatIds}
           connectionKey={connectionKey}
           onChatUpdated={onChatUpdated}
           reloadComponent={reloadComponent}
         />
+      )}
+
+      {chatInitConfig.clickOnUnreadOpenFirstAction && (
+        <Dialog
+          open={chatToOpenFirstAction && Object.keys(chatToOpenFirstAction).length > 0}
+          onClose={() => setChatToOpenFirstAction({})}
+          aria-labelledby="dialog-title"
+        >
+          <DialogTitle id="dialog-title">{"Confirmação"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Voce será direcionado e pode perder a ação que está executando no momento. Deseja continuar?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={() => setChatToOpenFirstAction({})} color="primary">
+              Não
+            </Button>
+            <Button
+              onClick={() => {
+                const encodedData = encodeChatData(chatToOpenFirstAction, chatInitConfig.userkeycloakId);
+                window.open(`${chatToOpenFirstAction.actions[0].path}?data=${encodedData}`, "_self");
+              }}
+              color="primary" autoFocus>
+              Sim
+            </Button>
+          </DialogActions>
+        </Dialog>
       )}
     </div>
   );

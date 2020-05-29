@@ -29,13 +29,14 @@ const onSelectedChatMaker = (
   setBlocked,
   chatApiUrl,
   messagesEndRef,
-  onReadAllMessagesOfChatId
+  onReadAllMessagesOfChatId,
+  updateUnreadWhenOpen
 ) => (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);
 
   defaultFetch(
-    `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chat.chatId}/messages?page=0&size=50`,
+    `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chat.chatId}/messages?page=0&size=50&updateUnread=${updateUnreadWhenOpen}`,
     "GET",
     {}
   ).then((pageResults) => {
@@ -47,7 +48,9 @@ const onSelectedChatMaker = (
     setMessages(messages);
     setBlocked(chat.status === "BLOCKED");
     setIsLoading(false);
-    onReadAllMessagesOfChatId(chat.chatId);
+    if (updateUnreadWhenOpen) {
+      onReadAllMessagesOfChatId(chat.chatId);
+    }
 
     setTimeout(function () {
       // workaround to wait for all elements to render
@@ -64,7 +67,9 @@ export const RenderChat = ({
   initialInfo,
   disabled = false,
   userkeycloakId,
-  onReadAllMessagesOfChatId
+  onReadAllMessagesOfChatId,
+  updateUnreadWhenOpen,
+  navigateWhenCurrentChat
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
@@ -86,7 +91,8 @@ export const RenderChat = ({
     setBlocked,
     chatApiUrl,
     messagesEndRef,
-    onReadAllMessagesOfChatId
+    onReadAllMessagesOfChatId,
+    updateUnreadWhenOpen
   );
 
   useEffect(() => {
@@ -99,7 +105,8 @@ export const RenderChat = ({
         setBlocked,
         chatApiUrl,
         messagesEndRef,
-        onReadAllMessagesOfChatId
+        onReadAllMessagesOfChatId,
+        updateUnreadWhenOpen
       )(initialInfo.chats[0]);
     }
     setIsLoading(false);
@@ -205,7 +212,7 @@ export const RenderChat = ({
     }
     setIsLoading(true);
     defaultFetch(
-      `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${currentChat.chatId}/messages?page=${page}&size=50`,
+      `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${currentChat.chatId}/messages?page=${page}&size=50&updateUnread=${updateUnreadWhenOpen}`,
       "GET",
       {}
     ).then((pageResults) => {
@@ -250,7 +257,7 @@ export const RenderChat = ({
       )}.`) ||
     undefined;
   const { actions } = currentChat;
-  const hasActions = currentChat && actions && actions.length > 0;
+  const hasActions = currentChat && actions && actions.length > 0 && navigateWhenCurrentChat;
 
   const onAudio = (blob) => {
     const localId = uuidv1();
