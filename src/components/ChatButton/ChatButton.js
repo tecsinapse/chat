@@ -8,6 +8,7 @@ import Icon from "@mdi/react";
 
 const useStyle = makeStyles((theme) => ({
   fabContainer: {
+    zIndex: '9999999999999',
     position: "fixed",
     right: 0,
     bottom: theme.spacing(2),

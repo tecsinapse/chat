@@ -179,7 +179,7 @@ export const MessageManagement = ({
         <DialogTitle id="dialog-title">{"Confirmação"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Confirma descartar essa Conversa?
+            Descartar a conversa?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

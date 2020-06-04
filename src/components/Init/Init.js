@@ -243,11 +243,13 @@ export const Init = ({
 
   return (
     <div className="Chat">
-      <ChatButton
+      {!isDrawerOpen &&
+        <ChatButton
         isLoadingInitialState={isLoadingInitialState}
         setIsDrawerOpen={setIsDrawerOpen}
         unreadTotal={unreadTotal}
-      />
+        />
+      }
       <Drawer
         anchor="right"
         open={isDrawerOpen}
