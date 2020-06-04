@@ -26,8 +26,6 @@ window.renderChatComponent = function renderChatComponent() {
     clickOnUnreadOpenFirstAction: false,
     showMessagesLabel: 'Visualizar Mensagens',
     navigateWhenCurrentChat: true,
-    enableChats: true,
-    updateUnreadWhenOpen: true,
     onChatTitle: 'Mensagens do Chat',
   };
 

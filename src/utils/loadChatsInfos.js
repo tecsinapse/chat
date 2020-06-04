@@ -6,7 +6,7 @@ import { mockUnreadInitialState } from "../mocks/mockUnreadInitialState";
  *
  * @param chatApiUrl            URL da api do tec-chat
  * @param getInitialStatePath   caminho para o endpoint do produto de informações iniciais dos chats
- * @Param params                objeto JSON para busca dos dados
+ * @param params                objeto JSON para busca dos dados
  * @returns {Promise<[]>}       informações completas do objeto que representa esse componente
  */
 export async function load(chatApiUrl, getInitialStatePath, params) {

@@ -358,8 +358,6 @@ export const Init = ({
               chatApiUrl={chatInitConfig.chatApiUrl}
               userkeycloakId={chatInitConfig.userkeycloakId}
               onReadAllMessagesOfChatId={onReadAllMessagesOfChatId}
-              disabled={!chatInitConfig.enableChats}
-              updateUnreadWhenOpen={chatInitConfig.updateUnreadWhenOpen}
               navigateWhenCurrentChat={chatInitConfig.navigateWhenCurrentChat}
             />
           )}

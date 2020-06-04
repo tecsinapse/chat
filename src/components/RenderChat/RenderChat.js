@@ -29,14 +29,13 @@ const onSelectedChatMaker = (
   setBlocked,
   chatApiUrl,
   messagesEndRef,
-  onReadAllMessagesOfChatId,
-  updateUnreadWhenOpen
+  onReadAllMessagesOfChatId
 ) => (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);
 
   defaultFetch(
-    `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chat.chatId}/messages?page=0&size=50&updateUnread=${updateUnreadWhenOpen}`,
+    `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${chat.chatId}/messages?page=0&size=50&updateUnread=${chat.updateUnreadWhenOpen}`,
     "GET",
     {}
   ).then((pageResults) => {
@@ -48,7 +47,7 @@ const onSelectedChatMaker = (
     setMessages(messages);
     setBlocked(chat.status === "BLOCKED");
     setIsLoading(false);
-    if (updateUnreadWhenOpen) {
+    if (chat.updateUnreadWhenOpen) {
       onReadAllMessagesOfChatId(chat.chatId);
     }
 
@@ -65,10 +64,8 @@ const onSelectedChatMaker = (
 export const RenderChat = ({
   chatApiUrl,
   initialInfo,
-  disabled = false,
   userkeycloakId,
   onReadAllMessagesOfChatId,
-  updateUnreadWhenOpen,
   navigateWhenCurrentChat
 }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -91,8 +88,7 @@ export const RenderChat = ({
     setBlocked,
     chatApiUrl,
     messagesEndRef,
-    onReadAllMessagesOfChatId,
-    updateUnreadWhenOpen
+    onReadAllMessagesOfChatId
   );
 
   useEffect(() => {
@@ -106,7 +102,6 @@ export const RenderChat = ({
         chatApiUrl,
         messagesEndRef,
         onReadAllMessagesOfChatId,
-        updateUnreadWhenOpen
       )(initialInfo.chats[0]);
     }
     setIsLoading(false);
@@ -212,7 +207,7 @@ export const RenderChat = ({
     }
     setIsLoading(true);
     defaultFetch(
-      `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${currentChat.chatId}/messages?page=${page}&size=50&updateUnread=${updateUnreadWhenOpen}`,
+      `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${currentChat.chatId}/messages?page=${page}&size=50&updateUnread=${currentChat.updateUnreadWhenOpen}`,
       "GET",
       {}
     ).then((pageResults) => {
@@ -307,7 +302,7 @@ export const RenderChat = ({
         messages={messages}
         onMessageSend={onMessageSend}
         messagesEndRef={messagesEndRef}
-        disabled={disabled}
+        disabled={isLoading || (initialInfo.chats.length > 1 ? false : !initialInfo.chats[0].enabled)}
         isMaximizedOnly
         onAudio={onAudio}
         title={title}
