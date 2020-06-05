@@ -3,7 +3,10 @@ import moment from "moment";
 export function format(dateTime) {
   let m;
   if (Array.isArray(dateTime)) {
-    m = moment(dateTime.slice(0, 6));
+    let arr = [...dateTime.slice(0, 6)];
+    // moment expects month to be 0 - 11
+    arr[1] = arr[1] - 1;
+    m = moment(arr);
   } else {
     m = moment(dateTime);
   }
