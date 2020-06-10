@@ -1,17 +1,10 @@
 import React from "react";
-import { makeStyles, useTheme } from "@material-ui/styles";
-import { mdiMessageText } from "@mdi/js";
+import {makeStyles, useTheme} from "@material-ui/styles";
+import {mdiMessageText} from "@mdi/js";
 import Icon from "@mdi/react";
-import moment from "moment";
-import { Divider } from "@tecsinapse/ui-kit";
-import {
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-} from "@material-ui/core";
-import { format } from "../../utils/dates";
+import {Divider} from "@tecsinapse/ui-kit";
+import {Grid, List, ListItem, ListItemText, Typography,} from "@material-ui/core";
+import {format} from "../../utils/dates";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -86,9 +79,6 @@ export const UnreadChats = ({ chats, onSelectChat }) => {
       chatWithUnreadMessages.push(chat);
     }
   });
-  chatWithUnreadMessages.sort(
-    (a, b) => moment(a.lastMessageAt).unix() - moment(b.lastMessageAt).unix()
-  );
 
   let listPadding = { paddingTop: 0, paddingBottom: 0 };
   return (
@@ -122,7 +112,7 @@ export const UnreadChats = ({ chats, onSelectChat }) => {
         </div>
         <Divider variant="inset" component="li" style={{ marginLeft: 0 }} />
         <List component="nav" style={listPadding}>
-          {chatWithUnreadMessages.map((chat, id) => (
+          {chatWithUnreadMessages.map((chat) => (
             <div key={chat.chatId} className={classes.border}>
               <ListItem
                 button
