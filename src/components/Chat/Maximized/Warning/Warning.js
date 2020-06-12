@@ -2,7 +2,7 @@ import Icon from '@mdi/react';
 import { mdiClose, mdiInformation } from '@mdi/js';
 import { Typography } from '@material-ui/core';
 import { IconButton } from '@livechat/ui-kit';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { isStringNotBlank } from '@tecsinapse/es-utils/build/object';
 import { makeStyles } from '@material-ui/styles';
 
@@ -22,13 +22,22 @@ const useStyle = makeStyles(({ spacing }) => ({
   typo: { fontSize: '14px', color: '#fff', fontWeight: 400 },
 }));
 
-export const Warning = ({ setWarning, message, isError, isBlocked }) => {
-  const { errorMessage, warningMessage } = message;
+export const Warning = ({ errorMessage, warningMessage, isBlocked }) => {
+  const [showWarning, setShowWarning] = useState(true);
+
+  useEffect(() => {
+    setShowWarning(
+      isBlocked ||
+        isStringNotBlank(errorMessage) ||
+        isStringNotBlank(warningMessage)
+    );
+  }, [isBlocked, warningMessage, errorMessage]);
+
   const isWarning = isStringNotBlank(warningMessage);
 
   const classes = useStyle({ isWarning });
 
-  const error = isError && isStringNotBlank(errorMessage) && errorMessage;
+  const error = isStringNotBlank(errorMessage) && errorMessage;
   const warning = isWarning && warningMessage;
   const blocked = isBlocked && (
     <>
@@ -38,7 +47,12 @@ export const Warning = ({ setWarning, message, isError, isBlocked }) => {
 
   const warningText = error || warning || blocked;
 
+  if (!showWarning) {
+    return null;
+  }
+
   const marginRight = { marginRight: '8px' };
+
   return (
     <div className={classes.rootDiv}>
       <div className={classes.textDiv}>
@@ -50,7 +64,7 @@ export const Warning = ({ setWarning, message, isError, isBlocked }) => {
         />
         <Typography className={classes.typo}>{warningText}</Typography>
       </div>
-      <IconButton onClick={() => setWarning(false)}>
+      <IconButton onClick={() => setShowWarning(false)}>
         <Icon path={mdiClose} size={0.8} color="#fff" />
       </IconButton>
     </div>

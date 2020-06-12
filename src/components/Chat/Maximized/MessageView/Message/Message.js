@@ -35,6 +35,13 @@ export const Message = ({
 }) => {
   const [showDate, setShowDate] = useState(false);
 
+  const style = {
+    padding: '4px',
+    height: '32px',
+    alignSelf: 'center',
+    top: addMessageName ? undefined : '-10px',
+  };
+
   return (
     <div
       className={clsx({
@@ -137,17 +144,11 @@ export const Message = ({
       {message.status === 'error' && (
         <Tooltip title="Reenviar" placement="top">
           <IconButtonMaterial
-            fill
             key="send again"
             onClick={() => {
               onMessageResend(message.localId);
             }}
-            style={{
-              padding: '4px',
-              height: '32px',
-              alignSelf: 'center',
-              top: addMessageName ? undefined : '-10px',
-            }}
+            style={style}
           >
             <Icon
               path={mdiAlertCircleOutline}

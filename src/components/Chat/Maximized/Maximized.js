@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { MessageList } from '@livechat/ui-kit';
 
 import { useTheme } from '@material-ui/styles';
@@ -43,7 +43,6 @@ const Maximized = ({
 }) => {
   const classes = useStyle();
   const theme = useTheme();
-  const [showError, setShowError] = useState(true);
 
   const onBackward =
     location === CHAT_LOCATIONS.MESSAGES &&
@@ -71,8 +70,6 @@ const Maximized = ({
         headerLabel={headerLabel}
         headerText={headerText}
         isBlocked={isBlocked}
-        showError={showError}
-        setShowError={setShowError}
         errorMessage={error}
         warningMessage={warningMessage}
       />

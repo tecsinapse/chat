@@ -60,24 +60,42 @@ export const MicRecorder = ({
       () => setOpacity(oldOpacity => (oldOpacity > 0 ? 0 : 1)),
       1000
     );
+
     return () => {
       clearInterval(animation);
     };
   }, []);
 
+  const style = {
+    display: 'flex',
+    flexGrow,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  };
+  const style1 = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  };
+  const style2 = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  };
+  const style3 = { opacity, padding: '2px 6px 0px 0px' };
+
+  const style4 = { display: 'flex' };
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexGrow,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
-    >
-      <IconButton fill key="cancelRecord" onClick={() => stopRecording(false)}>
+    <div style={style}>
+      <IconButton
+        fill="true"
+        key="cancelRecord"
+        onClick={() => stopRecording(false)}
+      >
         <Icon path={mdiCloseCircle} size={iconSize} color="red" />
       </IconButton>
-      <div style={{ display: 'flex' }}>
+      <div style={style4}>
         <ReactMic
           className={classes.reactMic}
           height={waveHeight}
@@ -90,30 +108,18 @@ export const MicRecorder = ({
           visualSetting="sinewave" // frequencyBars
         />
       </div>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+      <div style={style1}>
         <div>
           <Typography variant="subtitle2" className={classes.recordingText}>
             GRAVANDO
           </Typography>
         </div>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-          }}
-        >
+        <div style={style2}>
           <Icon
             path={mdiCheckboxBlankCircle}
             size={0.5}
             color="red"
-            style={{ opacity, padding: '2px 6px 0px 0px' }}
+            style={style3}
           />
           <Timer formatValue={value => `${value < 10 ? `0${value}` : value}`}>
             <Typography variant="h6" className={classes.recordingTime}>
@@ -122,7 +128,11 @@ export const MicRecorder = ({
           </Timer>
         </div>
       </div>
-      <IconButton fill key="confirmRecord" onClick={() => stopRecording(true)}>
+      <IconButton
+        fill="true"
+        key="confirmRecord"
+        onClick={() => stopRecording(true)}
+      >
         <Icon path={mdiCheckCircle} size={iconSize} color="green" />
       </IconButton>
     </div>

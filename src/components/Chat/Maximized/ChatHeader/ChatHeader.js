@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { AgentBar, Column, Row, Subtitle, Title } from '@livechat/ui-kit';
 import { Badge, makeStyles, Typography } from '@material-ui/core';
 import { mdiArrowLeft, mdiClose, mdiDotsVertical } from '@mdi/js';
 import Icon from '@mdi/react';
 import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit/build/Buttons/IconButton';
-import { isStringNotBlank } from '@tecsinapse/es-utils/build/object';
 import { Warning } from '../Warning/Warning';
 
 const useStyle = makeStyles(({ palette }) => ({
@@ -37,25 +36,9 @@ export const ChatHeader = ({
   headerLabel,
   headerText = false,
   isBlocked,
-  showError,
-  setShowError,
   errorMessage,
   warningMessage,
 }) => {
-  const [showWarning, setShowWarning] = useState(false);
-  useEffect(() => {
-    setShowWarning(
-      isBlocked ||
-        (showError && isStringNotBlank(errorMessage)) ||
-        isStringNotBlank(warningMessage)
-    );
-  }, [isBlocked, showError, warningMessage, errorMessage]);
-
-  const handleWarning = state => {
-    setShowWarning(state);
-    setShowError(state);
-  };
-
   const {
     show: showChatOptions,
     color: chatOptionsColor,
@@ -70,18 +53,22 @@ export const ChatHeader = ({
     minimize(e);
   };
 
+  const style = { justifyContent: 'center' };
+  const style1 = {
+    marginLeft: theme.spacing(-1),
+  };
+  const style2 = { justifyContent: 'center' };
+
   return (
     <>
       <AgentBar>
         <Row flexFill>
           {onBackward && (
-            <Column style={{ justifyContent: 'center' }}>
+            <Column style={style}>
               <IconButtonMaterial
                 key="close"
                 onClick={onBackward}
-                style={{
-                  marginLeft: theme.spacing(-1),
-                }}
+                style={style1}
               >
                 <Badge
                   badgeContent={notificationNumber}
@@ -124,7 +111,7 @@ export const ChatHeader = ({
               </Typography>
             </Subtitle>
           </Column>
-          <Column style={{ justifyContent: 'center' }}>
+          <Column style={style2}>
             {showChatOptions && (
               <IconButtonMaterial key="close" onClick={chatOptionsFunc}>
                 <Icon
@@ -142,14 +129,11 @@ export const ChatHeader = ({
           </Column>
         </Row>
       </AgentBar>
-      {showWarning && (
-        <Warning
-          setWarning={handleWarning}
-          message={{ errorMessage, warningMessage }}
-          isBlocked={isBlocked}
-          isError={showError}
-        />
-      )}
+      <Warning
+        errorMessage={errorMessage}
+        warningMessage={warningMessage}
+        isBlocked={isBlocked}
+      />
     </>
   );
 };

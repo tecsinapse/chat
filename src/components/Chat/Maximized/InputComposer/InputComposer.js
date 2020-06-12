@@ -9,7 +9,7 @@ import {
 import { Typography } from '@material-ui/core';
 import {
   mdiImage,
-  mdiLibraryVideo,
+  mdiFilmstripBoxMultiple,
   mdiMicrophone,
   mdiPaperclip,
   mdiSend,
@@ -24,6 +24,7 @@ const ENTER_KEYCODE = 13;
 const wasEnterPressed = function wasEnterPressed(event) {
   return event.which === ENTER_KEYCODE;
 };
+
 const wasOnlyEnterPressed = function wasOnlyEnterPressed(event) {
   return wasEnterPressed(event) && !event.altKey && !event.shiftKey;
 };
@@ -49,6 +50,7 @@ export const InputComposer = ({
 
   const onStopRecording = (blob, accept) => {
     setRecording(false);
+
     if (accept) {
       onAudio(blob);
     }
@@ -61,6 +63,7 @@ export const InputComposer = ({
       setFiles({});
     }
   };
+
   const onSend = text => {
     if (Object.keys(files).length > 0) {
       onMediaSend(text, files);
@@ -105,7 +108,7 @@ export const InputComposer = ({
           <>
             <Row align="center">
               {!recording && (
-                <TextInput fill placeholder="Digite uma mensagem" />
+                <TextInput fill="true" placeholder="Digite uma mensagem" />
               )}
 
               {/*
@@ -118,11 +121,11 @@ export const InputComposer = ({
                   handler on our <Icon /> (using controlled component passing 'value ' to TextComposer)
                 */}
               {(writing || !isThereAudioSupport) && (
-                <SendButton fill disabled={disabledSend} />
+                <SendButton fill="true" disabled={disabledSend} />
               )}
               {!writing && !recording && Object.keys(files).length > 0 && (
                 <IconButton
-                  fill
+                  fill="true"
                   key="send"
                   disabled={disabledSend}
                   onClick={() => {
@@ -145,7 +148,7 @@ export const InputComposer = ({
                 Object.keys(files).length <= 0 &&
                 !recording && (
                   <IconButton
-                    fill
+                    fill="true"
                     key="mic"
                     onClick={onClick}
                     disabled={disabledSend}
@@ -164,7 +167,7 @@ export const InputComposer = ({
             {!recording && (
               <Row verticalAlign="center" justify="left">
                 <IconButton
-                  fill
+                  fill="true"
                   key="image"
                   onClick={onClick1}
                   disabled={disabledSend}
@@ -177,20 +180,20 @@ export const InputComposer = ({
                 </IconButton>
 
                 <IconButton
-                  fill
+                  fill="true"
                   key="movie"
                   onClick={onClick2}
                   disabled={disabledSend}
                 >
                   <Icon
-                    path={mdiLibraryVideo}
+                    path={mdiFilmstripBoxMultiple}
                     size={iconSize}
                     color={defaultGreyLight2}
                   />
                 </IconButton>
 
                 <IconButton
-                  fill
+                  fill="true"
                   key="paperclip"
                   onClick={onClick3}
                   disabled={disabledSend}

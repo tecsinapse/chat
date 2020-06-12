@@ -1,21 +1,29 @@
 import { addDecorator, addParameters, configure } from '@storybook/react';
 import React from 'react';
-import { setOptions } from '@storybook/addon-options';
 import { DocsContainer, DocsPage } from '@storybook/addon-docs/blocks';
+import { ThemeProvider } from '@tecsinapse/ui-kit';
+import { create } from '@storybook/theming/create';
+import { themeColors } from '@tecsinapse/ui-kit/build/ThemeProvider';
 
-import { ThemeProvider } from '@tecsinapse/ui-kit/build/ThemeProvider';
-
-setOptions({
-  hierarchySeparator: /\//,
-  hierarchyRootSeparator: /\|/,
-  name: 'TecSinapse Chat',
-  url: 'https://github.com/tecsinapse/chat',
+const theme = create({
+  base: 'light',
+  brandTitle: 'TecSinapse Chat',
+  brandUrl: 'https://github.com/tecsinapse/chat',
+  brandImage:
+    'https://www.tecsinapse.com.br/wp-content/themes/TecSinapse/assets/images/tecsinapse.svg',
+  fontBase: 'Roboto',
+  colorPrimary: themeColors.orange.primary.main,
+  colorSecondary: themeColors.orange.secondary.main,
 });
 
 addParameters({
   docs: {
     container: DocsContainer,
     page: DocsPage,
+  },
+  options: {
+    showRoots: true,
+    theme,
   },
 });
 
@@ -26,6 +34,7 @@ const req = require.context('../src', true, /\.story\.(js|mdx)$/);
 
 function loadStories() {
   addDecorator(withThemeProvider);
+
   return req
     .keys()
     .map(fname => req(fname))
