@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Card, CardMedia, IconButton } from '@material-ui/core';
-import { mdiFile, mdiClose } from '@mdi/js';
+import { mdiClose, mdiFile } from '@mdi/js';
 import Icon from '@mdi/react';
 
 import {

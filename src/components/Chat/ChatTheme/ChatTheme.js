@@ -1,25 +1,31 @@
 import React from 'react';
 import { ThemeProvider } from '@livechat/ui-kit';
 import {
-  defaultGreyDark,
-  defaultWhite,
-  defaultGreyLight4,
   defaultBlack,
+  defaultGreyDark,
+  defaultGreyLight4,
+  defaultWhite,
 } from '@tecsinapse/ui-kit/build/colors';
 
-const getTheme = materialTheme => ({
+const getTheme = (
+  materialTheme,
+  roundedCorners = true,
+  containerHeight = '500px',
+  headerBackground = false
+) => ({
   AgentBar: {
     Avatar: {},
     css: {
-      backgroundColor: materialTheme.palette.secondary.main,
-      borderRadius: materialTheme.spacing(0.5, 0.5, 0, 0),
+      backgroundColor: headerBackground || materialTheme.palette.secondary.main,
+      borderRadius: roundedCorners ? materialTheme.spacing(0.5, 0.5, 0, 0) : 0,
     },
   },
   FixedWrapperMaximized: {
     animationDuration: 100,
+    height: containerHeight,
     css: {
       boxShadow: '0 0 1em rgba(0, 0, 0, 0.1)',
-      borderRadius: materialTheme.spacing(1),
+      borderRadius: roundedCorners ? materialTheme.spacing(1) : 0,
       position: 'inherit',
       right: 0,
       left: 0,
@@ -92,7 +98,7 @@ const getTheme = materialTheme => ({
       },
     },
     css: {
-      borderRadius: materialTheme.spacing(0, 0, 0.5, 0.5),
+      borderRadius: roundedCorners ? materialTheme.spacing(0, 0, 0.5, 0.5) : 0,
     },
   },
 
@@ -116,7 +122,22 @@ const getTheme = materialTheme => ({
   MessageTitle: {},
 });
 
-const ChatTheme = ({ children, materialTheme }) => (
-  <ThemeProvider theme={getTheme(materialTheme)}>{children}</ThemeProvider>
+const ChatTheme = ({
+  children,
+  materialTheme,
+  roundedCorners,
+  containerHeight,
+  headerBackground,
+}) => (
+  <ThemeProvider
+    theme={getTheme(
+      materialTheme,
+      roundedCorners,
+      containerHeight,
+      headerBackground
+    )}
+  >
+    {children}
+  </ThemeProvider>
 );
 export default ChatTheme;

@@ -3,10 +3,10 @@ import { FixedWrapper } from '@livechat/ui-kit';
 import PropTypes from 'prop-types';
 import { useTheme } from '@material-ui/styles';
 
-import Maximized from './Maximized';
-import Minimized from './Minimized';
-import ChatTheme from './ChatTheme';
-import { ChatLocations } from './ChatLocations';
+import Maximized from './Maximized/Maximized';
+import Minimized from './Minimized/Minimized';
+import ChatTheme from './ChatTheme/ChatTheme';
+import { CHAT_LOCATIONS } from './constants/CHAT_LOCATIONS';
 
 export const Chat = ({
   messages,
@@ -27,20 +27,31 @@ export const Chat = ({
   onMessageResend,
   isBlocked,
   blockedMessage,
-
+  roundedCorners,
+  disabledSend = false,
   chatList,
   onBackToChatList,
   onSelectedChat,
   notificationNumber,
+  containerHeight,
+  chatOptions,
+  customHeader,
+  warningMessage,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
-    chatList ? ChatLocations.CHAT_LIST : ChatLocations.MESSAGES
+    chatList ? CHAT_LOCATIONS.CHAT_LIST : CHAT_LOCATIONS.MESSAGES
   );
+  const { headerBackground, headerText, headerLabel } = customHeader;
 
   return (
     <div>
-      <ChatTheme materialTheme={theme}>
+      <ChatTheme
+        materialTheme={theme}
+        roundedCorners={roundedCorners}
+        containerHeight={containerHeight}
+        headerBackground={headerBackground}
+      >
         <div>
           <FixedWrapper.Root maximizedOnInit={isMaximizedOnly}>
             <FixedWrapper.Maximized>
@@ -69,6 +80,11 @@ export const Chat = ({
                 setLocation={setLocation}
                 onSelectedChat={onSelectedChat}
                 notificationNumber={notificationNumber}
+                disabledSend={disabledSend}
+                chatOptions={chatOptions}
+                headerLabel={headerLabel}
+                headerText={headerText}
+                warningMessage={warningMessage}
               />
             </FixedWrapper.Maximized>
 
@@ -86,6 +102,7 @@ Chat.defaultProps = {
   onAudio: undefined,
   disabled: false,
   isMaximizedOnly: false,
+  disabledSend: false,
   title: '',
   subtitle: '',
   onCloseChat: undefined,
@@ -102,6 +119,19 @@ Chat.defaultProps = {
   onBackToChatList: undefined,
   onSelectedChat: undefined,
   notificationNumber: 0,
+  chatOptions: {
+    show: false,
+    color: '#fff',
+    handleFunc: () => {},
+  },
+  customHeader: {
+    headerLabel: undefined,
+    headerBackground: undefined,
+    headerText: undefined,
+  },
+  warningMessage: undefined,
+  roundedCorners: true,
+  containerHeight: '500px',
 };
 
 Chat.propTypes = {
@@ -146,6 +176,8 @@ Chat.propTypes = {
   disabled: PropTypes.bool,
   /** Chat stays maximized */
   isMaximizedOnly: PropTypes.bool,
+  /** Disable input functions */
+  disabledSend: PropTypes.bool,
   /** Chat title */
   title: PropTypes.string,
   /** Chat subtitle */
@@ -186,6 +218,24 @@ Chat.propTypes = {
   onSelectedChat: PropTypes.func,
   /** Number of notification */
   notificationNumber: PropTypes.number,
+  /** Disable default rounded corners of divs */
+  roundedCorners: PropTypes.bool,
+  /** Message Chat Container height */
+  containerHeight: PropTypes.string,
+  /** Show vertical dots on chat window for options */
+  chatOptions: PropTypes.shape({
+    show: PropTypes.bool,
+    color: PropTypes.string,
+    handleFunc: PropTypes.func,
+  }),
+  /** Change header label (text), background color and text color */
+  customHeader: PropTypes.shape({
+    headerLabel: PropTypes.string,
+    headerBackground: PropTypes.string,
+    headerText: PropTypes.string,
+  }),
+  /** Display a message in warning format */
+  warningMessage: PropTypes.string,
 };
 
 export default Chat;

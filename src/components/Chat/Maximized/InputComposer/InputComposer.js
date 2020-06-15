@@ -1,29 +1,30 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
-  TextInput,
-  TextComposer,
-  Row,
   IconButton,
+  Row,
   SendButton,
+  TextComposer,
+  TextInput,
 } from '@livechat/ui-kit';
 import { Typography } from '@material-ui/core';
 import {
+  mdiImage,
+  mdiFilmstripBoxMultiple,
   mdiMicrophone,
   mdiPaperclip,
-  mdiImage,
-  mdiLibraryVideo,
   mdiSend,
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import { defaultGreyLight2 } from '@tecsinapse/ui-kit/build/colors';
-import { MicRecorder } from './MicRecorder';
-import { CustomUploader } from './CustomUploader';
-import { PreviewList } from './PreviewList';
+import { MicRecorder } from './MicRecorder/MicRecorder';
+import { CustomUploader } from './CustomUploader/CustomUploader';
+import { PreviewList } from './PreviewList/PreviewList';
 
 const ENTER_KEYCODE = 13;
 const wasEnterPressed = function wasEnterPressed(event) {
   return event.which === ENTER_KEYCODE;
 };
+
 const wasOnlyEnterPressed = function wasOnlyEnterPressed(event) {
   return wasEnterPressed(event) && !event.altKey && !event.shiftKey;
 };
@@ -35,6 +36,7 @@ export const InputComposer = ({
   maxFileUploadSize,
   isBlocked,
   blockedMessage,
+  disabledSend,
 }) => {
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
@@ -48,41 +50,57 @@ export const InputComposer = ({
 
   const onStopRecording = (blob, accept) => {
     setRecording(false);
+
     if (accept) {
       onAudio(blob);
     }
   };
 
+  const blockedMessageSpacing = { letterSpacing: '-0.1px' };
+  const onKeyDown = e => {
+    if (!writing && wasOnlyEnterPressed(e) && Object.keys(files).length > 0) {
+      onMediaSend('', files);
+      setFiles({});
+    }
+  };
+
+  const onSend = text => {
+    if (Object.keys(files).length > 0) {
+      onMediaSend(text, files);
+    } else {
+      onMessageSend(text);
+    }
+    setFiles({});
+    setWriting(false);
+  };
+  const onChange = e => setWriting(e.currentTarget.value !== '');
+  const inputRef1 = ref => setInputRef(ref);
+  const style = { maxHeight: 37, maxWidth: 35 };
+  const style1 = { maxHeight: 26, maxWidth: 24 };
+  const size = 1.143;
+  const onClick = () => setRecording(true);
+  const onClick1 = () => imageUpRef.current.open();
+  const iconSize = 0.75;
+  const onClick2 = () => videoUpRef.current.open();
+  const onClick3 = () => appUpRef.current.open();
+
   return (
     <>
       <PreviewList files={files} setFiles={setFiles} />
-
       <TextComposer
-        onSend={text => {
-          if (Object.keys(files).length > 0) {
-            onMediaSend(text, files);
-          } else {
-            onMessageSend(text);
-          }
-          setFiles({});
-          setWriting(false);
-        }}
-        onKeyDown={e => {
-          if (
-            !writing &&
-            wasOnlyEnterPressed(e) &&
-            Object.keys(files).length > 0
-          ) {
-            onMediaSend('', files);
-            setFiles({});
-          }
-        }}
-        onChange={e => setWriting(e.currentTarget.value !== '')}
-        inputRef={ref => setInputRef(ref)}
+        onSend={onSend}
+        onKeyDown={onKeyDown}
+        onChange={onChange}
+        inputRef={inputRef1}
+        active={!disabledSend}
       >
         {isBlocked ? (
           <Row align="center" justifyContent="space-around">
-            <Typography variant="subtitle2" color="error">
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              style={blockedMessageSpacing}
+            >
               {blockedMessage}
             </Typography>
           </Row>
@@ -90,34 +108,37 @@ export const InputComposer = ({
           <>
             <Row align="center">
               {!recording && (
-                <TextInput fill placeholder="Digite uma mensagem" />
+                <TextInput fill="true" placeholder="Digite uma mensagem" />
               )}
 
-              {/* 
-                  It's using the <SendButton/ /> to handle the send when typing 
+              {/*
+                  It's using the <SendButton/ /> to handle the send when typing
                   some text (easier because it is implemented by the livechat).
                   This scenario cannot handle the attachment files with no text (active bug), though.
-                  So, we are using the <Icon /> to handle the bug scenario and keeping the 
+                  So, we are using the <Icon /> to handle the bug scenario and keeping the
                   livechat for user text scenario (with or without attachment).
-                  TODO: Keep only one handler, either by fixing the active bug or implementing the text 
+                  TODO: Keep only one handler, either by fixing the active bug or implementing the text
                   handler on our <Icon /> (using controlled component passing 'value ' to TextComposer)
                 */}
-              {(writing || !isThereAudioSupport) && <SendButton fill />}
+              {(writing || !isThereAudioSupport) && (
+                <SendButton fill="true" disabled={disabledSend} />
+              )}
               {!writing && !recording && Object.keys(files).length > 0 && (
                 <IconButton
-                  fill
+                  fill="true"
                   key="send"
+                  disabled={disabledSend}
                   onClick={() => {
                     onMediaSend('', files);
                     setFiles({});
                   }}
-                  style={{ maxHeight: 37, maxWidth: 35 }}
+                  style={style}
                 >
                   <Icon
                     path={mdiSend}
-                    size={1.143}
+                    size={size}
                     color="#427fe1"
-                    style={{ maxHeight: 26, maxWidth: 24 }}
+                    style={style1}
                   />
                 </IconButton>
               )}
@@ -126,7 +147,12 @@ export const InputComposer = ({
                 isThereAudioSupport &&
                 Object.keys(files).length <= 0 &&
                 !recording && (
-                  <IconButton fill key="mic" onClick={() => setRecording(true)}>
+                  <IconButton
+                    fill="true"
+                    key="mic"
+                    onClick={onClick}
+                    disabled={disabledSend}
+                  >
                     <Icon
                       path={mdiMicrophone}
                       size={1}
@@ -141,33 +167,40 @@ export const InputComposer = ({
             {!recording && (
               <Row verticalAlign="center" justify="left">
                 <IconButton
-                  fill
+                  fill="true"
                   key="image"
-                  onClick={() => imageUpRef.current.open()}
-                >
-                  <Icon path={mdiImage} size={0.75} color={defaultGreyLight2} />
-                </IconButton>
-
-                <IconButton
-                  fill
-                  key="movie"
-                  onClick={() => videoUpRef.current.open()}
+                  onClick={onClick1}
+                  disabled={disabledSend}
                 >
                   <Icon
-                    path={mdiLibraryVideo}
-                    size={0.75}
+                    path={mdiImage}
+                    size={iconSize}
                     color={defaultGreyLight2}
                   />
                 </IconButton>
 
                 <IconButton
-                  fill
+                  fill="true"
+                  key="movie"
+                  onClick={onClick2}
+                  disabled={disabledSend}
+                >
+                  <Icon
+                    path={mdiFilmstripBoxMultiple}
+                    size={iconSize}
+                    color={defaultGreyLight2}
+                  />
+                </IconButton>
+
+                <IconButton
+                  fill="true"
                   key="paperclip"
-                  onClick={() => appUpRef.current.open()}
+                  onClick={onClick3}
+                  disabled={disabledSend}
                 >
                   <Icon
                     path={mdiPaperclip}
-                    size={0.75}
+                    size={iconSize}
                     color={defaultGreyLight2}
                   />
                 </IconButton>
@@ -186,7 +219,7 @@ export const InputComposer = ({
               ref={videoUpRef}
               files={files}
               setFiles={setFiles}
-              mediaType="video/*"
+              mediaType=".mov,video/*"
               maxFileUploadSize={maxFileUploadSize}
             />
             <CustomUploader

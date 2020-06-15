@@ -9,11 +9,11 @@ import {
   ListItemText,
   Typography,
 } from '@material-ui/core';
-import { ChatLocations } from './ChatLocations';
-import Whatsapp from '../assets/whatsapp.svg';
-import Telegram from '../assets/telegram.svg';
-import Skype from '../assets/skype.svg';
-import { Loading } from './Loading';
+import { CHAT_LOCATIONS } from '../../constants/CHAT_LOCATIONS';
+import Whatsapp from '../../../../../assets/whatsapp.svg';
+import Telegram from '../../../../../assets/telegram.svg';
+import Skype from '../../../../../assets/skype.svg';
+import { Loading } from '../../Loading/Loading';
 
 export const ChatList = ({
   chatList,
@@ -32,7 +32,7 @@ export const ChatList = ({
               button
               key={chatClient.chatId}
               onClick={() => {
-                setLocation(ChatLocations.MESSAGES);
+                setLocation(CHAT_LOCATIONS.MESSAGES);
                 onSelectedChat(chatClient);
               }}
             >

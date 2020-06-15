@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import {
-  MessageText,
-  MessageTitle,
-  MessageMedia,
   Bubble,
   Message as LiveChatMessage,
+  MessageMedia,
+  MessageText,
+  MessageTitle,
 } from '@livechat/ui-kit';
 import { Typography } from '@material-ui/core';
 import { isStringNotBlank } from '@tecsinapse/es-utils/build/object';
@@ -16,12 +16,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit/build/Buttons/IconButton';
 
-import { DeliveryStatus } from './DeliveryStatus';
+import { DeliveryStatus } from './DeliveryStatus/DeliveryStatus';
 
-import { ImageLoader } from './ImageLoader';
-import { ApplicationLoader } from './ApplicationLoader';
-import { VideoLoader } from './VideoLoader';
-import { AudioLoader } from './AudioLoader';
+import { ImageLoader } from './ImageLoader/ImageLoader';
+import { ApplicationLoader } from './ApplicationLoader/ApplicationLoader';
+import { VideoLoader } from './VideoLoader/VideoLoader';
+import { AudioLoader } from './AudioLoader/AudioLoader';
 
 export const Message = ({
   title,
@@ -34,6 +34,13 @@ export const Message = ({
   id,
 }) => {
   const [showDate, setShowDate] = useState(false);
+
+  const style = {
+    padding: '4px',
+    height: '32px',
+    alignSelf: 'center',
+    top: addMessageName ? undefined : '-10px',
+  };
 
   return (
     <div
@@ -137,17 +144,11 @@ export const Message = ({
       {message.status === 'error' && (
         <Tooltip title="Reenviar" placement="top">
           <IconButtonMaterial
-            fill
             key="send again"
             onClick={() => {
               onMessageResend(message.localId);
             }}
-            style={{
-              padding: '4px',
-              height: '32px',
-              alignSelf: 'center',
-              top: addMessageName ? undefined : '-10px',
-            }}
+            style={style}
           >
             <Icon
               path={mdiAlertCircleOutline}

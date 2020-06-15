@@ -1,7 +1,8 @@
+/* eslint-disable react/no-array-index-key */
 import React from 'react';
 import { Divider, Typography } from '@material-ui/core';
-import { Message } from './Message';
-import { Loading } from './Loading';
+import { Message } from './Message/Message';
+import { Loading } from '../../Loading/Loading';
 
 const MessageView = ({
   messages,
@@ -12,34 +13,27 @@ const MessageView = ({
   theme,
   isLoading,
 }) => {
+  const style = {
+    display: 'flex',
+    alignItems: 'center',
+  };
+  const style1 = {
+    flex: 1,
+  };
+
   return (
     <>
       {isLoading && <Loading />}
       {messages.map((message, id) => (
-        <>
+        <React.Fragment key={id}>
           {(messages[id - 1] === undefined ||
             messages[id - 1].at.split(' ')[0] !== message.at.split(' ')[0]) && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <Divider
-                variant="middle"
-                style={{
-                  flex: 1,
-                }}
-              />
+            <div style={style}>
+              <Divider variant="middle" style={style1} />
               <Typography variant="caption" className={classes.at}>
                 {message.at.split(' ')[0]}
               </Typography>
-              <Divider
-                variant="middle"
-                style={{
-                  flex: 1,
-                }}
-              />
+              <Divider variant="middle" style={style1} />
             </div>
           )}
           <Message
@@ -60,7 +54,7 @@ const MessageView = ({
             theme={theme}
             id={id}
           />
-        </>
+        </React.Fragment>
       ))}
 
       <div ref={messagesEndRef} />
