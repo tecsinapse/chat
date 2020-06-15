@@ -1,3 +1,19 @@
+## 2.0.0 (2020-06-15)
+
+* - Changed warning/error dialog style ([b46bcbe](https://github.com/tecsinapse/chat/commit/b46bcbe))
+* - Fixing error message displaying ([88ae4d7](https://github.com/tecsinapse/chat/commit/88ae4d7))
+* - Fixing icons colors when customizing header ([0042578](https://github.com/tecsinapse/chat/commit/0042578))
+* #132524 [FA] Chat no Contato Ativo (BDC) ([8b0b51f](https://github.com/tecsinapse/chat/commit/8b0b51f)), closes [#132524](https://github.com/tecsinapse/chat/issues/132524)
+* 1.4.0-beta.0 ([9334d1a](https://github.com/tecsinapse/chat/commit/9334d1a))
+* Change file structure ([1aed57e](https://github.com/tecsinapse/chat/commit/1aed57e))
+* Fixing bug when clicking twice to dismiss Warning's ([40b661f](https://github.com/tecsinapse/chat/commit/40b661f))
+* idea file ([089b17a](https://github.com/tecsinapse/chat/commit/089b17a))
+* Scripts ([cf335bb](https://github.com/tecsinapse/chat/commit/cf335bb))
+* Update .travis.yml ([b2a6e4c](https://github.com/tecsinapse/chat/commit/b2a6e4c))
+* Update .travis.yml ([b03192e](https://github.com/tecsinapse/chat/commit/b03192e))
+
+
+
 ## <small>1.3.2 (2020-03-24)</small>
 
 * Group by day with front ([e78c241](https://github.com/tecsinapse/chat/commit/e78c241))
