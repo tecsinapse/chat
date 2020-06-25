@@ -368,6 +368,7 @@ export const Init = ({
               onDeleteChat={onDeleteChat}
               userkeycloakId={chatInitConfig.userkeycloakId}
               showMessagesLabel={chatInitConfig.showMessagesLabel}
+              showDiscardOption={chatInitConfig.showDiscardOption}
             />
           )}
         </div>

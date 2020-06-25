@@ -29,23 +29,25 @@ export const InitWebsockets = ({
   };
 
   return (
-    <>
-      {/* Conexão WebSocket com o tecsinapse-chat */}
-      <SockJsClient
-        url={`${chatApiUrl}/ws`}
-        topics={[`/topic/main.${userkeycloakId}`]}
-        onMessage={handleNewMainWebsocketMessage}
-        onConnect={onConnectMainSocket}
-        ref={client => (mainSocketClientRef = client)}
-      />
-      {/* Conexão WebSocket com o produto (dynamo peças / dynamo contato ativo / etc.. */}
-      <SockJsClient
-        url={`${process.env.NODE_ENV === 'development' ? 'http://localhost:8282' : ''}/websocket/chat`}
-        topics={[`/topic/chat.user.${userkeycloakId}`]}
-        onMessage={handleNewProductWebsocketMessage}
-        onConnect={() => {}}
-        ref={client => (productSocketClientRef = client)}
-      />
-    </>
+    process.env.NODE_ENV === "development" ? <></>
+      : <>
+        {/* Conexão WebSocket com o tecsinapse-chat */}
+        <SockJsClient
+          url={`${chatApiUrl}/ws`}
+          topics={[`/topic/main.${userkeycloakId}`]}
+          onMessage={handleNewMainWebsocketMessage}
+          onConnect={onConnectMainSocket}
+          ref={client => (mainSocketClientRef = client)}
+        />
+        {/* Conexão WebSocket com o produto (dynamo peças / dynamo contato ativo / etc.. */}
+        <SockJsClient
+          url={`${process.env.NODE_ENV === 'development' ? 'http://localhost:8282' : ''}/websocket/chat`}
+          topics={[`/topic/chat.user.${userkeycloakId}`]}
+          onMessage={handleNewProductWebsocketMessage}
+          onConnect={() => {
+          }}
+          ref={client => (productSocketClientRef = client)}
+        />
+      </>
   );
 };

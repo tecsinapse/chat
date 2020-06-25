@@ -1,15 +1,18 @@
 export const mockUnreadInitialState = {
-  connectionKey: "dyn-bot",
+  connectionKey: "test",
   allChats: [
     {
       name: "João Paulo Bassinello",
-      phone: "Assistente - (19) 99456-8196",
+      phone: "(19) 99456-8196",
       // Mobile João Bassinello
-      chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net",
+      chatId: '5519994568196',
+      // chatId: "15859732-5c6d-4be2-a5f7-779c43de7784@tunnel.msging.net",
       contactAt: "2020-05-04T12:58:54Z",
       highlighted: true,
       minutesToBlock: 1430,
-      status: "BLOCKED",
+      updateUnreadWhenOpen: true,
+      enabled: true,
+      status: "OK",
       extraInfo: {
         responsavel: "Vendedor 01",
         dealer: "Dealer XPTO",
@@ -25,22 +28,7 @@ export const mockUnreadInitialState = {
           path: "/link2",
         },
       ],
-    } /*,
-    {
-      name: "João Paulo Bassinello",
-      phone: "Assistente - (19) 99456-8196",
-      // Mobile João Bassinello
-      chatId: "ee4011bc-1fab-439e-a35a-18eb92ec3afc2@tunnel.msging.net",
-      contactAt: "2020-05-04T12:58:54Z",
-      highlighted: false,
-      minutesToBlock: 5,
-      status: "BLOCKED",
-      extraInfo: {
-        responsavel: "Vendedor 01",
-        dealer: "Dealer XPTO",
-        segmento: "Caminhão",
-      },
-    }*/,
+    }
   ],
   extraInfoColumns: {
     responsavel: "Responsável",

@@ -23,7 +23,8 @@ export const MessageManagement = ({
                                     onSelectChat,
                                     onDeleteChat,
                                     userkeycloakId,
-                                    showMessagesLabel
+                                    showMessagesLabel,
+                                    showDiscardOption
                                   }) => {
   const {extraInfoColumns, allChats = []} = componentInfo;
   const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
@@ -49,7 +50,7 @@ export const MessageManagement = ({
       options: {
         filter: true,
       },
-      customRender: (row) => format(row.contactAt),
+      customRender: (row) => format(row.lastMessageAt),
     },
     {
       title: "Cliente",
@@ -109,12 +110,14 @@ export const MessageManagement = ({
           });
         });
       }
-      actions.push({
-        label: "Descartar Conversa",
-        onClick: (rowData) => {
-          setDeletingChat(rowData);
-        },
-      });
+      if (showDiscardOption) {
+        actions.push({
+          label: "Descartar Conversa",
+          onClick: (rowData) => {
+            setDeletingChat(rowData);
+          },
+        });
+      }
 
       return (
         <Badge
