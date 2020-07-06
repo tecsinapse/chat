@@ -104,7 +104,9 @@ async function loadComponent(
 export const Init = ({
   chatInitConfig,
 }) => {
-  const homeLocation = COMPONENT_LOCATION.UNREAD;
+  const homeLocation = chatInitConfig.onlyMessageManagement
+    ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
+    : COMPONENT_LOCATION.UNREAD;
 
   const classes = useStyle();
   const theme = useTheme();
@@ -233,8 +235,8 @@ export const Init = ({
     return toUpdateInfo.allChats;
   }
 
-  let showBackButton = (view === COMPONENT_LOCATION.CHAT ||
-    view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT);
+  let showBackButton = (view === COMPONENT_LOCATION.CHAT
+    || (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && !chatInitConfig.onlyMessageManagement));
   let showMessageManagement = view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT;
   if (view === COMPONENT_LOCATION.CHAT && !chatInitConfig.navigateWhenCurrentChat) {
     showBackButton = false;

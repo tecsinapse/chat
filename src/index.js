@@ -27,7 +27,8 @@ window.renderChatComponent = function renderChatComponent() {
     showMessagesLabel: 'Visualizar Mensagens',
     navigateWhenCurrentChat: true,
     onChatTitle: 'Mensagens do Chat',
-    showDiscardOption: true
+    showDiscardOption: true,
+    onlyMessageManagement: false
   };
 
   let chatInitConfig = {...defaultChatInitConfig};
