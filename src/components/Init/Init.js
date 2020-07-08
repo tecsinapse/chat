@@ -275,7 +275,7 @@ export const Init = ({
                         }}
                       >
                         <Icon
-                          onClick={() => setView(COMPONENT_LOCATION.UNREAD)}
+                          onClick={() => setView(homeLocation)}
                           color={theme.palette.primary.main}
                           size={1.25}
                           style={{ cursor: "pointer", marginLeft: "-8px" }}
