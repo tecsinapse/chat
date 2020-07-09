@@ -28,7 +28,8 @@ window.renderChatComponent = function renderChatComponent() {
     navigateWhenCurrentChat: true,
     onChatTitle: 'Mensagens do Chat',
     showDiscardOption: true,
-    onlyMessageManagement: false
+    onlyMessageManagement: false,
+    canSendNotification: true,
   };
 
   let chatInitConfig = {...defaultChatInitConfig};
@@ -56,4 +57,4 @@ window.renderChatComponent = function renderChatComponent() {
 };
 
 // uncomment for local tests
-// window.renderChatComponent();
+window.renderChatComponent();

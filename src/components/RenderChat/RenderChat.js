@@ -45,7 +45,8 @@ const onSelectedChatMaker = (
       })
       .reverse();
     setMessages(messages);
-    setBlocked(chat.status === "BLOCKED");
+    const isBlocked = chat.status === "BLOCKED";
+    setBlocked(chat.chatId, isBlocked);
     setIsLoading(false);
     if (chat.updateUnreadWhenOpen) {
       onReadAllMessagesOfChatId(chat.chatId);
@@ -66,7 +67,8 @@ export const RenderChat = ({
   initialInfo,
   userkeycloakId,
   onReadAllMessagesOfChatId,
-  navigateWhenCurrentChat
+  navigateWhenCurrentChat,
+  onChatStatusChanged
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
@@ -80,12 +82,18 @@ export const RenderChat = ({
   const messagesEndRef = useRef(null);
   let clientRef = useRef();
   const setStatusMessage = setStatusMessageFunc(setMessages);
+
+  const setBlockedAndPropagateStatus = (chatId, isBlocked) => {
+    setBlocked(isBlocked);
+    onChatStatusChanged(chatId, isBlocked);
+  }
+
   const onSelectedChat = onSelectedChatMaker(
     initialInfo,
     setIsLoading,
     setCurrentChat,
     setMessages,
-    setBlocked,
+    setBlockedAndPropagateStatus,
     chatApiUrl,
     messagesEndRef,
     onReadAllMessagesOfChatId
@@ -98,14 +106,15 @@ export const RenderChat = ({
         setIsLoading,
         setCurrentChat,
         setMessages,
-        setBlocked,
+        setBlockedAndPropagateStatus,
         chatApiUrl,
         messagesEndRef,
-        onReadAllMessagesOfChatId,
+        onReadAllMessagesOfChatId
       )(initialInfo.chats[0]);
     }
     setIsLoading(false);
   }, [initialInfo, chatApiUrl, setIsLoading]);
+  // ignore warning "React Hook useEffect has a missing dependency". It could cause infinity loop
 
   const handleNewExternalMessage = (newMessage) => {
     // Append received message when client message or
@@ -195,7 +204,7 @@ export const RenderChat = ({
       .then(() => {})
       .catch((err) => {
         if (err.status === 403) {
-          setBlocked(true);
+          setBlockedAndPropagateStatus(currentChat.chatId, true);
         }
         setStatusMessage(localId, "error");
       });
@@ -226,7 +235,7 @@ export const RenderChat = ({
   const onBackToChatList = () => {
     setMessages([]);
     setCurrentChat(emptyChat);
-    setBlocked(false);
+    setBlockedAndPropagateStatus(null, false);
     setPage(1);
     setHasMore(true);
   };
@@ -312,13 +321,13 @@ export const RenderChat = ({
         loadMore={loadMore}
         onMessageResend={onMessageResend}
         isBlocked={blocked}
-        blockedMessage="Você não pode mais enviar mensagens para esse chat."
+        blockedMessage=""
         chatList={initialInfo.chats.length > 1 ? initialInfo.chats : undefined}
         onBackToChatList={onBackToChatList}
         onSelectedChat={onSelectedChat}
         disabledSend={isLoading && messages.length === 0}
         roundedCorners={false}
-        containerHeight="calc(100vh - 132px)"
+        containerHeight={`calc(100vh - ${blocked ? '264px' : '132px'})`}
         customHeader={{
           headerLabel: "Cliente:",
           headerBackground: "#f7f7f7",

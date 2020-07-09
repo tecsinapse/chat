@@ -22,8 +22,9 @@ import {RenderChat} from "../RenderChat/RenderChat";
 import {InitWebsockets} from "./InitWebsockets";
 import {MessageManagement} from "../MessageManagement/MessageManagement";
 import {ChatButton} from "../ChatButton/ChatButton";
-import {noAuthJsonFetch} from "../../utils/fetch";
+import {defaultFetch, noAuthJsonFetch} from "../../utils/fetch";
 import {encodeChatData} from "../../utils/encodeChatData";
+import {SendNotification} from "../SendNotification/SendNotification";
 
 const useStyle = makeStyles((theme) => ({
   drawerContainer: {
@@ -116,6 +117,8 @@ export const Init = ({
   const [currentChat, setCurrentChat] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
+  const [notificationTemplates, setNotificationTemplates] = useState([]);
+  const [phoneNumberToNotification, setNumberToNotification] = useState('');
 
   useEffect(() => {
     loadComponent(
@@ -216,6 +219,19 @@ export const Init = ({
     setView(COMPONENT_LOCATION.CHAT);
   };
 
+  async function onStartSendNotification() {
+    let templates = [...notificationTemplates];
+    if (notificationTemplates.length === 0) {
+      templates = await defaultFetch(
+        `${chatInitConfig.chatApiUrl}/api/chats/${componentInfo.connectionKey}/templates`,
+        "GET",
+        {}
+      );
+      setNotificationTemplates(templates);
+    }
+    setView(COMPONENT_LOCATION.SEND_NOTIFICATION);
+  }
+
   async function onDeleteChat(deletedChat) {
     await noAuthJsonFetch(
       `${chatInitConfig.deleteChatPath}/${deletedChat.chatId}`,
@@ -235,13 +251,32 @@ export const Init = ({
     return toUpdateInfo.allChats;
   }
 
-  let showBackButton = (view === COMPONENT_LOCATION.CHAT
+  const onChatStatusChanged = (chatId, isBlocked) => {
+    // controls if the current chat is expired and the button to send a notification is visible to a chat
+    if (chatId && chatId !== null) {
+      componentInfo.allChats.forEach((chat) => {
+        if (chat.chatId === chatId) {
+          // will only show the button if the chat is blocked
+          setNumberToNotification(isBlocked ? chat.phone : '');
+        }
+      });
+    } else {
+      setNumberToNotification('');
+    }
+  }
+
+  let showBackButton = (view === COMPONENT_LOCATION.CHAT || view === COMPONENT_LOCATION.SEND_NOTIFICATION
     || (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && !chatInitConfig.onlyMessageManagement));
   let showMessageManagement = view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT;
   if (view === COMPONENT_LOCATION.CHAT && !chatInitConfig.navigateWhenCurrentChat) {
     showBackButton = false;
     showMessageManagement = false;
   }
+
+  const showSendNotification = chatInitConfig.canSendNotification
+    && (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT
+      || view === COMPONENT_LOCATION.UNREAD
+      || (view === COMPONENT_LOCATION.CHAT && phoneNumberToNotification !== ''));
 
   return (
     <div className="Chat">
@@ -290,6 +325,8 @@ export const Init = ({
                       {view === COMPONENT_LOCATION.UNREAD && "Painel do Chat"}
                       {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
                         "Gestão de Mensagens"}
+                      {view === COMPONENT_LOCATION.SEND_NOTIFICATION &&
+                      "Iniciar Nova Conversa"}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -361,6 +398,7 @@ export const Init = ({
               userkeycloakId={chatInitConfig.userkeycloakId}
               onReadAllMessagesOfChatId={onReadAllMessagesOfChatId}
               navigateWhenCurrentChat={chatInitConfig.navigateWhenCurrentChat}
+              onChatStatusChanged={onChatStatusChanged}
             />
           )}
           {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
@@ -373,6 +411,23 @@ export const Init = ({
               showDiscardOption={chatInitConfig.showDiscardOption}
             />
           )}
+          {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (
+            <SendNotification
+              templates={notificationTemplates}
+              phone={phoneNumberToNotification}
+            />
+          )}
+
+          {showSendNotification &&
+          <div style={{marginTop: theme.spacing(2), textAlign: 'center'}}>
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => onStartSendNotification()}>
+              INICIAR NOVA CONVERSA
+            </Button>
+          </div>
+          }
         </div>
       </Drawer>
 
