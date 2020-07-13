@@ -19,8 +19,20 @@ const useStyle = makeStyles((theme) => ({
     fontFamily: 'monospace',
     margin: theme.spacing(1, 0),
     padding: theme.spacing(2),
+    textAlign: 'center',
+  },
+  previewText: {
+    textAlign: 'center',
+    display: 'block',
+    width: '31vW'
   }
 }));
+
+const emptyTemplate = {
+  label: 'Selecione',
+  value: '',
+  args: 0
+};
 
 export const SendNotification = ({templates = [], phone = '', chatApiUrl, connectionKey}) => {
   const classes = useStyle();
@@ -33,24 +45,21 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
 
-  const availableTemplates = [{
-    label: 'Selecione',
-    value: ''
-  }];
+  const availableTemplates = [emptyTemplate];
   templates.forEach(t => availableTemplates.push({
     label: t.name,
     value: t.name
   }));
 
   const onSelectTemplate = (template) => {
-    const selected = templates.filter(t => t.name === template)[0];
+    const selected = templates.filter(t => t.name === template)[0] || emptyTemplate;
     const argsArray = [];
     for (let i = 0; i < selected.args; i++) {
       argsArray.push('');
     }
     setArgs(argsArray);
     setSelectedTemplate(template);
-    updatePreview(template, args);
+    updatePreview(template, argsArray);
   }
 
   const setArg = (index, arg) => {
@@ -68,11 +77,9 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
     setPreview(prev);
   }
 
-  const canSend = () => {
-    return phoneNumber !== ''
-      && selectedTemplate !== ''
-      && args.filter(a => a !== '').length === args.length;
-  }
+  const canSend = phoneNumber !== ''
+    && selectedTemplate !== ''
+    && (args.length > 0 && args.filter(a => a !== '').length === args.length);
 
   const send = () => {
     setSending(true);
@@ -86,14 +93,22 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
       }
     ).then(() => {
       setSuccess('Mensagem enviada');
+      setTimeout(() => setSuccess(''), 4000);
       setError('');
       setPhoneNumber('');
       setArgs([]);
+      setSelectedTemplate('');
       setPreview('');
       setSending(false);
-    }).catch(() => {
+    }).catch((err) => {
+      console.log(err);
+      if (err.status === 400) {
+        setError(`Não foi possível enviar a mensagem. Verifique se o número ${phoneNumber} possui WhatsApp`);
+      } else {
+        setError('Ocorreu um problema ao enviar a mensagem');
+      }
       setSuccess('');
-      setError('Ocorreu um problema ao enviar a mensagem');
+      setTimeout(() => setError(''), 4000);
       setSending(false);
     });
   }
@@ -135,7 +150,7 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
               onChange={e => setPhoneNumber(e.target.value)}
             />
           </Grid>
-          <Grid item>
+          <Grid item style={{zIndex: 9999999999}}>
             <Select
               value={selectedTemplate}
               options={availableTemplates}
@@ -157,17 +172,13 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
             </Grid>
           )}
           {preview !== '' &&
-          <Grid item>
+          <Grid item alignContent='center'>
             <Typography variant="caption">
               Mensagem:
             </Typography>
-            <div
-              className={classes.preview}
-              // eslint-disable-next-line
-              dangerouslySetInnerHTML={{
-                __html: `${preview}`
-              }}
-            />
+            <div className={classes.preview}>
+              <span className={classes.previewText}>{preview}</span>
+            </div>
           </Grid>
           }
           <div style={{textAlign: 'center'}}>
@@ -176,7 +187,7 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
               : <Button
                 color="primary"
                 variant="contained"
-                disabled={canSend}
+                disabled={!canSend}
                 onClick={() => send()}>
                 ENVIAR
               </Button>
@@ -185,13 +196,13 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
 
           {success !== '' &&
           <Snackbar show variant="success">
-            ${success}
+            {success}
           </Snackbar>
           }
 
           {error !== '' &&
           <Snackbar show variant="error">
-            ${error}
+            {error}
           </Snackbar>
           }
 

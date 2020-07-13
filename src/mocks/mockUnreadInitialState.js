@@ -5,7 +5,7 @@ export const mockUnreadInitialState = {
       name: "João Paulo Bassinello",
       phone: "(19) 99456-8196",
       // Mobile João Bassinello
-      chatId: '5519994568196',
+      chatId: '15859732-5c6d-4be2-a5f7-779c43de7784@tunnel.msging.net',
       // chatId: "15859732-5c6d-4be2-a5f7-779c43de7784@tunnel.msging.net",
       contactAt: "2020-05-04T12:58:54Z",
       highlighted: true,

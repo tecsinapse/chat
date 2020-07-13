@@ -118,7 +118,7 @@ export const Init = ({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
   const [notificationTemplates, setNotificationTemplates] = useState([]);
-  const [phoneNumberToNotification, setNumberToNotification] = useState('');
+  const [phoneNumberToNotification, setPhoneNumberToNotification] = useState('');
 
   useEffect(() => {
     loadComponent(
@@ -253,15 +253,15 @@ export const Init = ({
 
   const onChatStatusChanged = (chatId, isBlocked) => {
     // controls if the current chat is expired and the button to send a notification is visible to a chat
-    if (chatId && chatId !== null) {
+    if (chatId) {
       componentInfo.allChats.forEach((chat) => {
         if (chat.chatId === chatId) {
           // will only show the button if the chat is blocked
-          setNumberToNotification(isBlocked ? chat.phone : '');
+          setPhoneNumberToNotification(isBlocked ? chat.phone : '');
         }
       });
     } else {
-      setNumberToNotification('');
+      setPhoneNumberToNotification('');
     }
   }
 
@@ -415,6 +415,8 @@ export const Init = ({
             <SendNotification
               templates={notificationTemplates}
               phone={phoneNumberToNotification}
+              chatApiUrl={chatInitConfig.chatApiUrl}
+              connectionKey={connectionKey}
             />
           )}
 
