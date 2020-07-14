@@ -1,3 +1,10 @@
+## 2.1.0 (2020-07-14)
+
+* [#138247] Copy paste at dynamo chat ([528677c](https://github.com/tecsinapse/chat/commit/528677c)), closes [#138247](https://github.com/tecsinapse/chat/issues/138247)
+* Update README.md ([c7e3980](https://github.com/tecsinapse/chat/commit/c7e3980))
+
+
+
 ## 2.0.0 (2020-06-15)
 
 * - Changed warning/error dialog style ([b46bcbe](https://github.com/tecsinapse/chat/commit/b46bcbe))
