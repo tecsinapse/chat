@@ -12,9 +12,11 @@ export const ImageLoader = ({ classes, url }) => {
 
   const onError = e => {
     e.stopPropagation();
+
     if (loading) {
       setLoading(false);
     }
+
     if (!imageError) {
       setImageError(true);
     }

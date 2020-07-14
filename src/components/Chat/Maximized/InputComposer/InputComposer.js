@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   IconButton,
   Row,
@@ -17,7 +17,7 @@ import {
 import Icon from '@mdi/react';
 import { defaultGreyLight2 } from '@tecsinapse/ui-kit/build/colors';
 import { MicRecorder } from './MicRecorder/MicRecorder';
-import { CustomUploader } from './CustomUploader/CustomUploader';
+import { CustomUploader, onAccept } from './CustomUploader/CustomUploader';
 import { PreviewList } from './PreviewList/PreviewList';
 
 const ENTER_KEYCODE = 13;
@@ -47,6 +47,40 @@ export const InputComposer = ({
   const videoUpRef = useRef(null);
   const appUpRef = useRef(null);
   const [inputRef, setInputRef] = useState(null);
+
+  const transformImages = useCallback(
+    data => {
+      onAccept({ setFiles, files })(
+        (Array.from(data.items) || [])
+          .filter(
+            item =>
+              ![['image/gif', 'image/png', 'image/jpeg', 'image/bmp']].includes(
+                item.type
+              )
+          )
+          .map(a => a.getAsFile())
+      );
+    },
+    [files]
+  );
+
+  const pasteHandler = useCallback(
+    e =>
+      e.clipboardData &&
+      e.clipboardData.items.length > 0 &&
+      transformImages(e.clipboardData),
+    [transformImages]
+  );
+
+  useEffect(() => {
+    const pasteRef = window;
+
+    pasteRef.addEventListener('paste', pasteHandler);
+
+    return () => {
+      pasteRef.removeEventListener('paste', pasteHandler);
+    };
+  }, [pasteHandler]);
 
   const onStopRecording = (blob, accept) => {
     setRecording(false);

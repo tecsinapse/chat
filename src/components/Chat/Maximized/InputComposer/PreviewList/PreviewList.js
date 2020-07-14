@@ -46,6 +46,14 @@ const useStyle = makeStyles({
   },
 });
 
+const style = {
+  width: '65px',
+  height: '65px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
 const getMediaComponent = (mediaType, name, data) => {
   let component = 'div';
 
@@ -55,15 +63,7 @@ const getMediaComponent = (mediaType, name, data) => {
     component = 'video';
   } else {
     return (
-      <div
-        style={{
-          width: '65px',
-          height: '65px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      <div style={style}>
         <Icon path={mdiFile} size={2} color={defaultGreyDark} />
       </div>
     );
@@ -78,7 +78,9 @@ export function PreviewList({ files, setFiles }) {
   const removeAttachment = uid =>
     setFiles(filesCurrent => {
       const filesCopy = { ...filesCurrent };
+
       delete filesCopy[uid];
+
       return filesCopy;
     });
 
