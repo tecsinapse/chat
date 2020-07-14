@@ -220,6 +220,9 @@ export const Init = ({
   };
 
   async function onStartSendNotification() {
+    if (COMPONENT_LOCATION.CHAT !== view) {
+      setPhoneNumberToNotification('');
+    }
     let templates = [...notificationTemplates];
     if (notificationTemplates.length === 0) {
       templates = await defaultFetch(
@@ -273,10 +276,11 @@ export const Init = ({
     showMessageManagement = false;
   }
 
+  const isChatViewAndItsBlocked = view === COMPONENT_LOCATION.CHAT && phoneNumberToNotification !== '';
   const showSendNotification = chatInitConfig.canSendNotification
     && (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT
       || view === COMPONENT_LOCATION.UNREAD
-      || (view === COMPONENT_LOCATION.CHAT && phoneNumberToNotification !== ''));
+      || isChatViewAndItsBlocked);
 
   return (
     <div className="Chat">

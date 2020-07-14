@@ -48,11 +48,11 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
   const availableTemplates = [emptyTemplate];
   templates.forEach(t => availableTemplates.push({
     label: t.name,
-    value: t.name
+    value: t.value
   }));
 
   const onSelectTemplate = (template) => {
-    const selected = templates.filter(t => t.name === template)[0] || emptyTemplate;
+    const selected = templates.filter(t => t.value === template)[0] || emptyTemplate;
     const argsArray = [];
     for (let i = 0; i < selected.args; i++) {
       argsArray.push('');
@@ -70,9 +70,11 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
   }
 
   const updatePreview = (template, args) => {
-    let prev = templates.filter(t => t.name === template)[0].template;
+    let prev = (templates.filter(t => t.value === template)[0] || emptyTemplate).template;
     for (let i = 0; i < args.length; i++) {
-      prev = prev.replace(`{{${i + 1}}}`, args[i]);
+      if (args[i] !== '') {
+        prev = prev.replace(`{{${i + 1}}}`, args[i]);
+      }
     }
     setPreview(prev);
   }
