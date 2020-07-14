@@ -70,6 +70,7 @@
     "dist"
   ],
   "scripts": {
+    "eslint:fix": "npx eslint ./src --ext .js --fix",
     "analyze": "npx source-map-explorer 'dist/*.js'",
     "build": "rimraf -rf build/ && babel src/ -d build/ && rollup -c",
     "build-all": "yarn build && yarn storybook:build",

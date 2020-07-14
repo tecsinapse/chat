@@ -9,6 +9,7 @@ const StyledDiv = styled('div')({
   backgroundColor: defaultGreyLight4, // same color as MessageList
 });
 const CircularProgressStyled = styled(CircularProgress)({});
+
 export const Loading = () => (
   <StyledDiv>
     <CircularProgressStyled size={60} />

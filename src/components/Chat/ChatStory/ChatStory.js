@@ -44,7 +44,9 @@ export const ChatStory = ({
     setMessages(prevMessages => {
       const copyMessages = [...prevMessages];
       const message = copyMessages.find(m => m.localId === id);
+
       message.status = status;
+
       return copyMessages;
     });
   };
@@ -124,8 +126,10 @@ export const ChatStory = ({
 
   const onMessageSend = text => {
     const localId = uuidv1();
+
     setMessages(prevMessages => {
       const copyPrevMessages = [...prevMessages];
+
       copyPrevMessages.push({
         at: '02/03/2019 10:12',
         own: true,
@@ -135,8 +139,10 @@ export const ChatStory = ({
         text,
         localId,
       });
+
       return copyPrevMessages;
     });
+
     if (!error) {
       sendToBackend(text, localId);
     }
@@ -145,8 +151,10 @@ export const ChatStory = ({
   const onAudioSend = blob => {
     if (blob !== null) {
       const localId = uuidv1();
+
       setMessages(prevMessages => {
         const copyPrevMessages = [...prevMessages];
+
         copyPrevMessages.push({
           at: '02/03/2019 10:12',
           own: true,
@@ -161,6 +169,7 @@ export const ChatStory = ({
             },
           ],
         });
+
         return copyPrevMessages;
       });
 
@@ -175,12 +184,15 @@ export const ChatStory = ({
       const titleAsMessage =
         Object.keys(files).length > 1 ||
         (files[Object.keys(files)[0]] !== undefined &&
+          files[Object.keys(files)[0]].mediaType &&
           files[Object.keys(files)[0]].mediaType.startsWith('application'));
 
       Object.keys(files).forEach((uid, i) => {
         const localId = uuidv1();
+
         setMessages(prevMessages => {
           const copyPrevMessages = [...prevMessages];
+
           copyPrevMessages.push({
             at: '02/03/2019 10:12',
             own: true,
@@ -198,6 +210,7 @@ export const ChatStory = ({
             ],
             title: titleAsMessage ? undefined : title,
           });
+
           return copyPrevMessages;
         });
 
@@ -205,6 +218,7 @@ export const ChatStory = ({
           sendMediaToBackend(files[uid], title, localId, titleAsMessage);
         }
       });
+
       if (titleAsMessage) {
         onMessageSend(title);
       }
@@ -254,6 +268,7 @@ export const ChatStory = ({
     if (chatClient.current !== null) {
       return `${chatClient.current.name} - ${chatClient.current.phone}`;
     }
+
     return defaultSub;
   };
 
@@ -263,16 +278,16 @@ export const ChatStory = ({
       ? `${totalUnread.current} mensagens não lidas`
       : 'Última mensagem 10/10/2019 10:10';
 
+  const style = {
+    width: '400px',
+    height: '550px',
+    position: 'fixed',
+    right: '1em',
+    bottom: '-50px',
+  };
+
   return (
-    <div
-      style={{
-        width: '400px',
-        height: '550px',
-        position: 'fixed',
-        right: '1em',
-        bottom: '-50px',
-      }}
-    >
+    <div style={style}>
       <Chat
         error={error}
         isMaximizedOnly={isMaximizedOnly}

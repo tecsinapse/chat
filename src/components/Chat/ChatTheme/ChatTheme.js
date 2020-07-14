@@ -140,4 +140,5 @@ const ChatTheme = ({
     {children}
   </ThemeProvider>
 );
+
 export default ChatTheme;
