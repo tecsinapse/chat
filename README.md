@@ -1,8 +1,7 @@
 # Iniciando
 
 [![Build Status](https://travis-ci.org/tecsinapse/chat.svg?branch=master)](https://travis-ci.org/tecsinapse/chat)
-
-
+[![npm version](https://badge.fury.io/js/%40tecsinapse%2Fchat.svg)](https://badge.fury.io/js/%40tecsinapse%2Fchat)
 
 ***@tecsinapse/chat*** é uma biblioteca contendo chat react ***
 
