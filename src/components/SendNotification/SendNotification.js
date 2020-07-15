@@ -1,9 +1,10 @@
 import React, {useState} from "react";
 import {makeStyles} from "@material-ui/styles";
 import {Input, Select, Snackbar} from "@tecsinapse/ui-kit";
-import {Button, Grid, Typography,} from "@material-ui/core";
+import {Button, Grid, InputAdornment, Tooltip, Typography} from "@material-ui/core";
 import {defaultFetch} from "../../utils/fetch";
 import {Loading} from "../../utils/Loading";
+import Help from '@material-ui/icons/Help';
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -31,7 +32,8 @@ const useStyle = makeStyles((theme) => ({
 const emptyTemplate = {
   label: 'Selecione',
   value: '',
-  args: 0
+  args: 0,
+  argsDescription: []
 };
 
 export const SendNotification = ({templates = [], phone = '', chatApiUrl, connectionKey}) => {
@@ -67,6 +69,10 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
     argsArray[index] = arg;
     setArgs(argsArray);
     updatePreview(selectedTemplate, argsArray);
+  }
+
+  const getArgDescription = (index) => {
+    return (templates.filter(t => t.value === selectedTemplate)[0] || emptyTemplate).argsDescription[index];
   }
 
   const updatePreview = (template, args) => {
@@ -170,6 +176,15 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
                 fullWidth
                 value={args[index]}
                 onChange={e => setArg(index, e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <Tooltip title={getArgDescription(index)} arrow placement="top">
+                      <InputAdornment position="end" style={{cursor: 'pointer'}}>
+                        <Help/>
+                      </InputAdornment>
+                    </Tooltip>
+                  )
+                }}
               />
             </Grid>
           )}
