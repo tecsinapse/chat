@@ -3,12 +3,13 @@ export const mockUnreadInitialState = {
   allChats: [
     {
       name: "João Paulo Bassinello",
+      subName: "Contato 123 - aaaa",
       phone: "(19) 99456-8196",
       // Mobile João Bassinello
       chatId: '15859732-5c6d-4be2-a5f7-779c43de7784@tunnel.msging.net',
       // chatId: "15859732-5c6d-4be2-a5f7-779c43de7784@tunnel.msging.net",
       contactAt: "2020-05-04T12:58:54Z",
-      highlighted: true,
+      highlighted: false,
       minutesToBlock: 1430,
       updateUnreadWhenOpen: true,
       enabled: true,

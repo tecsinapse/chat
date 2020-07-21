@@ -252,7 +252,8 @@ export const RenderChat = ({
   };
 
   const title = currentChat.name || initialInfo.name || "Cliente";
-  let subTitle = currentChat.phone ? currentChat.phone : "";
+  let subTitle = (currentChat.subName ? (currentChat.subName + " - ") : "")
+    + (currentChat.phone ? currentChat.phone : "");
   const timeToExpire =
     (currentChat &&
       currentChat.minutesToBlock &&

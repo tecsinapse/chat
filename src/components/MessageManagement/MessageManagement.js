@@ -59,11 +59,15 @@ export const MessageManagement = ({
         filter: true,
       },
       customRender: (row) => {
-        return row.highlighted ? (
-          <span className={classes.highlighted}>{row.name}</span>
-        ) : (
-          row.name
-        );
+        return <>
+          {row.highlighted ?
+            <span className={classes.highlighted}>{row.name}</span>
+            : <span>{row.name}</span>
+          }
+          {row.subName && <><br/><span dangerouslySetInnerHTML={{
+            __html: row.subName
+          }}/></>}
+        </>
       },
     },
     {

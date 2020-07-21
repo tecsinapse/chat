@@ -147,11 +147,10 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
             <Input
               name="phoneNumber"
               label="Número do Telefone"
-              mask="cellphone"
               fullWidth
               value={phoneNumber}
               onBlur={() => {
-                if (phoneNumber.length < 14) {
+                if (phoneNumber.length < 10) {
                   setPhoneNumber('');
                 }
               }}
