@@ -11,7 +11,7 @@ export const buildChatMessageObject = (externalMessage, fromId) => {
   if (externalMessage.medias && externalMessage.medias.length > 0) {
     // when with media, show title instead of text
     delete message.text;
-    message.title = externalMessage.text;
+    message.title = externalMessage.title ? externalMessage.title : externalMessage.text;
 
     message.medias = externalMessage.medias.map((media) => {
       if (media.mediaType.startsWith("application")) {
