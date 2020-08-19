@@ -4,7 +4,7 @@ import { mdiForum } from '@mdi/js';
 import { Badge } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
 
-import { FloatingButton } from '@tecsinapse/ui-kit/build/Buttons/FloatingButton';
+import { FloatingButton } from '@tecsinapse/ui-kit';
 
 const Minimized = ({ maximize, notifyNumber }) => {
   const theme = useTheme();

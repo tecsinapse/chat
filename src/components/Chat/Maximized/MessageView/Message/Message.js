@@ -14,7 +14,7 @@ import clsx from 'clsx';
 import Icon from '@mdi/react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
-import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit/build/Buttons/IconButton';
+import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit';
 
 import { DeliveryStatus } from './DeliveryStatus/DeliveryStatus';
 

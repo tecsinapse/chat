@@ -5,7 +5,7 @@ import {
   defaultGreyDark,
   defaultGreyLight4,
   defaultWhite,
-} from '@tecsinapse/ui-kit/build/colors';
+} from '@tecsinapse/ui-kit';
 
 const getTheme = (
   materialTheme,

@@ -14,7 +14,7 @@ import {
   defaultBlack,
   defaultGrey2,
   defaultWhite,
-} from '@tecsinapse/ui-kit/build/colors';
+} from '@tecsinapse/ui-kit';
 
 const useStyle = makeStyles({
   reactMic: {

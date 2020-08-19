@@ -1,3 +1,10 @@
+## 2.2.0 (unreleased)
+
+* Upgrade dependencies
+* Open file download on `_blank` target
+
+
+
 ## 2.1.0 (2020-07-14)
 
 * [#138247] Copy paste at dynamo chat ([528677c](https://github.com/tecsinapse/chat/commit/528677c)), closes [#138247](https://github.com/tecsinapse/chat/issues/138247)

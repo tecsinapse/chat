@@ -11,9 +11,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import { makeStyles } from '@material-ui/styles';
 
-import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit/build/Buttons/IconButton';
+import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit';
 
-import { defaultGreyDark, defaultWhite } from '@tecsinapse/ui-kit/build/colors';
+import { defaultGreyDark, defaultWhite } from '@tecsinapse/ui-kit';
 
 const useStyle = size =>
   makeStyles(theme => ({
@@ -55,7 +55,7 @@ export const ApplicationLoader = ({ message, media }) => {
           className={classes.appMediaName}
         />
         <ListItemSecondaryAction className={classes.appIconDownload}>
-          <a href={media.url} download>
+          <a href={media.url} download target="_blank">
             <IconButtonMaterial aria-label="download">
               <Icon
                 path={mdiDownload}

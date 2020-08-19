@@ -3,7 +3,7 @@ import { AgentBar, Column, Row, Subtitle, Title } from '@livechat/ui-kit';
 import { Badge, makeStyles, Typography } from '@material-ui/core';
 import { mdiArrowLeft, mdiClose, mdiDotsVertical } from '@mdi/js';
 import Icon from '@mdi/react';
-import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit/build/Buttons/IconButton';
+import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit';
 import { Warning } from '../Warning/Warning';
 
 const useStyle = makeStyles(({ palette }) => ({
