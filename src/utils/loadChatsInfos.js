@@ -31,7 +31,7 @@ export async function load(chatApiUrl, getInitialStatePath, params) {
     .map((chat) => chat.chatId)
     .join(",");
   const completeChatInfos = await defaultFetch(
-    `${chatApiUrl}/api/chats/${initialInfoFromProduct.connectionKey}/infos`,
+    `${chatApiUrl}/api/chats/${initialInfoFromProduct.connectionKey}/${initialInfoFromProduct.destination}/infos`,
     "POST",
     {chatIds: chatIds}
   );

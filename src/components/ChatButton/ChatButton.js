@@ -2,7 +2,7 @@ import { Badge, CircularProgress, Tooltip } from "@material-ui/core";
 import { FloatingButton } from "@tecsinapse/ui-kit";
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
-import { defaultOrange } from "@tecsinapse/ui-kit/build/colors";
+import { defaultOrange } from "@tecsinapse/ui-kit";
 import { mdiForum } from "@mdi/js";
 import Icon from "@mdi/react";
 

@@ -1,13 +1,13 @@
 import React, {useState} from "react";
 import {makeStyles} from "@material-ui/styles";
 import {Table} from "@tecsinapse/table";
-import TableRowActions from "@tecsinapse/table/build/Table/TableRowActions";
+import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
 import {format} from "../../utils/dates";
 import {Badge, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 import {TableHeader} from "./TableHeader";
 import {encodeChatData} from "../../utils/encodeChatData";
 
-const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles(() => ({
   highlighted: {
     fontWeight: "bold",
     color: "#e6433f",
@@ -135,7 +135,7 @@ export const MessageManagement = ({
             anchorOriginTopRightRectangle: classes.badgeAlign,
           }}
         >
-          <TableRowActions
+          <RowActions
             actions={actions}
             row={row}
             verticalActions={true}
@@ -200,6 +200,7 @@ export const MessageManagement = ({
   return (
     <>
       <Table
+        onDrawerClose={() => {}}
         columns={columns}
         data={chats}
         rowId={(row) => row.id}

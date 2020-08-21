@@ -17,8 +17,8 @@ window.renderChatComponent = function renderChatComponent() {
 
   const defaultChatInitConfig = {
     userkeycloakId: uuidv1(),
-    // chatApiUrl: "http://localhost:8081",
-    chatApiUrl: "https://chathomolog.tecsinapse.com.br",
+    chatApiUrl: "http://localhost:8081",
+    // chatApiUrl: "https://chathomolog.tecsinapse.com.br",
     params: {},
     getInitialStatePath: "/rest/chat/componentInfo",
     deleteChatPath: "/rest/chat",

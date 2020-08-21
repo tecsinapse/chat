@@ -36,7 +36,7 @@ const emptyTemplate = {
   argsDescription: []
 };
 
-export const SendNotification = ({templates = [], phone = '', chatApiUrl, connectionKey}) => {
+export const SendNotification = ({templates = [], phone = '', chatApiUrl, connectionKey, destination}) => {
   const classes = useStyle();
 
   const [phoneNumber, setPhoneNumber] = useState(phone);
@@ -92,7 +92,7 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
   const send = () => {
     setSending(true);
     defaultFetch(
-      `${chatApiUrl}/api/chats/${connectionKey}/notification/send`,
+      `${chatApiUrl}/api/chats/${connectionKey}/${destination}/notification/send`,
       "POST",
       {
         phoneNumber: phoneNumber,

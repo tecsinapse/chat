@@ -6,6 +6,7 @@ export const InitWebsockets = ({
                                  userkeycloakId,
                                  chatIds,
                                  connectionKey,
+                                 destination,
                                  onChatUpdated,
                                  reloadComponent,
                                }) => {
@@ -15,7 +16,7 @@ export const InitWebsockets = ({
 
   const onConnectMainSocket = () => {
     mainSocketClientRef.sendMessage(
-      `/chat/addUser/main/${connectionKey}/${userkeycloakId}`,
+      `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`,
       JSON.stringify({chatIds: chatIds}) // informação dos chats que esse usuário está acompanhando
     );
   };

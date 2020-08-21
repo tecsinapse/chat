@@ -33,7 +33,7 @@ const useStyle = makeStyles((theme) => ({
     height: "100%",
     overflowX: "hidden",
     maxWidth: "80vw",
-    minWidth: "35vw",
+    minWidth: "40vw",
     /* TODO verificar uma forma melhor */
     /* Limpando estilos do Bootstrap para os inputs */
     "& input": {
@@ -96,6 +96,7 @@ async function loadComponent(
     setCurrentChat({
       name: info.currentClient.clientName,
       connectionKey: info.connectionKey,
+      destination: info.destination,
       disabled: info.currentClient.disabled,
       chats: chats,
     });
@@ -159,6 +160,7 @@ export const Init = ({
     .map((chat) => chat.chatId)
     .join(",");
   const connectionKey = componentInfo.connectionKey;
+  const destination = componentInfo.destinantion;
   let unreadTotal = (componentInfo.allChats || []).reduce(
     (acc, chat) => acc + chat.unread,
     0
@@ -213,6 +215,7 @@ export const Init = ({
     setCurrentChat({
       name: chat.name,
       connectionKey: componentInfo.connectionKey,
+      destination: componentInfo.destination,
       disabled: false,
       chats: [chat],
     });
@@ -241,6 +244,11 @@ export const Init = ({
       "DELETE",
       {}
     );
+    await defaultFetch(
+      `${chatInitConfig.chatApiUrl}/api/chats/${connectionKey}/${deletedChat.chatId}/sessions/finish`,
+      "DELETE",
+      {}
+    )
     const toUpdateInfo = {...componentInfo};
     toUpdateInfo.allChats = componentInfo.allChats.filter(chat => chat.chatId !== deletedChat.chatId);
 
@@ -421,6 +429,7 @@ export const Init = ({
               phone={phoneNumberToNotification}
               chatApiUrl={chatInitConfig.chatApiUrl}
               connectionKey={connectionKey}
+              destination={destination}
             />
           )}
 
