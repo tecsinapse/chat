@@ -1,14 +1,8 @@
 ## 2.3.0 (2020-08-25)
 
-* * Upgrade dependencies ([5c693f3](https://github.com/tecsinapse/chat/commit/5c693f3))
+* Upgrade dependencies ([5c693f3](https://github.com/tecsinapse/chat/commit/5c693f3))
 * lockfile ([d1151b1](https://github.com/tecsinapse/chat/commit/d1151b1))
 * uuid 3.3.2 ([458b12c](https://github.com/tecsinapse/chat/commit/458b12c))
-
-
-
-## 2.2.0 (unreleased)
-
-* Upgrade dependencies
 * Open file download on `_blank` target
 
 
