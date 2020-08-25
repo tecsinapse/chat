@@ -1,5 +1,5 @@
 export const mockUnreadInitialState = {
-  connectionKey: "dynamo-applauso-itu",
+  connectionKey: "dynamo-applauso-tatui",
   destination: "nissan",
   allChats: [
     {
