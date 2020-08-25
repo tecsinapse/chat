@@ -160,7 +160,7 @@ export const Init = ({
     .map((chat) => chat.chatId)
     .join(",");
   const connectionKey = componentInfo.connectionKey;
-  const destination = componentInfo.destinantion;
+  const destination = componentInfo.destination;
   let unreadTotal = (componentInfo.allChats || []).reduce(
     (acc, chat) => acc + chat.unread,
     0
@@ -452,6 +452,7 @@ export const Init = ({
           userkeycloakId={chatInitConfig.userkeycloakId}
           chatIds={chatIds}
           connectionKey={connectionKey}
+          destination={destination}
           onChatUpdated={onChatUpdated}
           reloadComponent={reloadComponent}
         />

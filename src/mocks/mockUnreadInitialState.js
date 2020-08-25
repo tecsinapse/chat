@@ -1,5 +1,5 @@
 export const mockUnreadInitialState = {
-  connectionKey: "dynamo-applauso-tatui",
+  connectionKey: "dynamo-applauso-itu",
   destination: "nissan",
   allChats: [
     {
@@ -7,8 +7,8 @@ export const mockUnreadInitialState = {
       subName: "Contato 123 - aaaa",
       phone: "(19) 99456-8196",
       // Mobile João Bassinello
-      // chatId: '15859732-5c6d-4be2-a5f7-779c43de7784@tunnel.msging.net',
-      chatId: '5519994568196',
+      chatId: '15859732-5c6d-4be2-a5f7-779c43de7784@tunnel.msging.net',
+      // chatId: '5519994568196',
       contactAt: "2020-05-04T12:58:54Z",
       highlighted: false,
       minutesToBlock: 1430,

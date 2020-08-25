@@ -22,6 +22,7 @@ export const InitWebsockets = ({
   };
 
   const handleNewMainWebsocketMessage = updatedChatInfo => {
+    console.log(updatedChatInfo);
     onChatUpdated(updatedChatInfo);
   };
 
