@@ -15,7 +15,7 @@ import {
   mdiSend,
 } from '@mdi/js';
 import Icon from '@mdi/react';
-import { defaultGreyLight2 } from '@tecsinapse/ui-kit/build/colors';
+import { defaultGreyLight2 } from '@tecsinapse/ui-kit';
 import { MicRecorder } from './MicRecorder/MicRecorder';
 import { CustomUploader, onAccept } from './CustomUploader/CustomUploader';
 import { PreviewList } from './PreviewList/PreviewList';

@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/styles';
 import {
   defaultGrey2,
   defaultGreyLight5,
-} from '@tecsinapse/ui-kit/build/colors';
+} from '@tecsinapse/ui-kit';
 
 export const useStyle = makeStyles(theme => ({
   root: {
