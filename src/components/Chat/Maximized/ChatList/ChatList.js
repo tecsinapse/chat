@@ -60,12 +60,12 @@ export const ChatList = ({
                     </Typography>
 
                     <Typography noWrap variant="caption" color="textSecondary">
-                      {chatClient.phone}
+                      {(chatClient.subName ? (chatClient.subName + " - ") : "") + (chatClient.phone ? chatClient.phone : "")}
                     </Typography>
                   </Column>
                   <Subtitle nowrap>
                     <Typography noWrap variant="caption" color="textSecondary">
-                      {chatClient.lastMessageAt}
+                      {chatClient.lastMessageAtFormatted ? chatClient.lastMessageAtFormatted : chatClient.lastMessageAt}
                     </Typography>
                   </Subtitle>
                 </Row>
