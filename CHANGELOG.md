@@ -1,3 +1,8 @@
+## <small>2.3.3 (2020-08-31)</small>
+
+
+
+
 ## <small>2.3.2 (2020-08-31)</small>
 
 * #140421 Não exibe o nome do contato no TecChat quando temos mais de um nº para um cliente ([8b94b22](https://github.com/tecsinapse/chat/commit/8b94b22)), closes [#140421](https://github.com/tecsinapse/chat/issues/140421)
