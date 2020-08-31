@@ -1,3 +1,9 @@
+## <small>2.3.5 (2020-08-31)</small>
+
+* fix: changing publish tool ([c4eb85f](https://github.com/tecsinapse/chat/commit/c4eb85f))
+
+
+
 ## <small>2.3.4 (2020-08-31)</small>
 
 
