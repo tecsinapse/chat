@@ -1,3 +1,11 @@
+## <small>2.3.2 (2020-08-31)</small>
+
+* #140421 Não exibe o nome do contato no TecChat quando temos mais de um nº para um cliente ([8b94b22](https://github.com/tecsinapse/chat/commit/8b94b22)), closes [#140421](https://github.com/tecsinapse/chat/issues/140421)
+* CHANGELOG.md ([f00cc91](https://github.com/tecsinapse/chat/commit/f00cc91))
+* fix test ([5426bb6](https://github.com/tecsinapse/chat/commit/5426bb6))
+
+
+
 ## 2.3.0 (2020-08-25)
 
 * Upgrade dependencies ([5c693f3](https://github.com/tecsinapse/chat/commit/5c693f3))
