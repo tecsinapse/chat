@@ -6,7 +6,9 @@ mock.currentClient = {
   clientName: "João Paulo Bassinello",
   disabled: false,
   // could have many chats to client contacts
-  clientChatIds: ["ee4011bc-1fab-439e-a35a-18eb92ec3afc@tunnel.msging.net"],
+  clientChatIds: ["5519994568196"],
+  connectionKey: 'dynamo-applauso-tatui',
+  destination: 'nissan'
 };
 
 export const mockClientChatInitialState = mock;

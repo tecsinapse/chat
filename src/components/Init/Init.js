@@ -95,8 +95,8 @@ async function loadComponent(
     );
     setCurrentChat({
       name: info.currentClient.clientName,
-      connectionKey: info.connectionKey,
-      destination: info.destination,
+      connectionKey: info.currentClient.connectionKey,
+      destination: info.currentClient.destination,
       disabled: info.currentClient.disabled,
       chats: chats,
     });
@@ -118,8 +118,7 @@ export const Init = ({
   const [currentChat, setCurrentChat] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
-  const [notificationTemplates, setNotificationTemplates] = useState([]);
-  const [phoneNumberToNotification, setPhoneNumberToNotification] = useState('');
+  const [chatToSendNotification, setChatToSendNotification] = useState();
 
   useEffect(() => {
     loadComponent(
@@ -159,8 +158,6 @@ export const Init = ({
   const chatIds = (componentInfo.allChats || [])
     .map((chat) => chat.chatId)
     .join(",");
-  const connectionKey = componentInfo.connectionKey;
-  const destination = componentInfo.destination;
   let unreadTotal = (componentInfo.allChats || []).reduce(
     (acc, chat) => acc + chat.unread,
     0
@@ -171,7 +168,9 @@ export const Init = ({
     let newChat = true;
     const toUpdateInfo = { ...componentInfo };
     componentInfo.allChats.forEach((chat) => {
-      if (chat.chatId === updatedChat.chatId) {
+      if (chat.chatId === updatedChat.chatId
+        && chat.connectionKey === updatedChat.connectionKey
+        && chat.destination === updatedChat.destination) {
         updatedChat = completeChatInfoWith(chat, updatedChat);
 
         chatsToUpdate.push(updatedChat);
@@ -187,11 +186,13 @@ export const Init = ({
     setComponentInfo(toUpdateInfo);
   };
 
-  const onReadAllMessagesOfChatId = (chatId) => {
+  const onReadAllMessagesOfChat = (readChat) => {
     let chatsToUpdate = [];
     const toUpdateInfo = { ...componentInfo };
     componentInfo.allChats.forEach((chat) => {
-      if (chat.chatId === chatId) {
+      if (chat.chatId === readChat.chatId
+        && chat.connectionKey === readChat.connectionKey
+        && chat.destination === readChat.destination) {
         const updatedChat = { ...chat };
         updatedChat.unread = 0;
         chatsToUpdate.push(updatedChat);
@@ -214,8 +215,8 @@ export const Init = ({
   const onSelectChat = (chat) => {
     setCurrentChat({
       name: chat.name,
-      connectionKey: componentInfo.connectionKey,
-      destination: componentInfo.destination,
+      connectionKey: chat.connectionKey,
+      destination: chat.destination,
       disabled: false,
       chats: [chat],
     });
@@ -224,16 +225,7 @@ export const Init = ({
 
   async function onStartSendNotification() {
     if (COMPONENT_LOCATION.CHAT !== view) {
-      setPhoneNumberToNotification('');
-    }
-    let templates = [...notificationTemplates];
-    if (notificationTemplates.length === 0) {
-      templates = await defaultFetch(
-        `${chatInitConfig.chatApiUrl}/api/chats/${componentInfo.connectionKey}/templates`,
-        "GET",
-        {}
-      );
-      setNotificationTemplates(templates);
+      setChatToSendNotification(null);
     }
     setView(COMPONENT_LOCATION.SEND_NOTIFICATION);
   }
@@ -245,7 +237,7 @@ export const Init = ({
       {}
     );
     await defaultFetch(
-      `${chatInitConfig.chatApiUrl}/api/chats/${connectionKey}/${deletedChat.chatId}/sessions/finish`,
+      `${chatInitConfig.chatApiUrl}/api/chats/${deletedChat.connectionKey}/${deletedChat.chatId}/sessions/finish`,
       "DELETE",
       {}
     )
@@ -262,17 +254,19 @@ export const Init = ({
     return toUpdateInfo.allChats;
   }
 
-  const onChatStatusChanged = (chatId, isBlocked) => {
+  const onChatStatusChanged = (statusChangedChat, isBlocked) => {
     // controls if the current chat is expired and the button to send a notification is visible to a chat
-    if (chatId) {
+    if (statusChangedChat) {
       componentInfo.allChats.forEach((chat) => {
-        if (chat.chatId === chatId) {
+        if (chat.chatId === statusChangedChat.chatId
+          && chat.connectionKey === statusChangedChat.connectionKey
+          && chat.destination === statusChangedChat.destination) {
           // will only show the button if the chat is blocked
-          setPhoneNumberToNotification(isBlocked ? chat.phone : '');
+          setChatToSendNotification(isBlocked ? chat : null);
         }
       });
     } else {
-      setPhoneNumberToNotification('');
+      setChatToSendNotification(null);
     }
   }
 
@@ -284,11 +278,11 @@ export const Init = ({
     showMessageManagement = false;
   }
 
-  const isChatViewAndItsBlocked = view === COMPONENT_LOCATION.CHAT && phoneNumberToNotification !== '';
+  const isChatViewAndIsBlocked = view === COMPONENT_LOCATION.CHAT && chatToSendNotification != null;
   const showSendNotification = chatInitConfig.canSendNotification
     && (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT
       || view === COMPONENT_LOCATION.UNREAD
-      || isChatViewAndItsBlocked);
+      || isChatViewAndIsBlocked);
 
   return (
     <div className="Chat">
@@ -408,7 +402,7 @@ export const Init = ({
               initialInfo={currentChat}
               chatApiUrl={chatInitConfig.chatApiUrl}
               userkeycloakId={chatInitConfig.userkeycloakId}
-              onReadAllMessagesOfChatId={onReadAllMessagesOfChatId}
+              onReadAllMessagesOfChat={onReadAllMessagesOfChat}
               navigateWhenCurrentChat={chatInitConfig.navigateWhenCurrentChat}
               onChatStatusChanged={onChatStatusChanged}
             />
@@ -425,11 +419,10 @@ export const Init = ({
           )}
           {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (
             <SendNotification
-              templates={notificationTemplates}
-              phone={phoneNumberToNotification}
+              chat={chatToSendNotification}
               chatApiUrl={chatInitConfig.chatApiUrl}
-              connectionKey={connectionKey}
-              destination={destination}
+              connectionKeys={componentInfo.connectionKeys}
+              destination={componentInfo.destination}
             />
           )}
 
@@ -451,8 +444,8 @@ export const Init = ({
           chatApiUrl={chatInitConfig.chatApiUrl}
           userkeycloakId={chatInitConfig.userkeycloakId}
           chatIds={chatIds}
-          connectionKey={connectionKey}
-          destination={destination}
+          connectionKeys={componentInfo.connectionKeys}
+          destination={componentInfo.destination}
           onChatUpdated={onChatUpdated}
           reloadComponent={reloadComponent}
         />

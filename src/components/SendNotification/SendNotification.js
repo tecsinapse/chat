@@ -1,10 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/styles";
 import {Input, Select, Snackbar} from "@tecsinapse/ui-kit";
 import {Button, Grid, InputAdornment, Tooltip, Typography} from "@material-ui/core";
 import {defaultFetch} from "../../utils/fetch";
 import {Loading} from "../../utils/Loading";
-import Help from '@material-ui/icons/Help';
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -36,22 +35,55 @@ const emptyTemplate = {
   argsDescription: []
 };
 
-export const SendNotification = ({templates = [], phone = '', chatApiUrl, connectionKey, destination}) => {
+export const SendNotification = ({chat, chatApiUrl, connectionKeys, destination}) => {
   const classes = useStyle();
 
-  const [phoneNumber, setPhoneNumber] = useState(phone);
+  const [phoneNumber, setPhoneNumber] = useState(chat == null ? '' : chat.phone.replace(/[^0-9]/g, ""));
+  const [selectedConnectionKey, setSelectedConnectionKey] = useState(chat == null ? '' : chat.connectionKey);
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [args, setArgs] = useState([]);
   const [preview, setPreview] = useState('');
   const [sending, setSending] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  const [templates, setTemplates] = useState([]);
+  const [availableTemplates, setAvailableTemplates] = useState([]);
 
-  const availableTemplates = [emptyTemplate];
-  templates.forEach(t => availableTemplates.push({
-    label: t.name,
-    value: t.value
+  const availableConnectionKeys = [{
+    label: 'Selecione',
+    value: ''
+  }];
+  connectionKeys.forEach(c => availableConnectionKeys.push({
+    label: c,
+    value: c
   }));
+
+  useEffect(() => {
+    if (selectedConnectionKey !== '') {
+      loadTemplates(selectedConnectionKey);
+    }
+  }, [selectedConnectionKey])
+
+  const loadTemplates = (connectionKey) => {
+    if (connectionKey === '') {
+      setSelectedConnectionKey('');
+      return;
+    }
+    defaultFetch(
+      `${chatApiUrl}/api/chats/${connectionKey}/templates`,
+      "GET",
+      {}
+    ).then(templates => {
+      setTemplates(templates);
+      const available = [emptyTemplate];
+      templates.forEach(t => available.push({
+        label: t.name,
+        value: t.value
+      }));
+      setAvailableTemplates(available);
+      setSelectedConnectionKey(connectionKey);
+    });
+  };
 
   const onSelectTemplate = (template) => {
     const selected = templates.filter(t => t.value === template)[0] || emptyTemplate;
@@ -92,7 +124,7 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
   const send = () => {
     setSending(true);
     defaultFetch(
-      `${chatApiUrl}/api/chats/${connectionKey}/${destination}/notification/send`,
+      `${chatApiUrl}/api/chats/${selectedConnectionKey}/${destination}/notification/send`,
       "POST",
       {
         phoneNumber: phoneNumber,
@@ -143,12 +175,23 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
           </Grid>
         </div>
         <Grid container spacing={2} direction="column">
+          <Grid item style={{zIndex: 9999999999}}>
+            <Select
+              value={selectedConnectionKey}
+              options={availableConnectionKeys}
+              onChange={loadTemplates}
+              label="Origem"
+              variant="web"
+              fullWidth
+            />
+          </Grid>
           <Grid item>
             <Input
               name="phoneNumber"
               label="Número do Telefone"
               fullWidth
               value={phoneNumber}
+              disabled={templates.length === 0}
               onBlur={() => {
                 if (phoneNumber.length < 10) {
                   setPhoneNumber('');
@@ -157,11 +200,12 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
               onChange={e => setPhoneNumber(e.target.value)}
             />
           </Grid>
-          <Grid item style={{zIndex: 9999999999}}>
+          <Grid item style={{zIndex: 999999999}}>
             <Select
               value={selectedTemplate}
               options={availableTemplates}
               onChange={onSelectTemplate}
+              disabled={templates.length === 0}
               label="Template da Mensagem"
               variant="web"
               fullWidth
@@ -171,19 +215,10 @@ export const SendNotification = ({templates = [], phone = '', chatApiUrl, connec
             <Grid item key={index}>
               <Input
                 name={`args[${index}]`}
-                label={`Parâmetro ${index + 1}`}
+                label={getArgDescription(index)}
                 fullWidth
                 value={args[index]}
                 onChange={e => setArg(index, e.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <Tooltip title={getArgDescription(index)} arrow placement="top">
-                      <InputAdornment position="end" style={{cursor: 'pointer'}}>
-                        <Help/>
-                      </InputAdornment>
-                    </Tooltip>
-                  )
-                }}
               />
             </Grid>
           )}

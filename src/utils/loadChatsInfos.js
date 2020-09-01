@@ -1,6 +1,6 @@
 import {defaultFetch, noAuthJsonFetch} from "./fetch";
 import {mockUnreadInitialState} from "../mocks/mockUnreadInitialState";
-import {toMoment} from "./dates";
+import {format, toMoment} from "./dates";
 
 /**
  * Busca dos dados para inicializar o componente
@@ -27,27 +27,35 @@ export async function load(chatApiUrl, getInitialStatePath, params) {
     );
   }
 
-  const chatIds = initialInfoFromProduct.allChats
-    .map((chat) => chat.chatId)
-    .join(",");
-  const completeChatInfos = await defaultFetch(
-    `${chatApiUrl}/api/chats/${initialInfoFromProduct.connectionKey}/${initialInfoFromProduct.destination}/infos`,
-    "POST",
-    {chatIds: chatIds}
-  );
+  const groupedChatIds = new Map();
+  initialInfoFromProduct.allChats.forEach((chat) => {
+    const key = `${chat.connectionKey}/${chat.destination}`;
+    if (groupedChatIds.has(key)) {
+      groupedChatIds.get(key).push(chat.chatId);
+    } else {
+      groupedChatIds.set(key, [chat.chatId]);
+    }
+  });
 
   const chats = [];
-  if (completeChatInfos && Array.isArray(completeChatInfos)) {
-    completeChatInfos.forEach((completeInfo) => {
-      // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
-      // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
-      const info = initialInfoFromProduct.allChats.filter(
-        (chat) => chat.chatId === completeInfo.chatId
-      )[0];
+  for (const key of groupedChatIds.keys()) {
+    await defaultFetch(
+      `${chatApiUrl}/api/chats/${key}/infos`,
+      "POST",
+      groupedChatIds.get(key)
+    ).then(completeChatInfos => {
+      if (completeChatInfos && Array.isArray(completeChatInfos)) {
+        completeChatInfos.forEach((completeInfo) => {
+          // considerando a possibilidade de que o objeto inicial tenha essas informações preenchidas
+          // caso positivo, devem ser consideradas com maior procedência do que a informação retornada do chatApi
+          const info = initialInfoFromProduct.allChats.filter(
+            (chat) => chat.chatId === completeInfo.chatId && key === `${chat.connectionKey}/${chat.destination}`
+          )[0];
 
-      completeInfo = completeChatInfoWith(info, completeInfo);
-
-      chats.push(completeInfo);
+          completeInfo = completeChatInfoWith(info, completeInfo);
+          chats.push(completeInfo);
+        });
+      }
     });
   }
 
@@ -66,6 +74,9 @@ export function completeChatInfoWith(initialInfo, updatedInfo) {
   }
   if (initialInfo.phone && initialInfo.phone !== "") {
     finalInfo.phone = initialInfo.phone;
+  }
+  if (finalInfo.lastMessageAt) {
+    finalInfo.lastMessageAtFormatted = format(finalInfo.lastMessageAt);
   }
 
   return finalInfo;

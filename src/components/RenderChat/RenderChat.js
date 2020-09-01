@@ -29,7 +29,7 @@ const onSelectedChatMaker = (
   setBlocked,
   chatApiUrl,
   messagesEndRef,
-  onReadAllMessagesOfChatId
+  onReadAllMessagesOfChat
 ) => (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);
@@ -46,10 +46,10 @@ const onSelectedChatMaker = (
       .reverse();
     setMessages(messages);
     const isBlocked = chat.status === "BLOCKED";
-    setBlocked(chat.chatId, isBlocked);
+    setBlocked(chat, isBlocked);
     setIsLoading(false);
     if (chat.updateUnreadWhenOpen) {
-      onReadAllMessagesOfChatId(chat.chatId);
+      onReadAllMessagesOfChat(chat);
     }
 
     setTimeout(function () {
@@ -66,7 +66,7 @@ export const RenderChat = ({
   chatApiUrl,
   initialInfo,
   userkeycloakId,
-  onReadAllMessagesOfChatId,
+  onReadAllMessagesOfChat,
   navigateWhenCurrentChat,
   onChatStatusChanged
 }) => {
@@ -83,9 +83,9 @@ export const RenderChat = ({
   let clientRef = useRef();
   const setStatusMessage = setStatusMessageFunc(setMessages);
 
-  const setBlockedAndPropagateStatus = (chatId, isBlocked) => {
+  const setBlockedAndPropagateStatus = (chat, isBlocked) => {
     setBlocked(isBlocked);
-    onChatStatusChanged(chatId, isBlocked);
+    onChatStatusChanged(chat, isBlocked);
   }
 
   const onSelectedChat = onSelectedChatMaker(
@@ -96,7 +96,7 @@ export const RenderChat = ({
     setBlockedAndPropagateStatus,
     chatApiUrl,
     messagesEndRef,
-    onReadAllMessagesOfChatId
+    onReadAllMessagesOfChat
   );
 
   useEffect(() => {
@@ -109,7 +109,7 @@ export const RenderChat = ({
         setBlockedAndPropagateStatus,
         chatApiUrl,
         messagesEndRef,
-        onReadAllMessagesOfChatId
+        onReadAllMessagesOfChat
       )(initialInfo.chats[0]);
     }
     setIsLoading(false);
@@ -204,7 +204,7 @@ export const RenderChat = ({
       .then(() => {})
       .catch((err) => {
         if (err.status === 403) {
-          setBlockedAndPropagateStatus(currentChat.chatId, true);
+          setBlockedAndPropagateStatus(currentChat, true);
         }
         setStatusMessage(localId, "error");
       });
