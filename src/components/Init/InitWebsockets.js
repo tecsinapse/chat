@@ -36,8 +36,9 @@ export const InitWebsockets = ({
     process.env.NODE_ENV === "development" ? <></>
       : <>
         {/* Conexões WebSocket com o tecsinapse-chat */}
-        {connectionKeys.forEach(connectionKey => (
+        {connectionKeys.map(connectionKey => (
           <SockJsClient
+            key={connectionKey}
             url={`${chatApiUrl}/ws`}
             topics={[`/topic/main.${userkeycloakId}`]}
             onMessage={handleNewMainWebsocketMessage}
