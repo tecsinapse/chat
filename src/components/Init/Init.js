@@ -232,7 +232,7 @@ export const Init = ({
 
   async function onDeleteChat(deletedChat) {
     await noAuthJsonFetch(
-      `${chatInitConfig.deleteChatPath}/${deletedChat.chatId}`,
+      `${chatInitConfig.deleteChatPath}/${deletedChat.connectionKey}/${deletedChat.chatId}`,
       "DELETE",
       {}
     );
@@ -405,6 +405,7 @@ export const Init = ({
               onReadAllMessagesOfChat={onReadAllMessagesOfChat}
               navigateWhenCurrentChat={chatInitConfig.navigateWhenCurrentChat}
               onChatStatusChanged={onChatStatusChanged}
+              userNamesById={componentInfo.userNameById}
             />
           )}
           {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (

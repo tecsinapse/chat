@@ -1,11 +1,19 @@
 import moment from "moment";
 
-export const buildChatMessageObject = (externalMessage, fromId) => {
+export const buildChatMessageObject = (externalMessage, fromId, userNamesByIds = {}) => {
+
+  const isOwner = externalMessage.from !== fromId;
+
+  const authorName = ((userNamesByIds !== undefined) ?
+    (isOwner ? userNamesByIds[externalMessage.userId] : externalMessage.name)
+    : undefined);
+
   let message = {
     at: moment(externalMessage.at).format("DD/MM/YYYY HH:mm"),
-    own: externalMessage.from !== fromId,
+    own: isOwner,
     id: externalMessage.messageId,
     text: externalMessage.text,
+    authorName: authorName
   };
 
   if (externalMessage.medias && externalMessage.medias.length > 0) {
@@ -41,14 +49,14 @@ export const buildSendingMessage = (localId, text, title, file) => ({
   title,
   medias: file
     ? [
-        {
-          mediaType: file.mediaType,
-          url: file.data,
-          name: file.name,
-          size: file.size,
-          data: file.file,
-        },
-      ]
+      {
+        mediaType: file.mediaType,
+        url: file.data,
+        name: file.name,
+        size: file.size,
+        data: file.file,
+      },
+    ]
     : undefined,
 });
 

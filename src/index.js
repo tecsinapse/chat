@@ -9,7 +9,6 @@ import "./index.css";
 
 import uuidv1 from "uuid/v1";
 
-import * as serviceWorker from "./serviceWorker";
 import {Init} from "./components/Init/Init";
 import {createGenerateClassName, StylesProvider} from "@material-ui/styles";
 
@@ -53,7 +52,6 @@ window.renderChatComponent = function renderChatComponent() {
     </StylesProvider>,
     document.getElementById("chat-component-div")
   );
-  serviceWorker.unregister();
 };
 
 // uncomment for local tests

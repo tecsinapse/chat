@@ -46,6 +46,7 @@ export const ChatOptions = ({
         {options &&
           options.map((item) => (
             <ListItem
+              key={item.label}
               button
               component="a"
               href={`${item.path}?data=${encodedData}`}

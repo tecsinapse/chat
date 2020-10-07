@@ -1,9 +1,9 @@
 export const mockUnreadInitialState = {
-  connectionKeys: ["dynamo-applauso-tatui", "dynamo-applauso-itu"],
+  connectionKeys: ["dynamo-vendas-homolog-zenvia"],
   destination: ["nissan"],
   allChats: [
     {
-      connectionKey: "dynamo-applauso-tatui",
+      connectionKey: "dynamo-vendas-homolog-zenvia",
       destination: "nissan",
       name: "João Paulo Bassinello",
       subName: "Operador",
@@ -31,39 +31,14 @@ export const mockUnreadInitialState = {
         },
       ],
     },
-    {
-      connectionKey: "dynamo-applauso-itu",
-      destination: "nissan",
-      name: "João Paulo Bassinello",
-      subName: "Operador",
-      phone: "(19) 99456-8196",
-      chatId: '15859732-5c6d-4be2-a5f7-779c43de7784@tunnel.msging.net',
-      contactAt: "2020-08-28T12:58:54Z",
-      highlighted: false,
-      minutesToBlock: 1430,
-      updateUnreadWhenOpen: true,
-      enabled: true,
-      status: "OK",
-      extraInfo: {
-        responsavel: "Vendedor 01",
-        dealer: "Applauso Itu",
-        segmento: "Caminhão",
-      },
-      actions: [
-        {
-          label: "Link 1",
-          path: "/link1",
-        },
-        {
-          label: "Link 2",
-          path: "/link2",
-        },
-      ],
-    }
   ],
   extraInfoColumns: {
     responsavel: "Responsável",
     dealer: "Dealer",
     segmento: "Segmento",
   },
+  userNameById: {
+    '5a102db0-d019-4580-a173-75a0ae47581f': 'Operador 1',
+    'aaaa': 'Operador 2'
+  }
 };

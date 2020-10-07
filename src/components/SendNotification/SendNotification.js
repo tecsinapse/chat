@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/styles";
 import {Input, Select, Snackbar} from "@tecsinapse/ui-kit";
-import {Button, Grid, InputAdornment, Tooltip, Typography} from "@material-ui/core";
+import {Button, Grid, Typography} from "@material-ui/core";
 import {defaultFetch} from "../../utils/fetch";
 import {Loading} from "../../utils/Loading";
 

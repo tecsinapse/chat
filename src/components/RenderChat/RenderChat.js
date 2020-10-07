@@ -29,7 +29,8 @@ const onSelectedChatMaker = (
   setBlocked,
   chatApiUrl,
   messagesEndRef,
-  onReadAllMessagesOfChat
+  onReadAllMessagesOfChat,
+  userNamesById
 ) => (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);
@@ -41,7 +42,7 @@ const onSelectedChatMaker = (
   ).then((pageResults) => {
     const messages = pageResults.content
       .map((externalMessage) => {
-        return buildChatMessageObject(externalMessage, chat.chatId);
+        return buildChatMessageObject(externalMessage, chat.chatId, userNamesById);
       })
       .reverse();
     setMessages(messages);
@@ -68,8 +69,10 @@ export const RenderChat = ({
   userkeycloakId,
   onReadAllMessagesOfChat,
   navigateWhenCurrentChat,
-  onChatStatusChanged
+  onChatStatusChanged,
+  userNamesById
 }) => {
+
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -96,7 +99,8 @@ export const RenderChat = ({
     setBlockedAndPropagateStatus,
     chatApiUrl,
     messagesEndRef,
-    onReadAllMessagesOfChat
+    onReadAllMessagesOfChat,
+    userNamesById
   );
 
   useEffect(() => {
@@ -109,7 +113,8 @@ export const RenderChat = ({
         setBlockedAndPropagateStatus,
         chatApiUrl,
         messagesEndRef,
-        onReadAllMessagesOfChat
+        onReadAllMessagesOfChat,
+        userNamesById
       )(initialInfo.chats[0]);
     }
     setIsLoading(false);
@@ -124,7 +129,7 @@ export const RenderChat = ({
         newMessage.from === currentChat.chatId ||
         newMessage.localId === undefined
       ) {
-        let message = buildChatMessageObject(newMessage, currentChat.chatId);
+        let message = buildChatMessageObject(newMessage, currentChat.chatId, userNamesById);
         setMessages([...messages, message]);
       } else {
         setStatusMessage(newMessage.localId, "delivered");
@@ -150,6 +155,7 @@ export const RenderChat = ({
       type: "CHAT",
       text: newMessage,
       localId: localId,
+      userId: userkeycloakId
     };
 
     try {
@@ -194,6 +200,7 @@ export const RenderChat = ({
     if (title) {
       formData.append("title", title);
     }
+    formData.append("userId", userkeycloakId);
 
     defaultFetch(
       `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}/upload`,
@@ -222,7 +229,7 @@ export const RenderChat = ({
     ).then((pageResults) => {
       const loadedMessages = pageResults.content
         .map((externalMessage) => {
-          return buildChatMessageObject(externalMessage, currentChat.chatId);
+          return buildChatMessageObject(externalMessage, currentChat.chatId, userNamesById);
         })
         .reverse();
       setMessages(loadedMessages.concat(messages));
