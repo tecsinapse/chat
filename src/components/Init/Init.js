@@ -424,6 +424,9 @@ export const Init = ({
               chatApiUrl={chatInitConfig.chatApiUrl}
               connectionKeys={componentInfo.connectionKeys}
               destination={componentInfo.destination}
+              createPath={chatInitConfig.createPath}
+              info={componentInfo.sendNotificationInfo}
+              reloadComponent={reloadComponent}
             />
           )}
 

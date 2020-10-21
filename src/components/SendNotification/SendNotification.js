@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/styles";
 import {Input, Select, Snackbar} from "@tecsinapse/ui-kit";
 import {Button, Grid, Typography} from "@material-ui/core";
-import {defaultFetch} from "../../utils/fetch";
+import {defaultFetch, noAuthJsonFetch} from "../../utils/fetch";
 import {Loading} from "../../utils/Loading";
 
 const useStyle = makeStyles((theme) => ({
@@ -32,10 +32,11 @@ const emptyTemplate = {
   label: 'Selecione',
   value: '',
   args: 0,
-  argsDescription: []
+  argsDescription: [],
+  argsKeys: []
 };
 
-export const SendNotification = ({chat, chatApiUrl, connectionKeys, destination}) => {
+export const SendNotification = ({chat, chatApiUrl, connectionKeys, destination, createPath, info, reloadComponent}) => {
   const classes = useStyle();
 
   const [phoneNumber, setPhoneNumber] = useState(chat == null ? '' : chat.phone.replace(/[^0-9]/g, ""));
@@ -49,6 +50,14 @@ export const SendNotification = ({chat, chatApiUrl, connectionKeys, destination}
   const [templates, setTemplates] = useState([]);
   const [availableTemplates, setAvailableTemplates] = useState([]);
 
+  const {extraInfo} = chat || {extraInfo: {responsavel: '', dealer: ''}};
+  const auxInfo = info || {
+    user: extraInfo.responsavel,
+    company: extraInfo.dealer,
+    name: chat?.name,
+    phone: phoneNumber
+  }
+
   const availableConnectionKeys = [{
     label: 'Selecione',
     value: ''
@@ -61,6 +70,9 @@ export const SendNotification = ({chat, chatApiUrl, connectionKeys, destination}
   useEffect(() => {
     if (selectedConnectionKey !== '') {
       loadTemplates(selectedConnectionKey);
+    }
+    if (phoneNumber === '') {
+      setPhoneNumber(auxInfo.phone);
     }
   }, [selectedConnectionKey])
 
@@ -89,7 +101,7 @@ export const SendNotification = ({chat, chatApiUrl, connectionKeys, destination}
     const selected = templates.filter(t => t.value === template)[0] || emptyTemplate;
     const argsArray = [];
     for (let i = 0; i < selected.args; i++) {
-      argsArray.push('');
+      argsArray.push(auxInfo[selected.argsKeys[i]] || '');
     }
     setArgs(argsArray);
     setSelectedTemplate(template);
@@ -108,10 +120,11 @@ export const SendNotification = ({chat, chatApiUrl, connectionKeys, destination}
   }
 
   const updatePreview = (template, args) => {
-    let prev = (templates.filter(t => t.value === template)[0] || emptyTemplate).template;
+    let tpt = templates.filter(t => t.value === template)[0] || emptyTemplate;
+    let prev = tpt.template;
     for (let i = 0; i < args.length; i++) {
       if (args[i] !== '') {
-        prev = prev.replace(`{{${i + 1}}}`, args[i]);
+        prev = prev.replace(`{{${tpt.argsKeys[i]}}}`, args[i]);
       }
     }
     setPreview(prev);
@@ -120,6 +133,18 @@ export const SendNotification = ({chat, chatApiUrl, connectionKeys, destination}
   const canSend = phoneNumber !== ''
     && selectedTemplate !== ''
     && (args.length > 0 && args.filter(a => a !== '').length === args.length);
+
+  const successSend = () => {
+    setSuccess('Mensagem enviada');
+    setTimeout(() => setSuccess(''), 4000);
+    setError('');
+    setPhoneNumber('');
+    setArgs([]);
+    setSelectedTemplate('');
+    setPreview('');
+    reloadComponent();
+    setSending(false);
+  }
 
   const send = () => {
     setSending(true);
@@ -132,14 +157,24 @@ export const SendNotification = ({chat, chatApiUrl, connectionKeys, destination}
         args: args
       }
     ).then(() => {
-      setSuccess('Mensagem enviada');
-      setTimeout(() => setSuccess(''), 4000);
-      setError('');
-      setPhoneNumber('');
-      setArgs([]);
-      setSelectedTemplate('');
-      setPreview('');
-      setSending(false);
+      if (process.env.NODE_ENV !== "development") {
+        // call the product to create relationship between chat and client
+        const fetchArgs = {};
+        const argsKeys = (templates.filter(t => t.value === selectedTemplate)[0] || emptyTemplate).argsKeys;
+        for (let i = 0; i < argsKeys.length; i++) {
+          fetchArgs[argsKeys[i]] = args[i];
+        }
+
+        noAuthJsonFetch(
+          `${createPath}/${selectedConnectionKey}/${phoneNumber.replace(/[^0-9]/g, "")}/create`,
+          "POST",
+          fetchArgs
+        ).then(() => {
+          successSend();
+        })
+      } else {
+        successSend();
+      }
     }).catch((err) => {
       console.log(err);
       if (err.status === 400) {
