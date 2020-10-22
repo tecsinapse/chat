@@ -1,3 +1,9 @@
+## <small>2.4.1 (2020-10-22)</small>
+
+* refactor: exposing uploader props ([12a7405](https://github.com/tecsinapse/chat/commit/12a7405))
+
+
+
 ## 2.4.0 (2020-10-22)
 
 * feature: add drop files feature ([8027649](https://github.com/tecsinapse/chat/commit/8027649))
