@@ -37,6 +37,7 @@ export const Chat = ({
   chatOptions,
   customHeader,
   warningMessage,
+  uploadOptions,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
@@ -85,6 +86,7 @@ export const Chat = ({
                 headerLabel={headerLabel}
                 headerText={headerText}
                 warningMessage={warningMessage}
+                uploadOptions={uploadOptions}
               />
             </FixedWrapper.Maximized>
 
@@ -132,6 +134,17 @@ Chat.defaultProps = {
   warningMessage: undefined,
   roundedCorners: true,
   containerHeight: '500px',
+  uploadOptions: {
+    maxFilesPerMessage: 5,
+    maximumFileLimitMessage: limit =>
+      `Apenas ${limit} arquivos podem ser carregados por mensagem.`,
+    maximumFileNumberMessage: 'Número máximo de arquivos',
+    filenameFailedMessage: name => `${name} falhou. `,
+    filetypeNotSupportedMessage: 'Arquivo não suportado. ',
+    sizeLimitErrorMessage: size =>
+      `Arquivo deve ter tamanho menor que ${size / 1024} KB.`,
+    undefinedErrorMessage: 'Erro interno',
+  },
 };
 
 Chat.propTypes = {
@@ -236,6 +249,16 @@ Chat.propTypes = {
   }),
   /** Display a message in warning format */
   warningMessage: PropTypes.string,
+  /** Upload setup */
+  uploadOptions: {
+    maxFilesPerMessage: PropTypes.number,
+    maximumFileLimitMessage: PropTypes.func,
+    maximumFileNumberMessage: PropTypes.string,
+    filenameFailedMessage: PropTypes.func,
+    filetypeNotSupportedMessage: PropTypes.string,
+    sizeLimitErrorMessage: PropTypes.string,
+    undefinedErrorMessage: PropTypes.string,
+  },
 };
 
 export default Chat;

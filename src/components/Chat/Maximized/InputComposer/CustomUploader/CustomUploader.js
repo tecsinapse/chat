@@ -40,19 +40,11 @@ export const onAccept = ({ setFiles, files, focusRef }) => newFiles => {
 };
 
 export const CustomUploader = forwardRef(
-  ({ files, setFiles, mediaType, focusRef, maxFileUploadSize }, ref) => {
-    // TODO: export as a chat props
-    const maxFilesPerMessage = 3;
-    const messages = {
-      maximumFileLimitMessage: limit =>
-        `Apenas ${limit} arquivos podem ser carregados por mensagem.`,
-      maximumFileNumberMessage: 'Número máximo de arquivos',
-      filenameFailedMessage: name => `${name} falhou. `,
-      filetypeNotSupportedMessage: 'Arquivo não suportado. ',
-      sizeLimitErrorMessage: size =>
-        `Arquivo deve ter tamanho menor que ${size / 1024} KB.`,
-      undefinedErrorMessage: 'Erro interno',
-    };
+  (
+    { files, setFiles, mediaType, focusRef, maxFileUploadSize, uploadOptions },
+    ref
+  ) => {
+    const { maxFilesPerMessage, ...messages } = uploadOptions;
 
     return (
       <>

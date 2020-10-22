@@ -40,6 +40,7 @@ const Maximized = ({
   headerLabel,
   headerText,
   warningMessage,
+  uploadOptions,
 }) => {
   const classes = useStyle();
   const theme = useTheme();
@@ -119,6 +120,7 @@ const Maximized = ({
           disabledSend={disabledSend}
           droppedFiles={droppedFiles}
           setDroppedFiles={setDroppedFiles}
+          uploadOptions={uploadOptions}
         />
       )}
     </div>

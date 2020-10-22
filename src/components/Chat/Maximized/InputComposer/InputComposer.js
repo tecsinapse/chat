@@ -39,6 +39,7 @@ export const InputComposer = ({
   disabledSend,
   droppedFiles,
   setDroppedFiles,
+  uploadOptions,
 }) => {
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
@@ -256,6 +257,7 @@ export const InputComposer = ({
               setFiles={setFiles}
               mediaType="image/*"
               maxFileUploadSize={maxFileUploadSize}
+              uploadOptions={uploadOptions}
             />
             <CustomUploader
               focusRef={inputRef}
@@ -264,6 +266,7 @@ export const InputComposer = ({
               setFiles={setFiles}
               mediaType=".mov,video/*"
               maxFileUploadSize={maxFileUploadSize}
+              uploadOptions={uploadOptions}
             />
             <CustomUploader
               focusRef={inputRef}
@@ -271,6 +274,7 @@ export const InputComposer = ({
               files={files}
               setFiles={setFiles}
               maxFileUploadSize={maxFileUploadSize}
+              uploadOptions={uploadOptions}
             />
           </>
         )}
