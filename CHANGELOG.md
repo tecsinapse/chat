@@ -1,3 +1,10 @@
+## 2.4.0 (2020-10-22)
+
+* feature: add drop files feature ([8027649](https://github.com/tecsinapse/chat/commit/8027649))
+* fix: package.json main parameter ([38ac62a](https://github.com/tecsinapse/chat/commit/38ac62a))
+
+
+
 ## <small>2.3.5 (2020-08-31)</small>
 
 * fix: changing publish tool ([c4eb85f](https://github.com/tecsinapse/chat/commit/c4eb85f))
