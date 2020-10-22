@@ -11,6 +11,7 @@ import {
 } from "../../utils/message";
 import uuidv1 from "uuid/v1";
 import { ChatOptions } from "./ChatOptions/ChatOptions";
+import { onSelectedChatMaker } from "../../utils/helpers";
 
 const emptyChat = {
   chatId: null,
@@ -21,46 +22,16 @@ const emptyChat = {
   unread: 0,
 };
 
-const onSelectedChatMaker = (
-  initialInfo,
-  setIsLoading,
-  setCurrentChat,
-  setMessages,
-  setBlocked,
-  chatApiUrl,
-  messagesEndRef,
-  onReadAllMessagesOfChat,
-  userNamesById
-) => (chat) => {
-  setIsLoading(true);
-  setCurrentChat(chat);
-
-  defaultFetch(
-    `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${initialInfo.destination}/${chat.chatId}/messages?page=0&size=50&updateUnread=${chat.updateUnreadWhenOpen}`,
-    "GET",
-    {}
-  ).then((pageResults) => {
-    const messages = pageResults.content
-      .map((externalMessage) => {
-        return buildChatMessageObject(externalMessage, chat.chatId, userNamesById);
-      })
-      .reverse();
-    setMessages(messages);
-    const isBlocked = chat.status === "BLOCKED";
-    setBlocked(chat, isBlocked);
-    setIsLoading(false);
-    if (chat.updateUnreadWhenOpen) {
-      onReadAllMessagesOfChat(chat);
-    }
-
-    setTimeout(function () {
-      // workaround to wait for all elements to render
-      messagesEndRef.current.scrollIntoView({
-        block: "end",
-        behavior: "smooth",
-      });
-    }, 700);
-  });
+const uploadOptions = {
+  maxFilesPerMessage: 10,
+  maximumFileLimitMessage: (limit) =>
+    `Apenas ${limit} arquivos podem ser carregados por mensagem.`,
+  maximumFileNumberMessage: "Número máximo de arquivos",
+  filenameFailedMessage: (name) => `${name} falhou. `,
+  filetypeNotSupportedMessage: "Arquivo não suportado. ",
+  sizeLimitErrorMessage: (size) =>
+    `Arquivo deve ter tamanho menor que ${size / 1024} KB.`,
+  undefinedErrorMessage: "Erro interno",
 };
 
 export const RenderChat = ({
@@ -70,9 +41,8 @@ export const RenderChat = ({
   onReadAllMessagesOfChat,
   navigateWhenCurrentChat,
   onChatStatusChanged,
-  userNamesById
+  userNamesById,
 }) => {
-
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -89,7 +59,7 @@ export const RenderChat = ({
   const setBlockedAndPropagateStatus = (chat, isBlocked) => {
     setBlocked(isBlocked);
     onChatStatusChanged(chat, isBlocked);
-  }
+  };
 
   const onSelectedChat = onSelectedChatMaker(
     initialInfo,
@@ -118,7 +88,7 @@ export const RenderChat = ({
       )(initialInfo.chats[0]);
     }
     setIsLoading(false);
-  }, [initialInfo, chatApiUrl, setIsLoading]);
+  }, [initialInfo, chatApiUrl, setIsLoading]); // eslint-disable-line react-hooks/exhaustive-deps
   // ignore warning "React Hook useEffect has a missing dependency". It could cause infinity loop
 
   const handleNewExternalMessage = (newMessage) => {
@@ -129,7 +99,11 @@ export const RenderChat = ({
         newMessage.from === currentChat.chatId ||
         newMessage.localId === undefined
       ) {
-        let message = buildChatMessageObject(newMessage, currentChat.chatId, userNamesById);
+        let message = buildChatMessageObject(
+          newMessage,
+          currentChat.chatId,
+          userNamesById
+        );
         setMessages([...messages, message]);
       } else {
         setStatusMessage(newMessage.localId, "delivered");
@@ -155,7 +129,7 @@ export const RenderChat = ({
       type: "CHAT",
       text: newMessage,
       localId: localId,
-      userId: userkeycloakId
+      userId: userkeycloakId,
     };
 
     try {
@@ -229,7 +203,11 @@ export const RenderChat = ({
     ).then((pageResults) => {
       const loadedMessages = pageResults.content
         .map((externalMessage) => {
-          return buildChatMessageObject(externalMessage, currentChat.chatId, userNamesById);
+          return buildChatMessageObject(
+            externalMessage,
+            currentChat.chatId,
+            userNamesById
+          );
         })
         .reverse();
       setMessages(loadedMessages.concat(messages));
@@ -259,8 +237,9 @@ export const RenderChat = ({
   };
 
   const title = currentChat.name || initialInfo.name || "Cliente";
-  let subTitle = (currentChat.subName ? (currentChat.subName + " - ") : "")
-    + (currentChat.phone ? currentChat.phone : "");
+  let subTitle =
+    (currentChat.subName ? currentChat.subName + " - " : "") +
+    (currentChat.phone ? currentChat.phone : "");
   const timeToExpire =
     (currentChat &&
       currentChat.minutesToBlock &&
@@ -269,7 +248,8 @@ export const RenderChat = ({
       )}.`) ||
     undefined;
   const { actions } = currentChat;
-  const hasActions = currentChat && actions && actions.length > 0 && navigateWhenCurrentChat;
+  const hasActions =
+    currentChat && actions && actions.length > 0 && navigateWhenCurrentChat;
 
   const onAudio = (blob) => {
     const localId = uuidv1();
@@ -314,12 +294,15 @@ export const RenderChat = ({
   };
 
   return (
-    <div style={{maxWidth: '40vW'}}>
+    <div style={{ maxWidth: "40vW" }}>
       <Chat
         messages={messages}
         onMessageSend={onMessageSend}
         messagesEndRef={messagesEndRef}
-        disabled={isLoading || (initialInfo.chats.length > 1 ? false : !initialInfo.chats[0].enabled)}
+        disabled={
+          isLoading ||
+          (initialInfo.chats.length > 1 ? false : !initialInfo.chats[0].enabled)
+        }
         isMaximizedOnly
         onAudio={onAudio}
         title={title}
@@ -335,7 +318,7 @@ export const RenderChat = ({
         onSelectedChat={onSelectedChat}
         disabledSend={isLoading && messages.length === 0}
         roundedCorners={false}
-        containerHeight={`calc(100vh - ${blocked ? '264px' : '132px'})`}
+        containerHeight={`calc(100vh - ${blocked ? "264px" : "132px"})`}
         customHeader={{
           headerLabel: "Cliente:",
           headerBackground: "#f7f7f7",
@@ -347,6 +330,7 @@ export const RenderChat = ({
           color: "#000",
         }}
         warningMessage={timeToExpire}
+        uploadOptions={uploadOptions}
       />
 
       <ChatOptions
@@ -360,7 +344,9 @@ export const RenderChat = ({
       {currentChat.chatId && (
         <SockJsClient
           url={`${chatApiUrl}/ws`}
-          topics={[`/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`]}
+          topics={[
+            `/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`,
+          ]}
           onMessage={handleNewExternalMessage}
           onConnect={onConnect}
           ref={(client) => (clientRef = client)}

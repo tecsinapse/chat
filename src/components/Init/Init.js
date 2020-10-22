@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
-import {mdiArrowLeft, mdiChevronRight, mdiClose, mdiForum} from "@mdi/js";
+import React, { useEffect, useState } from "react";
+import { mdiArrowLeft, mdiChevronRight, mdiClose, mdiForum } from "@mdi/js";
 import Icon from "@mdi/react";
-import {Divider} from "@tecsinapse/ui-kit";
-import {makeStyles, useTheme} from "@material-ui/styles";
+import { Divider } from "@tecsinapse/ui-kit";
+import { useTheme } from "@material-ui/styles";
 import {
   Badge,
   Button,
@@ -13,99 +13,22 @@ import {
   DialogTitle,
   Drawer,
   Grid,
-  Typography
+  Typography,
 } from "@material-ui/core";
-import {completeChatInfoWith, load} from "../../utils/loadChatsInfos";
-import {COMPONENT_LOCATION} from "../../constants/COMPONENT_LOCATION";
-import {UnreadChats} from "../UnreadChats/UnreadChats";
-import {RenderChat} from "../RenderChat/RenderChat";
-import {InitWebsockets} from "./InitWebsockets";
-import {MessageManagement} from "../MessageManagement/MessageManagement";
-import {ChatButton} from "../ChatButton/ChatButton";
-import {defaultFetch, noAuthJsonFetch} from "../../utils/fetch";
-import {encodeChatData} from "../../utils/encodeChatData";
-import {SendNotification} from "../SendNotification/SendNotification";
+import { completeChatInfoWith } from "../../utils/loadChatsInfos";
+import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { UnreadChats } from "../UnreadChats/UnreadChats";
+import { RenderChat } from "../RenderChat/RenderChat";
+import { InitWebsockets } from "./InitWebsockets";
+import { MessageManagement } from "../MessageManagement/MessageManagement";
+import { ChatButton } from "../ChatButton/ChatButton";
+import { defaultFetch, noAuthJsonFetch } from "../../utils/fetch";
+import { encodeChatData } from "../../utils/encodeChatData";
+import { SendNotification } from "../SendNotification/SendNotification";
+import { useStyle } from "./styles";
+import { loadComponent } from "../../utils/helpers";
 
-const useStyle = makeStyles((theme) => ({
-  drawerContainer: {
-    fontFamily: "font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI , Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue",
-    margin: theme.spacing(2, 0, 0, 0),
-    height: "100%",
-    overflowX: "hidden",
-    maxWidth: "80vw",
-    minWidth: "40vw",
-    /* TODO verificar uma forma melhor */
-    /* Limpando estilos do Bootstrap para os inputs */
-    "& input": {
-      border: "0 !important",
-      margin: 0,
-      paddingTop: "10.5px",
-      paddingBottom: "10.5px",
-    },
-    "& input:focus": {
-      border: "0 !important",
-      borderColor: "#fff",
-      boxShadow: "none",
-    },
-    "& textarea": {
-      border: "0 !important",
-      margin: 0,
-      paddingTop: "10.5px",
-      paddingBottom: "10.5px",
-    },
-    "& textarea:focus": {
-      border: "0 !important",
-      borderColor: "#fff",
-      boxShadow: "none",
-    },
-  },
-  drawerHeader: {
-    margin: theme.spacing(0, 2, 20 / 12, 2),
-  },
-  messageManagementLinkContainer: {
-    padding: theme.spacing(1, 2, 3 / 4, 2),
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: theme.palette.grey["300"],
-    },
-  },
-  title: {
-    padding: 0,
-  }
-}));
-
-async function loadComponent(
-  chatApiUrl,
-  getInitialStatePath,
-  params,
-  setComponentInfo,
-  setIsLoadingInitialState,
-  setView,
-  setCurrentChat
-) {
-  const info = await load(chatApiUrl, getInitialStatePath, params);
-  setComponentInfo(info);
-  setIsLoadingInitialState(false);
-  if (info.currentClient && Object.keys(info.currentClient).length > 0) {
-    // quando a visualização é de um cliente específico, então define as informações
-    // desse cliente como currentChat e exibe o chat direto
-    setView(COMPONENT_LOCATION.CHAT);
-    const chats = info.allChats.filter((chat) =>
-      info.currentClient.clientChatIds.includes(chat.chatId)
-    );
-    setCurrentChat({
-      name: info.currentClient.clientName,
-      connectionKey: info.currentClient.connectionKey,
-      destination: info.currentClient.destination,
-      disabled: info.currentClient.disabled,
-      chats: chats,
-    });
-  }
-}
-
-export const Init = ({
-  chatInitConfig,
-}) => {
+export const Init = ({ chatInitConfig }) => {
   const homeLocation = chatInitConfig.onlyMessageManagement
     ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
     : COMPONENT_LOCATION.UNREAD;
@@ -140,7 +63,7 @@ export const Init = ({
     setIsLoadingInitialState,
     setView,
     setCurrentChat,
-    setIsDrawerOpen
+    setIsDrawerOpen,
   ]);
 
   const reloadComponent = () => {
@@ -168,9 +91,11 @@ export const Init = ({
     let newChat = true;
     const toUpdateInfo = { ...componentInfo };
     componentInfo.allChats.forEach((chat) => {
-      if (chat.chatId === updatedChat.chatId
-        && chat.connectionKey === updatedChat.connectionKey
-        && chat.destination === updatedChat.destination) {
+      if (
+        chat.chatId === updatedChat.chatId &&
+        chat.connectionKey === updatedChat.connectionKey &&
+        chat.destination === updatedChat.destination
+      ) {
         updatedChat = completeChatInfoWith(chat, updatedChat);
 
         chatsToUpdate.push(updatedChat);
@@ -190,9 +115,11 @@ export const Init = ({
     let chatsToUpdate = [];
     const toUpdateInfo = { ...componentInfo };
     componentInfo.allChats.forEach((chat) => {
-      if (chat.chatId === readChat.chatId
-        && chat.connectionKey === readChat.connectionKey
-        && chat.destination === readChat.destination) {
+      if (
+        chat.chatId === readChat.chatId &&
+        chat.connectionKey === readChat.connectionKey &&
+        chat.destination === readChat.destination
+      ) {
         const updatedChat = { ...chat };
         updatedChat.unread = 0;
         chatsToUpdate.push(updatedChat);
@@ -240,11 +167,13 @@ export const Init = ({
       `${chatInitConfig.chatApiUrl}/api/chats/${deletedChat.connectionKey}/${deletedChat.chatId}/sessions/finish`,
       "DELETE",
       {}
-    )
-    const toUpdateInfo = {...componentInfo};
-    toUpdateInfo.allChats = componentInfo.allChats.filter(chat => chat.chatId !== deletedChat.chatId);
+    );
+    const toUpdateInfo = { ...componentInfo };
+    toUpdateInfo.allChats = componentInfo.allChats.filter(
+      (chat) => chat.chatId !== deletedChat.chatId
+    );
 
-    const {currentClient} = componentInfo;
+    const { currentClient } = componentInfo;
     if (currentClient && Object.keys(currentClient).length > 0) {
       if (currentClient.clientChatIds.includes(deletedChat.chatId)) {
         toUpdateInfo.currentClient = {};
@@ -258,9 +187,11 @@ export const Init = ({
     // controls if the current chat is expired and the button to send a notification is visible to a chat
     if (statusChangedChat) {
       componentInfo.allChats.forEach((chat) => {
-        if (chat.chatId === statusChangedChat.chatId
-          && chat.connectionKey === statusChangedChat.connectionKey
-          && chat.destination === statusChangedChat.destination) {
+        if (
+          chat.chatId === statusChangedChat.chatId &&
+          chat.connectionKey === statusChangedChat.connectionKey &&
+          chat.destination === statusChangedChat.destination
+        ) {
           // will only show the button if the chat is blocked
           setChatToSendNotification(isBlocked ? chat : null);
         }
@@ -268,31 +199,39 @@ export const Init = ({
     } else {
       setChatToSendNotification(null);
     }
-  }
+  };
 
-  let showBackButton = (view === COMPONENT_LOCATION.CHAT || view === COMPONENT_LOCATION.SEND_NOTIFICATION
-    || (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && !chatInitConfig.onlyMessageManagement));
+  let showBackButton =
+    view === COMPONENT_LOCATION.CHAT ||
+    view === COMPONENT_LOCATION.SEND_NOTIFICATION ||
+    (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
+      !chatInitConfig.onlyMessageManagement);
   let showMessageManagement = view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT;
-  if (view === COMPONENT_LOCATION.CHAT && !chatInitConfig.navigateWhenCurrentChat) {
+  if (
+    view === COMPONENT_LOCATION.CHAT &&
+    !chatInitConfig.navigateWhenCurrentChat
+  ) {
     showBackButton = false;
     showMessageManagement = false;
   }
 
-  const isChatViewAndIsBlocked = view === COMPONENT_LOCATION.CHAT && chatToSendNotification != null;
-  const showSendNotification = chatInitConfig.canSendNotification
-    && (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT
-      || view === COMPONENT_LOCATION.UNREAD
-      || isChatViewAndIsBlocked);
+  const isChatViewAndIsBlocked =
+    view === COMPONENT_LOCATION.CHAT && chatToSendNotification != null;
+  const showSendNotification =
+    chatInitConfig.canSendNotification &&
+    (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT ||
+      view === COMPONENT_LOCATION.UNREAD ||
+      isChatViewAndIsBlocked);
 
   return (
     <div className="Chat">
-      {!isDrawerOpen &&
+      {!isDrawerOpen && (
         <ChatButton
-        isLoadingInitialState={isLoadingInitialState}
-        setIsDrawerOpen={setIsDrawerOpen}
-        unreadTotal={unreadTotal}
+          isLoadingInitialState={isLoadingInitialState}
+          setIsDrawerOpen={setIsDrawerOpen}
+          unreadTotal={unreadTotal}
         />
-      }
+      )}
       <Drawer
         anchor="right"
         open={isDrawerOpen}
@@ -326,13 +265,18 @@ export const Init = ({
                     </Grid>
                   )}
                   <Grid item>
-                    <Typography variant="h5" color="textPrimary" className={classes.title}>
-                      {view === COMPONENT_LOCATION.CHAT && chatInitConfig.onChatTitle}
+                    <Typography
+                      variant="h5"
+                      color="textPrimary"
+                      className={classes.title}
+                    >
+                      {view === COMPONENT_LOCATION.CHAT &&
+                        chatInitConfig.onChatTitle}
                       {view === COMPONENT_LOCATION.UNREAD && "Painel do Chat"}
                       {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
                         "Gestão de Mensagens"}
                       {view === COMPONENT_LOCATION.SEND_NOTIFICATION &&
-                      "Iniciar Nova Conversa"}
+                        "Iniciar Nova Conversa"}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -430,16 +374,17 @@ export const Init = ({
             />
           )}
 
-          {showSendNotification &&
-          <div style={{marginTop: theme.spacing(2), textAlign: 'center'}}>
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => onStartSendNotification()}>
-              INICIAR NOVA CONVERSA
-            </Button>
-          </div>
-          }
+          {showSendNotification && (
+            <div style={{ marginTop: theme.spacing(2), textAlign: "center" }}>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={() => onStartSendNotification()}
+              >
+                INICIAR NOVA CONVERSA
+              </Button>
+            </div>
+          )}
         </div>
       </Drawer>
 
@@ -457,26 +402,42 @@ export const Init = ({
 
       {chatInitConfig.clickOnUnreadOpenFirstAction && (
         <Dialog
-          open={chatToOpenFirstAction && Object.keys(chatToOpenFirstAction).length > 0}
+          open={
+            chatToOpenFirstAction &&
+            Object.keys(chatToOpenFirstAction).length > 0
+          }
           onClose={() => setChatToOpenFirstAction({})}
           aria-labelledby="dialog-title"
         >
           <DialogTitle id="dialog-title">{"Confirmação"}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Voce será direcionado e pode perder a ação que está executando no momento. Deseja continuar?
+              Voce será direcionado e pode perder a ação que está executando no
+              momento. Deseja continuar?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button autoFocus onClick={() => setChatToOpenFirstAction({})} color="primary">
+            <Button
+              autoFocus
+              onClick={() => setChatToOpenFirstAction({})}
+              color="primary"
+            >
               Não
             </Button>
             <Button
               onClick={() => {
-                const encodedData = encodeChatData(chatToOpenFirstAction, chatInitConfig.userkeycloakId);
-                window.open(`${chatToOpenFirstAction.actions[0].path}?data=${encodedData}`, "_self");
+                const encodedData = encodeChatData(
+                  chatToOpenFirstAction,
+                  chatInitConfig.userkeycloakId
+                );
+                window.open(
+                  `${chatToOpenFirstAction.actions[0].path}?data=${encodedData}`,
+                  "_self"
+                );
               }}
-              color="primary" autoFocus>
+              color="primary"
+              autoFocus
+            >
               Sim
             </Button>
           </DialogActions>
