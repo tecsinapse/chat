@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MessageList } from '@livechat/ui-kit';
 
 import { useTheme } from '@material-ui/styles';
@@ -43,6 +43,7 @@ const Maximized = ({
 }) => {
   const classes = useStyle();
   const theme = useTheme();
+  const [droppedFiles, setDroppedFiles] = useState(null);
 
   const onBackward =
     location === CHAT_LOCATIONS.MESSAGES &&
@@ -53,6 +54,10 @@ const Maximized = ({
     });
 
   const padding = location === CHAT_LOCATIONS.CHAT_LIST && 0;
+
+  const onDrop = e => {
+    setDroppedFiles(e.dataTransfer);
+  };
 
   return (
     <div className={classes.root}>
@@ -79,6 +84,7 @@ const Maximized = ({
         style={{
           padding,
         }}
+        onDrop={onDrop}
       >
         {location === CHAT_LOCATIONS.MESSAGES && (
           <MessageView
@@ -111,6 +117,8 @@ const Maximized = ({
           isBlocked={isBlocked}
           blockedMessage={blockedMessage}
           disabledSend={disabledSend}
+          droppedFiles={droppedFiles}
+          setDroppedFiles={setDroppedFiles}
         />
       )}
     </div>

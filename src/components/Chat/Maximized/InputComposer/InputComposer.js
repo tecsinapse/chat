@@ -37,6 +37,8 @@ export const InputComposer = ({
   isBlocked,
   blockedMessage,
   disabledSend,
+  droppedFiles,
+  setDroppedFiles,
 }) => {
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
@@ -81,6 +83,13 @@ export const InputComposer = ({
       pasteRef.removeEventListener('paste', pasteHandler);
     };
   }, [pasteHandler]);
+
+  useEffect(() => {
+    if (droppedFiles && droppedFiles.items?.length > 0) {
+      transformImages(droppedFiles);
+    }
+    setDroppedFiles(null);
+  }, [droppedFiles, setDroppedFiles, transformImages]);
 
   const onStopRecording = (blob, accept) => {
     setRecording(false);
