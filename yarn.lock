@@ -1757,10 +1757,10 @@
     "@svgr/plugin-svgo" "^4.3.1"
     loader-utils "^1.2.3"
 
-"@tecsinapse/chat@^2.3.5":
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-2.3.5.tgz#a663c8f0380ca15c7fe0966d4da61aee5c4f1a1b"
-  integrity sha512-4R7qNp3swiDA/PO60aDNeJlPha+Zxk7fvzJ+bhMK8KvahG8a0x+0rQlGT+6LeQqTJGGfmlCk3LNuwV2tWKkz3A==
+"@tecsinapse/chat@^2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-2.4.1.tgz#0a68c51a1653d9253a75196c186c4108a9fcb8dc"
+  integrity sha512-0ffQ9CRIfFZ5KFXES710FpLlWER0TNFy1QXiOa8VrUYPayI7cAFpDXmwyS/EF7e50NYiOIyEwndElML3h2ycZQ==
   dependencies:
     "@cleandersonlobo/react-mic" "^1.2.0"
     "@livechat/ui-kit" "^0.4.0-10"

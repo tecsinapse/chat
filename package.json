@@ -7,7 +7,7 @@
     "@material-ui/styles": "^4.10.0",
     "@mdi/js": "^5.3.45",
     "@mdi/react": "^1.4.0",
-    "@tecsinapse/chat": "^2.3.5",
+    "@tecsinapse/chat": "^2.4.1",
     "@tecsinapse/table": "^3.3.2",
     "@tecsinapse/ui-kit": "^5.3.2",
     "jwt-simple": "^0.5.6",
