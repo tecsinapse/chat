@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Chat } from "@tecsinapse/chat";
+import { Chat, DELIVERY_STATUS } from "@tecsinapse/chat";
 import SockJsClient from "react-stomp";
 
 import { defaultFetch } from "../../utils/fetch";
@@ -42,7 +42,11 @@ const onSelectedChatMaker = (
   ).then((pageResults) => {
     const messages = pageResults.content
       .map((externalMessage) => {
-        return buildChatMessageObject(externalMessage, chat.chatId, userNamesById);
+        return buildChatMessageObject(
+          externalMessage,
+          chat.chatId,
+          userNamesById
+        );
       })
       .reverse();
     setMessages(messages);
@@ -54,11 +58,14 @@ const onSelectedChatMaker = (
     }
 
     setTimeout(function () {
+      const current = messagesEndRef.current;
+      if (current) {
+        current.scrollIntoView({
+          block: "end",
+          behavior: "smooth",
+        });
+      }
       // workaround to wait for all elements to render
-      messagesEndRef.current.scrollIntoView({
-        block: "end",
-        behavior: "smooth",
-      });
     }, 700);
   });
 };
@@ -70,9 +77,8 @@ export const RenderChat = ({
   onReadAllMessagesOfChat,
   navigateWhenCurrentChat,
   onChatStatusChanged,
-  userNamesById
+  userNamesById,
 }) => {
-
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -89,7 +95,7 @@ export const RenderChat = ({
   const setBlockedAndPropagateStatus = (chat, isBlocked) => {
     setBlocked(isBlocked);
     onChatStatusChanged(chat, isBlocked);
-  }
+  };
 
   const onSelectedChat = onSelectedChatMaker(
     initialInfo,
@@ -118,6 +124,7 @@ export const RenderChat = ({
       )(initialInfo.chats[0]);
     }
     setIsLoading(false);
+    // eslint-disable-next-line
   }, [initialInfo, chatApiUrl, setIsLoading]);
   // ignore warning "React Hook useEffect has a missing dependency". It could cause infinity loop
 
@@ -129,10 +136,18 @@ export const RenderChat = ({
         newMessage.from === currentChat.chatId ||
         newMessage.localId === undefined
       ) {
-        let message = buildChatMessageObject(newMessage, currentChat.chatId, userNamesById);
+        let message = buildChatMessageObject(
+          newMessage,
+          currentChat.chatId,
+          userNamesById
+        );
         setMessages([...messages, message]);
       } else {
-        setStatusMessage(newMessage.localId, "delivered");
+        setStatusMessage(
+          newMessage.localId,
+          newMessage.status,
+          newMessage.statusDetails
+        );
       }
     }
   };
@@ -155,7 +170,7 @@ export const RenderChat = ({
       type: "CHAT",
       text: newMessage,
       localId: localId,
-      userId: userkeycloakId
+      userId: userkeycloakId,
     };
 
     try {
@@ -164,7 +179,7 @@ export const RenderChat = ({
         JSON.stringify(chatMessage)
       );
     } catch (e) {
-      setStatusMessage(localId, "error");
+      setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
     }
   };
 
@@ -213,7 +228,7 @@ export const RenderChat = ({
         if (err.status === 403) {
           setBlockedAndPropagateStatus(currentChat, true);
         }
-        setStatusMessage(localId, "error");
+        setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
       });
   };
 
@@ -229,7 +244,11 @@ export const RenderChat = ({
     ).then((pageResults) => {
       const loadedMessages = pageResults.content
         .map((externalMessage) => {
-          return buildChatMessageObject(externalMessage, currentChat.chatId, userNamesById);
+          return buildChatMessageObject(
+            externalMessage,
+            currentChat.chatId,
+            userNamesById
+          );
         })
         .reverse();
       setMessages(loadedMessages.concat(messages));
@@ -259,8 +278,9 @@ export const RenderChat = ({
   };
 
   const title = currentChat.name || initialInfo.name || "Cliente";
-  let subTitle = (currentChat.subName ? (currentChat.subName + " - ") : "")
-    + (currentChat.phone ? currentChat.phone : "");
+  let subTitle =
+    (currentChat.subName ? currentChat.subName + " - " : "") +
+    (currentChat.phone ? currentChat.phone : "");
   const timeToExpire =
     (currentChat &&
       currentChat.minutesToBlock &&
@@ -269,7 +289,8 @@ export const RenderChat = ({
       )}.`) ||
     undefined;
   const { actions } = currentChat;
-  const hasActions = currentChat && actions && actions.length > 0 && navigateWhenCurrentChat;
+  const hasActions =
+    currentChat && actions && actions.length > 0 && navigateWhenCurrentChat;
 
   const onAudio = (blob) => {
     const localId = uuidv1();
@@ -296,7 +317,7 @@ export const RenderChat = ({
 
   const onMessageResend = (localId) => {
     // Change message status
-    setStatusMessage(localId, "sending");
+    setStatusMessage(localId, DELIVERY_STATUS.SENDING.key);
 
     // Resend to backend
     const message = messages.find((m) => m.localId === localId);
@@ -314,12 +335,15 @@ export const RenderChat = ({
   };
 
   return (
-    <div style={{maxWidth: '40vW'}}>
+    <div style={{ maxWidth: "40vW" }}>
       <Chat
         messages={messages}
         onMessageSend={onMessageSend}
         messagesEndRef={messagesEndRef}
-        disabled={isLoading || (initialInfo.chats.length > 1 ? false : !initialInfo.chats[0].enabled)}
+        disabled={
+          isLoading ||
+          (initialInfo.chats.length > 1 ? false : !initialInfo.chats[0].enabled)
+        }
         isMaximizedOnly
         onAudio={onAudio}
         title={title}
@@ -335,7 +359,7 @@ export const RenderChat = ({
         onSelectedChat={onSelectedChat}
         disabledSend={isLoading && messages.length === 0}
         roundedCorners={false}
-        containerHeight={`calc(100vh - ${blocked ? '264px' : '132px'})`}
+        containerHeight={`calc(100vh - ${blocked ? "264px" : "132px"})`}
         customHeader={{
           headerLabel: "Cliente:",
           headerBackground: "#f7f7f7",
@@ -360,7 +384,9 @@ export const RenderChat = ({
       {currentChat.chatId && (
         <SockJsClient
           url={`${chatApiUrl}/ws`}
-          topics={[`/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`]}
+          topics={[
+            `/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`,
+          ]}
           onMessage={handleNewExternalMessage}
           onConnect={onConnect}
           ref={(client) => (clientRef = client)}
