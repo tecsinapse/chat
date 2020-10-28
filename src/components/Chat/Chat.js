@@ -6,7 +6,7 @@ import { useTheme } from '@material-ui/styles';
 import Maximized from './Maximized/Maximized';
 import Minimized from './Minimized/Minimized';
 import ChatTheme from './ChatTheme/ChatTheme';
-import { CHAT_LOCATIONS } from './constants/CHAT_LOCATIONS';
+import { CHAT_LOCATIONS, DELIVERY_STATUS } from './constants';
 
 export const Chat = ({
   messages,
@@ -172,7 +172,13 @@ Chat.propTypes = {
           data: PropTypes.object,
         })
       ),
-      status: PropTypes.oneOf(['sending', 'error', 'delivered']),
+      statusDetails: PropTypes.arrayOf(
+        PropTypes.shape({
+          status: PropTypes.oneOf(DELIVERY_STATUS.keyNames()),
+          at: PropTypes.string,
+        })
+      ),
+      status: PropTypes.oneOf(DELIVERY_STATUS.keyNames()),
     })
   ).isRequired,
   /** Message sender */

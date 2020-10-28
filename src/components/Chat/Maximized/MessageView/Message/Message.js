@@ -22,6 +22,7 @@ import { ImageLoader } from './ImageLoader/ImageLoader';
 import { ApplicationLoader } from './ApplicationLoader/ApplicationLoader';
 import { VideoLoader } from './VideoLoader/VideoLoader';
 import { AudioLoader } from './AudioLoader/AudioLoader';
+import { DELIVERY_STATUS } from '../../../constants';
 
 export const Message = ({
   title,
@@ -42,11 +43,20 @@ export const Message = ({
     top: addMessageName ? undefined : '-10px',
   };
 
+  const isError = DELIVERY_STATUS.isEquals(
+    message?.status,
+    DELIVERY_STATUS.ERROR
+  );
+  const isSending = DELIVERY_STATUS.isEquals(
+    message?.status,
+    DELIVERY_STATUS.SENDING
+  );
+
   return (
     <div
       className={clsx({
         [classes.messageRootOwn]: message.own,
-        [classes.messageRootError]: message.status === 'error' && message.own,
+        [classes.messageRootError]: isError && message.own,
       })}
     >
       <LiveChatMessage
@@ -100,13 +110,12 @@ export const Message = ({
                 {(media.mediaType.startsWith('image') ||
                   media.mediaType.startsWith('video')) && (
                   <>
-                    {message.status === 'sending' ||
-                    message.status === 'error' ? (
+                    {isSending || isError ? (
                       <div className={classes.emptyBubble}>
-                        {message.status === 'sending' && (
+                        {isSending && (
                           <CircularProgress className={classes.progress} />
                         )}
-                        {message.status === 'error' && (
+                        {isError && (
                           <Icon
                             path={mdiImageOff}
                             size={1}
@@ -141,7 +150,7 @@ export const Message = ({
         </Bubble>
       </LiveChatMessage>
 
-      {message.status === 'error' && (
+      {isError && (
         <Tooltip title="Reenviar" placement="top">
           <IconButtonMaterial
             key="send again"
