@@ -7,10 +7,10 @@ const renderStatus = ({ statusProps, classes, deliveryStatus, showDate }) => (
     <div className={classes.messageStatusContainer}>
       <span className={classes.messageStatusAtContainer}>
         <Typography variant="caption" className={classes.at}>
-          {deliveryStatus.label({ ...statusProps, showDate })}
+          {deliveryStatus?.label({ ...statusProps, showDate })}
         </Typography>
       </span>
-      {deliveryStatus.icon(classes.messageStatusIcon)}
+      {deliveryStatus?.icon(classes.messageStatusIcon)}
     </div>
   </>
 );
@@ -37,8 +37,9 @@ export const DeliveryStatus = ({
 
   const deliveryStatus = DELIVERY_STATUS.get(status);
   const statusProps =
-    statusDetails.find(s => s.status.toLowerCase() === status.toLowerCase()) ||
-    {};
+    statusDetails.find(({ status: detailStatus }) =>
+      DELIVERY_STATUS.isEquals(detailStatus, deliveryStatus)
+    ) || {};
 
   return renderStatus({
     statusProps,

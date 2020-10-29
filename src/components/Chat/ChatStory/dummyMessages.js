@@ -1,4 +1,5 @@
 import uuidv1 from 'uuid/v1';
+import { DELIVERY_STATUS } from '../constants';
 
 export const dummyMessagesTextError = [
   {
@@ -7,16 +8,19 @@ export const dummyMessagesTextError = [
     id: `${Date.now().toString()}0`,
     authorName: 'Felipe Rodrigues',
     text: 'Olá, tudo bem?!',
-    status: 'delivered',
     localId: uuidv1(),
   },
   {
     at: '02/03/2019 10:15',
     own: true,
-    id: `${Date.now().toString()}2`,
+    id: `${Date.now().toString()}1`,
     authorName: 'Você',
     text: 'Tudo sim!',
-    status: 'delivered',
+    status: 'read',
+    statusDetails: [
+      { status: 'sent', at: '2019-03-02 10:12:00' },
+      { status: DELIVERY_STATUS.READ, at: '2019-03-02 10:22:02' },
+    ],
     localId: uuidv1(),
   },
   {
@@ -31,7 +35,43 @@ export const dummyMessagesTextError = [
   {
     at: '02/03/2019 10:14',
     own: true,
-    id: `${Date.now().toString()}2`,
+    id: `${Date.now().toString()}3`,
+    authorName: 'Você',
+    text: 'Aloww?',
+    status: DELIVERY_STATUS.REJECTED,
+    localId: uuidv1(),
+  },
+  {
+    at: '02/03/2019 10:14',
+    own: true,
+    id: `${Date.now().toString()}4`,
+    authorName: 'Você',
+    text: 'oiiiii!',
+    status: 'not_delivered',
+    localId: uuidv1(),
+  },
+  {
+    at: '02/03/2019 10:14',
+    own: true,
+    id: `${Date.now().toString()}4`,
+    authorName: 'Você',
+    text: 'Que bom!',
+    status: 'delivered',
+    localId: uuidv1(),
+  },
+  {
+    at: '02/03/2019 10:14',
+    own: true,
+    id: `${Date.now().toString()}4`,
+    authorName: 'Você',
+    text: 'Entendi!',
+    status: 'sent',
+    localId: uuidv1(),
+  },
+  {
+    at: '02/03/2019 10:14',
+    own: true,
+    id: `${Date.now().toString()}4`,
     authorName: 'Você',
     text: 'Abraço!',
     status: 'sending',

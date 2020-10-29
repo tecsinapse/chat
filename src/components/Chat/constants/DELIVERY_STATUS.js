@@ -10,7 +10,6 @@ import {
 import DoubleTickIcon from '../../../../assets/message-status-delivered.svg';
 import SingleTickIcon from '../../../../assets/message-status-sent.svg';
 import SendingIcon from '../../../../assets/message-status-sending.svg';
-import ErrorIcon from '../../../../assets/message-status-error.svg';
 import NotDeliveredIcon from '../../../../assets/message-status-not-delivered.svg';
 import RejectedIcon from '../../../../assets/message-status-rejected.svg';
 
@@ -24,20 +23,14 @@ DELIVERY_STATUS.initEnum({
     key: 'sending',
     label: () => 'Enviando...',
     icon: classes => (
-      <SendingIcon
-        className={classes}
-        style={{ color: defaultGreyLight5, width: '20px', height: '20px' }}
-      />
+      <SendingIcon className={classes} style={{ color: defaultGreyLight5 }} />
     ),
   },
   ERROR: {
     key: 'error',
-    label: () => 'Erro ao enviar',
+    label: () => 'Não enviada',
     icon: classes => (
-      <ErrorIcon
-        className={classes}
-        style={{ fill: defaultRed, width: '10px', height: '10px' }}
-      />
+      <NotDeliveredIcon className={classes} style={{ fill: defaultRed }} />
     ),
   },
   DELIVERED: {
@@ -85,7 +78,7 @@ DELIVERY_STATUS.keyNames = () =>
 DELIVERY_STATUS.get = (key = '') =>
   Object.keys(DELIVERY_STATUS)
     .map(k => DELIVERY_STATUS[k])
-    .find(s => s.key && s.key.toLowerCase() === key.toLowerCase());
+    .find(s => DELIVERY_STATUS.isEquals(key, s));
 
 DELIVERY_STATUS.isEquals = (key, enumm) => [enumm, enumm.key].includes(key);
 
