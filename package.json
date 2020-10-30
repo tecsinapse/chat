@@ -1,7 +1,7 @@
 {
   "name": "@tecsinapse/chat",
   "description": "TecSinapse Chat",
-  "version": "2.4.1",
+  "version": "3.0.0",
   "main": "build/index.js",
   "module": "build/index.js",
   "dependencies": {
@@ -15,11 +15,11 @@
     "@tecsinapse/ui-kit": "^5.3.2",
     "@tecsinapse/uploader": "^2.3.2",
     "clsx": "^1.1.1",
+    "enumify": "^1.0.4",
+    "moment": "^2.27.0",
     "prop-types": "^15.7.2",
     "react-compound-timer": "^1.2.0",
-    "uniqid": "^5.2.0",
-    "enumify": "^1.0.4",
-    "moment": "^2.27.0"
+    "uniqid": "^5.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",

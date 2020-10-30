@@ -1,3 +1,10 @@
+## 3.0.0 (2020-10-30)
+
+* feat(status-mensagens): adding support for message status ([e88aade](https://github.com/tecsinapse/chat/commit/e88aade)), closes [#142454](https://github.com/tecsinapse/chat/issues/142454)
+* feat(status-mensagens): fix test errors; added support for DELIVERY_STATUS enum value; Updated statu ([13403e7](https://github.com/tecsinapse/chat/commit/13403e7))
+
+
+
 ## <small>2.4.1 (2020-10-22)</small>
 
 * refactor: exposing uploader props ([12a7405](https://github.com/tecsinapse/chat/commit/12a7405))
