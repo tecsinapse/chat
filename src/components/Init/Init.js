@@ -224,225 +224,233 @@ export const Init = ({ chatInitConfig }) => {
       isChatViewAndIsBlocked);
 
   return (
-    <div className="Chat">
-      {!isDrawerOpen && (
-        <ChatButton
-          isLoadingInitialState={isLoadingInitialState}
-          setIsDrawerOpen={setIsDrawerOpen}
-          unreadTotal={unreadTotal}
-        />
-      )}
-      <Drawer
-        anchor="right"
-        open={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-      >
-        <div className={classes.drawerContainer}>
-          <div className={classes.drawerHeader}>
-            <Grid container justify="space-between">
-              <Grid item>
-                <Grid container>
-                  {showBackButton && (
-                    <Grid item style={{ marginRight: theme.spacing(1) }}>
-                      <Badge
-                        color="error"
-                        overlap="circle"
-                        variant="dot"
-                        badgeContent={unreadTotal}
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                      >
-                        <Icon
-                          onClick={() => setView(homeLocation)}
-                          color={theme.palette.primary.main}
-                          size={1.25}
-                          style={{ cursor: "pointer", marginLeft: "-8px" }}
-                          path={mdiArrowLeft}
-                        />
-                      </Badge>
-                    </Grid>
-                  )}
-                  <Grid item>
-                    <Typography
-                      variant="h5"
-                      color="textPrimary"
-                      className={classes.title}
-                    >
-                      {view === COMPONENT_LOCATION.CHAT &&
-                        chatInitConfig.onChatTitle}
-                      {view === COMPONENT_LOCATION.UNREAD && "Painel do Chat"}
-                      {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
-                        "Gestão de Mensagens"}
-                      {view === COMPONENT_LOCATION.SEND_NOTIFICATION &&
-                        "Iniciar Nova Conversa"}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item>
-                <Icon
-                  onClick={() => setIsDrawerOpen(false)}
-                  color={theme.palette.primary.main}
-                  size={1.25}
-                  style={{ cursor: "pointer" }}
-                  path={mdiClose}
-                />
-              </Grid>
-            </Grid>
-          </div>
-          <Divider variant="inset" component="li" />
-
-          {showMessageManagement && (
-            <div
-              className={classes.messageManagementLinkContainer}
-              onClick={() => setView(COMPONENT_LOCATION.MESSAGE_MANAGEMENT)}
-            >
-              <Grid container justify="space-between" alignItems="center">
+    <>
+      {chatInitConfig.customChatButton &&
+        chatInitConfig.customChatButton(
+          isLoadingInitialState,
+          unreadTotal,
+          setIsDrawerOpen
+        )}
+      <div className="Chat">
+        {!chatInitConfig.customChatButton && !isDrawerOpen && (
+          <ChatButton
+            isLoadingInitialState={isLoadingInitialState}
+            setIsDrawerOpen={setIsDrawerOpen}
+            unreadTotal={unreadTotal}
+          />
+        )}
+        <Drawer
+          anchor="right"
+          open={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+        >
+          <div className={classes.drawerContainer}>
+            <div className={classes.drawerHeader}>
+              <Grid container justify="space-between">
                 <Grid item>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <Icon
-                        path={mdiForum}
-                        size={1}
-                        color={theme.palette.text.secondary}
-                        style={{ marginTop: "3px" }}
-                      />
-                    </Grid>
+                  <Grid container>
+                    {showBackButton && (
+                      <Grid item style={{ marginRight: theme.spacing(1) }}>
+                        <Badge
+                          color="error"
+                          overlap="circle"
+                          variant="dot"
+                          badgeContent={unreadTotal}
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "left",
+                          }}
+                        >
+                          <Icon
+                            onClick={() => setView(homeLocation)}
+                            color={theme.palette.primary.main}
+                            size={1.25}
+                            style={{ cursor: "pointer", marginLeft: "-8px" }}
+                            path={mdiArrowLeft}
+                          />
+                        </Badge>
+                      </Grid>
+                    )}
                     <Grid item>
                       <Typography
+                        variant="h5"
                         color="textPrimary"
-                        variant="body1"
-                        display="inline"
-                        style={{ fontWeight: "bold" }}
+                        className={classes.title}
                       >
-                        Gestão de mensagens
+                        {view === COMPONENT_LOCATION.CHAT &&
+                          chatInitConfig.onChatTitle}
+                        {view === COMPONENT_LOCATION.UNREAD && "Painel do Chat"}
+                        {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
+                          "Gestão de Mensagens"}
+                        {view === COMPONENT_LOCATION.SEND_NOTIFICATION &&
+                          "Iniciar Nova Conversa"}
                       </Typography>
                     </Grid>
                   </Grid>
                 </Grid>
                 <Grid item>
                   <Icon
-                    color={theme.palette.text.primary}
-                    size={1}
+                    onClick={() => setIsDrawerOpen(false)}
+                    color={theme.palette.primary.main}
+                    size={1.25}
                     style={{ cursor: "pointer" }}
-                    path={mdiChevronRight}
+                    path={mdiClose}
                   />
                 </Grid>
               </Grid>
             </div>
-          )}
-          <Divider variant="inset" component="li" />
+            <Divider variant="inset" component="li" />
 
-          {view === COMPONENT_LOCATION.UNREAD && (
-            <UnreadChats
-              chats={componentInfo.allChats}
-              onSelectChat={onSelectUnreadChat}
-            />
-          )}
-          {view === COMPONENT_LOCATION.CHAT && (
-            <RenderChat
-              initialInfo={currentChat}
-              chatApiUrl={chatInitConfig.chatApiUrl}
-              userkeycloakId={chatInitConfig.userkeycloakId}
-              onReadAllMessagesOfChat={onReadAllMessagesOfChat}
-              navigateWhenCurrentChat={chatInitConfig.navigateWhenCurrentChat}
-              onChatStatusChanged={onChatStatusChanged}
-              userNamesById={componentInfo.userNameById}
-            />
-          )}
-          {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
-            <MessageManagement
-              componentInfo={componentInfo}
-              onSelectChat={onSelectChat}
-              onDeleteChat={onDeleteChat}
-              userkeycloakId={chatInitConfig.userkeycloakId}
-              showMessagesLabel={chatInitConfig.showMessagesLabel}
-              showDiscardOption={chatInitConfig.showDiscardOption}
-            />
-          )}
-          {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (
-            <SendNotification
-              chat={chatToSendNotification}
-              chatApiUrl={chatInitConfig.chatApiUrl}
-              connectionKeys={componentInfo.connectionKeys}
-              destination={componentInfo.destination}
-              createPath={chatInitConfig.createPath}
-              info={componentInfo.sendNotificationInfo}
-              reloadComponent={reloadComponent}
-            />
-          )}
-
-          {showSendNotification && (
-            <div style={{ marginTop: theme.spacing(2), textAlign: "center" }}>
-              <Button
-                color="secondary"
-                variant="contained"
-                onClick={() => onStartSendNotification()}
+            {showMessageManagement && (
+              <div
+                className={classes.messageManagementLinkContainer}
+                onClick={() => setView(COMPONENT_LOCATION.MESSAGE_MANAGEMENT)}
               >
-                INICIAR NOVA CONVERSA
+                <Grid container justify="space-between" alignItems="center">
+                  <Grid item>
+                    <Grid container spacing={1} alignItems="center">
+                      <Grid item>
+                        <Icon
+                          path={mdiForum}
+                          size={1}
+                          color={theme.palette.text.secondary}
+                          style={{ marginTop: "3px" }}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Typography
+                          color="textPrimary"
+                          variant="body1"
+                          display="inline"
+                          style={{ fontWeight: "bold" }}
+                        >
+                          Gestão de mensagens
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <Icon
+                      color={theme.palette.text.primary}
+                      size={1}
+                      style={{ cursor: "pointer" }}
+                      path={mdiChevronRight}
+                    />
+                  </Grid>
+                </Grid>
+              </div>
+            )}
+            <Divider variant="inset" component="li" />
+
+            {view === COMPONENT_LOCATION.UNREAD && (
+              <UnreadChats
+                chats={componentInfo.allChats}
+                onSelectChat={onSelectUnreadChat}
+              />
+            )}
+            {view === COMPONENT_LOCATION.CHAT && (
+              <RenderChat
+                initialInfo={currentChat}
+                chatApiUrl={chatInitConfig.chatApiUrl}
+                userkeycloakId={chatInitConfig.userkeycloakId}
+                onReadAllMessagesOfChat={onReadAllMessagesOfChat}
+                navigateWhenCurrentChat={chatInitConfig.navigateWhenCurrentChat}
+                onChatStatusChanged={onChatStatusChanged}
+                userNamesById={componentInfo.userNameById}
+              />
+            )}
+            {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
+              <MessageManagement
+                componentInfo={componentInfo}
+                onSelectChat={onSelectChat}
+                onDeleteChat={onDeleteChat}
+                userkeycloakId={chatInitConfig.userkeycloakId}
+                showMessagesLabel={chatInitConfig.showMessagesLabel}
+                showDiscardOption={chatInitConfig.showDiscardOption}
+              />
+            )}
+            {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (
+              <SendNotification
+                chat={chatToSendNotification}
+                chatApiUrl={chatInitConfig.chatApiUrl}
+                connectionKeys={componentInfo.connectionKeys}
+                destination={componentInfo.destination}
+                createPath={chatInitConfig.createPath}
+                info={componentInfo.sendNotificationInfo}
+                reloadComponent={reloadComponent}
+              />
+            )}
+
+            {showSendNotification && (
+              <div style={{ marginTop: theme.spacing(2), textAlign: "center" }}>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  onClick={() => onStartSendNotification()}
+                >
+                  INICIAR NOVA CONVERSA
+                </Button>
+              </div>
+            )}
+          </div>
+        </Drawer>
+
+        {!isLoadingInitialState && (
+          <InitWebsockets
+            chatApiUrl={chatInitConfig.chatApiUrl}
+            userkeycloakId={chatInitConfig.userkeycloakId}
+            chatIds={chatIds}
+            connectionKeys={componentInfo.connectionKeys}
+            destination={componentInfo.destination}
+            onChatUpdated={onChatUpdated}
+            reloadComponent={reloadComponent}
+          />
+        )}
+
+        {chatInitConfig.clickOnUnreadOpenFirstAction && (
+          <Dialog
+            open={
+              chatToOpenFirstAction &&
+              Object.keys(chatToOpenFirstAction).length > 0
+            }
+            onClose={() => setChatToOpenFirstAction({})}
+            aria-labelledby="dialog-title"
+          >
+            <DialogTitle id="dialog-title">{"Confirmação"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Voce será direcionado e pode perder a ação que está executando
+                no momento. Deseja continuar?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                autoFocus
+                onClick={() => setChatToOpenFirstAction({})}
+                color="primary"
+              >
+                Não
               </Button>
-            </div>
-          )}
-        </div>
-      </Drawer>
-
-      {!isLoadingInitialState && (
-        <InitWebsockets
-          chatApiUrl={chatInitConfig.chatApiUrl}
-          userkeycloakId={chatInitConfig.userkeycloakId}
-          chatIds={chatIds}
-          connectionKeys={componentInfo.connectionKeys}
-          destination={componentInfo.destination}
-          onChatUpdated={onChatUpdated}
-          reloadComponent={reloadComponent}
-        />
-      )}
-
-      {chatInitConfig.clickOnUnreadOpenFirstAction && (
-        <Dialog
-          open={
-            chatToOpenFirstAction &&
-            Object.keys(chatToOpenFirstAction).length > 0
-          }
-          onClose={() => setChatToOpenFirstAction({})}
-          aria-labelledby="dialog-title"
-        >
-          <DialogTitle id="dialog-title">{"Confirmação"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Voce será direcionado e pode perder a ação que está executando no
-              momento. Deseja continuar?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              autoFocus
-              onClick={() => setChatToOpenFirstAction({})}
-              color="primary"
-            >
-              Não
-            </Button>
-            <Button
-              onClick={() => {
-                const encodedData = encodeChatData(
-                  chatToOpenFirstAction,
-                  chatInitConfig.userkeycloakId
-                );
-                window.open(
-                  `${chatToOpenFirstAction.actions[0].path}?data=${encodedData}`,
-                  "_self"
-                );
-              }}
-              color="primary"
-              autoFocus
-            >
-              Sim
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-    </div>
+              <Button
+                onClick={() => {
+                  const encodedData = encodeChatData(
+                    chatToOpenFirstAction,
+                    chatInitConfig.userkeycloakId
+                  );
+                  window.open(
+                    `${chatToOpenFirstAction.actions[0].path}?data=${encodedData}`,
+                    "_self"
+                  );
+                }}
+                color="primary"
+                autoFocus
+              >
+                Sim
+              </Button>
+            </DialogActions>
+          </Dialog>
+        )}
+      </div>
+    </>
   );
 };
