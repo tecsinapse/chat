@@ -5,7 +5,7 @@ import { useTheme } from '@material-ui/styles';
 
 import { ChatHeader } from './ChatHeader/ChatHeader';
 import { InputComposer } from './InputComposer/InputComposer';
-import { CHAT_LOCATIONS } from '../constants/CHAT_LOCATIONS';
+import { CHAT_LOCATIONS } from '../constants';
 import MessageView from './MessageView/MessageView';
 import { ChatList } from './ChatList/ChatList';
 import { useStyle } from './maximizedStyles';

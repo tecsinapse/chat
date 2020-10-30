@@ -9,7 +9,7 @@ import {
   ListItemText,
   Typography,
 } from '@material-ui/core';
-import { CHAT_LOCATIONS } from '../../constants/CHAT_LOCATIONS';
+import { CHAT_LOCATIONS } from '../../constants';
 import Whatsapp from '../../../../../assets/whatsapp.svg';
 import Telegram from '../../../../../assets/telegram.svg';
 import Skype from '../../../../../assets/skype.svg';
@@ -60,12 +60,15 @@ export const ChatList = ({
                     </Typography>
 
                     <Typography noWrap variant="caption" color="textSecondary">
-                      {(chatClient.subName ? (chatClient.subName + " - ") : "") + (chatClient.phone ? chatClient.phone : "")}
+                      {(chatClient.subName ? `${chatClient.subName} - ` : '') +
+                        (chatClient.phone ? chatClient.phone : '')}
                     </Typography>
                   </Column>
                   <Subtitle nowrap>
                     <Typography noWrap variant="caption" color="textSecondary">
-                      {chatClient.lastMessageAtFormatted ? chatClient.lastMessageAtFormatted : chatClient.lastMessageAt}
+                      {chatClient.lastMessageAtFormatted
+                        ? chatClient.lastMessageAtFormatted
+                        : chatClient.lastMessageAt}
                     </Typography>
                   </Subtitle>
                 </Row>

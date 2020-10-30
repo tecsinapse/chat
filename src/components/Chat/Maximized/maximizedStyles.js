@@ -1,8 +1,5 @@
 import { makeStyles } from '@material-ui/styles';
-import {
-  defaultGrey2,
-  defaultGreyLight5,
-} from '@tecsinapse/ui-kit';
+import { defaultGrey2, defaultGreyLight5 } from '@tecsinapse/ui-kit';
 
 export const useStyle = makeStyles(theme => ({
   root: {
@@ -123,5 +120,16 @@ export const useStyle = makeStyles(theme => ({
     lineHeight: '1',
     userSelect: 'none',
     justifyContent: 'center',
+  },
+  messageStatusContainer: {
+    lineHeight: '20px',
+  },
+  messageStatusAtContainer: {
+    verticalAlign: 'top',
+  },
+  messageStatusIcon: {
+    width: '15px',
+    height: '15px',
+    marginLeft: '5px',
   },
 }));
