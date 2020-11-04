@@ -11,6 +11,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Typography,
 } from "@material-ui/core";
 import { TableHeader } from "./TableHeader";
 import { encodeChatData } from "../../utils/encodeChatData";
@@ -67,6 +68,12 @@ export const MessageManagement = ({
         filter: true,
       },
       customRender: (row) => {
+        const lastSender =
+          row?.lastMessageSource === "CLIENT"
+            ? row?.name?.split(" ")[0]
+            : row?.extraInfo?.responsavel?.split(" ")[0];
+        const fontItalic = { fontStyle: "italic" };
+
         return (
           <>
             {row.highlighted ? (
@@ -77,13 +84,13 @@ export const MessageManagement = ({
             {row.subName && (
               <>
                 <br />
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: row.subName,
-                  }}
-                />
+                <span>{row.subName}</span>
               </>
             )}
+            <br />
+            <Typography variant="caption" style={fontItalic}>
+              {lastSender}: {row?.lastMessage}
+            </Typography>
           </>
         );
       },
