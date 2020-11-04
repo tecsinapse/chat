@@ -5,10 +5,10 @@ export const mockUnreadInitialState = {
     {
       connectionKey: "dynamo-vendas-homolog-zenvia",
       destination: "nissan",
-      name: "João Paulo Bassinello",
+      name: "Denner",
       subName: "Operador",
-      phone: "(19) 99456-8196",
-      chatId: '5519994568196',
+      phone: "(67) 99267-8000",
+      chatId: "5567992678000",
       contactAt: "2020-08-28T12:58:54Z",
       highlighted: false,
       minutesToBlock: 1430,
@@ -38,7 +38,7 @@ export const mockUnreadInitialState = {
     segmento: "Segmento",
   },
   userNameById: {
-    '5a102db0-d019-4580-a173-75a0ae47581f': 'Operador 1',
-    'aaaa': 'Operador 2'
-  }
+    "5a102db0-d019-4580-a173-75a0ae47581f": "Operador 1",
+    aaaa: "Operador 2",
+  },
 };
