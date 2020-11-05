@@ -16,7 +16,7 @@ export const InitWebsockets = ({
   connectionKeys.forEach((connectionKey) => {
     mainSocketClientRefs[connectionKey] = createRef();
   });
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-unused-vars
   let productSocketClientRef = useRef();
 
   const onConnectMainSocket = (connectionKey) => {

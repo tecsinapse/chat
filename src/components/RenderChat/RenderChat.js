@@ -11,6 +11,7 @@ import {
 } from "../../utils/message";
 import uuidv1 from "uuid/v1";
 import { ChatOptions } from "./ChatOptions/ChatOptions";
+import { onSelectedChatMaker } from "../../utils/helpers";
 
 const emptyChat = {
   chatId: null,
@@ -21,53 +22,16 @@ const emptyChat = {
   unread: 0,
 };
 
-const onSelectedChatMaker = (
-  initialInfo,
-  setIsLoading,
-  setCurrentChat,
-  setMessages,
-  setBlocked,
-  chatApiUrl,
-  messagesEndRef,
-  onReadAllMessagesOfChat,
-  userNamesById
-) => (chat) => {
-  setIsLoading(true);
-  setCurrentChat(chat);
-
-  defaultFetch(
-    `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${initialInfo.destination}/${chat.chatId}/messages?page=0&size=50&updateUnread=${chat.updateUnreadWhenOpen}`,
-    "GET",
-    {}
-  ).then((pageResults) => {
-    const messages = pageResults.content
-      .map((externalMessage) => {
-        return buildChatMessageObject(
-          externalMessage,
-          chat.chatId,
-          userNamesById
-        );
-      })
-      .reverse();
-    setMessages(messages);
-    const isBlocked = chat.status === "BLOCKED";
-    setBlocked(chat, isBlocked);
-    setIsLoading(false);
-    if (chat.updateUnreadWhenOpen) {
-      onReadAllMessagesOfChat(chat);
-    }
-
-    setTimeout(function () {
-      const current = messagesEndRef.current;
-      if (current) {
-        current.scrollIntoView({
-          block: "end",
-          behavior: "smooth",
-        });
-      }
-      // workaround to wait for all elements to render
-    }, 700);
-  });
+const uploadOptions = {
+  maxFilesPerMessage: 10,
+  maximumFileLimitMessage: (limit) =>
+    `Apenas ${limit} arquivos podem ser carregados por mensagem.`,
+  maximumFileNumberMessage: "Número máximo de arquivos",
+  filenameFailedMessage: (name) => `${name} falhou. `,
+  filetypeNotSupportedMessage: "Arquivo não suportado. ",
+  sizeLimitErrorMessage: (size) =>
+    `Arquivo deve ter tamanho menor que ${size / 1024} KB.`,
+  undefinedErrorMessage: "Erro interno",
 };
 
 export const RenderChat = ({
@@ -125,7 +89,7 @@ export const RenderChat = ({
     }
     setIsLoading(false);
     // eslint-disable-next-line
-  }, [initialInfo, chatApiUrl, setIsLoading]);
+  }, [initialInfo, chatApiUrl, setIsLoading]); // eslint-disable-line react-hooks/exhaustive-deps
   // ignore warning "React Hook useEffect has a missing dependency". It could cause infinity loop
 
   const handleNewExternalMessage = (newMessage) => {
@@ -371,6 +335,7 @@ export const RenderChat = ({
           color: "#000",
         }}
         warningMessage={timeToExpire}
+        uploadOptions={uploadOptions}
       />
 
       <ChatOptions

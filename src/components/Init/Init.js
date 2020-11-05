@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { mdiArrowLeft, mdiChevronRight, mdiClose, mdiForum } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Divider } from "@tecsinapse/ui-kit";
-import { makeStyles, useTheme } from "@material-ui/styles";
+import { useTheme } from "@material-ui/styles";
 import {
   Badge,
   Button,
@@ -15,7 +15,7 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import { completeChatInfoWith, load } from "../../utils/loadChatsInfos";
+import { completeChatInfoWith } from "../../utils/loadChatsInfos";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { UnreadChats } from "../UnreadChats/UnreadChats";
 import { RenderChat } from "../RenderChat/RenderChat";
@@ -25,87 +25,8 @@ import { ChatButton } from "../ChatButton/ChatButton";
 import { defaultFetch, noAuthJsonFetch } from "../../utils/fetch";
 import { encodeChatData } from "../../utils/encodeChatData";
 import { SendNotification } from "../SendNotification/SendNotification";
-
-const useStyle = makeStyles((theme) => ({
-  drawerContainer: {
-    fontFamily:
-      "font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI , Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue",
-    margin: theme.spacing(2, 0, 0, 0),
-    height: "100%",
-    overflowX: "hidden",
-    maxWidth: "80vw",
-    minWidth: "40vw",
-    /* TODO verificar uma forma melhor */
-    /* Limpando estilos do Bootstrap para os inputs */
-    "& input": {
-      border: "0 !important",
-      margin: 0,
-      paddingTop: "10.5px",
-      paddingBottom: "10.5px",
-    },
-    "& input:focus": {
-      border: "0 !important",
-      borderColor: "#fff",
-      boxShadow: "none",
-    },
-    "& textarea": {
-      border: "0 !important",
-      margin: 0,
-      paddingTop: "10.5px",
-      paddingBottom: "10.5px",
-    },
-    "& textarea:focus": {
-      border: "0 !important",
-      borderColor: "#fff",
-      boxShadow: "none",
-    },
-  },
-  drawerHeader: {
-    margin: theme.spacing(0, 2, 20 / 12, 2),
-  },
-  messageManagementLinkContainer: {
-    padding: theme.spacing(1, 2, 3 / 4, 2),
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: theme.palette.grey["300"],
-    },
-  },
-  title: {
-    padding: 0,
-  },
-}));
-
-async function loadComponent(
-  { chatApiUrl, getInitialStatePath, params, standalone },
-  setComponentInfo,
-  setIsLoadingInitialState,
-  setView,
-  setCurrentChat
-) {
-  const info = await load({
-    chatApiUrl,
-    getInitialStatePath,
-    params,
-    standalone,
-  });
-  setComponentInfo(info);
-  setIsLoadingInitialState(false);
-  if (info.currentClient && Object.keys(info.currentClient).length > 0) {
-    // quando a visualização é de um cliente específico, então define as informações
-    // desse cliente como currentChat e exibe o chat direto
-    setView(COMPONENT_LOCATION.CHAT);
-    const chats = info.allChats.filter((chat) =>
-      info.currentClient.clientChatIds.includes(chat.chatId)
-    );
-    setCurrentChat({
-      name: info.currentClient.clientName,
-      connectionKey: info.currentClient.connectionKey,
-      destination: info.currentClient.destination,
-      disabled: info.currentClient.disabled,
-      chats: chats,
-    });
-  }
-}
+import { loadComponent } from "../../utils/helpers";
+import { useStyle } from "./styles";
 
 export const Init = ({ chatInitConfig }) => {
   const homeLocation = chatInitConfig.onlyMessageManagement
@@ -443,6 +364,9 @@ export const Init = ({ chatInitConfig }) => {
               chatApiUrl={chatInitConfig.chatApiUrl}
               connectionKeys={componentInfo.connectionKeys}
               destination={componentInfo.destination}
+              createPath={chatInitConfig.createPath}
+              info={componentInfo.sendNotificationInfo}
+              reloadComponent={reloadComponent}
             />
           )}
 

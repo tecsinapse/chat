@@ -1757,8 +1757,10 @@
     "@svgr/plugin-svgo" "^4.3.1"
     loader-utils "^1.2.3"
 
-"@tecsinapse/chat@file:.yalc/@tecsinapse/chat":
-  version "2.4.1-d971dd08"
+"@tecsinapse/chat@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-3.0.0.tgz#4723c029508fbb2e823b4e58ffcc0b222888d8e3"
+  integrity sha512-r8cpDgv1mm+4tjetuMlvVj+SF+v1jk4Hl7KiYVCf4h0cZR/pphkg2eEDDjwix2fw+YBI64P1aRd1KURlKYzMNw==
   dependencies:
     "@cleandersonlobo/react-mic" "^1.2.0"
     "@livechat/ui-kit" "^0.4.0-10"
@@ -1771,6 +1773,7 @@
     "@tecsinapse/uploader" "^2.3.2"
     clsx "^1.1.1"
     enumify "^1.0.4"
+    moment "^2.27.0"
     prop-types "^15.7.2"
     react-compound-timer "^1.2.0"
     uniqid "^5.2.0"

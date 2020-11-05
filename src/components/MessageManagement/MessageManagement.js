@@ -1,11 +1,21 @@
-import React, {useState} from "react";
-import {makeStyles} from "@material-ui/styles";
-import {Table} from "@tecsinapse/table";
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/styles";
+import { Table } from "@tecsinapse/table";
 import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
-import {format} from "../../utils/dates";
-import {Badge, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
-import {TableHeader} from "./TableHeader";
-import {encodeChatData} from "../../utils/encodeChatData";
+import { format } from "../../utils/dates";
+import {
+  Badge,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+} from "@material-ui/core";
+import { TableHeader } from "./TableHeader";
+import { encodeChatData } from "../../utils/encodeChatData";
+import { MessageSource } from "../../constants";
 
 const useStyle = makeStyles(() => ({
   highlighted: {
@@ -19,14 +29,14 @@ const useStyle = makeStyles(() => ({
 }));
 
 export const MessageManagement = ({
-                                    componentInfo,
-                                    onSelectChat,
-                                    onDeleteChat,
-                                    userkeycloakId,
-                                    showMessagesLabel,
-                                    showDiscardOption
-                                  }) => {
-  const {extraInfoColumns, allChats = []} = componentInfo;
+  componentInfo,
+  onSelectChat,
+  onDeleteChat,
+  userkeycloakId,
+  showMessagesLabel,
+  showDiscardOption,
+}) => {
+  const { extraInfoColumns, allChats = [] } = componentInfo;
   const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
   const [chats, setChats] = useState(allChats);
   const [deletingChat, setDeletingChat] = useState({});
@@ -59,15 +69,30 @@ export const MessageManagement = ({
         filter: true,
       },
       customRender: (row) => {
-        return <>
-          {row.highlighted ?
-            <span className={classes.highlighted}>{row.name}</span>
-            : <span>{row.name}</span>
-          }
-          {row.subName && <><br/><span dangerouslySetInnerHTML={{
-            __html: row.subName
-          }}/></>}
-        </>
+        const lastSender = MessageSource.isClient(row?.lastMessageSource)
+          ? row?.name?.split(" ")[0]
+          : row?.extraInfo?.responsavel?.split(" ")[0];
+        const fontItalic = { fontStyle: "italic" };
+
+        return (
+          <>
+            {row.highlighted ? (
+              <span className={classes.highlighted}>{row.name}</span>
+            ) : (
+              <span>{row.name}</span>
+            )}
+            {row.subName && (
+              <>
+                <br />
+                <span>{row.subName}</span>
+              </>
+            )}
+            <br />
+            <Typography variant="caption" style={fontItalic}>
+              {lastSender}: {row?.lastMessage}
+            </Typography>
+          </>
+        );
       },
     },
     {
@@ -147,50 +172,45 @@ export const MessageManagement = ({
   });
 
   const deleteChat = () => {
-    onDeleteChat(deletingChat)
-      .then((updatedAllChats) => {
-        setDeletingChat({});
-        setChats(updatedAllChats);
-      });
+    onDeleteChat(deletingChat).then((updatedAllChats) => {
+      setDeletingChat({});
+      setChats(updatedAllChats);
+    });
   };
 
   const exportToCSV = () => {
-    let fileNameWithExt = 'gestao-mensagens.csv';
+    let fileNameWithExt = "gestao-mensagens.csv";
 
-    const exportedColumns = ['Data do Contato', 'Cliente', 'Telefone'];
+    const exportedColumns = ["Data do Contato", "Cliente", "Telefone"];
     Object.keys(extraInfoColumns).forEach((key) => {
       exportedColumns.push(extraInfoColumns[key]);
     });
 
     const dataToExport = [];
-    chats.forEach(chat => {
-      const row = [
-        format(chat.lastMessageAt),
-        chat.name,
-        chat.phone
-      ];
+    chats.forEach((chat) => {
+      const row = [format(chat.lastMessageAt), chat.name, chat.phone];
       Object.keys(extraInfoColumns).forEach((key) => {
         row.push(chat.extraInfo[key]);
       });
-      dataToExport.push(row.join(';'));
+      dataToExport.push(row.join(";"));
     });
 
-    dataToExport.splice(0, 0, exportedColumns.join(';'));
+    dataToExport.splice(0, 0, exportedColumns.join(";"));
 
-    const csvData = dataToExport.join('\n');
+    const csvData = dataToExport.join("\n");
     const csvFile = window.URL.createObjectURL(
-      new Blob(['\ufeff', csvData], {type: 'text/csv;charset=utf-8;'})
+      new Blob(["\ufeff", csvData], { type: "text/csv;charset=utf-8;" })
     );
 
     if (window.navigator.msSaveOrOpenBlob) {
       window.navigator.msSaveOrOpenBlob(csvFile, fileNameWithExt);
     } else {
-      const hiddenElement = document.createElement('a');
+      const hiddenElement = document.createElement("a");
 
       hiddenElement.href = csvFile;
-      hiddenElement.target = '_blank';
+      hiddenElement.target = "_blank";
       hiddenElement.download = fileNameWithExt;
-      hiddenElement.style.visibility = 'hidden';
+      hiddenElement.style.visibility = "hidden";
       document.body.appendChild(hiddenElement);
       hiddenElement.click();
       document.body.removeChild(hiddenElement);
@@ -206,11 +226,11 @@ export const MessageManagement = ({
         rowId={(row) => row.id}
         pagination
         exportOptions={{
-          exportFileName: 'chat-mensagens',
+          exportFileName: "chat-mensagens",
           exportTypes: [
             {
-              label: 'Exportar para CSV',
-              type: 'custom',
+              label: "Exportar para CSV",
+              type: "custom",
               exportFunc: () => exportToCSV(),
             },
           ],
@@ -232,17 +252,13 @@ export const MessageManagement = ({
       >
         <DialogTitle id="dialog-title">{"Confirmação"}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Descartar a conversa?
-          </DialogContentText>
+          <DialogContentText>Descartar a conversa?</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={() => setDeletingChat({})} color="primary">
             Não
           </Button>
-          <Button
-            onClick={deleteChat}
-            color="primary" autoFocus>
+          <Button onClick={deleteChat} color="primary" autoFocus>
             Sim
           </Button>
         </DialogActions>
