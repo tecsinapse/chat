@@ -25,8 +25,8 @@ import { ChatButton } from "../ChatButton/ChatButton";
 import { defaultFetch, noAuthJsonFetch } from "../../utils/fetch";
 import { encodeChatData } from "../../utils/encodeChatData";
 import { SendNotification } from "../SendNotification/SendNotification";
-import { useStyle } from "./styles";
 import { loadComponent } from "../../utils/helpers";
+import { useStyle } from "./styles";
 
 export const Init = ({ chatInitConfig }) => {
   const homeLocation = chatInitConfig.onlyMessageManagement
@@ -45,15 +45,13 @@ export const Init = ({ chatInitConfig }) => {
 
   useEffect(() => {
     loadComponent(
-      chatInitConfig.chatApiUrl,
-      chatInitConfig.getInitialStatePath,
-      chatInitConfig.params,
+      chatInitConfig,
       setComponentInfo,
       setIsLoadingInitialState,
       setView,
       setCurrentChat
     ).then(() => {
-      if (chatInitConfig.openImmediately) {
+      if (chatInitConfig?.openImmediately) {
         setIsDrawerOpen(true);
       }
     });
@@ -68,9 +66,7 @@ export const Init = ({ chatInitConfig }) => {
 
   const reloadComponent = () => {
     loadComponent(
-      chatInitConfig.chatApiUrl,
-      chatInitConfig.getInitialStatePath,
-      chatInitConfig.params,
+      chatInitConfig,
       setComponentInfo,
       setIsLoadingInitialState,
       setView,

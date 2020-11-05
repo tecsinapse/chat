@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import { TableHeader } from "./TableHeader";
 import { encodeChatData } from "../../utils/encodeChatData";
+import { MessageSource } from "../../constants";
 
 const useStyle = makeStyles(() => ({
   highlighted: {
@@ -68,10 +69,9 @@ export const MessageManagement = ({
         filter: true,
       },
       customRender: (row) => {
-        const lastSender =
-          row?.lastMessageSource === "CLIENT"
-            ? row?.name?.split(" ")[0]
-            : row?.extraInfo?.responsavel?.split(" ")[0];
+        const lastSender = MessageSource.isClient(row?.lastMessageSource)
+          ? row?.name?.split(" ")[0]
+          : row?.extraInfo?.responsavel?.split(" ")[0];
         const fontItalic = { fontStyle: "italic" };
 
         return (

@@ -1,36 +1,60 @@
 import moment from "moment";
+import { MessageSource } from "../constants";
+import { DELIVERY_STATUS } from "@tecsinapse/chat";
 
-export const buildChatMessageObject = (externalMessage, fromId, userNamesByIds = {}) => {
+const formatMessageStatus = (status) => {
+  return status.map((s) => {
+    return {
+      status: s.status.toLowerCase(),
+      at: s.at,
+    };
+  });
+};
 
-  const isOwner = externalMessage.from !== fromId;
+export const buildChatMessageObject = (
+  externalMessage,
+  fromId,
+  userNamesByIds = {}
+) => {
+  const {
+    userId,
+    name,
+    messageId,
+    title,
+    text,
+    medias,
+    at,
+    statusDetails,
+    source,
+    status,
+  } = externalMessage;
 
-  const authorName = ((userNamesByIds !== undefined) ?
-    (isOwner ? userNamesByIds[externalMessage.userId] : externalMessage.name)
-    : undefined);
+  const isOwner = MessageSource.isProduct(source);
+  const authorName = userNamesByIds && isOwner ? userNamesByIds[userId] : name;
 
   let message = {
-    at: moment(externalMessage.at).format("DD/MM/YYYY HH:mm"),
+    at: moment(at).format("DD/MM/YYYY HH:mm"),
     own: isOwner,
-    id: externalMessage.messageId,
-    text: externalMessage.text,
-    authorName: authorName
+    id: messageId,
+    text: text,
+    authorName: authorName,
+    statusDetails: formatMessageStatus(statusDetails),
+    status: status.toLowerCase(),
   };
 
-  if (externalMessage.medias && externalMessage.medias.length > 0) {
+  if (medias && medias.length > 0) {
     // when with media, show title instead of text
     delete message.text;
-    message.title = externalMessage.title ? externalMessage.title : externalMessage.text;
+    message.title = title ? title : text;
 
-    message.medias = externalMessage.medias.map((media) => {
+    message.medias = medias.map((media) => {
       if (media.mediaType.startsWith("application")) {
         delete message.title;
       }
       return {
         url: media.url,
         mediaType: media.mediaType,
-        name: media.mediaType.startsWith("application")
-          ? externalMessage.text
-          : "",
+        name: media.mediaType.startsWith("application") ? text : "",
       };
     });
   }
@@ -44,26 +68,36 @@ export const buildSendingMessage = (localId, text, title, file) => ({
   own: true,
   id: Date.now().toString(), // Dummy only, it is set by backend
   authorName: "Você",
-  status: "sending",
+  status: DELIVERY_STATUS.SENDING.key,
   text,
   title,
   medias: file
     ? [
-      {
-        mediaType: file.mediaType,
-        url: file.data,
-        name: file.name,
-        size: file.size,
-        data: file.file,
-      },
-    ]
+        {
+          mediaType: file.mediaType,
+          url: file.data,
+          name: file.name,
+          size: file.size,
+          data: file.file,
+        },
+      ]
     : undefined,
 });
 
-export const setStatusMessageFunc = (setMessages) => (localId, status) => {
+export const setStatusMessageFunc = (setMessages) => (
+  localId,
+  status,
+  details
+) => {
   setMessages((prevMessages) => {
     const copyMessages = [...prevMessages];
-    copyMessages.find((m) => m.localId === localId).status = status;
+    const message = copyMessages.find((m) => m.localId === localId);
+    if (message) {
+      message.status = status.toLowerCase();
+      if (status) {
+        message.statusDetails = formatMessageStatus(details);
+      }
+    }
     return copyMessages;
   });
 };
