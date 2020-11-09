@@ -28,7 +28,7 @@ import { SendNotification } from "../SendNotification/SendNotification";
 import { useStyle } from "./styles";
 import { loadComponent } from "../../utils/helpers";
 
-export const Init = ({ chatInitConfig }) => {
+export const Init = ({ chatInitConfig, drawerContainerEL }) => {
   const homeLocation = chatInitConfig.onlyMessageManagement
     ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
     : COMPONENT_LOCATION.UNREAD;
@@ -223,6 +223,12 @@ export const Init = ({ chatInitConfig }) => {
       view === COMPONENT_LOCATION.UNREAD ||
       isChatViewAndIsBlocked);
 
+  const DrawerContainerEL =
+    drawerContainerEL ||
+    (({ children, className }) => {
+      return <div className={className}>{children}</div>;
+    });
+
   return (
     <>
       {chatInitConfig.customChatButton &&
@@ -244,7 +250,7 @@ export const Init = ({ chatInitConfig }) => {
           open={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
         >
-          <div className={classes.drawerContainer}>
+          <DrawerContainerEL className={classes.drawerContainer}>
             <div className={classes.drawerHeader}>
               <Grid container justify="space-between">
                 <Grid item>
@@ -392,7 +398,7 @@ export const Init = ({ chatInitConfig }) => {
                 </Button>
               </div>
             )}
-          </div>
+          </DrawerContainerEL>
         </Drawer>
 
         {!isLoadingInitialState && (
