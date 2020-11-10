@@ -60,7 +60,7 @@ export const MessageManagement = ({
       options: {
         filter: true,
       },
-      customRender: (row) => format(row.lastMessageAt),
+      customRender: (row) => format(row.contactAt),
     },
     {
       title: "Cliente",
@@ -69,9 +69,13 @@ export const MessageManagement = ({
         filter: true,
       },
       customRender: (row) => {
-        const lastSender = MessageSource.isClient(row?.lastMessageSource)
-          ? row?.name?.split(" ")[0]
-          : row?.extraInfo?.responsavel?.split(" ")[0];
+        const renderLastMessage = row.lastMessage;
+
+        const lastSender =
+          renderLastMessage &&
+          (MessageSource.isClient(row?.lastMessageSource)
+            ? row?.name?.split(" ")[0]
+            : row?.extraInfo?.responsavel?.split(" ")[0]);
         const fontItalic = { fontStyle: "italic" };
 
         return (
@@ -88,9 +92,11 @@ export const MessageManagement = ({
               </>
             )}
             <br />
-            <Typography variant="caption" style={fontItalic}>
-              {lastSender}: {row?.lastMessage}
-            </Typography>
+            {renderLastMessage && (
+              <Typography variant="caption" style={fontItalic}>
+                {lastSender}: {row?.lastMessage}
+              </Typography>
+            )}
           </>
         );
       },

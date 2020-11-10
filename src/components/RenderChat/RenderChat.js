@@ -318,7 +318,9 @@ export const RenderChat = ({
         onMessageResend={onMessageResend}
         isBlocked={blocked}
         blockedMessage=""
-        chatList={initialInfo.chats.length > 1 ? initialInfo.chats : undefined}
+        chatList={
+          initialInfo?.chats?.length > 1 ? initialInfo.chats : undefined
+        }
         onBackToChatList={onBackToChatList}
         onSelectedChat={onSelectedChat}
         disabledSend={isLoading && messages.length === 0}
