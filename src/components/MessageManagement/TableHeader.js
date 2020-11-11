@@ -15,11 +15,12 @@ const useStyle = makeStyles((theme) => ({
 export const TableHeader = ({
   showNotClient,
   switchToOnlyNotClients,
+  headerClass,
 }) => {
   const classes = useStyle();
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className={headerClass} style={{ display: "flex" }}>
       <Typography variant="h6" className={classes.marginRight}>
         Clientes do Chat
       </Typography>

@@ -28,12 +28,12 @@ import { SendNotification } from "../SendNotification/SendNotification";
 import { useStyle } from "./styles";
 import { loadComponent } from "../../utils/helpers";
 
-export const Init = ({ chatInitConfig, drawerContainerEL }) => {
+export const Init = ({ chatInitConfig, customizeStyles, mobile }) => {
   const homeLocation = chatInitConfig.onlyMessageManagement
     ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
     : COMPONENT_LOCATION.UNREAD;
 
-  const classes = useStyle();
+  const classes = useStyle(customizeStyles)();
   const theme = useTheme();
   const [isLoadingInitialState, setIsLoadingInitialState] = useState(true);
   const [view, setView] = useState(homeLocation);
@@ -223,12 +223,6 @@ export const Init = ({ chatInitConfig, drawerContainerEL }) => {
       view === COMPONENT_LOCATION.UNREAD ||
       isChatViewAndIsBlocked);
 
-  const DrawerContainerEL =
-    drawerContainerEL ||
-    (({ children, className }) => {
-      return <div className={className}>{children}</div>;
-    });
-
   return (
     <>
       {chatInitConfig.customChatButton &&
@@ -250,7 +244,7 @@ export const Init = ({ chatInitConfig, drawerContainerEL }) => {
           open={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
         >
-          <DrawerContainerEL className={classes.drawerContainer}>
+          <div className={classes.drawerContainer}>
             <div className={classes.drawerHeader}>
               <Grid container justify="space-between">
                 <Grid item>
@@ -277,7 +271,7 @@ export const Init = ({ chatInitConfig, drawerContainerEL }) => {
                         </Badge>
                       </Grid>
                     )}
-                    <Grid item>
+                    <Grid item className={classes.titleContainer}>
                       <Typography
                         variant="h5"
                         color="textPrimary"
@@ -294,7 +288,7 @@ export const Init = ({ chatInitConfig, drawerContainerEL }) => {
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid item>
+                <Grid item className={classes.drawerHeaderClose}>
                   <Icon
                     onClick={() => setIsDrawerOpen(false)}
                     color={theme.palette.primary.main}
@@ -352,6 +346,7 @@ export const Init = ({ chatInitConfig, drawerContainerEL }) => {
               <UnreadChats
                 chats={componentInfo.allChats}
                 onSelectChat={onSelectUnreadChat}
+                mobile={mobile}
               />
             )}
             {view === COMPONENT_LOCATION.CHAT && (
@@ -373,6 +368,8 @@ export const Init = ({ chatInitConfig, drawerContainerEL }) => {
                 userkeycloakId={chatInitConfig.userkeycloakId}
                 showMessagesLabel={chatInitConfig.showMessagesLabel}
                 showDiscardOption={chatInitConfig.showDiscardOption}
+                headerClass={classes.messageManagementHeader}
+                mobile={mobile}
               />
             )}
             {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (
@@ -388,7 +385,10 @@ export const Init = ({ chatInitConfig, drawerContainerEL }) => {
             )}
 
             {showSendNotification && (
-              <div style={{ marginTop: theme.spacing(2), textAlign: "center" }}>
+              <div
+                className={classes.messageManagementNewChat}
+                style={{ marginTop: theme.spacing(2), textAlign: "center" }}
+              >
                 <Button
                   color="secondary"
                   variant="contained"
@@ -398,7 +398,7 @@ export const Init = ({ chatInitConfig, drawerContainerEL }) => {
                 </Button>
               </div>
             )}
-          </DrawerContainerEL>
+          </div>
         </Drawer>
 
         {!isLoadingInitialState && (

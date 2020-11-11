@@ -11,6 +11,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Drawer,
+  ListItem,
+  ListItemText,
 } from "@material-ui/core";
 import { TableHeader } from "./TableHeader";
 import { encodeChatData } from "../../utils/encodeChatData";
@@ -33,11 +36,15 @@ export const MessageManagement = ({
   userkeycloakId,
   showMessagesLabel,
   showDiscardOption,
+  headerClass,
+  mobile,
 }) => {
   const { extraInfoColumns, allChats = [] } = componentInfo;
   const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
   const [chats, setChats] = useState(allChats);
   const [deletingChat, setDeletingChat] = useState({});
+  const [selectedRow, setSelectedRow] = useState();
+  const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
 
   const switchToOnlyNotClients = () => {
     const showOnly = !showOnlyNotClients;
@@ -109,60 +116,62 @@ export const MessageManagement = ({
     });
   }
 
-  columns.push({
-    title: "Ações",
-    field: "",
-    customRender: (row) => {
-      const actions = [
-        {
-          label: showMessagesLabel,
-          onClick: (rowData) => {
-            onSelectChat(rowData);
-          },
-        },
-      ];
-      if (row.actions && row.actions.length > 0) {
-        row.actions.forEach((actionLink) => {
-          actions.push({
-            label: actionLink.label,
+  if (!mobile) {
+    columns.push({
+      title: "Ações",
+      field: "",
+      customRender: (row) => {
+        const actions = [
+          {
+            label: showMessagesLabel,
             onClick: (rowData) => {
-              const encodedData = encodeChatData(rowData, userkeycloakId);
-              window.open(`${actionLink.path}?data=${encodedData}`, "_self");
+              onSelectChat(rowData);
+            },
+          },
+        ];
+        if (row.actions && row.actions.length > 0) {
+          row.actions.forEach((actionLink) => {
+            actions.push({
+              label: actionLink.label,
+              onClick: (rowData) => {
+                const encodedData = encodeChatData(rowData, userkeycloakId);
+                window.open(`${actionLink.path}?data=${encodedData}`, "_self");
+              },
+            });
+          });
+        }
+        if (showDiscardOption) {
+          actions.push({
+            label: "Descartar Conversa",
+            onClick: (rowData) => {
+              setDeletingChat(rowData);
             },
           });
-        });
-      }
-      if (showDiscardOption) {
-        actions.push({
-          label: "Descartar Conversa",
-          onClick: (rowData) => {
-            setDeletingChat(rowData);
-          },
-        });
-      }
+        }
 
-      return (
-        <Badge
-          color="error"
-          badgeContent={row.unread}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          classes={{
-            anchorOriginTopRightRectangle: classes.badgeAlign,
-          }}
-        >
-          <RowActions
-            actions={actions}
-            row={row}
-            verticalActions={true}
-            forceCollapseActions={true}
-          />
-        </Badge>
-      );
-    },
-  });
+        return (
+          <Badge
+            color="error"
+            badgeContent={row.unread}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            classes={{
+              anchorOriginTopRightRectangle: classes.badgeAlign,
+            }}
+          >
+            <RowActions
+              actions={actions}
+              row={row}
+              verticalActions={true}
+              forceCollapseActions={true}
+            />
+          </Badge>
+        );
+      },
+    });
+  }
 
   const deleteChat = () => {
     onDeleteChat(deletingChat).then((updatedAllChats) => {
@@ -214,25 +223,36 @@ export const MessageManagement = ({
     <>
       <Table
         onDrawerClose={() => {}}
+        onRowClick={(data) => {
+          if (mobile) {
+            setSelectedRow(data);
+            setBottomSheetOpen(true);
+          }
+        }}
         columns={columns}
         data={chats}
         rowId={(row) => row.id}
         pagination
-        exportOptions={{
-          exportFileName: "chat-mensagens",
-          exportTypes: [
-            {
-              label: "Exportar para CSV",
-              type: "custom",
-              exportFunc: () => exportToCSV(),
-            },
-          ],
-        }}
+        exportOptions={
+          !mobile
+            ? {
+                exportFileName: "chat-mensagens",
+                exportTypes: [
+                  {
+                    label: "Exportar para CSV",
+                    type: "custom",
+                    exportFunc: () => exportToCSV(),
+                  },
+                ],
+              }
+            : {}
+        }
         toolbarOptions={{
           title: (
             <TableHeader
               showNotClient={showOnlyNotClients}
               switchToOnlyNotClients={switchToOnlyNotClients}
+              headerClass={headerClass}
             />
           ),
         }}
@@ -256,6 +276,45 @@ export const MessageManagement = ({
           </Button>
         </DialogActions>
       </Dialog>
+
+      {mobile && (
+        <Drawer
+          anchor="bottom"
+          open={bottomSheetOpen}
+          onClose={() => setBottomSheetOpen(false)}
+        >
+          <div>
+            <ListItem onClick={() => onSelectChat(selectedRow)}>
+              <ListItemText>{showMessagesLabel}</ListItemText>
+            </ListItem>
+
+            {selectedRow?.actions.map((actionLink) => {
+              return (
+                <ListItem
+                  onClick={() => {
+                    const encodedData = encodeChatData(
+                      selectedRow,
+                      userkeycloakId
+                    );
+                    window.open(
+                      `${actionLink.path}?data=${encodedData}`,
+                      "_self"
+                    );
+                  }}
+                >
+                  <ListItemText>{actionLink.label}</ListItemText>
+                </ListItem>
+              );
+            })}
+
+            {showDiscardOption && (
+              <ListItem onClick={() => setDeletingChat(selectedRow)}>
+                <ListItemText>Descartar Conversa</ListItemText>
+              </ListItem>
+            )}
+          </div>
+        </Drawer>
+      )}
     </>
   );
 };
