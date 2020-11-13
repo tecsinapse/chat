@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Table } from "@tecsinapse/table";
 import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
-import { format } from "../../utils/dates";
+import { format, toMoment } from "../../utils/dates";
 import {
   Badge,
   Button,
@@ -28,6 +28,15 @@ const useStyle = makeStyles(() => ({
   },
 }));
 
+const sortChatsByContactAt = (allChats) =>
+  allChats.sort((a, b) => {
+    const contactA = toMoment(a?.contactAt);
+    const contactB = toMoment(b?.contactAt);
+    if (contactA > contactB) return -1;
+    else if (contactA < contactB) return 1;
+    else return 0;
+  });
+
 export const MessageManagement = ({
   componentInfo,
   onSelectChat,
@@ -37,8 +46,8 @@ export const MessageManagement = ({
   showDiscardOption,
 }) => {
   const { extraInfoColumns, allChats = [] } = componentInfo;
+  const [chats, setChats] = useState(sortChatsByContactAt(allChats));
   const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
-  const [chats, setChats] = useState(allChats);
   const [deletingChat, setDeletingChat] = useState({});
 
   const switchToOnlyNotClients = () => {
@@ -59,6 +68,7 @@ export const MessageManagement = ({
       field: "contactAt",
       options: {
         filter: true,
+        sort: true,
       },
       customRender: (row) => format(row.contactAt),
     },
