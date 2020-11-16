@@ -358,6 +358,7 @@ export const Init = ({ chatInitConfig, customizeStyles, mobile }) => {
                 navigateWhenCurrentChat={chatInitConfig.navigateWhenCurrentChat}
                 onChatStatusChanged={onChatStatusChanged}
                 userNamesById={componentInfo.userNameById}
+                mobile={mobile}
               />
             )}
             {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
@@ -396,6 +397,18 @@ export const Init = ({ chatInitConfig, customizeStyles, mobile }) => {
                 >
                   INICIAR NOVA CONVERSA
                 </Button>
+              </div>
+            )}
+
+            {view === COMPONENT_LOCATION.CHAT && mobile && (
+              <div className={classes.mobileCloseChatButton}>
+                <Icon
+                  onClick={() => setView(homeLocation)}
+                  color={theme.palette.primary.main}
+                  size={1.25}
+                  style={{ cursor: "pointer" }}
+                  path={mdiClose}
+                />
               </div>
             )}
           </div>

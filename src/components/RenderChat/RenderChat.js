@@ -42,6 +42,7 @@ export const RenderChat = ({
   navigateWhenCurrentChat,
   onChatStatusChanged,
   userNamesById,
+  mobile,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
@@ -294,7 +295,7 @@ export const RenderChat = ({
   };
 
   return (
-    <div style={{ maxWidth: "40vW" }}>
+    <div style={{ maxWidth: mobile ? 0 : "40vW" }}>
       <Chat
         messages={messages}
         onMessageSend={onMessageSend}

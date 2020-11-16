@@ -20,3 +20,6 @@ Para fazer a build e poder integrar com os projetos é necessário:
 2. Copiar o conteúdo da pasta `build/` e colar no `tecsinapse-chat-api` na pasta específica de `assests`
 3. Alterar os arquivos necessários que importam os bundles gerados lá no `tecsinapse-chat-api`
 4. Fazer a compilição / release do `tecsinapse-chat-api` e utilizar nos projetos
+
+Para gerar um build como biblioteca:
+1. Executar o comando `yarn build-lib`

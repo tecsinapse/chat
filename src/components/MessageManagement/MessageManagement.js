@@ -288,9 +288,10 @@ export const MessageManagement = ({
               <ListItemText>{showMessagesLabel}</ListItemText>
             </ListItem>
 
-            {selectedRow?.actions.map((actionLink) => {
+            {selectedRow?.actions.map((actionLink, key) => {
               return (
                 <ListItem
+                  key={key}
                   onClick={() => {
                     const encodedData = encodeChatData(
                       selectedRow,
