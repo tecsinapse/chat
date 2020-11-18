@@ -10,9 +10,10 @@ export async function loadComponent(
   setComponentInfo,
   setIsLoadingInitialState,
   setView,
-  setCurrentChat
+  setCurrentChat,
+  userMock
 ) {
-  const info = await load(chatApiUrl, getInitialStatePath, params);
+  const info = await load(chatApiUrl, getInitialStatePath, params, userMock);
   setComponentInfo(info);
   setIsLoadingInitialState(false);
   if (info.currentClient && Object.keys(info.currentClient).length > 0) {

@@ -295,7 +295,7 @@ export const RenderChat = ({
   };
 
   return (
-    <div style={{ maxWidth: mobile ? 0 : "40vW" }}>
+    <div style={{ maxWidth: mobile ? "auto" : "40vW" }}>
       <Chat
         messages={messages}
         onMessageSend={onMessageSend}

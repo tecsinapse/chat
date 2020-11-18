@@ -28,7 +28,7 @@ import { SendNotification } from "../SendNotification/SendNotification";
 import { useStyle } from "./styles";
 import { loadComponent } from "../../utils/helpers";
 
-export const Init = ({ chatInitConfig, customizeStyles, mobile }) => {
+export const Init = ({ chatInitConfig, customizeStyles, mobile, userMock }) => {
   const homeLocation = chatInitConfig.onlyMessageManagement
     ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
     : COMPONENT_LOCATION.UNREAD;
@@ -51,7 +51,8 @@ export const Init = ({ chatInitConfig, customizeStyles, mobile }) => {
       setComponentInfo,
       setIsLoadingInitialState,
       setView,
-      setCurrentChat
+      setCurrentChat,
+      userMock
     ).then(() => {
       if (chatInitConfig.openImmediately) {
         setIsDrawerOpen(true);
@@ -64,6 +65,7 @@ export const Init = ({ chatInitConfig, customizeStyles, mobile }) => {
     setView,
     setCurrentChat,
     setIsDrawerOpen,
+    userMock,
   ]);
 
   const reloadComponent = () => {
@@ -74,7 +76,8 @@ export const Init = ({ chatInitConfig, customizeStyles, mobile }) => {
       setComponentInfo,
       setIsLoadingInitialState,
       setView,
-      setCurrentChat
+      setCurrentChat,
+      userMock
     ).then(() => {});
   };
 
