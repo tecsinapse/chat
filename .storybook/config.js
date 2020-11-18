@@ -9,8 +9,6 @@ const theme = create({
   base: 'light',
   brandTitle: 'TecSinapse Chat',
   brandUrl: 'https://github.com/tecsinapse/chat',
-  brandImage:
-    'https://www.tecsinapse.com.br/wp-content/themes/TecSinapse/assets/images/tecsinapse.svg',
   fontBase: 'Roboto',
   colorPrimary: themeColors.orange.primary.main,
   colorSecondary: themeColors.orange.secondary.main,

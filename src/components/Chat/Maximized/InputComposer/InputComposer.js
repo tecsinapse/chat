@@ -61,7 +61,7 @@ export const InputComposer = ({
                 item.type
               )
           )
-          .map(a => a.getAsFile())
+          .map(a => (a instanceof File ? a : a.getAsFile()))
       );
     },
     [files]

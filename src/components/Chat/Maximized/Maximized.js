@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { MessageList } from '@livechat/ui-kit';
 
 import { useTheme } from '@material-ui/styles';
 
+import { useDropzone } from 'react-dropzone';
 import { ChatHeader } from './ChatHeader/ChatHeader';
 import { InputComposer } from './InputComposer/InputComposer';
 import { CHAT_LOCATIONS } from '../constants';
@@ -56,9 +57,19 @@ const Maximized = ({
 
   const padding = location === CHAT_LOCATIONS.CHAT_LIST && 0;
 
-  const onDrop = e => {
-    setDroppedFiles(e.dataTransfer);
-  };
+  const onDrop = useCallback(acceptedFiles => {
+    setDroppedFiles({ items: acceptedFiles });
+  }, []);
+  const { getRootProps } = useDropzone({
+    noClick: true,
+    noKeyboard: true,
+    accept: ['image/*', 'video/*', 'application/*'],
+    maxSize: maxFileUploadSize,
+    maxFiles: uploadOptions?.maxFilesPerMessage,
+    onDrop,
+  });
+
+  const dropZoneHeight = { height: '100%' };
 
   return (
     <div className={classes.root}>
@@ -85,18 +96,19 @@ const Maximized = ({
         style={{
           padding,
         }}
-        onDrop={onDrop}
       >
         {location === CHAT_LOCATIONS.MESSAGES && (
-          <MessageView
-            messages={messages}
-            messagesEndRef={messagesEndRef}
-            title={title}
-            onMessageResend={onMessageResend}
-            classes={classes}
-            theme={theme}
-            isLoading={isLoading}
-          />
+          <div {...getRootProps()} style={dropZoneHeight}>
+            <MessageView
+              messages={messages}
+              messagesEndRef={messagesEndRef}
+              title={title}
+              onMessageResend={onMessageResend}
+              classes={classes}
+              theme={theme}
+              isLoading={isLoading}
+            />
+          </div>
         )}
         {location === CHAT_LOCATIONS.CHAT_LIST && (
           <ChatList
