@@ -28,7 +28,13 @@ import { SendNotification } from "../SendNotification/SendNotification";
 import { loadComponent } from "../../utils/helpers";
 import { useStyle } from "./styles";
 
-export const Init = ({ chatInitConfig, customizeStyles, mobile, userMock }) => {
+export const Init = ({
+  chatInitConfig,
+  customizeStyles,
+  customActions,
+  mobile,
+  userMock,
+}) => {
   const homeLocation = chatInitConfig.onlyMessageManagement
     ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
     : COMPONENT_LOCATION.UNREAD;
@@ -370,6 +376,7 @@ export const Init = ({ chatInitConfig, customizeStyles, mobile, userMock }) => {
                 showDiscardOption={chatInitConfig.showDiscardOption}
                 headerClass={classes.messageManagementHeader}
                 mobile={mobile}
+                customActions={customActions}
               />
             )}
             {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (

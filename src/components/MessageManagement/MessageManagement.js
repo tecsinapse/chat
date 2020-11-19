@@ -49,6 +49,7 @@ export const MessageManagement = ({
   showDiscardOption,
   headerClass,
   mobile,
+  customActions,
 }) => {
   const { extraInfoColumns, allChats = [] } = componentInfo;
   const [chats, setChats] = useState(sortChatsByContactAt(allChats));
@@ -56,6 +57,7 @@ export const MessageManagement = ({
   const [deletingChat, setDeletingChat] = useState({});
   const [selectedRow, setSelectedRow] = useState();
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
+  const extraActions = customActions ? customActions : selectedRow?.actions;
 
   const switchToOnlyNotClients = () => {
     const showOnly = !showOnlyNotClients;
@@ -311,7 +313,7 @@ export const MessageManagement = ({
               <ListItemText>{showMessagesLabel}</ListItemText>
             </ListItem>
 
-            {selectedRow?.actions.map((actionLink, key) => {
+            {extraActions?.map((actionLink, key) => {
               return (
                 <ListItem
                   key={key}
