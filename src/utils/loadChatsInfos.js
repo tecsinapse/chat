@@ -11,16 +11,17 @@ import { format, toMoment } from "./dates";
  * @param userMock              dados de configuração do usuário logado para testes em desenvolvimento
  * @returns {Promise<[]>}       informações completas do objeto que representa esse componente
  */
-export async function load(
+export async function load({
   chatApiUrl,
   getInitialStatePath,
   params,
-  userMock = mockUnreadInitialState
-) {
+  standalone,
+  userMock = mockUnreadInitialState,
+}) {
   // primeiro busca a informação do produto local. É essa informação que fará a inicialização do chat
   // é essa informação que carrega quais chats são do usuário que está acessando o componente
   let initialInfoFromProduct;
-  if (process.env.NODE_ENV === "development") {
+  if (standalone) {
     // mock para tela de UNREAD
     initialInfoFromProduct = userMock;
   } else {

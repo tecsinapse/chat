@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Table } from "@tecsinapse/table";
 import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
-import { format } from "../../utils/dates";
+import { format, toMoment } from "../../utils/dates";
 import {
   Badge,
   Button,
@@ -11,12 +11,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Typography,
   Drawer,
   ListItem,
   ListItemText,
 } from "@material-ui/core";
 import { TableHeader } from "./TableHeader";
 import { encodeChatData } from "../../utils/encodeChatData";
+import { MessageSource } from "../../constants";
 
 const useStyle = makeStyles(() => ({
   highlighted: {
@@ -29,6 +31,15 @@ const useStyle = makeStyles(() => ({
   },
 }));
 
+const sortChatsByContactAt = (allChats) =>
+  allChats.sort((a, b) => {
+    const contactA = toMoment(a?.contactAt);
+    const contactB = toMoment(b?.contactAt);
+    if (contactA > contactB) return -1;
+    else if (contactA < contactB) return 1;
+    else return 0;
+  });
+
 export const MessageManagement = ({
   componentInfo,
   onSelectChat,
@@ -40,8 +51,8 @@ export const MessageManagement = ({
   mobile,
 }) => {
   const { extraInfoColumns, allChats = [] } = componentInfo;
+  const [chats, setChats] = useState(sortChatsByContactAt(allChats));
   const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
-  const [chats, setChats] = useState(allChats);
   const [deletingChat, setDeletingChat] = useState({});
   const [selectedRow, setSelectedRow] = useState();
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
@@ -64,8 +75,9 @@ export const MessageManagement = ({
       field: "contactAt",
       options: {
         filter: true,
+        sort: true,
       },
-      customRender: (row) => format(row.lastMessageAt),
+      customRender: (row) => format(row.contactAt),
     },
     {
       title: "Cliente",
@@ -74,6 +86,15 @@ export const MessageManagement = ({
         filter: true,
       },
       customRender: (row) => {
+        const renderLastMessage = row.lastMessage;
+
+        const lastSender =
+          renderLastMessage &&
+          (MessageSource.isClient(row?.lastMessageSource)
+            ? row?.name?.split(" ")[0]
+            : row?.extraInfo?.responsavel?.split(" ")[0]);
+        const fontItalic = { fontStyle: "italic" };
+
         return (
           <>
             {row.highlighted ? (
@@ -84,12 +105,14 @@ export const MessageManagement = ({
             {row.subName && (
               <>
                 <br />
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: row.subName,
-                  }}
-                />
+                <span>{row.subName}</span>
               </>
+            )}
+            <br />
+            {renderLastMessage && (
+              <Typography variant="caption" style={fontItalic}>
+                {lastSender}: {row?.lastMessage}
+              </Typography>
             )}
           </>
         );

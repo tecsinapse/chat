@@ -1,35 +1,33 @@
 export const mockUnreadInitialState = {
-  connectionKeys: ["dynamo-vendas-homolog-zenvia"],
+  connectionKeys: ["sandbox-dev"],
   destination: ["nissan"],
   allChats: [
     {
-      connectionKey: "dynamo-vendas-homolog-zenvia",
+      connectionKey: "sandbox-dev",
       destination: "nissan",
-      name: "João Paulo Bassinello",
-      subName: "Operador",
-      phone: "(19) 99456-8196",
-      chatId: '5519994568196',
-      contactAt: "2020-08-28T12:58:54Z",
-      highlighted: false,
-      minutesToBlock: 1430,
-      updateUnreadWhenOpen: true,
-      enabled: true,
-      status: "OK",
+      name: "Mauricio",
+      subName: null,
+      phone: "(48) 99901-2888",
+      chatId: "5548999012888",
+      contactAt: "2020-11-05T17:53:39.869427",
       extraInfo: {
-        responsavel: "Vendedor 01",
-        dealer: "Applauso Tatuí",
-        segmento: "Caminhão",
+        responsavelId: "20",
+        segmento: "Autos",
+        dealerId: "1",
+        dealer: "APPLAUSO TATUÍ FIAT",
+        segmentoId: "1",
+        responsavel: "Gleici Franco Coelho Fidelis",
       },
       actions: [
+        { label: "Cadastrar Cliente", path: "/p/crm/clientes/" },
         {
-          label: "Link 1",
-          path: "/link1",
-        },
-        {
-          label: "Link 2",
-          path: "/link2",
+          label: "Associar Telefone a um Cliente",
+          path: "/p/crm/clientes/telefone/associar",
         },
       ],
+      highlighted: true,
+      enabled: true,
+      updateUnreadWhenOpen: true,
     },
   ],
   extraInfoColumns: {
@@ -38,7 +36,7 @@ export const mockUnreadInitialState = {
     segmento: "Segmento",
   },
   userNameById: {
-    '5a102db0-d019-4580-a173-75a0ae47581f': 'Operador 1',
-    'aaaa': 'Operador 2'
-  }
+    "5a102db0-d019-4580-a173-75a0ae47581f": "Operador 1",
+    aaaa: "Operador 2",
+  },
 };
