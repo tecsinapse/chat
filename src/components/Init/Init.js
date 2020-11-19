@@ -377,6 +377,7 @@ export const Init = ({
                 headerClass={classes.messageManagementHeader}
                 mobile={mobile}
                 customActions={customActions}
+                setDrawerOpen={setIsDrawerOpen}
               />
             )}
             {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (

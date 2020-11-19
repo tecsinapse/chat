@@ -50,6 +50,7 @@ export const MessageManagement = ({
   headerClass,
   mobile,
   customActions,
+  setDrawerOpen,
 }) => {
   const { extraInfoColumns, allChats = [] } = componentInfo;
   const [chats, setChats] = useState(sortChatsByContactAt(allChats));
@@ -322,10 +323,10 @@ export const MessageManagement = ({
                       selectedRow,
                       userkeycloakId
                     );
-                    window.open(
-                      `${actionLink.path}?data=${encodedData}`,
-                      "_self"
-                    );
+                    if (actionLink.action) {
+                      setDrawerOpen(false);
+                      actionLink.action(encodedData);
+                    }
                   }}
                 >
                   <ListItemText>{actionLink.label}</ListItemText>
