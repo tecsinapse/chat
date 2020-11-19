@@ -1,6 +1,8 @@
 import React, { createRef, useRef } from "react";
 import SockJsClient from "react-stomp";
 
+const isDev = process.env.REACT_APP_HOST === "development";
+
 export const InitWebsockets = ({
   chatApiUrl,
   userkeycloakId,
@@ -33,7 +35,7 @@ export const InitWebsockets = ({
     reloadComponent();
   };
 
-  return process.env.NODE_ENV === "development" ? (
+  return isDev ? (
     <></>
   ) : (
     <>
@@ -51,9 +53,7 @@ export const InitWebsockets = ({
 
       {/* Conexão WebSocket com o produto (dynamo peças / dynamo contato ativo / etc.. */}
       <SockJsClient
-        url={`${
-          process.env.NODE_ENV === "development" ? "http://localhost:8282" : ""
-        }/websocket/chat`}
+        url={"/websocket/chat"}
         topics={[`/topic/chat.user.${userkeycloakId}`]}
         onMessage={handleNewProductWebsocketMessage}
         onConnect={() => {

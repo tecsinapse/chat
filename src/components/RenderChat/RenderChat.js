@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Chat } from "@tecsinapse/chat";
+import { Chat, DELIVERY_STATUS } from "@tecsinapse/chat";
 import SockJsClient from "react-stomp";
 
 import { defaultFetch } from "../../utils/fetch";
@@ -88,6 +88,7 @@ export const RenderChat = ({
       )(initialInfo.chats[0]);
     }
     setIsLoading(false);
+    // eslint-disable-next-line
   }, [initialInfo, chatApiUrl, setIsLoading]); // eslint-disable-line react-hooks/exhaustive-deps
   // ignore warning "React Hook useEffect has a missing dependency". It could cause infinity loop
 
@@ -106,7 +107,11 @@ export const RenderChat = ({
         );
         setMessages([...messages, message]);
       } else {
-        setStatusMessage(newMessage.localId, "delivered");
+        setStatusMessage(
+          newMessage.localId,
+          newMessage.status,
+          newMessage.statusDetails
+        );
       }
     }
   };
@@ -138,7 +143,7 @@ export const RenderChat = ({
         JSON.stringify(chatMessage)
       );
     } catch (e) {
-      setStatusMessage(localId, "error");
+      setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
     }
   };
 
@@ -187,7 +192,7 @@ export const RenderChat = ({
         if (err.status === 403) {
           setBlockedAndPropagateStatus(currentChat, true);
         }
-        setStatusMessage(localId, "error");
+        setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
       });
   };
 
@@ -276,7 +281,7 @@ export const RenderChat = ({
 
   const onMessageResend = (localId) => {
     // Change message status
-    setStatusMessage(localId, "sending");
+    setStatusMessage(localId, DELIVERY_STATUS.SENDING.key);
 
     // Resend to backend
     const message = messages.find((m) => m.localId === localId);
@@ -313,7 +318,9 @@ export const RenderChat = ({
         onMessageResend={onMessageResend}
         isBlocked={blocked}
         blockedMessage=""
-        chatList={initialInfo.chats.length > 1 ? initialInfo.chats : undefined}
+        chatList={
+          initialInfo?.chats?.length > 1 ? initialInfo.chats : undefined
+        }
         onBackToChatList={onBackToChatList}
         onSelectedChat={onSelectedChat}
         disabledSend={isLoading && messages.length === 0}

@@ -12,11 +12,12 @@ import uuidv1 from "uuid/v1";
 import { Init } from "./components/Init/Init";
 import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
 
+const standalone = process.env.REACT_APP_STANDALONE === "true";
+
 window.renderChatComponent = function renderChatComponent() {
   const defaultChatInitConfig = {
     userkeycloakId: uuidv1(),
-    // chatApiUrl: "http://localhost:8081",
-    chatApiUrl: "https://chathomolog.tecsinapse.com.br",
+    chatApiUrl: `${process.env.REACT_APP_SERVER_URL}`,
     params: {},
     getInitialStatePath: "/rest/chat/componentInfo",
     deleteChatPath: "/rest/chat",
@@ -29,6 +30,7 @@ window.renderChatComponent = function renderChatComponent() {
     showDiscardOption: true,
     onlyMessageManagement: false,
     canSendNotification: true,
+    standalone,
   };
 
   let chatInitConfig = { ...defaultChatInitConfig };
@@ -36,10 +38,6 @@ window.renderChatComponent = function renderChatComponent() {
   if (window.CHAT_INIT_CONFIG) {
     chatInitConfig = { ...defaultChatInitConfig, ...window.CHAT_INIT_CONFIG };
   }
-  console.log(
-    "Renderizando Componente de Chat com as Configurações: ",
-    chatInitConfig
-  );
 
   const generateClassName = createGenerateClassName({
     productionPrefix: "chat",
@@ -55,5 +53,6 @@ window.renderChatComponent = function renderChatComponent() {
   );
 };
 
-// uncomment for local tests
-// window.renderChatComponent();
+if (standalone) {
+  window.renderChatComponent();
+}

@@ -4,15 +4,13 @@ import { defaultFetch } from "./fetch";
 import { buildChatMessageObject } from "./message";
 
 export async function loadComponent(
-  chatApiUrl,
-  getInitialStatePath,
-  params,
+  chatInitConfig,
   setComponentInfo,
   setIsLoadingInitialState,
   setView,
   setCurrentChat
 ) {
-  const info = await load(chatApiUrl, getInitialStatePath, params);
+  const info = await load(chatInitConfig);
   setComponentInfo(info);
   setIsLoadingInitialState(false);
   if (info.currentClient && Object.keys(info.currentClient).length > 0) {
