@@ -1,14 +1,14 @@
 export const mockUnreadInitialState = {
-  connectionKeys: ["sandbox-dev"],
-  destination: ["nissan"],
+  connectionKeys: ["sandbox-homolog"],
+  destination: ["mercedes"],
   allChats: [
     {
-      connectionKey: "sandbox-dev",
-      destination: "nissan",
-      name: "Mauricio",
+      connectionKey: "sandbox-homolog",
+      destination: "mercedes",
+      name: "Denner",
       subName: null,
-      phone: "(48) 99901-2888",
-      chatId: "5548999012888",
+      phone: "(67) 99267-8000",
+      chatId: "5567992678000",
       contactAt: "2020-11-05T17:53:39.869427",
       extraInfo: {
         responsavelId: "20",

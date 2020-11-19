@@ -8,6 +8,7 @@ import { format, toMoment } from "./dates";
  * @param chatApiUrl            URL da api do tec-chat
  * @param getInitialStatePath   caminho para o endpoint do produto de informações iniciais dos chats
  * @param params                objeto JSON para busca dos dados
+ * @param standalone            condicional de renderização se o ambiente atual é desenvolvimento
  * @param userMock              dados de configuração do usuário logado para testes em desenvolvimento
  * @returns {Promise<[]>}       informações completas do objeto que representa esse componente
  */

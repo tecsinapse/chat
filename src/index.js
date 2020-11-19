@@ -46,7 +46,7 @@ window.renderChatComponent = function renderChatComponent() {
   ReactDOM.render(
     <StylesProvider generateClassName={generateClassName}>
       <ThemeProvider variant="orange">
-        <Init chatInitConfig={chatInitConfig} />
+        <Init chatInitConfig={chatInitConfig} mobile={true} />
       </ThemeProvider>
     </StylesProvider>,
     document.getElementById("chat-component-div")
