@@ -1,3 +1,14 @@
+## <small>3.0.2 (2020-11-18)</small>
+
+
+
+
+## <small>3.0.1 (2020-11-18)</small>
+
+* fix: added more complete dropzone features ([8896087](https://github.com/tecsinapse/chat/commit/8896087))
+
+
+
 ## 3.0.0 (2020-10-30)
 
 * feat(status-mensagens): adding support for message status ([e88aade](https://github.com/tecsinapse/chat/commit/e88aade)), closes [#142454](https://github.com/tecsinapse/chat/issues/142454)
