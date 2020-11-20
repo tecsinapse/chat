@@ -57,7 +57,7 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
               </Grid>
             </Grid>
           </div>
-          <Divider variant="inset" component="li" style={{ marginLeft: 0 }} />
+          <Divider variant="solid" component="li" style={{ marginLeft: 0 }} />
           <List component="nav" style={listPadding}>
             {chatWithUnreadMessages.map((chat) => (
               <div key={chat.chatId} className={classes.border}>
@@ -121,7 +121,7 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
             ))}
           </List>
         </div>
-        <Divider variant="inset" component="li" style={{ marginLeft: 0 }} />
+        <Divider variant="solid" component="li" style={{ marginLeft: 0 }} />
       </div>
     </>
   );

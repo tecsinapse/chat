@@ -304,7 +304,7 @@ export const Init = ({
                 </Grid>
               </Grid>
             </div>
-            <Divider variant="inset" component="li" />
+            <Divider variant="solid" component="li" />
 
             {showMessageManagement && (
               <div
@@ -345,7 +345,7 @@ export const Init = ({
                 </Grid>
               </div>
             )}
-            <Divider variant="inset" component="li" />
+            <Divider variant="solid" component="li" />
 
             {view === COMPONENT_LOCATION.UNREAD && (
               <UnreadChats
