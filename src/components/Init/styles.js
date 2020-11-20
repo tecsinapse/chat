@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 
-export const useStyle = (customize) =>
+export const useStyle = (customize, mobile) =>
   makeStyles((theme) => {
     const defaultStyle = {
       drawerContainer: {
@@ -9,15 +9,13 @@ export const useStyle = (customize) =>
         margin: theme.spacing(2, 0, 0, 0),
         height: "100%",
         overflowX: "hidden",
-        maxWidth: "80vw",
-        minWidth: "40vw",
-        /* TODO verificar uma forma melhor */
+        maxWidth: mobile ? "unset" : "80vw",
+        minWidth: mobile ? "unset" : "40vw",
+        width: mobile ? "100vw" : "unset",
         /* Limpando estilos do Bootstrap para os inputs */
         "& input": {
           border: "0 !important",
           margin: 0,
-          paddingTop: "10.5px",
-          paddingBottom: "10.5px",
         },
         "& input:focus": {
           border: "0 !important",
@@ -27,8 +25,6 @@ export const useStyle = (customize) =>
         "& textarea": {
           border: "0 !important",
           margin: 0,
-          paddingTop: "10.5px",
-          paddingBottom: "10.5px",
         },
         "& textarea:focus": {
           border: "0 !important",
@@ -49,6 +45,12 @@ export const useStyle = (customize) =>
       title: {
         padding: 0,
       },
+      messageManagementHeader: mobile
+        ? {
+            flexDirection: "column",
+            padding: "0 15px",
+          }
+        : {},
     };
     const customStyle = customize ? customize(defaultStyle, theme) : {};
     return { ...defaultStyle, ...customStyle };

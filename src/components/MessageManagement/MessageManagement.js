@@ -29,6 +29,9 @@ const useStyle = makeStyles(() => ({
     top: "8px",
     right: "12px",
   },
+  rootMobile: {
+    height: "calc(100vh - 145px)",
+  },
 }));
 
 const sortChatsByContactAt = (allChats) =>
@@ -142,39 +145,42 @@ export const MessageManagement = ({
     });
   }
 
+  const generateAction = (row) => {
+    const actions = [
+      {
+        label: showMessagesLabel,
+        onClick: (rowData) => {
+          onSelectChat(rowData);
+        },
+      },
+    ];
+    if (row.actions && row.actions.length > 0) {
+      row.actions.forEach((actionLink) => {
+        actions.push({
+          label: actionLink.label,
+          onClick: (rowData) => {
+            const encodedData = encodeChatData(rowData, userkeycloakId);
+            window.open(`${actionLink.path}?data=${encodedData}`, "_self");
+          },
+        });
+      });
+    }
+    if (showDiscardOption) {
+      actions.push({
+        label: "Descartar Conversa",
+        onClick: (rowData) => {
+          setDeletingChat(rowData);
+        },
+      });
+    }
+    return actions;
+  };
+
   if (!mobile) {
     columns.push({
       title: "Ações",
       field: "",
       customRender: (row) => {
-        const actions = [
-          {
-            label: showMessagesLabel,
-            onClick: (rowData) => {
-              onSelectChat(rowData);
-            },
-          },
-        ];
-        if (row.actions && row.actions.length > 0) {
-          row.actions.forEach((actionLink) => {
-            actions.push({
-              label: actionLink.label,
-              onClick: (rowData) => {
-                const encodedData = encodeChatData(rowData, userkeycloakId);
-                window.open(`${actionLink.path}?data=${encodedData}`, "_self");
-              },
-            });
-          });
-        }
-        if (showDiscardOption) {
-          actions.push({
-            label: "Descartar Conversa",
-            onClick: (rowData) => {
-              setDeletingChat(rowData);
-            },
-          });
-        }
-
         return (
           <Badge
             color="error"
@@ -188,7 +194,7 @@ export const MessageManagement = ({
             }}
           >
             <RowActions
-              actions={actions}
+              actions={generateAction(row)}
               row={row}
               verticalActions={true}
               forceCollapseActions={true}
@@ -255,9 +261,47 @@ export const MessageManagement = ({
             setBottomSheetOpen(true);
           }
         }}
+        classes={{ rootMobile: classes.rootMobile }}
         columns={columns}
         data={chats}
         rowId={(row) => row.id}
+        customActionsMobile={(data) => {
+          return (
+            <div>
+              <ListItem onClick={() => onSelectChat(data)}>
+                <ListItemText>{showMessagesLabel}</ListItemText>
+              </ListItem>
+
+              {(customActions ? customActions : data?.actions).map(
+                (actionLink, key) => {
+                  return (
+                    <ListItem
+                      key={key}
+                      onClick={() => {
+                        const encodedData = encodeChatData(
+                          data,
+                          userkeycloakId
+                        );
+                        if (actionLink.action) {
+                          setDrawerOpen(false);
+                          actionLink.action(encodedData);
+                        }
+                      }}
+                    >
+                      <ListItemText>{actionLink.label}</ListItemText>
+                    </ListItem>
+                  );
+                }
+              )}
+
+              {showDiscardOption && (
+                <ListItem onClick={() => setDeletingChat(data)}>
+                  <ListItemText>Descartar Conversa</ListItemText>
+                </ListItem>
+              )}
+            </div>
+          );
+        }}
         pagination
         exportOptions={
           !mobile

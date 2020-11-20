@@ -3,14 +3,12 @@ import "react-app-polyfill/stable";
 
 import React from "react";
 import ReactDOM from "react-dom";
-import ThemeProvider from "@tecsinapse/ui-kit/build/ThemeProvider";
-
-import "./index.css";
-
+import { ThemeProvider } from "@tecsinapse/ui-kit";
+import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
 import uuidv1 from "uuid/v1";
 
 import { Init } from "./components/Init/Init";
-import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
+import "./index.css";
 
 const standalone = process.env.REACT_APP_STANDALONE === "true";
 

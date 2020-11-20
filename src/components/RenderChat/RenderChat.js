@@ -12,6 +12,7 @@ import {
 import uuidv1 from "uuid/v1";
 import { ChatOptions } from "./ChatOptions/ChatOptions";
 import { onSelectedChatMaker } from "../../utils/helpers";
+import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 
 const emptyChat = {
   chatId: null,
@@ -43,6 +44,7 @@ export const RenderChat = ({
   onChatStatusChanged,
   userNamesById,
   mobile,
+  setView,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
@@ -299,6 +301,8 @@ export const RenderChat = ({
     setAnchorEl(event.currentTarget);
   };
 
+  const handleView = (view) => setView(view);
+
   return (
     <div style={{ maxWidth: mobile ? "auto" : "40vW" }}>
       <Chat
@@ -326,7 +330,7 @@ export const RenderChat = ({
         onSelectedChat={onSelectedChat}
         disabledSend={isLoading && messages.length === 0}
         roundedCorners={false}
-        containerHeight={`calc(100vh - ${blocked ? "264px" : "132px"})`}
+        containerHeight={`calc(100vh - ${blocked ? "224px" : "132px"})`}
         customHeader={{
           headerLabel: "Cliente:",
           headerBackground: "#f7f7f7",
@@ -339,6 +343,11 @@ export const RenderChat = ({
         }}
         warningMessage={timeToExpire}
         uploadOptions={uploadOptions}
+        backAction={
+          mobile
+            ? () => handleView(COMPONENT_LOCATION.MESSAGE_MANAGEMENT)
+            : undefined
+        }
       />
 
       <ChatOptions

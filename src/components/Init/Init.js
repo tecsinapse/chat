@@ -27,19 +27,20 @@ import { encodeChatData } from "../../utils/encodeChatData";
 import { SendNotification } from "../SendNotification/SendNotification";
 import { loadComponent } from "../../utils/helpers";
 import { useStyle } from "./styles";
+import { StartNewChatButton } from "../StartNewChatButton/StartNewChatButton";
 
 export const Init = ({
   chatInitConfig,
   customizeStyles,
   customActions,
-  mobile,
+  mobile = false,
   userMock,
 }) => {
   const homeLocation = chatInitConfig.onlyMessageManagement
     ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
     : COMPONENT_LOCATION.UNREAD;
 
-  const classes = useStyle(customizeStyles)();
+  const classes = useStyle(customizeStyles, mobile)();
   const theme = useTheme();
   const [isLoadingInitialState, setIsLoadingInitialState] = useState(true);
   const [view, setView] = useState(homeLocation);
@@ -364,6 +365,7 @@ export const Init = ({
                 onChatStatusChanged={onChatStatusChanged}
                 userNamesById={componentInfo.userNameById}
                 mobile={mobile}
+                setView={setView}
               />
             )}
             {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
@@ -393,18 +395,12 @@ export const Init = ({
             )}
 
             {showSendNotification && (
-              <div
-                className={classes.messageManagementNewChat}
-                style={{ marginTop: theme.spacing(2), textAlign: "center" }}
-              >
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => onStartSendNotification()}
-                >
-                  INICIAR NOVA CONVERSA
-                </Button>
-              </div>
+              <StartNewChatButton
+                classes={classes}
+                onStartSendNotification={onStartSendNotification}
+                view={view}
+                theme={theme}
+              />
             )}
 
             {view === COMPONENT_LOCATION.CHAT && mobile && (

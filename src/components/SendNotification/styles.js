@@ -10,11 +10,12 @@ export const useStyle = makeStyles((theme) => ({
   },
   preview: {
     backgroundColor: "#ccc",
-    display: "block",
+    display: "flex",
     fontFamily: "monospace",
     margin: theme.spacing(1, 0),
     padding: theme.spacing(2),
     textAlign: "center",
+    justifyContent: "center",
   },
   previewText: {
     textAlign: "center",

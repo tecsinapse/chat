@@ -226,7 +226,7 @@ export const SendNotification = ({
               options={availableConnectionKeys}
               onChange={loadTemplates}
               label="Origem"
-              variant="web"
+              variant="auto"
               fullWidth
             />
           </Grid>
@@ -243,6 +243,7 @@ export const SendNotification = ({
                 }
               }}
               onChange={(e) => setPhoneNumber(e.target.value)}
+              variantDevice="auto"
             />
           </Grid>
           <Grid item style={{ zIndex: 999999999 }}>
@@ -252,7 +253,7 @@ export const SendNotification = ({
               onChange={onSelectTemplate}
               disabled={templates.length === 0}
               label="Template da Mensagem"
-              variant="web"
+              variant="auto"
               fullWidth
             />
           </Grid>
@@ -264,6 +265,7 @@ export const SendNotification = ({
                 fullWidth
                 value={args[index]}
                 onChange={(e) => setArg(index, e.target.value)}
+                variantDevice="auto"
               />
             </Grid>
           ))}
