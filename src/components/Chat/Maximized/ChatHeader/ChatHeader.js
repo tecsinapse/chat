@@ -38,6 +38,7 @@ export const ChatHeader = ({
   isBlocked,
   errorMessage,
   warningMessage,
+  backAction,
 }) => {
   const {
     show: showChatOptions,
@@ -71,7 +72,7 @@ export const ChatHeader = ({
                 style={style1}
               >
                 <Badge
-                  badgeContent={notificationNumber}
+                  badgeContent={backAction ? 0 : notificationNumber}
                   color="error"
                   classes={{
                     badge: classes.badgeNotification,

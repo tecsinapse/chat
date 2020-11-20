@@ -38,6 +38,7 @@ export const Chat = ({
   customHeader,
   warningMessage,
   uploadOptions,
+  backAction,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
@@ -87,6 +88,7 @@ export const Chat = ({
                 headerText={headerText}
                 warningMessage={warningMessage}
                 uploadOptions={uploadOptions}
+                backAction={backAction}
               />
             </FixedWrapper.Maximized>
 
@@ -145,6 +147,7 @@ Chat.defaultProps = {
       `Arquivo deve ter tamanho menor que ${size / 1024} KB.`,
     undefinedErrorMessage: 'Erro interno',
   },
+  backAction: undefined,
 };
 
 Chat.propTypes = {
@@ -265,6 +268,8 @@ Chat.propTypes = {
     sizeLimitErrorMessage: PropTypes.string,
     undefinedErrorMessage: PropTypes.string,
   },
+  /** Overrides and give access to custom backwards action on chat view. ATTENTION WHEN USING WITH CHATLIST */
+  backAction: PropTypes.func,
 };
 
 export default Chat;

@@ -42,18 +42,20 @@ const Maximized = ({
   headerText,
   warningMessage,
   uploadOptions,
+  backAction,
 }) => {
   const classes = useStyle();
   const theme = useTheme();
   const [droppedFiles, setDroppedFiles] = useState(null);
 
   const onBackward =
-    location === CHAT_LOCATIONS.MESSAGES &&
-    chatList !== undefined &&
-    (() => {
-      setLocation(CHAT_LOCATIONS.CHAT_LIST);
-      onBackToChatList();
-    });
+    backAction ||
+    (location === CHAT_LOCATIONS.MESSAGES &&
+      chatList !== undefined &&
+      (() => {
+        setLocation(CHAT_LOCATIONS.CHAT_LIST);
+        onBackToChatList();
+      }));
 
   const padding = location === CHAT_LOCATIONS.CHAT_LIST && 0;
 
@@ -89,6 +91,7 @@ const Maximized = ({
         isBlocked={isBlocked}
         errorMessage={error}
         warningMessage={warningMessage}
+        backAction={backAction}
       />
       <MessageList
         active
