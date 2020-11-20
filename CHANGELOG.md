@@ -1,3 +1,9 @@
+## <small>3.0.3 (2020-11-20)</small>
+
+* feat: added override option to backwards action on chat view ([98c343e](https://github.com/tecsinapse/chat/commit/98c343e))
+
+
+
 ## <small>3.0.2 (2020-11-18)</small>
 
 
