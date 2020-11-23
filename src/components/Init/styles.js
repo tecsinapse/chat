@@ -2,6 +2,9 @@ import { makeStyles } from "@material-ui/styles";
 
 export const useStyle = (customize, mobile) =>
   makeStyles((theme) => {
+    const webPadding = !mobile
+      ? { paddingTop: "10.5px", paddingBottom: "10.5px" }
+      : {};
     const defaultStyle = {
       drawerContainer: {
         fontFamily:
@@ -16,6 +19,7 @@ export const useStyle = (customize, mobile) =>
         "& input": {
           border: "0 !important",
           margin: 0,
+          ...webPadding,
         },
         "& input:focus": {
           border: "0 !important",
@@ -25,6 +29,7 @@ export const useStyle = (customize, mobile) =>
         "& textarea": {
           border: "0 !important",
           margin: 0,
+          ...webPadding,
         },
         "& textarea:focus": {
           border: "0 !important",

@@ -1,38 +1,17 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Table } from "@tecsinapse/table";
-import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
 import { format, toMoment } from "../../utils/dates";
 import {
-  Badge,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Typography,
-  Drawer,
-  ListItem,
-  ListItemText,
 } from "@material-ui/core";
 import { TableHeader } from "./TableHeader";
-import { encodeChatData } from "../../utils/encodeChatData";
-import { MessageSource } from "../../constants";
-
-const useStyle = makeStyles(() => ({
-  highlighted: {
-    fontWeight: "bold",
-    color: "#e6433f",
-  },
-  badgeAlign: {
-    top: "8px",
-    right: "12px",
-  },
-  rootMobile: {
-    height: "calc(100vh - 145px)",
-  },
-}));
+import { customActionsMobile, generateColumns } from "./tableUtils";
 
 const sortChatsByContactAt = (allChats) =>
   allChats.sort((a, b) => {
@@ -59,9 +38,7 @@ export const MessageManagement = ({
   const [chats, setChats] = useState(sortChatsByContactAt(allChats));
   const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
   const [deletingChat, setDeletingChat] = useState({});
-  const [selectedRow, setSelectedRow] = useState();
-  const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
-  const extraActions = customActions ? customActions : selectedRow?.actions;
+  const classes = useStyle();
 
   const switchToOnlyNotClients = () => {
     const showOnly = !showOnlyNotClients;
@@ -72,138 +49,6 @@ export const MessageManagement = ({
     }
     setShowOnlyNotClients(showOnly);
   };
-
-  const classes = useStyle();
-
-  const columns = [
-    {
-      title: "Data do Contato",
-      field: "contactAt",
-      options: {
-        filter: true,
-        sort: true,
-      },
-      customRender: (row) => format(row.contactAt),
-    },
-    {
-      title: "Cliente",
-      field: "name",
-      options: {
-        filter: true,
-      },
-      customRender: (row) => {
-        const renderLastMessage = row.lastMessage;
-
-        const lastSender =
-          renderLastMessage &&
-          (MessageSource.isClient(row?.lastMessageSource)
-            ? row?.name?.split(" ")[0]
-            : row?.extraInfo?.responsavel?.split(" ")[0]);
-        const fontItalic = { fontStyle: "italic" };
-
-        return (
-          <>
-            {row.highlighted ? (
-              <span className={classes.highlighted}>{row.name}</span>
-            ) : (
-              <span>{row.name}</span>
-            )}
-            {row.subName && (
-              <>
-                <br />
-                <span>{row.subName}</span>
-              </>
-            )}
-            <br />
-            {renderLastMessage && (
-              <Typography variant="caption" style={fontItalic}>
-                {lastSender}: {row?.lastMessage}
-              </Typography>
-            )}
-          </>
-        );
-      },
-    },
-    {
-      title: "Telefone",
-      field: "phone",
-      options: {
-        filter: true,
-      },
-    },
-  ];
-
-  if (extraInfoColumns && Object.keys(extraInfoColumns).length > 0) {
-    Object.keys(extraInfoColumns).forEach((key) => {
-      columns.push({
-        title: extraInfoColumns[key],
-        field: `extraInfo.${key}`,
-        options: {
-          filter: true,
-        },
-      });
-    });
-  }
-
-  const generateAction = (row) => {
-    const actions = [
-      {
-        label: showMessagesLabel,
-        onClick: (rowData) => {
-          onSelectChat(rowData);
-        },
-      },
-    ];
-    if (row.actions && row.actions.length > 0) {
-      row.actions.forEach((actionLink) => {
-        actions.push({
-          label: actionLink.label,
-          onClick: (rowData) => {
-            const encodedData = encodeChatData(rowData, userkeycloakId);
-            window.open(`${actionLink.path}?data=${encodedData}`, "_self");
-          },
-        });
-      });
-    }
-    if (showDiscardOption) {
-      actions.push({
-        label: "Descartar Conversa",
-        onClick: (rowData) => {
-          setDeletingChat(rowData);
-        },
-      });
-    }
-    return actions;
-  };
-
-  if (!mobile) {
-    columns.push({
-      title: "Ações",
-      field: "",
-      customRender: (row) => {
-        return (
-          <Badge
-            color="error"
-            badgeContent={row.unread}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            classes={{
-              anchorOriginTopRightRectangle: classes.badgeAlign,
-            }}
-          >
-            <RowActions
-              actions={generateAction(row)}
-              row={row}
-              verticalActions={true}
-              forceCollapseActions={true}
-            />
-          </Badge>
-        );
-      },
-    });
-  }
 
   const deleteChat = () => {
     onDeleteChat(deletingChat).then((updatedAllChats) => {
@@ -251,72 +96,53 @@ export const MessageManagement = ({
     }
   };
 
+  const generateActionsMobile = (data) =>
+    customActionsMobile(
+      data,
+      onSelectChat,
+      showMessagesLabel,
+      customActions,
+      userkeycloakId,
+      setDrawerOpen,
+      showDiscardOption,
+      setDeletingChat
+    );
+
+  const columns = generateColumns(
+    extraInfoColumns,
+    mobile,
+    showMessagesLabel,
+    showDiscardOption,
+    userkeycloakId,
+    onSelectChat,
+    setDeletingChat,
+    classes
+  );
+
+  const exportOptions = !mobile
+    ? {
+        exportFileName: "chat-mensagens",
+        exportTypes: [
+          {
+            label: "Exportar para CSV",
+            type: "custom",
+            exportFunc: () => exportToCSV(),
+          },
+        ],
+      }
+    : {};
+
   return (
     <>
       <Table
         onDrawerClose={() => {}}
-        onRowClick={(data) => {
-          if (mobile) {
-            setSelectedRow(data);
-            setBottomSheetOpen(true);
-          }
-        }}
         classes={{ rootMobile: classes.rootMobile }}
         columns={columns}
         data={chats}
         rowId={(row) => row.id}
-        customActionsMobile={(data) => {
-          return (
-            <div>
-              <ListItem onClick={() => onSelectChat(data)}>
-                <ListItemText>{showMessagesLabel}</ListItemText>
-              </ListItem>
-
-              {(customActions ? customActions : data?.actions).map(
-                (actionLink, key) => {
-                  return (
-                    <ListItem
-                      key={key}
-                      onClick={() => {
-                        const encodedData = encodeChatData(
-                          data,
-                          userkeycloakId
-                        );
-                        if (actionLink.action) {
-                          setDrawerOpen(false);
-                          actionLink.action(encodedData);
-                        }
-                      }}
-                    >
-                      <ListItemText>{actionLink.label}</ListItemText>
-                    </ListItem>
-                  );
-                }
-              )}
-
-              {showDiscardOption && (
-                <ListItem onClick={() => setDeletingChat(data)}>
-                  <ListItemText>Descartar Conversa</ListItemText>
-                </ListItem>
-              )}
-            </div>
-          );
-        }}
+        customActionsMobile={generateActionsMobile}
         pagination
-        exportOptions={
-          !mobile
-            ? {
-                exportFileName: "chat-mensagens",
-                exportTypes: [
-                  {
-                    label: "Exportar para CSV",
-                    type: "custom",
-                    exportFunc: () => exportToCSV(),
-                  },
-                ],
-              }
-            : {}
-        }
+        exportOptions={exportOptions}
         toolbarOptions={{
           title: (
             <TableHeader
@@ -346,46 +172,20 @@ export const MessageManagement = ({
           </Button>
         </DialogActions>
       </Dialog>
-
-      {mobile && (
-        <Drawer
-          anchor="bottom"
-          open={bottomSheetOpen}
-          onClose={() => setBottomSheetOpen(false)}
-        >
-          <div>
-            <ListItem onClick={() => onSelectChat(selectedRow)}>
-              <ListItemText>{showMessagesLabel}</ListItemText>
-            </ListItem>
-
-            {extraActions?.map((actionLink, key) => {
-              return (
-                <ListItem
-                  key={key}
-                  onClick={() => {
-                    const encodedData = encodeChatData(
-                      selectedRow,
-                      userkeycloakId
-                    );
-                    if (actionLink.action) {
-                      setDrawerOpen(false);
-                      actionLink.action(encodedData);
-                    }
-                  }}
-                >
-                  <ListItemText>{actionLink.label}</ListItemText>
-                </ListItem>
-              );
-            })}
-
-            {showDiscardOption && (
-              <ListItem onClick={() => setDeletingChat(selectedRow)}>
-                <ListItemText>Descartar Conversa</ListItemText>
-              </ListItem>
-            )}
-          </div>
-        </Drawer>
-      )}
     </>
   );
 };
+
+const useStyle = makeStyles(() => ({
+  highlighted: {
+    fontWeight: "bold",
+    color: "#e6433f",
+  },
+  badgeAlign: {
+    top: "8px",
+    right: "12px",
+  },
+  rootMobile: {
+    height: "calc(100vh - 145px)",
+  },
+}));

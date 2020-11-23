@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { mdiArrowLeft, mdiChevronRight, mdiClose, mdiForum } from "@mdi/js";
 import Icon from "@mdi/react";
-import { Divider } from "@tecsinapse/ui-kit";
 import { useTheme } from "@material-ui/styles";
 import {
   Badge,
@@ -14,6 +13,7 @@ import {
   Drawer,
   Grid,
   Typography,
+  Divider as MuiDivider,
 } from "@material-ui/core";
 import { completeChatInfoWith } from "../../utils/loadChatsInfos";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
@@ -305,7 +305,7 @@ export const Init = ({
                 </Grid>
               </Grid>
             </div>
-            <Divider variant="solid" component="li" />
+            <MuiDivider variant="fullWidth" />
 
             {showMessageManagement && (
               <div
@@ -346,7 +346,7 @@ export const Init = ({
                 </Grid>
               </div>
             )}
-            <Divider variant="solid" component="li" />
+            <MuiDivider variant="fullWidth" />
 
             {view === COMPONENT_LOCATION.UNREAD && (
               <UnreadChats

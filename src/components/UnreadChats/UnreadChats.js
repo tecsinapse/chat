@@ -26,7 +26,8 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
     }
   });
 
-  let listPadding = { paddingTop: 0, paddingBottom: 0 };
+  const listPadding = { paddingTop: 0, paddingBottom: 0 };
+
   return (
     <>
       <div style={{ marginBottom: mobile ? 65 : 0 }}>
@@ -57,7 +58,9 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
               </Grid>
             </Grid>
           </div>
-          <Divider variant="solid" component="li" style={{ marginLeft: 0 }} />
+          {unreadTotal > 0 && (
+            <Divider variant="solid" style={{ marginLeft: 0 }} />
+          )}
           <List component="nav" style={listPadding}>
             {chatWithUnreadMessages.map((chat) => (
               <div key={chat.chatId} className={classes.border}>
@@ -121,7 +124,7 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
             ))}
           </List>
         </div>
-        <Divider variant="solid" component="li" style={{ marginLeft: 0 }} />
+        <Divider variant="solid" style={{ marginLeft: 0 }} />
       </div>
     </>
   );
