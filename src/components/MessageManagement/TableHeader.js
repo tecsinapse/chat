@@ -1,39 +1,74 @@
-import Typography from "@material-ui/core/Typography";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
 import React from "react";
+import { Typography, FormControlLabel, Switch } from "@material-ui/core";
+import { Input } from "@tecsinapse/ui-kit";
 import { makeStyles } from "@material-ui/styles";
-
-const useStyle = makeStyles((theme) => ({
-  label: {
-    fontSize: "12px",
-    fontWeight: "bold",
-  },
-  marginRight: { marginRight: theme.spacing(2) },
-}));
+import Icon from "@mdi/react";
+import { mdiMagnify } from "@mdi/js";
 
 export const TableHeader = ({
   showNotClient,
   switchToOnlyNotClients,
   headerClass,
+  globalSearch,
+  setGlobalSearch,
+  mobile,
 }) => {
-  const classes = useStyle();
+  const classes = useStyle(mobile)();
+
+  const iconMargin = { marginRight: 6 };
 
   return (
-    <div className={headerClass} style={{ display: "flex" }}>
-      <Typography variant="h6" className={classes.marginRight}>
-        Clientes do Chat
-      </Typography>
-      <FormControlLabel
-        control={<Switch size="small" />}
-        checked={showNotClient}
-        onChange={switchToOnlyNotClients}
-        label="Exibir apenas clientes não cadastrados no sistema"
+    <>
+      <div className={headerClass} style={{ display: "flex" }}>
+        <Typography variant="h6" className={classes.marginRight}>
+          Clientes do Chat
+        </Typography>
+        <FormControlLabel
+          control={<Switch size="small" />}
+          checked={showNotClient}
+          onChange={switchToOnlyNotClients}
+          label="Exibir apenas clientes não cadastrados no sistema"
+          classes={{
+            root: classes.marginRight,
+            label: classes.label,
+          }}
+        />
+      </div>
+      <Input
+        fullWidth
+        placeholder="Pesquise por dados em qualquer campo"
+        name="filtroGlobal"
+        value={globalSearch}
         classes={{
-          root: classes.marginRight,
-          label: classes.label,
+          input: classes.input,
         }}
+        startAdornment={
+          <Icon path={mdiMagnify} size={1} color="#c6c6c6" style={iconMargin} />
+        }
+        onChange={(e) => setGlobalSearch(e.target.value)}
       />
-    </div>
+    </>
   );
 };
+
+const useStyle = (mobile) =>
+  makeStyles(({ spacing }) => {
+    const mobileStyles = mobile
+      ? {
+          marginTop: 6,
+          width: "101vw",
+          left: -20,
+          backgroundColor: "rgba(0,0,0,0.06)",
+        }
+      : {};
+    return {
+      label: {
+        fontSize: "12px",
+        fontWeight: "bold",
+      },
+      marginRight: { marginRight: spacing(2) },
+      input: {
+        ...mobileStyles,
+      },
+    };
+  });

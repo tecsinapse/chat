@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Input, Select, Snackbar } from "@tecsinapse/ui-kit";
-import { Button, Grid, Typography } from "@material-ui/core";
+import { Button, Input, Select, Snackbar } from "@tecsinapse/ui-kit";
+import { Grid, Typography } from "@material-ui/core";
 import { defaultFetch, noAuthJsonFetch } from "../../utils/fetch";
 import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
-
-const emptyTemplate = {
-  label: "Selecione",
-  value: "",
-  args: 0,
-  argsDescription: [],
-  argsKeys: [],
-};
+import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { cleanPhoneCharacters, emptyTemplate, formatPhone } from "./utils";
 
 export const SendNotification = ({
   chat,
@@ -21,6 +15,8 @@ export const SendNotification = ({
   createPath,
   info,
   reloadComponent,
+  setChat,
+  setView,
 }) => {
   const classes = useStyle();
 
@@ -135,6 +131,28 @@ export const SendNotification = ({
     args.filter((a) => a !== "").length === args.length;
 
   const successSend = () => {
+    const name =
+      chat?.name ||
+      args[
+        templates
+          .find((e) => e.value === selectedTemplate)
+          ?.argsKeys?.findIndex((i) => i === "name")
+      ];
+    const phone = cleanPhoneCharacters(phoneNumber);
+    setChat({
+      connectionKey: selectedConnectionKey,
+      destination,
+      chats: [
+        {
+          enabled: false,
+          name,
+          chatId: phone.startsWith("55") ? phone : `55${phone}`,
+          updateUnreadWhenOpen: true,
+          phone: formatPhone(phoneNumber),
+        },
+      ],
+    });
+
     setSuccess("Mensagem enviada");
     setTimeout(() => setSuccess(""), 4000);
     setError("");
@@ -144,6 +162,8 @@ export const SendNotification = ({
     setPreview("");
     reloadComponent();
     setSending(false);
+
+    setTimeout(() => setView(COMPONENT_LOCATION.CHAT), 4000);
   };
 
   const send = () => {

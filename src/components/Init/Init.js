@@ -391,6 +391,8 @@ export const Init = ({
                 createPath={chatInitConfig.createPath}
                 info={componentInfo.sendNotificationInfo}
                 reloadComponent={reloadComponent}
+                setChat={setCurrentChat}
+                setView={setView}
               />
             )}
 

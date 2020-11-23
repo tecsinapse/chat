@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Table } from "@tecsinapse/table";
 import { format, toMoment } from "../../utils/dates";
@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { TableHeader } from "./TableHeader";
 import { customActionsMobile, generateColumns } from "./tableUtils";
+import { matcher } from "./globalSearch";
 
 const sortChatsByContactAt = (allChats) =>
   allChats.sort((a, b) => {
@@ -36,9 +37,28 @@ export const MessageManagement = ({
 }) => {
   const { extraInfoColumns, allChats = [] } = componentInfo;
   const [chats, setChats] = useState(sortChatsByContactAt(allChats));
+  const [chatsFiltered, setChatsFiltered] = useState(
+    sortChatsByContactAt(allChats)
+  );
   const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
   const [deletingChat, setDeletingChat] = useState({});
+  const [globalSearch, setGlobalSearch] = useState("");
   const classes = useStyle();
+
+  useEffect(() => {
+    const filtered = chats.filter(
+      (el) =>
+        matcher(globalSearch, format(el.contactAt)).length > 0 ||
+        matcher(globalSearch, el.phone).length > 0 ||
+        matcher(globalSearch, el.lastMessage).length > 0 ||
+        matcher(globalSearch, el.name).length > 0 ||
+        matcher(globalSearch, el.subName || "").length > 0 ||
+        matcher(globalSearch, el.extraInfo?.segmento || "").length > 0 ||
+        matcher(globalSearch, el.extraInfo?.responsavel || "").length > 0 ||
+        matcher(globalSearch, el.extraInfo?.dealer || "").length > 0
+    );
+    setChatsFiltered(filtered);
+  }, [globalSearch, chats]);
 
   const switchToOnlyNotClients = () => {
     const showOnly = !showOnlyNotClients;
@@ -116,12 +136,14 @@ export const MessageManagement = ({
     userkeycloakId,
     onSelectChat,
     setDeletingChat,
-    classes
+    classes,
+    globalSearch
   );
 
   const exportOptions = !mobile
     ? {
         exportFileName: "chat-mensagens",
+        position: "footer",
         exportTypes: [
           {
             label: "Exportar para CSV",
@@ -138,8 +160,8 @@ export const MessageManagement = ({
         onDrawerClose={() => {}}
         classes={{ rootMobile: classes.rootMobile }}
         columns={columns}
-        data={chats}
-        rowId={(row) => row.id}
+        data={chatsFiltered}
+        rowId={(row) => row.chatId}
         customActionsMobile={generateActionsMobile}
         pagination
         exportOptions={exportOptions}
@@ -149,6 +171,9 @@ export const MessageManagement = ({
               showNotClient={showOnlyNotClients}
               switchToOnlyNotClients={switchToOnlyNotClients}
               headerClass={headerClass}
+              globalSearch={globalSearch}
+              setGlobalSearch={setGlobalSearch}
+              mobile={mobile}
             />
           ),
         }}
@@ -186,6 +211,7 @@ const useStyle = makeStyles(() => ({
     right: "12px",
   },
   rootMobile: {
-    height: "calc(100vh - 145px)",
+    paddingTop: "1px",
+    height: "calc(100vh - 206px)",
   },
 }));

@@ -9,7 +9,7 @@ export const useStyle = (customize, mobile) =>
       drawerContainer: {
         fontFamily:
           "font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI , Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue",
-        margin: theme.spacing(2, 0, 0, 0),
+        padding: theme.spacing(2, 0, 0, 0),
         height: "100%",
         overflowX: "hidden",
         maxWidth: mobile ? "unset" : "80vw",

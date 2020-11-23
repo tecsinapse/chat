@@ -1,7 +1,6 @@
-import { Button } from "@material-ui/core";
 import React from "react";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { FloatingButton } from "@tecsinapse/ui-kit";
+import { FloatingButton, Button } from "@tecsinapse/ui-kit";
 import Icon from "@mdi/react";
 import { mdiMessageText } from "@mdi/js";
 

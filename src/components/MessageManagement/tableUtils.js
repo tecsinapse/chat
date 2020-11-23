@@ -4,6 +4,7 @@ import { format } from "../../utils/dates";
 import { MessageSource } from "../../constants";
 import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
 import { encodeChatData } from "../../utils/encodeChatData";
+import { highlight } from "./globalSearch";
 
 export const generateAction = (
   row,
@@ -54,24 +55,21 @@ export const generateColumns = (
   userkeycloakId,
   onSelectChat,
   setDeletingChat,
-  classes
+  classes,
+  globalSearch
 ) => {
   const columns = [
     {
       title: "Data do Contato",
       field: "contactAt",
       options: {
-        filter: true,
         sort: true,
       },
-      customRender: (row) => format(row.contactAt),
+      customRender: (row) => highlight(globalSearch, format(row.contactAt)),
     },
     {
       title: "Cliente",
       field: "name",
-      options: {
-        filter: true,
-      },
       customRender: (row) => {
         const renderLastMessage = row.lastMessage;
 
@@ -85,20 +83,22 @@ export const generateColumns = (
         return (
           <>
             {row.highlighted ? (
-              <span className={classes.highlighted}>{row.name}</span>
+              <span className={classes.highlighted}>
+                {highlight(globalSearch, row.name)}
+              </span>
             ) : (
-              <span>{row.name}</span>
+              <span>{highlight(globalSearch, row.name)}</span>
             )}
             {row.subName && (
               <>
                 <br />
-                <span>{row.subName}</span>
+                <span>{highlight(globalSearch, row.subName)}</span>
               </>
             )}
             <br />
             {renderLastMessage && (
               <Typography variant="caption" style={fontItalic}>
-                {lastSender}: {row?.lastMessage}
+                {lastSender}: {highlight(globalSearch, row?.lastMessage)}
               </Typography>
             )}
           </>
@@ -108,9 +108,7 @@ export const generateColumns = (
     {
       title: "Telefone",
       field: "phone",
-      options: {
-        filter: true,
-      },
+      customRender: (row) => highlight(globalSearch, row.phone),
     },
   ];
 
@@ -119,9 +117,7 @@ export const generateColumns = (
       columns.push({
         title: extraInfoColumns[key],
         field: `extraInfo.${key}`,
-        options: {
-          filter: true,
-        },
+        customRender: (row) => highlight(globalSearch, row?.extraInfo[key]),
       });
     });
   }
@@ -177,7 +173,7 @@ export const customActionsMobile = (
 ) => {
   return (
     <div>
-      <ListItem onClick={() => onSelectChat(data)}>
+      <ListItem key="showMsg" onClick={() => onSelectChat(data)}>
         <ListItemText>{showMessagesLabel}</ListItemText>
       </ListItem>
 
@@ -201,7 +197,7 @@ export const customActionsMobile = (
       )}
 
       {showDiscardOption && (
-        <ListItem onClick={() => setDeletingChat(data)}>
+        <ListItem key="discardMsg" onClick={() => setDeletingChat(data)}>
           <ListItemText>Descartar Conversa</ListItemText>
         </ListItem>
       )}
