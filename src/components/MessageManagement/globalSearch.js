@@ -1,11 +1,13 @@
 import React from "react";
 
-const normalize = (str) =>
-  str
+const normalize = (str) => {
+  if (!str) return "";
+  return str
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[-[\]{}()*+?.,\\^$|#]/g, " ")
     .toLowerCase();
+};
 
 const split = (str, indexes, size) => {
   const result = [];

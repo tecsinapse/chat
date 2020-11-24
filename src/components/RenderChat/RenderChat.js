@@ -45,6 +45,8 @@ export const RenderChat = ({
   userNamesById,
   mobile,
   setView,
+  customActions,
+  setDrawerOpen,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
@@ -255,7 +257,8 @@ export const RenderChat = ({
         currentChat.minutesToBlock
       )}.`) ||
     undefined;
-  const { actions } = currentChat;
+
+  const actions = customActions ? customActions : currentChat.actions;
   const hasActions =
     currentChat && actions && actions.length > 0 && navigateWhenCurrentChat;
 
@@ -356,6 +359,7 @@ export const RenderChat = ({
         options={actions}
         data={currentChat}
         userkeycloakId={userkeycloakId}
+        setDrawerOpen={setDrawerOpen}
       />
 
       {currentChat.chatId && (

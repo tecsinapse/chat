@@ -366,6 +366,8 @@ export const Init = ({
                 userNamesById={componentInfo.userNameById}
                 mobile={mobile}
                 setView={setView}
+                customActions={customActions}
+                setDrawerOpen={setIsDrawerOpen}
               />
             )}
             {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
