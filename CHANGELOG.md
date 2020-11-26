@@ -1,3 +1,10 @@
+## <small>3.0.4 (2020-11-26)</small>
+
+* feat: update tecsinapse packages ([7b01ada](https://github.com/tecsinapse/chat/commit/7b01ada))
+* fix: default file name on download ([8747cc2](https://github.com/tecsinapse/chat/commit/8747cc2))
+
+
+
 ## <small>3.0.3 (2020-11-20)</small>
 
 * feat: added override option to backwards action on chat view ([98c343e](https://github.com/tecsinapse/chat/commit/98c343e))
