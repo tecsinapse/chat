@@ -17,6 +17,7 @@ export const SendNotification = ({
   reloadComponent,
   setChat,
   setView,
+  token,
 }) => {
   const classes = useStyle();
 
@@ -195,7 +196,8 @@ export const SendNotification = ({
               ""
             )}/create`,
             "POST",
-            fetchArgs
+            fetchArgs,
+            token
           ).then(() => {
             successSend();
           });

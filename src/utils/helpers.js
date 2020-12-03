@@ -9,9 +9,10 @@ export async function loadComponent(
   setIsLoadingInitialState,
   setView,
   setCurrentChat,
-  userMock
+  userMock,
+  token
 ) {
-  const info = await load({ ...chatInitConfig, userMock });
+  const info = await load({ ...chatInitConfig, userMock, token });
   setComponentInfo(info);
   setIsLoadingInitialState(false);
   if (info.currentClient && Object.keys(info.currentClient).length > 0) {

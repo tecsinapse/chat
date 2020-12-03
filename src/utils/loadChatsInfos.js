@@ -18,6 +18,7 @@ export async function load({
   params,
   standalone,
   userMock = mockUnreadInitialState,
+  token,
 }) {
   // primeiro busca a informação do produto local. É essa informação que fará a inicialização do chat
   // é essa informação que carrega quais chats são do usuário que está acessando o componente
@@ -29,7 +30,8 @@ export async function load({
     initialInfoFromProduct = await noAuthJsonFetch(
       getInitialStatePath,
       "POST",
-      params
+      params,
+      token
     );
   }
 

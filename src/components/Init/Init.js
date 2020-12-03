@@ -35,6 +35,7 @@ export const Init = ({
   customActions,
   mobile = false,
   userMock,
+  token,
 }) => {
   const homeLocation = chatInitConfig.onlyMessageManagement
     ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
@@ -57,7 +58,8 @@ export const Init = ({
       setIsLoadingInitialState,
       setView,
       setCurrentChat,
-      userMock
+      userMock,
+      token
     ).then(() => {
       if (chatInitConfig?.openImmediately) {
         setIsDrawerOpen(true);
@@ -71,6 +73,7 @@ export const Init = ({
     setCurrentChat,
     setIsDrawerOpen,
     userMock,
+    token,
   ]);
 
   const reloadComponent = () => {
@@ -80,7 +83,8 @@ export const Init = ({
       setIsLoadingInitialState,
       setView,
       setCurrentChat,
-      userMock
+      userMock,
+      token
     ).then(() => {});
   };
 
@@ -167,7 +171,8 @@ export const Init = ({
     await noAuthJsonFetch(
       `${chatInitConfig.deleteChatPath}/${deletedChat.connectionKey}/${deletedChat.chatId}`,
       "DELETE",
-      {}
+      {},
+      token
     );
     await defaultFetch(
       `${chatInitConfig.chatApiUrl}/api/chats/${deletedChat.connectionKey}/${deletedChat.chatId}/sessions/finish`,
@@ -395,6 +400,7 @@ export const Init = ({
                 reloadComponent={reloadComponent}
                 setChat={setCurrentChat}
                 setView={setView}
+                token={token}
               />
             )}
 
