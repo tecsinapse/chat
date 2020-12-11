@@ -56,8 +56,8 @@ const useStyle = (mobile) =>
     const mobileStyles = mobile
       ? {
           marginTop: 6,
-          width: "102vw",
-          left: -22,
+          width: "105vw",
+          left: -20,
           backgroundColor: "rgba(0,0,0,0.06)",
         }
       : {};
