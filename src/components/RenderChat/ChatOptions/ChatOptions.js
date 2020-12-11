@@ -6,7 +6,7 @@ import {
   Popover,
 } from "@material-ui/core";
 import React from "react";
-import {encodeChatData} from "../../../utils/encodeChatData";
+import { encodeChatData } from "../../../utils/encodeChatData";
 
 const useStyles = makeStyles(() => ({
   listFont: {
@@ -20,6 +20,7 @@ export const ChatOptions = ({
   setAnchorEl,
   data,
   userkeycloakId,
+  setDrawerOpen,
 }) => {
   const classes = useStyles();
   const handleClose = () => {
@@ -44,21 +45,31 @@ export const ChatOptions = ({
     >
       <List>
         {options &&
-          options.map((item) => (
-            <ListItem
-              key={item.label}
-              button
-              component="a"
-              href={`${item.path}?data=${encodedData}`}
-            >
-              <ListItemText
-                primary={item.label}
-                classes={{
-                  primary: classes.listFont,
-                }}
-              />
-            </ListItem>
-          ))}
+          options.map((item) => {
+            const handleClick = () => {
+              if (item.action) {
+                setDrawerOpen(false);
+                item.action(encodedData);
+              } else {
+                window.open(`${item.path}?data=${encodedData}`, "_self");
+              }
+            };
+            return (
+              <ListItem
+                key={item.label}
+                button
+                component="a"
+                onClick={handleClick}
+              >
+                <ListItemText
+                  primary={item.label}
+                  classes={{
+                    primary: classes.listFont,
+                  }}
+                />
+              </ListItem>
+            );
+          })}
       </List>
     </Popover>
   );

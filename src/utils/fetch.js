@@ -23,10 +23,14 @@ export async function defaultFetch(path, method, data, formData) {
   return await customFetch(path, init);
 }
 
-export async function noAuthJsonFetch(path, method, data) {
+export async function noAuthJsonFetch(path, method, data, token) {
   let headers = new Headers({
     "Content-Type": "application/json",
   });
+
+  if (token) {
+    headers.append("Authorization", `Bearer ${token}`);
+  }
 
   let init = {
     method,
