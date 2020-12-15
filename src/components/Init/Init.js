@@ -36,7 +36,7 @@ export const Init = ({
   mobile = false,
   userMock,
   token,
-  backendUrl,
+  backendUrl = "",
 }) => {
   const homeLocation = chatInitConfig.onlyMessageManagement
     ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
