@@ -11,6 +11,7 @@ export const InitWebsockets = ({
   destination,
   onChatUpdated,
   reloadComponent,
+  backendUrl,
 }) => {
   let mainSocketClientRefs = {};
   connectionKeys.forEach((connectionKey) => {
@@ -53,7 +54,7 @@ export const InitWebsockets = ({
 
       {/* Conexão WebSocket com o produto (dynamo peças / dynamo contato ativo / etc.. */}
       <SockJsClient
-        url={"/websocket/chat"}
+        url={`${backendUrl}/websocket/chat`}
         topics={[`/topic/chat.user.${userkeycloakId}`]}
         onMessage={handleNewProductWebsocketMessage}
         onConnect={() => {
