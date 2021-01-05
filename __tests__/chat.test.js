@@ -3,12 +3,13 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { TestComponent } from './TestComponent';
 
-jest.mock('@cleandersonlobo/react-mic', () => {
-  return jest.fn(() => () => {
+jest.mock('@tecsinapse/react-mic', () =>
+  // eslint-disable-next-line
+  jest.fn(() => () =>
     // eslint-disable-next-line
-    return (audioContext = require('../__mocks__/AudioContext.mock'));
-  });
-});
+    (audioContext = require('../__mocks__/AudioContext.mock'))
+  )
+);
 
 test('Render chat', () => {
   const messages = [
@@ -28,6 +29,7 @@ test('Render chat', () => {
   ];
   const onMessageSend = text => {
     const localId = Date.now().toString();
+
     messages.push({
       at: '02/03/2019 10:12',
       own: true,
@@ -47,6 +49,7 @@ test('Render chat', () => {
   expect(container).toContainElement(getByText('2'));
 
   const items = getAllByText('Felipe Rodrigues');
+
   expect(items).toHaveLength(2); // Header and one message
   expect(container).toContainElement(
     getByText('Última mensagem 10/10/2019 10:10')

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ReactMic } from '@cleandersonlobo/react-mic';
+import { ReactMic } from '@tecsinapse/react-mic';
 import Icon from '@mdi/react';
 import {
   mdiCheckboxBlankCircle,
@@ -10,11 +10,7 @@ import PropTypes from 'prop-types';
 import { IconButton } from '@livechat/ui-kit';
 import Timer from 'react-compound-timer';
 import { makeStyles, Typography } from '@material-ui/core';
-import {
-  defaultBlack,
-  defaultGrey2,
-  defaultWhite,
-} from '@tecsinapse/ui-kit';
+import { defaultBlack, defaultGrey2, defaultWhite } from '@tecsinapse/ui-kit';
 
 const useStyle = makeStyles({
   reactMic: {
