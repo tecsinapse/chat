@@ -1,7 +1,8 @@
 import { load } from "./loadChatsInfos";
 import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
-import { defaultFetch } from "./fetch";
+import { fetchMessages } from "./fetch";
 import { buildChatMessageObject } from "./message";
+import { ChatStatus } from "../constants";
 
 export async function loadComponent(
   chatInitConfig,
@@ -27,6 +28,7 @@ export async function loadComponent(
       connectionKey: info.currentClient.connectionKey,
       destination: info.currentClient.destination,
       disabled: info.currentClient.disabled,
+      status: info.currentClient.status,
       chats: chats,
     });
   }
@@ -42,38 +44,55 @@ export const onSelectedChatMaker = (
   messagesEndRef,
   onReadAllMessagesOfChat,
   userNamesById
-) => (chat) => {
+) => async (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);
 
-  defaultFetch(
-    `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${initialInfo.destination}/${chat.chatId}/messages?page=0&size=50&updateUnread=${chat.updateUnreadWhenOpen}`,
-    "GET",
-    {}
-  ).then((pageResults) => {
-    const messages = pageResults.content
-      .map((externalMessage) => {
-        return buildChatMessageObject(
-          externalMessage,
-          chat.chatId,
-          userNamesById
-        );
-      })
-      .reverse();
-    setMessages(messages);
-    const isBlocked = chat.status === "BLOCKED";
-    setBlocked(chat, isBlocked);
-    setIsLoading(false);
-    if (chat.updateUnreadWhenOpen) {
-      onReadAllMessagesOfChat(chat);
-    }
+  const response = await fetchMessages({
+    chatApiUrl,
+    connectionKey: initialInfo.connectionKey,
+    destination: initialInfo.destination,
+    chatId: chat.chatId,
+    updateUnreadWhenOpen: chat.updateUnreadWhenOpen,
+  });
 
-    setTimeout(function () {
-      // workaround to wait for all elements to render
+  const { content } = response;
+
+  const messages = content
+    .map((externalMessage) =>
+      buildChatMessageObject(externalMessage, chat.chatId, userNamesById)
+    )
+    .reverse();
+  setMessages(messages);
+  setBlocked(chat, ChatStatus.isBlocked(chat.status));
+  setIsLoading(false);
+  if (chat.updateUnreadWhenOpen) {
+    onReadAllMessagesOfChat(chat);
+  }
+
+  setTimeout(function () {
+    // workaround to wait for all elements to render
+    if (messagesEndRef?.current) {
       messagesEndRef.current.scrollIntoView({
         block: "end",
         behavior: "smooth",
       });
-    }, 700);
-  });
+    }
+  }, 700);
+};
+
+export const isEquals = (one, another) =>
+  one.chatId === another.chatId &&
+  one.connectionKey === another.connectionKey &&
+  one.destination === another.destination;
+
+export const isEmpty = (obj) => {
+  if (obj) {
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        return false;
+      }
+    }
+  }
+  return true;
 };

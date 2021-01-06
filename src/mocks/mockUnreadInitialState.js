@@ -1,10 +1,10 @@
 export const mockUnreadInitialState = {
-  connectionKeys: ["sandbox-homolog"],
-  destination: ["mercedes"],
+  connectionKeys: ["sandbox-dev"],
+  destination: ["default"],
   allChats: [
     {
-      connectionKey: "sandbox-homolog",
-      destination: "mercedes",
+      connectionKey: "sandbox-dev",
+      destination: "default",
       name: "Denner",
       subName: null,
       phone: "(67) 99267-8000",
@@ -30,8 +30,8 @@ export const mockUnreadInitialState = {
       updateUnreadWhenOpen: true,
     },
     {
-      connectionKey: "sandbox-homolog",
-      destination: "mercedes",
+      connectionKey: "sandbox-dev",
+      destination: "default",
       name: "Mauricio",
       subName: null,
       phone: "(48) 99901-2888",

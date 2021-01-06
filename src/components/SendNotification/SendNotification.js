@@ -6,6 +6,7 @@ import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { cleanPhoneCharacters, emptyTemplate, formatPhone } from "./utils";
+import { isEmpty } from "../../utils/helpers";
 
 export const SendNotification = ({
   chat,
@@ -35,14 +36,26 @@ export const SendNotification = ({
   const [error, setError] = useState("");
   const [templates, setTemplates] = useState([]);
   const [availableTemplates, setAvailableTemplates] = useState([]);
-
-  const { extraInfo } = chat || { extraInfo: { responsavel: "", dealer: "" } };
-  const auxInfo = info || {
-    user: extraInfo.responsavel,
-    company: extraInfo.dealer,
-    name: chat?.name,
+  const [auxInfo, setAuxInfo] = useState({
+    user: "",
+    company: "",
+    name: "",
     phone: phoneNumber,
-  };
+  });
+
+  useEffect(() => {
+    if (!isEmpty(info)) {
+      setAuxInfo(info);
+    } else {
+      const { extraInfo } = chat || {};
+      setAuxInfo({
+        user: extraInfo?.responsavel || "",
+        company: extraInfo?.dealer || "",
+        name: chat?.name || "",
+        phone: phoneNumber,
+      });
+    }
+  }, [chat, info, phoneNumber]);
 
   const availableConnectionKeys = [
     {

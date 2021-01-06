@@ -1,3 +1,16 @@
+export const fetchMessages = async ({
+  chatApiUrl,
+  connectionKey,
+  destination,
+  chatId,
+  page = 0,
+  updateUnreadWhenOpen = true,
+}) => {
+  const uri = `${chatApiUrl}/api/chats/${connectionKey}/${destination}/${chatId}/messages?page=${page}&size=50&updateUnread=${updateUnreadWhenOpen}`;
+  const response = await defaultFetch(uri, "GET", {});
+  return response;
+};
+
 export async function defaultFetch(path, method, data, formData) {
   let headers = new Headers({
     "Content-Type": "application/json",

@@ -164,6 +164,7 @@ export const MessageManagement = ({
         rowId={(row) => row.chatId}
         customActionsMobile={generateActionsMobile}
         pagination
+        onRowClick={(row) => onSelectChat(row)}
         exportOptions={exportOptions}
         toolbarOptions={{
           title: (

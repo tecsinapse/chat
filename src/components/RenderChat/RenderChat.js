@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Chat, DELIVERY_STATUS } from "@tecsinapse/chat";
 import SockJsClient from "react-stomp";
 
-import { defaultFetch } from "../../utils/fetch";
+import { defaultFetch, fetchMessages } from "../../utils/fetch";
 import {
   buildChatMessageObject,
   buildSendingMessage,
@@ -13,6 +13,7 @@ import uuidv1 from "uuid/v1";
 import { ChatOptions } from "./ChatOptions/ChatOptions";
 import { onSelectedChatMaker } from "../../utils/helpers";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { ChatStatus } from "../../constants";
 
 const emptyChat = {
   chatId: null,
@@ -55,14 +56,16 @@ export const RenderChat = ({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [messages, setMessages] = useState([]);
-  const [blocked, setBlocked] = useState(false);
 
   const messagesEndRef = useRef(null);
   let clientRef = useRef();
   const setStatusMessage = setStatusMessageFunc(setMessages);
 
   const setBlockedAndPropagateStatus = (chat, isBlocked) => {
-    setBlocked(isBlocked);
+    setCurrentChat((current) => ({
+      ...current,
+      status: isBlocked ? ChatStatus.BLOCKED : ChatStatus.OPEN,
+    }));
     onChatStatusChanged(chat, isBlocked);
   };
 
@@ -201,30 +204,34 @@ export const RenderChat = ({
       });
   };
 
-  const loadMore = () => {
+  const loadMore = async () => {
     if (isLoading || !hasMore) {
       return;
     }
     setIsLoading(true);
-    defaultFetch(
-      `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}/messages?page=${page}&size=50&updateUnread=${currentChat.updateUnreadWhenOpen}`,
-      "GET",
-      {}
-    ).then((pageResults) => {
-      const loadedMessages = pageResults.content
-        .map((externalMessage) => {
-          return buildChatMessageObject(
-            externalMessage,
-            currentChat.chatId,
-            userNamesById
-          );
-        })
-        .reverse();
-      setMessages(loadedMessages.concat(messages));
-      setIsLoading(false);
-      setHasMore(!pageResults.last);
-      setPage(page + 1);
+    const response = await fetchMessages({
+      chatApiUrl,
+      connectionKey: initialInfo.connectionKey,
+      destination: initialInfo.destination,
+      chatId: currentChat.chatId,
+      page: page,
+      updateUnreadWhenOpen: currentChat.updateUnreadWhenOpen,
     });
+
+    const { content, last } = response;
+    const loadedMessages = content
+      .map((externalMessage) =>
+        buildChatMessageObject(
+          externalMessage,
+          currentChat.chatId,
+          userNamesById
+        )
+      )
+      .reverse();
+    setMessages(loadedMessages.concat(messages));
+    setIsLoading(false);
+    setHasMore(!last);
+    setPage(page + 1);
   };
 
   const onBackToChatList = () => {
@@ -305,6 +312,8 @@ export const RenderChat = ({
   };
 
   const handleView = (view) => setView(view);
+  const isBlocked = ChatStatus.isBlocked(currentChat?.status);
+  const enabled = currentChat.enabled || ChatStatus.isOK(currentChat?.status);
 
   return (
     <div style={{ maxWidth: mobile ? "auto" : "40vW" }}>
@@ -312,10 +321,7 @@ export const RenderChat = ({
         messages={messages}
         onMessageSend={onMessageSend}
         messagesEndRef={messagesEndRef}
-        disabled={
-          isLoading ||
-          (initialInfo.chats.length > 1 ? false : !initialInfo.chats[0].enabled)
-        }
+        disabled={isLoading || !enabled}
         isMaximizedOnly
         onAudio={onAudio}
         title={title}
@@ -324,16 +330,13 @@ export const RenderChat = ({
         isLoading={isLoading}
         loadMore={loadMore}
         onMessageResend={onMessageResend}
-        isBlocked={blocked}
+        isBlocked={isBlocked}
         blockedMessage=""
-        chatList={
-          initialInfo?.chats?.length > 1 ? initialInfo.chats : undefined
-        }
         onBackToChatList={onBackToChatList}
         onSelectedChat={onSelectedChat}
-        disabledSend={isLoading && messages.length === 0}
+        disabledSend={isLoading}
         roundedCorners={false}
-        containerHeight={`calc(100vh - ${blocked ? "224px" : "132px"})`}
+        containerHeight={`calc(100vh - ${isBlocked ? "224px" : "132px"})`}
         customHeader={{
           headerLabel: "Cliente:",
           headerBackground: "#f7f7f7",

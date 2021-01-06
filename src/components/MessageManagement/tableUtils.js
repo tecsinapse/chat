@@ -117,7 +117,11 @@ export const generateColumns = (
       columns.push({
         title: extraInfoColumns[key],
         field: `extraInfo.${key}`,
-        customRender: (row) => highlight(globalSearch, row?.extraInfo[key]),
+        customRender: (row) =>
+          highlight(
+            globalSearch,
+            row?.hasOwnProperty(key) ? row?.extraInfo[key] : ""
+          ),
       });
     });
   }
