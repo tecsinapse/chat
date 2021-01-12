@@ -47,7 +47,6 @@ export const onSelectedChatMaker = (
 ) => async (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);
-
   const response = await fetchMessages({
     chatApiUrl,
     connectionKey: initialInfo.connectionKey,

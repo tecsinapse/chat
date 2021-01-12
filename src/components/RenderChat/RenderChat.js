@@ -95,10 +95,8 @@ export const RenderChat = ({
         userNamesById
       )(initialInfo.chats[0]);
     }
-    setIsLoading(false);
     // eslint-disable-next-line
-  }, [initialInfo, chatApiUrl, setIsLoading]); // eslint-disable-line react-hooks/exhaustive-deps
-  // ignore warning "React Hook useEffect has a missing dependency". It could cause infinity loop
+  }, []);
 
   const handleNewExternalMessage = (newMessage) => {
     // Append received message when client message or
@@ -151,7 +149,7 @@ export const RenderChat = ({
         JSON.stringify(chatMessage)
       );
     } catch (e) {
-      setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
+      setStatusMessage(localId, DELIVERY_STATUS.REJECTED.key);
     }
   };
 

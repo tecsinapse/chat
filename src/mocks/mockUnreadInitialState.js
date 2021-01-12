@@ -1,10 +1,10 @@
 export const mockUnreadInitialState = {
-  connectionKeys: ["sandbox-dev"],
-  destination: ["default"],
+  connectionKeys: ["sandbox-homolog"],
+  destination: ["fiat"],
   allChats: [
     {
-      connectionKey: "sandbox-dev",
-      destination: "default",
+      connectionKey: "sandbox-homolog",
+      destination: "fiat",
       name: "Denner",
       subName: null,
       phone: "(67) 99267-8000",
@@ -30,8 +30,35 @@ export const mockUnreadInitialState = {
       updateUnreadWhenOpen: true,
     },
     {
-      connectionKey: "sandbox-dev",
-      destination: "default",
+      connectionKey: "sandbox-homolog",
+      destination: "fiat",
+      name: "Marcelo",
+      subName: null,
+      phone: "(67) 99267-8001",
+      chatId: "5567992678001",
+      contactAt: "2020-11-05T17:53:39.869427",
+      extraInfo: {
+        responsavelId: "20",
+        segmento: "Autos",
+        dealerId: "1",
+        dealer: "APPLAUSO TATUÍ FIAT",
+        segmentoId: "1",
+        responsavel: "Gleici Franco Coelho Fidelis",
+      },
+      actions: [
+        { label: "Cadastrar Cliente", path: "/p/crm/clientes/" },
+        {
+          label: "Associar Telefone a um Cliente",
+          path: "/p/crm/clientes/telefone/associar",
+        },
+      ],
+      highlighted: true,
+      enabled: true,
+      updateUnreadWhenOpen: true,
+    },
+    {
+      connectionKey: "sandbox-homolog",
+      destination: "fiat",
       name: "Mauricio",
       subName: null,
       phone: "(48) 99901-2888",

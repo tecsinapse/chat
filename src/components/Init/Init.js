@@ -19,7 +19,7 @@ import { completeChatInfoWith } from "../../utils/loadChatsInfos";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { UnreadChats } from "../UnreadChats/UnreadChats";
 import { RenderChat } from "../RenderChat/RenderChat";
-import { InitWebsockets } from "./InitWebsockets";
+import InitWebsockets from "./InitWebsockets";
 import { MessageManagement } from "../MessageManagement/MessageManagement";
 import { ChatButton } from "../ChatButton/ChatButton";
 import { defaultFetch, noAuthJsonFetch } from "../../utils/fetch";
@@ -445,6 +445,7 @@ export const Init = ({
             chatApiUrl={chatInitConfig.chatApiUrl}
             userkeycloakId={chatInitConfig.userkeycloakId}
             chatIds={chatIds}
+            reloadComponent={reloadComponent}
             connectionKeys={componentInfo.connectionKeys}
             destination={componentInfo.destination}
             onChatUpdated={onChatUpdated}
