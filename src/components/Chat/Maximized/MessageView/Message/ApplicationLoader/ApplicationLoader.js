@@ -11,11 +11,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import { makeStyles } from '@material-ui/styles';
 
+import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit';
 import {
-  IconButton as IconButtonMaterial,
   defaultGreyDark,
   defaultWhite,
-} from '@tecsinapse/ui-kit';
+} from '@tecsinapse/ui-kit/build/utils/colors';
 
 const useStyle = size =>
   makeStyles(theme => ({

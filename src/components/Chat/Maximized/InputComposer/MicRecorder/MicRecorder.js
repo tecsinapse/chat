@@ -10,7 +10,11 @@ import PropTypes from 'prop-types';
 import { IconButton } from '@livechat/ui-kit';
 import Timer from 'react-compound-timer';
 import { makeStyles, Typography } from '@material-ui/core';
-import { defaultBlack, defaultGrey2, defaultWhite } from '@tecsinapse/ui-kit';
+import {
+  defaultBlack,
+  defaultGrey2,
+  defaultWhite,
+} from '@tecsinapse/ui-kit/build/utils/colors';
 
 const useStyle = makeStyles({
   reactMic: {

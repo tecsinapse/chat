@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from '@material-ui/styles';
 import { CircularProgress } from '@material-ui/core';
-import { defaultGreyLight4 } from '@tecsinapse/ui-kit';
+import { defaultGreyLight4 } from '@tecsinapse/ui-kit/build/utils/colors';
 
 const StyledDiv = styled('div')({
   textAlign: 'center',

@@ -6,7 +6,7 @@ import {
   defaultGreyLight5,
   defaultOrange,
   defaultRed,
-} from '@tecsinapse/ui-kit';
+} from '@tecsinapse/ui-kit/build/utils/colors';
 import DoubleTickIcon from '../../../../assets/message-status-delivered.svg';
 import SingleTickIcon from '../../../../assets/message-status-sent.svg';
 import SendingIcon from '../../../../assets/message-status-sending.svg';

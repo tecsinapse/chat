@@ -259,15 +259,15 @@ Chat.propTypes = {
   /** Display a message in warning format */
   warningMessage: PropTypes.string,
   /** Upload setup */
-  uploadOptions: {
+  uploadOptions: PropTypes.shape({
     maxFilesPerMessage: PropTypes.number,
     maximumFileLimitMessage: PropTypes.func,
     maximumFileNumberMessage: PropTypes.string,
     filenameFailedMessage: PropTypes.func,
     filetypeNotSupportedMessage: PropTypes.string,
-    sizeLimitErrorMessage: PropTypes.string,
+    sizeLimitErrorMessage: PropTypes.func,
     undefinedErrorMessage: PropTypes.string,
-  },
+  }),
   /** Overrides and give access to custom backwards action on chat view. ATTENTION WHEN USING WITH CHATLIST */
   backAction: PropTypes.func,
 };

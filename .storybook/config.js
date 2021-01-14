@@ -3,7 +3,7 @@ import React from 'react';
 import { DocsContainer, DocsPage } from '@storybook/addon-docs/blocks';
 import { ThemeProvider } from '@tecsinapse/ui-kit';
 import { create } from '@storybook/theming/create';
-import { themeColors } from '@tecsinapse/ui-kit/build/ThemeProvider';
+import { themeColors } from '@tecsinapse/ui-kit/build/themes';
 
 const theme = create({
   base: 'light',
