@@ -1,3 +1,9 @@
+## <small>3.0.5 (2021-01-06)</small>
+
+* fix: migrating react-mic to tecsinapse custom (red dot bug on browser tab) ([b99c3e1](https://github.com/tecsinapse/chat/commit/b99c3e1))
+
+
+
 ## <small>3.0.4 (2020-11-26)</small>
 
 * feat: update tecsinapse packages ([7b01ada](https://github.com/tecsinapse/chat/commit/7b01ada))
