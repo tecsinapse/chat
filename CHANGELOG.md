@@ -1,3 +1,9 @@
+## <small>3.0.6 (2021-01-14)</small>
+
+* fix: updating ui-kit ([5c38a8d](https://github.com/tecsinapse/chat/commit/5c38a8d))
+
+
+
 ## <small>3.0.5 (2021-01-06)</small>
 
 * fix: migrating react-mic to tecsinapse custom (red dot bug on browser tab) ([b99c3e1](https://github.com/tecsinapse/chat/commit/b99c3e1))
