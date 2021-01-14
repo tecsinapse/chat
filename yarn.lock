@@ -1933,11 +1933,6 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@cleandersonlobo/react-mic@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@cleandersonlobo/react-mic/-/react-mic-1.2.0.tgz#0e3c0cfc66b76ccbb23e9004f499b4dad34bc2df"
-  integrity sha512-PH04n7BUUA3w6jjtwgXhy9lWni0eJy6Sn3/v7yPPEZRBdknTkA0WwzUPZtjjmJKDzuTphdZTxo9Bt2SNcxx4GQ==
-
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -2495,20 +2490,20 @@
     "@svgr/plugin-svgo" "^4.3.1"
     loader-utils "^1.2.3"
 
-"@tecsinapse/chat@^3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-3.0.3.tgz#72ef76142d269076350984dd1c6f8256633b906a"
-  integrity sha512-asWL5Sut0Ca605iwv4dMWIBM8qOAjk/6GYDLHIdei0ZV4EEAZRRpXg9Jhh59Jj1fbJOTFpEo/MdcbbWQbvYHuw==
+"@tecsinapse/chat@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-3.0.6.tgz#2a0ca6489f61d4c8151f19645172b44149f37d84"
+  integrity sha512-6/KYoGhszSILgk/kP/AXfUwgzi6ax2N5OwwUNibemN+F9omyswXluwM14yCWFPyteCrm4N6BXAxqKRXzfZNHwA==
   dependencies:
-    "@cleandersonlobo/react-mic" "^1.2.0"
     "@livechat/ui-kit" "^0.4.0-10"
     "@material-ui/core" "^4.11.0"
     "@material-ui/styles" "^4.10.0"
     "@mdi/js" "^5.3.45"
     "@mdi/react" "^1.4.0"
     "@tecsinapse/es-utils" "^6.0.10"
-    "@tecsinapse/ui-kit" "^5.3.2"
-    "@tecsinapse/uploader" "^2.3.2"
+    "@tecsinapse/react-mic" "~1.3.1"
+    "@tecsinapse/ui-kit" "^5.4.4"
+    "@tecsinapse/uploader" "^2.4.4"
     clsx "^1.1.1"
     enumify "^1.0.4"
     moment "^2.27.0"
@@ -2545,18 +2540,23 @@
     eslint-plugin-react-hooks "^4.0.4"
     prettier "2.0.5"
 
-"@tecsinapse/table@^3.3.5":
-  version "3.3.5"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-3.3.5.tgz#c1674bec618179f942045a6301634971c44bcd26"
-  integrity sha512-cK4xRbM5brNlItTadZUC3ejaJBAyQBqdrPJ/QBnki79v5T39eU0TmpL9Os2NOlJ4uic/mkP9MfZMA6GO5n6mUA==
+"@tecsinapse/react-mic@~1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/react-mic/-/react-mic-1.3.1.tgz#0f71bb65aa52902d5773e4b1eabeb6efa09f9f40"
+  integrity sha512-61N9IsN4h5JfxLJfYxJ7vNez2nacM09R77+KaFZTlQYKiK3TNHKM14XNN78+HZakb/36Omek9GMMWoW6cUhudQ==
+
+"@tecsinapse/table@^3.4.5":
+  version "3.4.5"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-3.4.5.tgz#5d843eaf7010e6b3e1e11ae136731358d56363f6"
+  integrity sha512-Qv5a0uexughNIPtyyzMEe8C7jFc2TKLdKd2uD19efxQB4jGc4O4I64Xo5LaTzJ24wHRd6kX1a9s0SrApkvFQIA==
   dependencies:
-    "@tecsinapse/ui-kit" "^5.3.4"
+    "@tecsinapse/ui-kit" "^5.4.4"
     react-virtualized "^9.21.2"
 
-"@tecsinapse/ui-kit@^5.3.2":
-  version "5.3.2"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.3.2.tgz#cd027b6a6f639d2b00b650399188e2e814c3e27c"
-  integrity sha512-T715vcPYIQAu+P2nTwQ1GZmKAzFK80uj5mzk5vNt0dJmE1f3zZG47E77v+G8nnVMyUwUOFUdkpGsUiWmgIbPbA==
+"@tecsinapse/ui-kit@^5.4.4":
+  version "5.4.4"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.4.4.tgz#4ee0e5b7752d2fcfc5e735d4b77f50e31a175423"
+  integrity sha512-ZkfpoCVaRqrT7+He+QS8bKwzFmut+FHXXXc91hyiLZwnkgr12sOAXPZeBwBfs/rP+lfX4vEYs2har6Q0Lc5aIg==
   dependencies:
     "@material-ui/core" "^4.11.0"
     "@material-ui/icons" "^4.9.1"
@@ -2564,41 +2564,19 @@
     "@mdi/js" "^5.3.45"
     "@mdi/react" "^1.4.0"
     "@tecsinapse/es-utils" "^6.0.10"
-    material-ui-search-bar "1.0.0-beta.13"
+    material-ui-search-bar "1.0.0"
     react-select "^3.1.0"
     react-sizeme "^2.6.12"
     react-text-mask "^5.4.3"
-    react-virtualized "^9.21.2"
-    react-window "^1.8.5"
     text-mask-addons "^3.8.0"
     text-mask-core "^5.1.2"
 
-"@tecsinapse/ui-kit@^5.3.4":
-  version "5.3.4"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.3.4.tgz#965b17222ccb4e32bb6509738665c7fef71e9990"
-  integrity sha512-3lmsPsgre+RiQuMg+HP64JuUCYwiS1jcKjKIyuAAzDj88Bfk6xGESL6r1jMiVCEEzxs/px40DpBd24b7ONMIww==
+"@tecsinapse/uploader@^2.4.4":
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-2.4.4.tgz#f2912b35e70ee9d7b06f81c7f1ee231af071aba5"
+  integrity sha512-AIsItXRLHDbwc747H/D8L4y4beJ8LABCxuw+xdNdyJbqnA74hDDckkkSj+ahmhdRWX74gRKPWGpLM18bxi4hGg==
   dependencies:
-    "@material-ui/core" "^4.11.0"
-    "@material-ui/icons" "^4.9.1"
-    "@material-ui/styles" "^4.10.0"
-    "@mdi/js" "^5.3.45"
-    "@mdi/react" "^1.4.0"
-    "@tecsinapse/es-utils" "^6.0.10"
-    material-ui-search-bar "1.0.0-beta.13"
-    react-select "^3.1.0"
-    react-sizeme "^2.6.12"
-    react-text-mask "^5.4.3"
-    react-virtualized "^9.21.2"
-    react-window "^1.8.5"
-    text-mask-addons "^3.8.0"
-    text-mask-core "^5.1.2"
-
-"@tecsinapse/uploader@^2.3.2":
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-2.3.2.tgz#3e1500c01fa2ac68133f6e5c50aabad501ed3224"
-  integrity sha512-qyGk1lf3dp+yKUwAH9tXysyFJXqhhAS6w5tp6aF8RRFcPmzjVI97U0NViNZAFTD9RC9mxh+MXuTolTkHWOGr2A==
-  dependencies:
-    "@tecsinapse/ui-kit" "^5.3.2"
+    "@tecsinapse/ui-kit" "^5.4.4"
     react-dropzone "^10.0.2"
     uniqid "^5.0.3"
 
@@ -8809,10 +8787,10 @@ matcher@^1.0.0:
   dependencies:
     escape-string-regexp "^1.0.4"
 
-material-ui-search-bar@1.0.0-beta.13:
-  version "1.0.0-beta.13"
-  resolved "https://registry.yarnpkg.com/material-ui-search-bar/-/material-ui-search-bar-1.0.0-beta.13.tgz#08c246431666f91c3ca52df78987b86352783ee1"
-  integrity sha512-ETZiBvza26+0dyHamUO1Nmh5oRymdzmMM1Z6QH+wraQ6e+0GQdwuJjX4T0eL+nKYDBQB4UpSbFhkBs5ECN2QwA==
+material-ui-search-bar@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/material-ui-search-bar/-/material-ui-search-bar-1.0.0.tgz#2652dd5bdc4cb043cffb7144d9c296c120702e62"
+  integrity sha512-lCNuzMLPBVukVAkcnYKLXHneozsuKZREZNOcc8z9S9scXHqxJzhC9hOS3OC3/YJ+NJEB5lZB9zg1gryBaXEu8w==
   dependencies:
     classnames "^2.2.5"
     prop-types "^15.5.8"
@@ -8850,7 +8828,7 @@ mem@^4.0.0:
     mimic-fn "^2.0.0"
     p-is-promise "^2.0.0"
 
-"memoize-one@>=3.1.1 <6", memoize-one@^5.0.0:
+memoize-one@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.1.1.tgz#047b6e3199b508eaec03504de71229b8eb1d75c0"
   integrity sha512-HKeeBpWvqiVJD57ZUAsJNm71eHTykffzcLZVYWiVfQeI1rJtuEaS7hQiEpWfVVk18donPwJEcFKIkCmPJNOhHA==
@@ -11127,14 +11105,6 @@ react-virtualized@^9.21.2:
     loose-envify "^1.4.0"
     prop-types "^15.7.2"
     react-lifecycles-compat "^3.0.4"
-
-react-window@^1.8.5:
-  version "1.8.5"
-  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.5.tgz#a56b39307e79979721021f5d06a67742ecca52d1"
-  integrity sha512-HeTwlNa37AFa8MDZFZOKcNEkuF2YflA0hpGPiTT9vR7OawEt+GZbfM6wqkBahD3D3pUjIabQYzsnY/BSJbgq6Q==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    memoize-one ">=3.1.1 <6"
 
 react@^16.13.1:
   version "16.13.1"

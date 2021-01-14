@@ -128,7 +128,7 @@ export const Init = ({
 
     const currentChatUpdated = { ...currentChat };
     let needToUpdate = false;
-    currentChatUpdated.chats = currentChat?.chats.map((chat) => {
+    currentChatUpdated.chats = currentChat?.chats?.map((chat) => {
       if (isEquals(chat, updatedChat)) {
         needToUpdate = true;
         return completeChatInfoWith(chat, updatedChat);
@@ -423,6 +423,7 @@ export const Init = ({
                 onStartSendNotification={onStartSendNotification}
                 view={view}
                 theme={theme}
+                mobile={mobile}
               />
             )}
 

@@ -9,16 +9,21 @@ export const StartNewChatButton = ({
   classes,
   onStartSendNotification,
   theme,
+  mobile,
 }) => {
-  if (
-    view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT ||
-    view === COMPONENT_LOCATION.CHAT
-  ) {
+  const isChatView = view === COMPONENT_LOCATION.CHAT;
+  if (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT || isChatView) {
+    const style = {
+      position: "fixed",
+      bottom: isChatView || mobile ? 20 : 50,
+      right: isChatView || mobile ? 20 : 60,
+    };
+
     return (
       <FloatingButton
         variantFab="warning"
         onClick={() => onStartSendNotification()}
-        style={{ position: "fixed", bottom: 20, right: 20 }}
+        style={style}
       >
         <Icon
           path={mdiMessageText}
@@ -29,11 +34,15 @@ export const StartNewChatButton = ({
       </FloatingButton>
     );
   }
+
+  const style1 = {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    textAlign: "center",
+  };
+
   return (
-    <div
-      className={classes.messageManagementNewChat}
-      style={{ marginTop: theme.spacing(2), textAlign: "center" }}
-    >
+    <div className={classes.messageManagementNewChat} style={style1}>
       <Button
         color="secondary"
         variant="contained"

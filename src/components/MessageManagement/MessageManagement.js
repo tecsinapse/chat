@@ -144,6 +144,7 @@ export const MessageManagement = ({
     ? {
         exportFileName: "chat-mensagens",
         position: "footer",
+        footerSpan: 2,
         exportTypes: [
           {
             label: "Exportar para CSV",
@@ -153,6 +154,19 @@ export const MessageManagement = ({
         ],
       }
     : {};
+
+  const toolbarOptions = {
+    title: (
+      <TableHeader
+        showNotClient={showOnlyNotClients}
+        switchToOnlyNotClients={switchToOnlyNotClients}
+        headerClass={headerClass}
+        globalSearch={globalSearch}
+        setGlobalSearch={setGlobalSearch}
+        mobile={mobile}
+      />
+    ),
+  };
 
   return (
     <>
@@ -166,18 +180,7 @@ export const MessageManagement = ({
         pagination
         onRowClick={(row) => onSelectChat(row)}
         exportOptions={exportOptions}
-        toolbarOptions={{
-          title: (
-            <TableHeader
-              showNotClient={showOnlyNotClients}
-              switchToOnlyNotClients={switchToOnlyNotClients}
-              headerClass={headerClass}
-              globalSearch={globalSearch}
-              setGlobalSearch={setGlobalSearch}
-              mobile={mobile}
-            />
-          ),
-        }}
+        toolbarOptions={toolbarOptions}
         hideSelectFilterLabel
       />
       <Dialog
@@ -213,6 +216,6 @@ const useStyle = makeStyles(() => ({
   },
   rootMobile: {
     paddingTop: "1px",
-    height: "calc(100vh - 206px)",
+    height: "calc(100vh - 218px)",
   },
 }));
