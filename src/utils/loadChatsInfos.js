@@ -27,6 +27,7 @@ export async function load({
     // mock para tela de UNREAD
     initialInfoFromProduct = userMock;
   } else {
+    // A configuração inicial do servidor chega nessa requisição (componentInfo), o mock é o ponto de partida
     initialInfoFromProduct = await noAuthJsonFetch(
       getInitialStatePath,
       "POST",

@@ -63,6 +63,7 @@ export const Init = ({
   }, [componentInfo]);
 
   useEffect(() => {
+    // Os dados do Vo são chamados aqui
     loadComponent(
       chatInitConfig,
       setComponentInfo,
