@@ -89,6 +89,21 @@ export const mockUnreadInitialState = {
     dealer: "Dealer",
     segmento: "Segmento",
   },
+  extraFields: [
+    {
+      key: "SelectTest",
+      label: "Setor",
+      type: "SELECT",
+      availableValues: ["VENDAS", "POS VENDAS"],
+      value: "POS VENDAS",
+    },
+    {
+      key: "InputTest",
+      label: "Descrição",
+      type: "INPUT",
+      value: "Descrevendo",
+    },
+  ],
   userNameById: {
     "5a102db0-d019-4580-a173-75a0ae47581f": "Operador 1",
     aaaa: "Operador 2",

@@ -15,6 +15,7 @@ export const SendNotification = ({
   destination,
   createPath,
   info,
+  extraFields,
   reloadComponent,
   setChat,
   setView,
@@ -36,6 +37,7 @@ export const SendNotification = ({
   const [error, setError] = useState("");
   const [templates, setTemplates] = useState([]);
   const [availableTemplates, setAvailableTemplates] = useState([]);
+  const [customFields, setCustomFields] = useState([]);
   const [auxInfo, setAuxInfo] = useState({
     user: "",
     company: "",
@@ -55,7 +57,10 @@ export const SendNotification = ({
         phone: phoneNumber,
       });
     }
-  }, [chat, info, phoneNumber]);
+    if (extraFields) {
+      setCustomFields(extraFields);
+    }
+  }, [chat, info, extraFields, phoneNumber]);
 
   const availableConnectionKeys = [
     {
@@ -119,6 +124,14 @@ export const SendNotification = ({
     argsArray[index] = arg;
     setArgs(argsArray);
     updatePreview(selectedTemplate, argsArray);
+  };
+
+  const setCustomField = (index, value) => {
+    const customFieldsArray = [...customFields];
+    const customField = customFieldsArray[index];
+    customField.value = value;
+    customFieldsArray[index] = customField;
+    setCustomFields(customFieldsArray);
   };
 
   const getArgDescription = (index) => {
@@ -202,6 +215,9 @@ export const SendNotification = ({
           for (let i = 0; i < argsKeys.length; i++) {
             fetchArgs[argsKeys[i]] = args[i];
           }
+          for (let custom of customFields) {
+            fetchArgs[custom.key] = custom.value;
+          }
 
           noAuthJsonFetch(
             `${createPath}/${selectedConnectionKey}/${phoneNumber.replace(
@@ -281,7 +297,38 @@ export const SendNotification = ({
               variantDevice="auto"
             />
           </Grid>
-          <Grid item style={{ zIndex: 999999999 }}>
+          {customFields.map((customField, index) => (
+            <>
+              {customField.type === "INPUT" && (
+                <Grid item key={index} style={{ zIndex: 1 }}>
+                  <Input
+                    name={customField.key}
+                    label={customField.label}
+                    fullWidth
+                    value={customField.value}
+                    onChange={(e) => setCustomField(index, e.target.value)}
+                    variantDevice="auto"
+                  />
+                </Grid>
+              )}
+              {customField.type === "SELECT" && (
+                <Grid item key={index} style={{ zIndex: 999999999 }}>
+                  <Select
+                    value={customField.value}
+                    options={customField.availableValues.map((v) => ({
+                      label: v,
+                      value: v,
+                    }))}
+                    onChange={(value) => setCustomField(index, value)}
+                    label={customField.label}
+                    variant="auto"
+                    fullWidth
+                  />
+                </Grid>
+              )}
+            </>
+          ))}
+          <Grid item style={{ zIndex: 999999998 }}>
             <Select
               value={selectedTemplate}
               options={availableTemplates}

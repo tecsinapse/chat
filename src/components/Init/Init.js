@@ -411,6 +411,7 @@ export const Init = ({
                 destination={componentInfo.destination}
                 createPath={chatInitConfig.createPath}
                 info={componentInfo.sendNotificationInfo}
+                extraFields={componentInfo.extraFields}
                 reloadComponent={reloadComponent}
                 setChat={setCurrentChat}
                 setView={setView}
