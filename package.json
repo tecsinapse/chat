@@ -1,6 +1,6 @@
 {
   "name": "@tecsinapse/chat-component",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "main": "build/index.js",
   "module": "build/index.js",
   "files": [
@@ -47,7 +47,7 @@
     "prestart": "yarn install",
     "start": "react-scripts start",
     "build-dev": "REACT_APP_ENV=development react-scripts build",
-    "build": "REACT_APP_ENV=production react-scripts build",
+    "build": "SET \"REACT_APP_ENV=production\" && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build-lib": "rimraf -rf build/ && babel src/ -d build/"
