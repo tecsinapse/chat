@@ -184,14 +184,16 @@ export const customActionsMobile = (
             const encodedData = encodeChatData(data, userkeycloakId);
             if (actionLink.action) {
               setDrawerOpen(false);
-              actionLink.action(encodedData);
+              actionLink.action(data, encodedData);
             } else {
               window.open(`${actionLink.path}?data=${encodedData}`, "_self");
             }
           };
           return (
             <ListItem key={key} onClick={handleClick}>
-              <ListItemText>{actionLink.label}</ListItemText>
+              <ListItemText>
+                {actionLink.action ? actionLink.label(data) : actionLink.label}
+              </ListItemText>
             </ListItem>
           );
         }

@@ -1,6 +1,6 @@
 {
   "name": "@tecsinapse/chat-component",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "main": "build/index.js",
   "module": "build/index.js",
   "files": [
