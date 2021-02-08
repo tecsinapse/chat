@@ -1,6 +1,6 @@
 import { defaultFetch, noAuthJsonFetch } from "./fetch";
-import { mockUnreadInitialState } from "../mocks/mockUnreadInitialState";
 import { format, toMoment } from "./dates";
+import { mockClientChatInitialState } from "../mocks/mockClientChatInitialState";
 
 /**
  * Busca dos dados para inicializar o componente
@@ -17,7 +17,7 @@ export async function load({
   getInitialStatePath,
   params,
   standalone,
-  userMock = mockUnreadInitialState,
+  userMock = mockClientChatInitialState,
   token,
 }) {
   // primeiro busca a informação do produto local. É essa informação que fará a inicialização do chat
