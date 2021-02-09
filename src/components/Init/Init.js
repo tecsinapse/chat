@@ -409,6 +409,7 @@ export const Init = ({
                 connectionKeys={componentInfo.connectionKeys}
                 destination={componentInfo.destination}
                 createPath={chatInitConfig.createPath}
+                info={componentInfo.sendNotificationInfo}
                 extraFields={componentInfo.extraFields}
                 reloadComponent={reloadComponent}
                 setChat={setCurrentChat}

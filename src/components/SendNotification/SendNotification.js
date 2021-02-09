@@ -6,6 +6,7 @@ import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { cleanPhoneCharacters, emptyTemplate, formatPhone } from "./utils";
+import { isEmpty } from "../../utils/helpers";
 
 export const SendNotification = ({
   chat,
@@ -13,6 +14,7 @@ export const SendNotification = ({
   connectionKeys,
   destination,
   createPath,
+  info,
   extraFields,
   reloadComponent,
   setChat,
@@ -44,18 +46,21 @@ export const SendNotification = ({
   });
 
   useEffect(() => {
-    const { extraInfo } = chat || {};
-    setAuxInfo({
-      user: extraInfo?.responsavel || "",
-      company: extraInfo?.dealer || "",
-      name: chat?.name || "",
-      phone: phoneNumber,
-    });
-
+    if (!isEmpty(info)) {
+      setAuxInfo(info);
+    } else {
+      const { extraInfo } = chat || {};
+      setAuxInfo({
+        user: extraInfo?.responsavel || "",
+        company: extraInfo?.dealer || "",
+        name: chat?.name || "",
+        phone: phoneNumber,
+      });
+    }
     if (extraFields) {
       setCustomFields(extraFields);
     }
-  }, [chat, extraFields, phoneNumber]);
+  }, [chat, info, extraFields, phoneNumber]);
 
   const availableConnectionKeys = [
     {

@@ -7,15 +7,8 @@ mock.currentClient = {
   disabled: false,
   // could have many chats to client contacts
   clientChatIds: ["5548999012888"],
-  connectionKey: "sandbox-dev",
+  connectionKey: "sandbox-homolog",
   destination: "fiat",
-};
-
-mock.sendNotificationInfo = {
-  phone: "phone",
-  name: "name",
-  user: "user",
-  company: "company",
 };
 
 export const mockClientChatInitialState = mock;
