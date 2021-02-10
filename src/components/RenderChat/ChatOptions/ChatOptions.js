@@ -49,7 +49,7 @@ export const ChatOptions = ({
             const handleClick = () => {
               if (item.action) {
                 setDrawerOpen(false);
-                item.action(encodedData);
+                item.action(data, encodedData);
               } else {
                 window.open(`${item.path}?data=${encodedData}`, "_self");
               }
@@ -62,7 +62,7 @@ export const ChatOptions = ({
                 onClick={handleClick}
               >
                 <ListItemText
-                  primary={item.label}
+                  primary={item.action ? item.label(data) : item.label}
                   classes={{
                     primary: classes.listFont,
                   }}
