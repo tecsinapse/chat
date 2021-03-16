@@ -1,17 +1,20 @@
-import { format } from "../../utils/dates";
+import {format} from "../../utils/dates";
 
-const options = {
-  exportFileName: "chat-mensagens",
-  position: "footer",
-  footerSpan: 2,
-  exportTypes: [
-    {
-      label: "Exportar para CSV",
-      type: "custom",
-      exportFunc: () => exportToCSV(),
-    },
-  ],
+const getOptions = (chats, extraInfoColumns) => {
+  return {
+    exportFileName: "chat-mensagens",
+    position: "footer",
+    footerSpan: 2,
+    exportTypes: [
+      {
+        label: "Exportar para CSV",
+        type: "custom",
+        exportFunc: () => exportToCSV(chats, extraInfoColumns),
+      },
+    ],
+  };
 };
+
 const exportToCSV = (chats, extraInfoColumns) => {
   let fileNameWithExt = "gestao-mensagens.csv";
   const exportedColumns = ["Data do Contato", "Cliente", "Telefone"];
@@ -50,6 +53,7 @@ const exportToCSV = (chats, extraInfoColumns) => {
     document.body.removeChild(hiddenElement);
   }
 };
+
 const runSwitchToOnlyNotClients = (
   showOnlyNotClients,
   allChats,
@@ -65,4 +69,4 @@ const runSwitchToOnlyNotClients = (
   setShowOnlyNotClients(showOnly);
 };
 
-export { options, runSwitchToOnlyNotClients };
+export { getOptions, runSwitchToOnlyNotClients };

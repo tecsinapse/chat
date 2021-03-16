@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import { TableHeader } from "./TableHeader";
 import { customActionsMobile, generateColumns } from "./tableUtils";
-import { options, runSwitchToOnlyNotClients } from "./functions";
+import { getOptions, runSwitchToOnlyNotClients } from "./functions";
 import useFiltered from "../../hooks/useFiltered";
 
 const sortChatsByContactAt = (allChats) =>
@@ -87,7 +87,7 @@ export const MessageManagement = ({
     globalSearch
   );
 
-  const exportOptions = !mobile ? options : {};
+  const exportOptions = !mobile ? getOptions(chats, extraInfoColumns) : {};
 
   const toolbarOptions = {
     title: (
