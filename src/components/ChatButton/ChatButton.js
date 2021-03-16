@@ -1,32 +1,9 @@
 import { Badge, CircularProgress, Tooltip } from "@material-ui/core";
 import { FloatingButton } from "@tecsinapse/ui-kit";
 import React from "react";
-import { makeStyles } from "@material-ui/styles";
-import { defaultOrange } from "@tecsinapse/ui-kit/build/utils/colors";
 import { mdiForum } from "@mdi/js";
 import Icon from "@mdi/react";
-
-const useStyle = makeStyles((theme) => ({
-  fabContainer: {
-    zIndex: "9999999999999",
-    position: "fixed",
-    right: 0,
-    bottom: theme.spacing(2),
-  },
-  badgeAlign: {
-    top: "7px",
-    left: "7px",
-  },
-  fab: {
-    borderRadius: "24px 0 0 24px",
-    padding: 0,
-    width: "48px",
-    backgroundColor: defaultOrange,
-  },
-  fabProgress: {
-    color: theme.palette.secondary.dark,
-  },
-}));
+import { useStyle } from "./styles";
 
 export const ChatButton = ({
   unreadTotal,

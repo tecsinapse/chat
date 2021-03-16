@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/styles";
+import { useStyle } from "./styles";
 import { Table } from "@tecsinapse/table";
 import { toMoment } from "../../utils/dates";
 import {
@@ -138,18 +138,3 @@ export const MessageManagement = ({
     </>
   );
 };
-
-const useStyle = makeStyles(() => ({
-  highlighted: {
-    fontWeight: "bold",
-    color: "#e6433f",
-  },
-  badgeAlign: {
-    top: "8px",
-    right: "12px",
-  },
-  rootMobile: {
-    paddingTop: "1px",
-    height: "calc(100vh - 218px)",
-  },
-}));
