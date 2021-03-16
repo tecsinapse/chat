@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { mdiArrowLeft, mdiChevronRight, mdiClose, mdiForum } from "@mdi/js";
+import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useTheme } from "@material-ui/styles";
 import {
-  Badge,
   Button,
   Dialog,
   DialogActions,
@@ -12,8 +11,6 @@ import {
   DialogTitle,
   Divider as MuiDivider,
   Drawer,
-  Grid,
-  Typography,
 } from "@material-ui/core";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { UnreadChats } from "../UnreadChats/UnreadChats";
@@ -43,6 +40,8 @@ import {
 
 import useComponentInfo from "../../hooks/useComponentInfo";
 import useLoadComponent from "../../hooks/useLoadComponent";
+import { HeaderDrawer } from "./HeaderDrawer";
+import { ItemDrawer } from "./ItemDrawer";
 
 export const Init = ({
   chatInitConfig,
@@ -110,7 +109,6 @@ export const Init = ({
   let showBackButton = isShowBackButton(view, chatInitConfig);
   let showMessageManagement = isShowMessageManagement(view);
 
-  //verificar oq acontece no if e dentro do corpo da função
   if (
     view === COMPONENT_LOCATION.CHAT &&
     !chatInitConfig.navigateWhenCurrentChat
@@ -152,103 +150,22 @@ export const Init = ({
           onClose={() => setIsDrawerOpen(false)}
         >
           <div className={classes.drawerContainer}>
-            <div className={classes.drawerHeader}>
-              <Grid container justify="space-between">
-                <Grid item>
-                  <Grid container>
-                    {showBackButton && (
-                      <Grid item style={{ marginRight: theme.spacing(1) }}>
-                        <Badge
-                          color="error"
-                          overlap="circle"
-                          variant="dot"
-                          badgeContent={unreadTotal}
-                          anchorOrigin={{
-                            vertical: "top",
-                            horizontal: "left",
-                          }}
-                        >
-                          <Icon
-                            onClick={() => setView(homeLocation)}
-                            color={theme.palette.primary.main}
-                            size={1.25}
-                            style={{ cursor: "pointer", marginLeft: "-8px" }}
-                            path={mdiArrowLeft}
-                          />
-                        </Badge>
-                      </Grid>
-                    )}
-                    <Grid item className={classes.titleContainer}>
-                      <Typography
-                        variant="h5"
-                        color="textPrimary"
-                        className={classes.title}
-                      >
-                        {view === COMPONENT_LOCATION.CHAT &&
-                          chatInitConfig.onChatTitle}
-                        {view === COMPONENT_LOCATION.UNREAD && "Painel do Chat"}
-                        {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
-                          "Gestão de Mensagens"}
-                        {view === COMPONENT_LOCATION.SEND_NOTIFICATION &&
-                          "Iniciar Nova Conversa"}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item className={classes.drawerHeaderClose}>
-                  <Icon
-                    onClick={() => setIsDrawerOpen(false)}
-                    color={theme.palette.primary.main}
-                    size={1.25}
-                    style={{ cursor: "pointer" }}
-                    path={mdiClose}
-                  />
-                </Grid>
-              </Grid>
-            </div>
+            <HeaderDrawer
+              view={view}
+              chatInitConfig={chatInitConfig}
+              theme={theme}
+              classes={classes}
+              homeLocation={homeLocation}
+              setIsDrawerOpen={setIsDrawerOpen}
+              setView={setView}
+              showBackButton={showBackButton}
+              unreadTotal={unreadTotal}
+            />
             <MuiDivider variant="fullWidth" />
-
             {showMessageManagement && (
-              <div
-                className={classes.messageManagementLinkContainer}
-                onClick={() => setView(COMPONENT_LOCATION.MESSAGE_MANAGEMENT)}
-              >
-                <Grid container justify="space-between" alignItems="center">
-                  <Grid item>
-                    <Grid container spacing={1} alignItems="center">
-                      <Grid item>
-                        <Icon
-                          path={mdiForum}
-                          size={1}
-                          color={theme.palette.text.secondary}
-                          style={{ marginTop: "3px" }}
-                        />
-                      </Grid>
-                      <Grid item>
-                        <Typography
-                          color="textPrimary"
-                          variant="body1"
-                          display="inline"
-                          style={{ fontWeight: "bold" }}
-                        >
-                          Gestão de mensagens
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid item>
-                    <Icon
-                      color={theme.palette.text.primary}
-                      size={1}
-                      style={{ cursor: "pointer" }}
-                      path={mdiChevronRight}
-                    />
-                  </Grid>
-                </Grid>
-              </div>
+              <ItemDrawer classes={classes} theme={theme} setView={setView} />
             )}
             <MuiDivider variant="fullWidth" />
-
             {view === COMPONENT_LOCATION.UNREAD && (
               <UnreadChats
                 chats={componentInfo.allChats}
@@ -330,7 +247,6 @@ export const Init = ({
                 token={token}
               />
             )}
-
             {showSendNotification && (
               <StartNewChatButton
                 classes={classes}
@@ -346,7 +262,6 @@ export const Init = ({
                 mobile={mobile}
               />
             )}
-
             {view === COMPONENT_LOCATION.CHAT && mobile && (
               <div className={classes.mobileCloseChatButton}>
                 <Icon
@@ -360,7 +275,6 @@ export const Init = ({
             )}
           </div>
         </Drawer>
-
         {!isLoadingInitialState && (
           <InitWebsockets
             chatApiUrl={chatInitConfig.chatApiUrl}
@@ -381,7 +295,6 @@ export const Init = ({
             mainSocketClientRefs={mainSocketClientRefs}
           />
         )}
-
         {chatInitConfig.clickOnUnreadOpenFirstAction && (
           <Dialog
             open={
