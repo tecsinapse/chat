@@ -19,6 +19,8 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
 
   let unreadTotal = 0;
   const chatWithUnreadMessages = [];
+
+  // verificar se função tem o mesmmo retorno de getUnreadTotal
   chats.forEach((chat) => {
     if (chat.unread > 0) {
       unreadTotal += chat.unread;

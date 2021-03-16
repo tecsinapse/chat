@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { mdiArrowLeft, mdiChevronRight, mdiClose, mdiForum } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useTheme } from "@material-ui/styles";
@@ -15,19 +15,34 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import { completeChatInfoWith } from "../../utils/loadChatsInfos";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { UnreadChats } from "../UnreadChats/UnreadChats";
 import { RenderChat } from "../RenderChat/RenderChat";
 import InitWebsockets from "./InitWebsockets";
 import { MessageManagement } from "../MessageManagement/MessageManagement";
 import { ChatButton } from "../ChatButton/ChatButton";
-import { defaultFetch, noAuthJsonFetch } from "../../utils/fetch";
 import { encodeChatData } from "../../utils/encodeChatData";
 import { SendNotification } from "../SendNotification/SendNotification";
-import { isEquals, loadComponent } from "../../utils/helpers";
 import { useStyle } from "./styles";
 import { StartNewChatButton } from "../StartNewChatButton/StartNewChatButton";
+
+import {
+  getUnreadTotal,
+  onUpdatedChat,
+  getChatIds,
+  onReadAllMessagesOfChat,
+  onDeleteChat,
+  onChatStatusChanged,
+  isShowBackButton,
+  isShowMessageManagement,
+  isChatViewAndIsBlocked,
+  isShowSendNotification,
+  onStartSendNotification,
+  runReloadComponent,
+} from "./functions";
+
+import useComponentInfo from "../../hooks/useComponentInfo";
+import useLoadComponent from "../../hooks/useLoadComponent";
 
 export const Init = ({
   chatInitConfig,
@@ -52,110 +67,25 @@ export const Init = ({
   const [chatToSendNotification, setChatToSendNotification] = useState();
   const [mainSocketClientRefs, setMainSocketClientRefs] = useState();
 
-  useEffect(() => {
-    if (componentInfo?.connectionKeys) {
-      const socketClientRefs = {};
-      componentInfo.connectionKeys.forEach((connectionKey) => {
-        socketClientRefs[connectionKey] = createRef();
-      });
-      setMainSocketClientRefs(socketClientRefs);
-    }
-  }, [componentInfo]);
+  useComponentInfo(componentInfo, setMainSocketClientRefs);
 
-  useEffect(() => {
-    loadComponent(
-      chatInitConfig,
-      setComponentInfo,
-      setIsLoadingInitialState,
-      setView,
-      setCurrentChat,
-      userMock,
-      token
-    ).then(() => {
-      if (chatInitConfig?.openImmediately) {
-        setIsDrawerOpen(true);
-      }
-    });
-  }, [
+  const propsToLoadComponent = {
     chatInitConfig,
     setComponentInfo,
     setIsLoadingInitialState,
     setView,
     setCurrentChat,
-    setIsDrawerOpen,
     userMock,
     token,
-  ]);
-
-  const reloadComponent = () => {
-    loadComponent(
-      chatInitConfig,
-      setComponentInfo,
-      setIsLoadingInitialState,
-      setView,
-      setCurrentChat,
-      userMock,
-      token
-    ).then(() => {});
+    setIsDrawerOpen,
   };
 
-  const chatIds = (componentInfo.allChats || [])
-    .map((chat) => chat.chatId)
-    .join(",");
-  let unreadTotal = (componentInfo.allChats || []).reduce(
-    (acc, chat) => acc + chat.unread,
-    0
-  );
+  useLoadComponent(propsToLoadComponent);
 
-  const onChatUpdated = (updatedChat) => {
-    let chatsToUpdate = [];
-    let newChat = true;
-    const toUpdateInfo = { ...componentInfo };
-    componentInfo.allChats.forEach((chat) => {
-      if (isEquals(chat, updatedChat)) {
-        updatedChat = completeChatInfoWith(chat, updatedChat);
-        chatsToUpdate.push(updatedChat);
-        newChat = false;
-      } else {
-        chatsToUpdate.push(chat);
-      }
-    });
-    if (newChat) {
-      chatsToUpdate.push(updatedChat);
-    }
-    toUpdateInfo.allChats = chatsToUpdate;
-    setComponentInfo(toUpdateInfo);
+  const reloadComponent = () => runReloadComponent(propsToLoadComponent);
 
-    const currentChatUpdated = { ...currentChat };
-    let needToUpdate = false;
-    currentChatUpdated.chats = currentChat?.chats?.map((chat) => {
-      if (isEquals(chat, updatedChat)) {
-        needToUpdate = true;
-        return completeChatInfoWith(chat, updatedChat);
-      }
-      return chat;
-    });
-
-    if (needToUpdate) {
-      setCurrentChat(currentChatUpdated);
-    }
-  };
-
-  const onReadAllMessagesOfChat = (readChat) => {
-    let chatsToUpdate = [];
-    const toUpdateInfo = { ...componentInfo };
-    componentInfo.allChats.forEach((chat) => {
-      if (isEquals(chat, readChat)) {
-        const updatedChat = { ...chat };
-        updatedChat.unread = 0;
-        chatsToUpdate.push(updatedChat);
-      } else {
-        chatsToUpdate.push(chat);
-      }
-    });
-    toUpdateInfo.allChats = chatsToUpdate;
-    setComponentInfo(toUpdateInfo);
-  };
+  const chatIds = getChatIds(componentInfo);
+  let unreadTotal = getUnreadTotal(componentInfo);
 
   const onSelectUnreadChat = (chat) => {
     if (chatInitConfig.clickOnUnreadOpenFirstAction) {
@@ -177,60 +107,10 @@ export const Init = ({
     setView(COMPONENT_LOCATION.CHAT);
   };
 
-  async function onStartSendNotification() {
-    if (COMPONENT_LOCATION.CHAT !== view) {
-      setChatToSendNotification(null);
-    }
-    setView(COMPONENT_LOCATION.SEND_NOTIFICATION);
-  }
+  let showBackButton = isShowBackButton(view, chatInitConfig);
+  let showMessageManagement = isShowMessageManagement(view);
 
-  async function onDeleteChat(deletedChat) {
-    await noAuthJsonFetch(
-      `${chatInitConfig.deleteChatPath}/${deletedChat.connectionKey}/${deletedChat.chatId}`,
-      "DELETE",
-      {},
-      token
-    );
-    await defaultFetch(
-      `${chatInitConfig.chatApiUrl}/api/chats/${deletedChat.connectionKey}/${deletedChat.chatId}/sessions/finish`,
-      "DELETE",
-      {}
-    );
-    const toUpdateInfo = { ...componentInfo };
-    toUpdateInfo.allChats = componentInfo.allChats.filter(
-      (chat) => chat.chatId !== deletedChat.chatId
-    );
-
-    const { currentClient } = componentInfo;
-    if (currentClient && Object.keys(currentClient).length > 0) {
-      if (currentClient.clientChatIds.includes(deletedChat.chatId)) {
-        toUpdateInfo.currentClient = {};
-      }
-    }
-    setComponentInfo(toUpdateInfo);
-    return toUpdateInfo.allChats;
-  }
-
-  const onChatStatusChanged = (statusChangedChat, isBlocked) => {
-    // controls if the current chat is expired and the button to send a notification is visible to a chat
-    if (statusChangedChat) {
-      componentInfo.allChats.forEach((chat) => {
-        if (isEquals(chat, statusChangedChat)) {
-          // will only show the button if the chat is blocked
-          setChatToSendNotification(isBlocked ? chat : null);
-        }
-      });
-    } else {
-      setChatToSendNotification(null);
-    }
-  };
-
-  let showBackButton =
-    view === COMPONENT_LOCATION.CHAT ||
-    view === COMPONENT_LOCATION.SEND_NOTIFICATION ||
-    (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
-      !chatInitConfig.onlyMessageManagement);
-  let showMessageManagement = view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT;
+  //verificar oq acontece no if e dentro do corpo da função
   if (
     view === COMPONENT_LOCATION.CHAT &&
     !chatInitConfig.navigateWhenCurrentChat
@@ -239,13 +119,16 @@ export const Init = ({
     showMessageManagement = false;
   }
 
-  const isChatViewAndIsBlocked =
-    view === COMPONENT_LOCATION.CHAT && chatToSendNotification != null;
-  const showSendNotification =
-    chatInitConfig.canSendNotification &&
-    (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT ||
-      view === COMPONENT_LOCATION.UNREAD ||
-      isChatViewAndIsBlocked);
+  const chatViewAndIsBlocked = isChatViewAndIsBlocked(
+    view,
+    chatToSendNotification
+  );
+
+  const showSendNotification = isShowSendNotification(
+    view,
+    chatInitConfig,
+    chatViewAndIsBlocked
+  );
 
   return (
     <>
@@ -378,9 +261,31 @@ export const Init = ({
                 initialInfo={currentChat}
                 chatApiUrl={chatInitConfig.chatApiUrl}
                 userkeycloakId={chatInitConfig.userkeycloakId}
-                onReadAllMessagesOfChat={onReadAllMessagesOfChat}
+                onDeleteChat={(deletedChat) =>
+                  onDeleteChat(
+                    deletedChat,
+                    chatInitConfig,
+                    token,
+                    componentInfo,
+                    setComponentInfo
+                  )
+                }
+                onReadAllMessagesOfChat={(readChat) =>
+                  onReadAllMessagesOfChat(
+                    componentInfo,
+                    readChat,
+                    setComponentInfo
+                  )
+                }
                 navigateWhenCurrentChat={chatInitConfig.navigateWhenCurrentChat}
-                onChatStatusChanged={onChatStatusChanged}
+                onChatStatusChanged={(statusChangedChat, isBlocked) =>
+                  onChatStatusChanged(
+                    statusChangedChat,
+                    isBlocked,
+                    componentInfo,
+                    setChatToSendNotification
+                  )
+                }
                 userNamesById={componentInfo.userNameById}
                 mobile={mobile}
                 setView={setView}
@@ -392,7 +297,15 @@ export const Init = ({
               <MessageManagement
                 componentInfo={componentInfo}
                 onSelectChat={onSelectChat}
-                onDeleteChat={onDeleteChat}
+                onDeleteChat={(deletedChat) =>
+                  onDeleteChat(
+                    deletedChat,
+                    chatInitConfig,
+                    token,
+                    componentInfo,
+                    setComponentInfo
+                  )
+                }
                 userkeycloakId={chatInitConfig.userkeycloakId}
                 showMessagesLabel={chatInitConfig.showMessagesLabel}
                 showDiscardOption={chatInitConfig.showDiscardOption}
@@ -421,7 +334,13 @@ export const Init = ({
             {showSendNotification && (
               <StartNewChatButton
                 classes={classes}
-                onStartSendNotification={onStartSendNotification}
+                onStartSendNotification={() =>
+                  onStartSendNotification(
+                    view,
+                    setChatToSendNotification,
+                    setView
+                  )
+                }
                 view={view}
                 theme={theme}
                 mobile={mobile}
@@ -450,7 +369,15 @@ export const Init = ({
             reloadComponent={reloadComponent}
             connectionKeys={componentInfo.connectionKeys}
             destination={componentInfo.destination}
-            onChatUpdated={onChatUpdated}
+            onChatUpdated={(updatedChat) =>
+              onUpdatedChat(
+                updatedChat,
+                componentInfo,
+                setComponentInfo,
+                setCurrentChat,
+                currentChat
+              )
+            }
             mainSocketClientRefs={mainSocketClientRefs}
           />
         )}

@@ -34,7 +34,7 @@ export async function loadComponent(
   }
 }
 
-export const onSelectedChatMaker = (
+export const onSelectedChatMaker = ( {
   initialInfo,
   setIsLoading,
   setCurrentChat,
@@ -43,7 +43,7 @@ export const onSelectedChatMaker = (
   chatApiUrl,
   messagesEndRef,
   onReadAllMessagesOfChat,
-  userNamesById
+  userNamesById }
 ) => async (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);

@@ -6,7 +6,7 @@ import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { cleanPhoneCharacters, emptyTemplate, formatPhone } from "./utils";
-import { isEmpty } from "../../utils/helpers";
+import useSendNotification from "../../hooks/useSendNotification";
 
 export const SendNotification = ({
   chat,
@@ -44,23 +44,30 @@ export const SendNotification = ({
     name: "",
     phone: phoneNumber,
   });
-
-  useEffect(() => {
-    if (!isEmpty(info)) {
-      setAuxInfo(info);
-    } else {
-      const { extraInfo } = chat || {};
-      setAuxInfo({
-        user: extraInfo?.responsavel || "",
-        company: extraInfo?.dealer || "",
-        name: chat?.name || "",
-        phone: phoneNumber,
-      });
-    }
-    if (extraFields) {
-      setCustomFields(extraFields);
-    }
-  }, [chat, info, extraFields, phoneNumber]);
+  useSendNotification(
+    chat,
+    phoneNumber,
+    extraFields,
+    info,
+    setCustomFields,
+    setAuxInfo
+  );
+  // useEffect(() => {
+  //   if (!isEmpty(info)) {
+  //     setAuxInfo(info);
+  //   } else {
+  //     const { extraInfo } = chat || {};
+  //     setAuxInfo({
+  //       user: extraInfo?.responsavel || "",
+  //       company: extraInfo?.dealer || "",
+  //       name: chat?.name || "",
+  //       phone: phoneNumber,
+  //     });
+  //   }
+  //   if (extraFields) {
+  //     setCustomFields(extraFields);
+  //   }
+  // }, [chat, info, extraFields, phoneNumber]);
 
   const availableConnectionKeys = [
     {
