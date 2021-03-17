@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Select, Snackbar } from "@tecsinapse/ui-kit";
 import { Grid, Typography } from "@material-ui/core";
-import { defaultFetch, noAuthJsonFetch } from "../../utils/fetch";
 import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { cleanPhoneCharacters, emptyTemplate, formatPhone } from "./utils";
+import { cleanPhoneCharacters, emptyTemplate } from "./utils";
 import useSendNotification from "../../hooks/useSendNotification";
+import { HeaderSendNotification } from "./HeaderSendNotification";
+import {
+  send,
+  loadTemplates,
+  getName,
+  getObjectToSetChat,
+  getCanSend,
+} from "./functions";
 
 export const SendNotification = ({
   chat,
@@ -52,22 +59,6 @@ export const SendNotification = ({
     setCustomFields,
     setAuxInfo
   );
-  // useEffect(() => {
-  //   if (!isEmpty(info)) {
-  //     setAuxInfo(info);
-  //   } else {
-  //     const { extraInfo } = chat || {};
-  //     setAuxInfo({
-  //       user: extraInfo?.responsavel || "",
-  //       company: extraInfo?.dealer || "",
-  //       name: chat?.name || "",
-  //       phone: phoneNumber,
-  //     });
-  //   }
-  //   if (extraFields) {
-  //     setCustomFields(extraFields);
-  //   }
-  // }, [chat, info, extraFields, phoneNumber]);
 
   const availableConnectionKeys = [
     {
@@ -84,34 +75,18 @@ export const SendNotification = ({
 
   useEffect(() => {
     if (selectedConnectionKey !== "") {
-      loadTemplates(selectedConnectionKey);
+      loadTemplates(selectedConnectionKey, propsToLoadTamplates);
     }
     if (phoneNumber === "") {
       setPhoneNumber(auxInfo.phone);
     }
   }, [selectedConnectionKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const loadTemplates = (connectionKey) => {
-    if (connectionKey === "") {
-      setSelectedConnectionKey("");
-      return;
-    }
-    defaultFetch(
-      `${chatApiUrl}/api/chats/${connectionKey}/templates`,
-      "GET",
-      {}
-    ).then((templates) => {
-      setTemplates(templates);
-      const available = [emptyTemplate];
-      templates.forEach((t) =>
-        available.push({
-          label: t.name,
-          value: t.value,
-        })
-      );
-      setAvailableTemplates(available);
-      setSelectedConnectionKey(connectionKey);
-    });
+  const propsToLoadTamplates = {
+    setSelectedConnectionKey,
+    chatApiUrl,
+    setAvailableTemplates,
+    setTemplates,
   };
 
   const onSelectTemplate = (template) => {
@@ -158,34 +133,19 @@ export const SendNotification = ({
     setPreview(prev);
   };
 
-  const canSend =
-    phoneNumber !== "" &&
-    selectedTemplate !== "" &&
-    args.length > 0 &&
-    args.filter((a) => a !== "").length === args.length;
+  const canSend = getCanSend(phoneNumber, selectedTemplate, args);
 
   const successSend = () => {
-    const name =
-      chat?.name ||
-      args[
-        templates
-          .find((e) => e.value === selectedTemplate)
-          ?.argsKeys?.findIndex((i) => i === "name")
-      ];
+    const name = getName(chat, args, templates, selectedTemplate);
     const phone = cleanPhoneCharacters(phoneNumber);
-    setChat({
-      connectionKey: selectedConnectionKey,
+    const objectToSetChat = getObjectToSetChat(
+      selectedConnectionKey,
       destination,
-      chats: [
-        {
-          enabled: false,
-          name,
-          chatId: phone.startsWith("55") ? phone : `55${phone}`,
-          updateUnreadWhenOpen: true,
-          phone: formatPhone(phoneNumber),
-        },
-      ],
-    });
+      phone,
+      phoneNumber,
+      name
+    );
+    setChat(objectToSetChat);
 
     setSuccess("Mensagem enviada");
     setTimeout(() => setSuccess(""), 4000);
@@ -200,89 +160,35 @@ export const SendNotification = ({
     setTimeout(() => setView(COMPONENT_LOCATION.CHAT), 4000);
   };
 
-  const send = () => {
-    setSending(true);
-    defaultFetch(
-      `${chatApiUrl}/api/chats/${selectedConnectionKey}/${destination}/notification/send`,
-      "POST",
-      {
-        phoneNumber: phoneNumber,
-        template: selectedTemplate,
-        args: args,
-      }
-    )
-      .then(() => {
-        if (process.env.NODE_ENV !== "development") {
-          // call the product to create relationship between chat and client
-          const fetchArgs = {};
-          const argsKeys = (
-            templates.filter((t) => t.value === selectedTemplate)[0] ||
-            emptyTemplate
-          ).argsKeys;
-          for (let i = 0; i < argsKeys.length; i++) {
-            fetchArgs[argsKeys[i]] = args[i];
-          }
-          for (let custom of customFields) {
-            fetchArgs[custom.key] = custom.value;
-          }
-
-          noAuthJsonFetch(
-            `${createPath}/${selectedConnectionKey}/${phoneNumber.replace(
-              /[^0-9]/g,
-              ""
-            )}/create`,
-            "POST",
-            fetchArgs,
-            token
-          ).then(() => {
-            successSend();
-          });
-        } else {
-          successSend();
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.status === 400) {
-          setError(
-            `Não foi possível enviar a mensagem. Verifique se o número ${phoneNumber} possui WhatsApp`
-          );
-        } else {
-          setError("Ocorreu um problema ao enviar a mensagem");
-        }
-        setSuccess("");
-        setTimeout(() => setError(""), 4000);
-        setSending(false);
-      });
+  const propsToSend = {
+    chatApiUrl,
+    selectedConnectionKey,
+    destination,
+    phoneNumber,
+    selectedTemplate,
+    templates,
+    createPath,
+    successSend,
+    token,
+    setSending,
+    setError,
+    setSuccess,
+    args,
+    customFields,
   };
 
   return (
     <>
       <div className={classes.root}>
-        <div className={classes.header}>
-          <Grid container justify="space-between" alignItems="center">
-            <Grid item>
-              <Grid container spacing={1} alignItems="center">
-                <Grid item>
-                  <Typography
-                    color="textSecondary"
-                    variant="body1"
-                    display="inline"
-                    style={{ fontWeight: "bold" }}
-                  >
-                    Insira as informações abaixo para iniciar a conversa
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-        </div>
+        <HeaderSendNotification />
         <Grid container spacing={2} direction="column">
           <Grid item style={{ zIndex: 9999999999 }}>
             <Select
               value={selectedConnectionKey}
               options={availableConnectionKeys}
-              onChange={loadTemplates}
+              onChange={(connectionKey) =>
+                loadTemplates(connectionKey, propsToLoadTamplates)
+              }
               label="Origem"
               variant="auto"
               fullWidth
@@ -374,7 +280,7 @@ export const SendNotification = ({
                 color="primary"
                 variant="contained"
                 disabled={!canSend}
-                onClick={() => send()}
+                onClick={() => send(propsToSend)}
               >
                 ENVIAR
               </Button>
