@@ -1,4 +1,3 @@
-import { defaultFetch, noAuthJsonFetch } from "../../utils/fetch";
 import { emptyTemplate, formatPhone } from "./utils";
 
 export const send = ({
@@ -8,7 +7,8 @@ export const send = ({
   phoneNumber,
   selectedTemplate,
   templates,
-  createPath,
+  chatService,
+  productService,
   successSend,
   token,
   setSending,
@@ -18,15 +18,15 @@ export const send = ({
   customFields,
 }) => {
   setSending(true);
-  defaultFetch(
-    `${chatApiUrl}/api/chats/${selectedConnectionKey}/${destination}/notification/send`,
-    "POST",
-    {
-      phoneNumber: phoneNumber,
-      template: selectedTemplate,
-      args: args,
-    }
-  )
+  chatService
+    .sendNotification(
+      chatApiUrl,
+      selectedConnectionKey,
+      destination,
+      phoneNumber,
+      selectedTemplate,
+      args
+    )
     .then(() => {
       if (process.env.NODE_ENV !== "development") {
         // call the product to create relationship between chat and client
@@ -42,17 +42,11 @@ export const send = ({
           fetchArgs[custom.key] = custom.value;
         }
 
-        noAuthJsonFetch(
-          `${createPath}/${selectedConnectionKey}/${phoneNumber.replace(
-            /[^0-9]/g,
-            ""
-          )}/create`,
-          "POST",
-          fetchArgs,
-          token
-        ).then(() => {
-          successSend();
-        });
+        productService
+          .createChat(selectedConnectionKey, phoneNumber, fetchArgs, token)
+          .then(() => {
+            successSend();
+          });
       } else {
         successSend();
       }
@@ -74,17 +68,13 @@ export const send = ({
 
 export const loadTemplates = (
   connectionKey,
-  { setSelectedConnectionKey, chatApiUrl, setAvailableTemplates, setTemplates }
+  { setSelectedConnectionKey, chatService, setAvailableTemplates, setTemplates }
 ) => {
   if (connectionKey === "") {
     setSelectedConnectionKey("");
     return;
   }
-  defaultFetch(
-    `${chatApiUrl}/api/chats/${connectionKey}/templates`,
-    "GET",
-    {}
-  ).then((templates) => {
+  chatService.getAllTampletes(connectionKey).then((templates) => {
     setTemplates(templates);
     const available = [emptyTemplate];
     templates.forEach((t) =>

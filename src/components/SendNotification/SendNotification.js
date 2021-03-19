@@ -21,6 +21,8 @@ export const SendNotification = ({
   connectionKeys,
   destination,
   createPath,
+  productService,
+  chatService,
   info,
   extraFields,
   reloadComponent,
@@ -84,7 +86,7 @@ export const SendNotification = ({
 
   const propsToLoadTamplates = {
     setSelectedConnectionKey,
-    chatApiUrl,
+    chatService,
     setAvailableTemplates,
     setTemplates,
   };
@@ -168,6 +170,8 @@ export const SendNotification = ({
     selectedTemplate,
     templates,
     createPath,
+    productService,
+    chatService,
     successSend,
     token,
     setSending,

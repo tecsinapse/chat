@@ -3,7 +3,6 @@ import {
   buildSendingMessage,
   calcRemainTime,
 } from "../../utils/message";
-import { defaultFetch, fetchMessages } from "../../utils/fetch";
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
 import { ChatStatus } from "../../constants";
 
@@ -49,7 +48,6 @@ const getTimeToExpire = (currentChat) => {
   );
 };
 
-// passar objeto como parametro com todos os paramentros
 const runSendData = (
   localId,
   title,
@@ -61,7 +59,8 @@ const runSendData = (
     setStatusMessage,
     userkeycloakId,
     currentChat,
-  }
+  },
+  chatService
 ) => {
   const formData = new FormData();
   formData.append("file", file);
@@ -71,12 +70,8 @@ const runSendData = (
   }
   formData.append("userId", userkeycloakId);
 
-  defaultFetch(
-    `${chatApiUrl}/api/chats/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}/upload`,
-    "POST",
-    {},
-    formData
-  )
+  chatService
+    .sendDataApi(initialInfo, currentChat, formData)
     .then(() => {})
     .catch((err) => {
       if (err.status === 403) {
@@ -178,31 +173,6 @@ const runHandleNewUserFiles = (
   }
 };
 
-const runLoadMore = async (
-  chatApiUrl,
-  initialInfo,
-  currentChat,
-  page,
-  userNamesById
-) => {
-  const response = await fetchMessages({
-    chatApiUrl,
-    connectionKey: initialInfo.connectionKey,
-    destination: initialInfo.destination,
-    chatId: currentChat.chatId,
-    page: page,
-    updateUnreadWhenOpen: currentChat.updateUnreadWhenOpen,
-  });
-
-  const { content, last } = response;
-  const loadedMessages = content
-    .map((externalMessage) =>
-      buildChatMessageObject(externalMessage, currentChat.chatId, userNamesById)
-    )
-    .reverse();
-  return { last, loadedMessages };
-};
-
 export {
   emptyChat,
   uploadOptions,
@@ -214,5 +184,4 @@ export {
   runSendData,
   runHandleNewExternalMessage,
   runHandleNewUserFiles,
-  runLoadMore,
 };

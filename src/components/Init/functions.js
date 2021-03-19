@@ -1,5 +1,4 @@
 import { isEquals, loadComponent } from "../../utils/helpers";
-import { defaultFetch, noAuthJsonFetch } from "../../utils/fetch";
 import { completeChatInfoWith } from "../../utils/loadChatsInfos";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 
@@ -76,19 +75,12 @@ const onDeleteChat = async (
   chatInitConfig,
   token,
   componentInfo,
-  setComponentInfo
+  setComponentInfo,
+  productService,
+  chatService
 ) => {
-  await noAuthJsonFetch(
-    `${chatInitConfig.deleteChatPath}/${deletedChat.connectionKey}/${deletedChat.chatId}`,
-    "DELETE",
-    {},
-    token
-  );
-  await defaultFetch(
-    `${chatInitConfig.chatApiUrl}/api/chats/${deletedChat.connectionKey}/${deletedChat.chatId}/sessions/finish`,
-    "DELETE",
-    {}
-  );
+  await productService.deleteChat(deletedChat, token);
+  await chatService.deleteSessionChat(deletedChat);
   const toUpdateInfo = { ...componentInfo };
   toUpdateInfo.allChats = componentInfo.allChats.filter(
     (chat) => chat.chatId !== deletedChat.chatId

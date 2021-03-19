@@ -24,7 +24,6 @@ import {
   runHandleNewExternalMessage,
   runHandleNewUserFiles,
 } from "./functions";
-import { fetchMessages } from "../../utils/fetch";
 
 export const RenderChat = ({
   chatApiUrl,
@@ -38,6 +37,7 @@ export const RenderChat = ({
   setView,
   customActions,
   setDrawerOpen,
+  chatService,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(emptyChat);
@@ -146,14 +146,12 @@ export const RenderChat = ({
       return;
     }
     setIsLoading(true);
-    const response = await fetchMessages({
-      chatApiUrl,
-      connectionKey: initialInfo.connectionKey,
-      destination: initialInfo.destination,
-      chatId: currentChat.chatId,
-      page: page,
-      updateUnreadWhenOpen: currentChat.updateUnreadWhenOpen,
-    });
+    const response = await chatService.loadMessages(
+      initialInfo,
+      currentChat,
+      page,
+      chatApiUrl
+    );
 
     const { content, last } = response;
     const loadedMessages = content

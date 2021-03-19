@@ -42,6 +42,8 @@ import useComponentInfo from "../../hooks/useComponentInfo";
 import useLoadComponent from "../../hooks/useLoadComponent";
 import { HeaderDrawer } from "./HeaderDrawer";
 import { ItemDrawer } from "./ItemDrawer";
+import { ProductService } from "../../service/ProductService";
+import { ChatService } from "../../service/ChatService";
 
 export const Init = ({
   chatInitConfig,
@@ -51,6 +53,8 @@ export const Init = ({
   userMock,
   token,
 }) => {
+  const productService = new ProductService(chatInitConfig.createPath);
+  const chatService = new ChatService(`${chatInitConfig.chatApiUrl}/api/chats`);
   const homeLocation = chatInitConfig.onlyMessageManagement
     ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
     : COMPONENT_LOCATION.UNREAD;
@@ -178,13 +182,16 @@ export const Init = ({
                 initialInfo={currentChat}
                 chatApiUrl={chatInitConfig.chatApiUrl}
                 userkeycloakId={chatInitConfig.userkeycloakId}
+                chatService={chatService}
                 onDeleteChat={(deletedChat) =>
                   onDeleteChat(
                     deletedChat,
                     chatInitConfig,
                     token,
                     componentInfo,
-                    setComponentInfo
+                    setComponentInfo,
+                    productService,
+                    chatService
                   )
                 }
                 onReadAllMessagesOfChat={(readChat) =>
@@ -239,6 +246,8 @@ export const Init = ({
                 connectionKeys={componentInfo.connectionKeys}
                 destination={componentInfo.destination}
                 createPath={chatInitConfig.createPath}
+                productService={productService}
+                chatService={chatService}
                 info={componentInfo.sendNotificationInfo}
                 extraFields={componentInfo.extraFields}
                 reloadComponent={reloadComponent}
