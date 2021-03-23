@@ -1,3 +1,9 @@
+## <small>3.1.1 (2021-03-23)</small>
+
+* fix: updating ui-kit ([d1fcadf](https://github.com/tecsinapse/chat/commit/d1fcadf))
+
+
+
 ## 3.1.0 (2021-03-15)
 
 * update: att versions material and mdi ([ff23bb9](https://github.com/tecsinapse/chat/commit/ff23bb9))
