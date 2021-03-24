@@ -140,7 +140,6 @@ export const RenderChat = ({
   const sendData = (localId, title, file) => {
     runSendData(localId, title, file, propsToSendData);
   };
-  /// verificar melhor forma de passar essa função para functions.js
   const loadMore = async () => {
     if (isLoading || !hasMore) {
       return;

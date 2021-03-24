@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useTheme } from "@material-ui/styles";
@@ -35,7 +35,6 @@ import {
   isChatViewAndIsBlocked,
   isShowSendNotification,
   onStartSendNotification,
-  runReloadComponent,
 } from "./functions";
 
 import useComponentInfo from "../../hooks/useComponentInfo";
@@ -44,8 +43,19 @@ import { HeaderDrawer } from "./HeaderDrawer";
 import { ItemDrawer } from "./ItemDrawer";
 import { ProductService } from "../../service/ProductService";
 import { ChatService } from "../../service/ChatService";
+import ChatContext, { allChatsMap } from "../../context";
+import { loadComponent } from "../../utils/helpers";
 
-export const Init = ({
+export const Init = (props) => {
+  const [state, setState] = useState(allChatsMap);
+  return (
+    <ChatContext.Provider value={[state, setState]}>
+      <InitContext {...props} />
+    </ChatContext.Provider>
+  );
+};
+
+const InitContext = ({
   chatInitConfig,
   customizeStyles,
   customActions,
@@ -70,6 +80,8 @@ export const Init = ({
   const [chatToSendNotification, setChatToSendNotification] = useState();
   const [mainSocketClientRefs, setMainSocketClientRefs] = useState();
 
+  const [chatContext, setChatContext] = useContext(ChatContext);
+  const allChats = Array.from(chatContext.values());
   useComponentInfo(componentInfo, setMainSocketClientRefs);
 
   const propsToLoadComponent = {
@@ -81,14 +93,14 @@ export const Init = ({
     userMock,
     token,
     setIsDrawerOpen,
+    setChatContext,
   };
-
   useLoadComponent(propsToLoadComponent);
 
-  const reloadComponent = () => runReloadComponent(propsToLoadComponent);
+  const reloadComponent = () => loadComponent(propsToLoadComponent);
 
-  const chatIds = getChatIds(componentInfo);
-  let unreadTotal = getUnreadTotal(componentInfo);
+  const chatIds = getChatIds(allChats);
+  let unreadTotal = getUnreadTotal(allChats);
 
   const onSelectUnreadChat = (chat) => {
     if (chatInitConfig.clickOnUnreadOpenFirstAction) {
@@ -172,7 +184,7 @@ export const Init = ({
             <MuiDivider variant="fullWidth" />
             {view === COMPONENT_LOCATION.UNREAD && (
               <UnreadChats
-                chats={componentInfo.allChats}
+                chats={allChats}
                 onSelectChat={onSelectUnreadChat}
                 mobile={mobile}
               />
@@ -191,14 +203,17 @@ export const Init = ({
                     componentInfo,
                     setComponentInfo,
                     productService,
-                    chatService
+                    chatService,
+                    chatContext,
+                    setChatContext
                   )
                 }
                 onReadAllMessagesOfChat={(readChat) =>
                   onReadAllMessagesOfChat(
                     componentInfo,
                     readChat,
-                    setComponentInfo
+                    chatContext,
+                    setChatContext
                   )
                 }
                 navigateWhenCurrentChat={chatInitConfig.navigateWhenCurrentChat}
@@ -206,7 +221,7 @@ export const Init = ({
                   onChatStatusChanged(
                     statusChangedChat,
                     isBlocked,
-                    componentInfo,
+                    chatContext,
                     setChatToSendNotification
                   )
                 }
@@ -295,10 +310,10 @@ export const Init = ({
             onChatUpdated={(updatedChat) =>
               onUpdatedChat(
                 updatedChat,
-                componentInfo,
-                setComponentInfo,
                 setCurrentChat,
-                currentChat
+                currentChat,
+                chatContext,
+                setChatContext
               )
             }
             mainSocketClientRefs={mainSocketClientRefs}

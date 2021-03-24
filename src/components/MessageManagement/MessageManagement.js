@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useStyle } from "./styles";
 import { Table } from "@tecsinapse/table";
 import { toMoment } from "../../utils/dates";
@@ -14,6 +14,7 @@ import { TableHeader } from "./TableHeader";
 import { customActionsMobile, generateColumns } from "./tableUtils";
 import { getOptions, runSwitchToOnlyNotClients } from "./functions";
 import useFiltered from "../../hooks/useFiltered";
+import ChatContext from "../../context";
 
 const sortChatsByContactAt = (allChats) =>
   allChats.sort((a, b) => {
@@ -36,7 +37,9 @@ export const MessageManagement = ({
   customActions,
   setDrawerOpen,
 }) => {
-  const { extraInfoColumns, allChats = [] } = componentInfo;
+  const [chatContext] = useContext(ChatContext);
+  const { extraInfoColumns } = componentInfo;
+  const allChats = Array.from(chatContext.values());
   const [chats, setChats] = useState(sortChatsByContactAt(allChats));
   const [chatsFiltered, setChatsFiltered] = useState(
     sortChatsByContactAt(allChats)

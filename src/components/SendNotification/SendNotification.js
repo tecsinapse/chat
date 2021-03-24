@@ -147,6 +147,7 @@ export const SendNotification = ({
       phoneNumber,
       name
     );
+    console.log("objectToSetChat ", objectToSetChat);
     setChat(objectToSetChat);
 
     setSuccess("Mensagem enviada");

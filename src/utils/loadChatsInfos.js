@@ -10,6 +10,7 @@ import { format, toMoment } from "./dates";
  * @param params                objeto JSON para busca dos dados
  * @param standalone            condicional de renderização se o ambiente atual é desenvolvimento
  * @param userMock              dados de configuração do usuário logado para testes em desenvolvimento
+ * @param token                 token keycloack do usuário
  * @returns {Promise<[]>}       informações completas do objeto que representa esse componente
  */
 export async function load({
@@ -36,7 +37,7 @@ export async function load({
   }
 
   const groupedChatIds = new Map();
-  initialInfoFromProduct.allChats.forEach((chat) => {
+  (initialInfoFromProduct?.allChats || []).forEach((chat) => {
     const key = `${chat.connectionKey}/${chat.destination}`;
     if (groupedChatIds.has(key)) {
       groupedChatIds.get(key).push(chat.chatId);

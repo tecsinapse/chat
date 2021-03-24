@@ -1,43 +1,35 @@
-import { isEquals, loadComponent } from "../../utils/helpers";
+import { isEquals } from "../../utils/helpers";
 import { completeChatInfoWith } from "../../utils/loadChatsInfos";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { getChatId } from "../../context";
 
-const getChatIds = (componentInfo) => {
-  return (componentInfo.allChats || []).map((chat) => chat.chatId).join(",");
+const getChatIds = (allChats) => {
+  return (allChats || []).map((chat) => chat.chatId).join(",");
 };
 
-const getUnreadTotal = (componentInfo) => {
-  return (componentInfo.allChats || []).reduce(
-    (acc, chat) => acc + chat.unread,
-    0
-  );
+const getUnreadTotal = (allChats) => {
+  return (allChats || []).reduce((acc, chat) => acc + chat.unread, 0);
 };
 
 const onUpdatedChat = (
   updatedChat,
-  componentInfo,
-  setComponentInfo,
   setCurrentChat,
-  currentChat
+  currentChat,
+  chatContext,
+  setChatContext
 ) => {
-  let chatsToUpdate = [];
-  let newChat = true;
-  const toUpdateInfo = { ...componentInfo };
-  componentInfo.allChats.forEach((chat) => {
-    if (isEquals(chat, updatedChat)) {
-      updatedChat = completeChatInfoWith(chat, updatedChat);
-      chatsToUpdate.push(updatedChat);
-      newChat = false;
-    } else {
-      chatsToUpdate.push(chat);
-    }
-  });
-  if (newChat) {
-    chatsToUpdate.push(updatedChat);
+  const chatExists = chatContext.has(getChatId(updatedChat));
+  if (chatExists) {
+    // chatContext.set(getChatId(updatedChat), completeChatInfoWith(chat, updatedChat))
+    const chat = chatContext.get(getChatId(updatedChat));
+    chatContext.set(
+      getChatId(updatedChat),
+      completeChatInfoWith(chat, updatedChat)
+    );
+  } else {
+    chatContext.set(getChatId(updatedChat), updatedChat);
   }
-  toUpdateInfo.allChats = chatsToUpdate;
-
-  setComponentInfo(toUpdateInfo);
+  setChatContext(new Map(chatContext));
   const currentChatUpdated = { ...currentChat };
   let needToUpdate = false;
   currentChatUpdated.chats = currentChat?.chats?.map((chat) => {
@@ -53,21 +45,17 @@ const onUpdatedChat = (
   }
 };
 
-const onReadAllMessagesOfChat = (componentInfo, readChat, setComponentInfo) => {
-  let chatsToUpdate = [];
-
-  const toUpdateInfo = { ...componentInfo };
-  componentInfo.allChats.forEach((chat) => {
-    if (isEquals(chat, readChat)) {
-      const updatedChat = { ...chat };
-      updatedChat.unread = 0;
-      chatsToUpdate.push(updatedChat);
-    } else {
-      chatsToUpdate.push(chat);
-    }
-  });
-  toUpdateInfo.allChats = chatsToUpdate;
-  setComponentInfo(toUpdateInfo);
+const onReadAllMessagesOfChat = (
+  componentInfo,
+  readChat,
+  chatContext,
+  setChatContext
+) => {
+  const chat = chatContext.get(getChatId(readChat));
+  if (chat) {
+    chat.unread = 0;
+    setChatContext(new Map(chatContext));
+  }
 };
 
 const onDeleteChat = async (
@@ -77,14 +65,14 @@ const onDeleteChat = async (
   componentInfo,
   setComponentInfo,
   productService,
-  chatService
+  chatService,
+  chatContext,
+  setChatContext
 ) => {
   await productService.deleteChat(deletedChat, token);
   await chatService.deleteSessionChat(deletedChat);
   const toUpdateInfo = { ...componentInfo };
-  toUpdateInfo.allChats = componentInfo.allChats.filter(
-    (chat) => chat.chatId !== deletedChat.chatId
-  );
+  chatContext.delete(getChatId(deletedChat));
 
   const { currentClient } = componentInfo;
   if (currentClient && Object.keys(currentClient).length > 0) {
@@ -93,25 +81,33 @@ const onDeleteChat = async (
     }
   }
   setComponentInfo(toUpdateInfo);
-  return toUpdateInfo.allChats;
+  setChatContext(new Map(chatContext));
+  return Array.from(chatContext.values());
 };
 
 const onChatStatusChanged = (
   statusChangedChat,
   isBlocked,
-  componentInfo,
+  chatContext,
   setChatToSendNotification
 ) => {
   // controls if the current chat is expired and the button to send a notification is visible to a chat
   if (statusChangedChat) {
-    componentInfo.allChats.forEach((chat) => {
-      if (isEquals(chat, statusChangedChat)) {
-        // will only show the button if the chat is blocked
-        setChatToSendNotification(isBlocked ? chat : null);
-      }
-    });
-  } else {
-    setChatToSendNotification(null);
+    const chat = chatContext.get(getChatId(statusChangedChat));
+    if (chat) {
+      // will only show the button if the chat is blocked
+      setChatToSendNotification(isBlocked ? chat : null);
+    }
+
+    // allChats.forEach((chat) => {
+    //   if (isEquals(chat, statusChangedChat)) {
+    //     // will only show the button if the chat is blocked
+    //     setChatToSendNotification(isBlocked ? chat : null);
+    //   }
+    // });
+    else {
+      setChatToSendNotification(null);
+    }
   }
 };
 
@@ -146,42 +142,6 @@ const isShowSendNotification = (view, chatInitConfig, chatViewAndIsBlocked) => {
       chatViewAndIsBlocked)
   );
 };
-//// verificar depois o motivo do erro!!!!
-const runOnSelectChat = (chat, setCurrentChat, setView) => {
-  const dataCurrentChat = {
-    name: chat.name,
-    connectionKey: chat.connectionKey,
-    destination: chat.destination,
-    disabled: !chat.enabled,
-    status: chat.status,
-    chats: [chat],
-  };
-  setCurrentChat(dataCurrentChat);
-  setView(COMPONENT_LOCATION.CHAT);
-};
-
-const runLoadComponent = ({
-  chatInitConfig,
-  setComponentInfo,
-  setIsLoadingInitialState,
-  setView,
-  setCurrentChat,
-  userMock,
-  token,
-}) => {
-  loadComponent(
-    chatInitConfig,
-    setComponentInfo,
-    setIsLoadingInitialState,
-    setView,
-    setCurrentChat,
-    userMock,
-    token
-  ).then(() => {});
-};
-
-const runReloadComponent = (propsToLoadComponent) =>
-  runLoadComponent(propsToLoadComponent);
 
 export {
   getChatIds,
@@ -195,6 +155,4 @@ export {
   isChatViewAndIsBlocked,
   isShowSendNotification,
   onStartSendNotification,
-  runReloadComponent,
-  runOnSelectChat,
 };

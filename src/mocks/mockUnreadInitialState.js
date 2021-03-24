@@ -5,10 +5,10 @@ export const mockUnreadInitialState = {
     {
       connectionKey: "sandbox-homolog",
       destination: "fiat",
-      name: "Denner",
+      name: "Ryan",
       subName: null,
-      phone: "(67) 99267-8000",
-      chatId: "5567992678000",
+      phone: "(67) 99284-6268",
+      chatId: "5567992846268",
       contactAt: "2020-11-05T17:53:39.869427",
       extraInfo: {
         responsavelId: "20",
@@ -32,10 +32,10 @@ export const mockUnreadInitialState = {
     {
       connectionKey: "sandbox-homolog",
       destination: "fiat",
-      name: "Marcelo",
+      name: "Denner",
       subName: null,
-      phone: "(67) 99267-8001",
-      chatId: "5567992678001",
+      phone: "(67) 99267-8000",
+      chatId: "5567992678000",
       contactAt: "2020-11-05T17:53:39.869427",
       extraInfo: {
         responsavelId: "20",

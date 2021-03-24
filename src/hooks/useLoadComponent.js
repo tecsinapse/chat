@@ -1,31 +1,8 @@
 import { useEffect } from "react";
 import { loadComponent } from "../utils/helpers";
 
-export default function useLoadComponent({
-  chatInitConfig,
-  setComponentInfo,
-  setIsLoadingInitialState,
-  setView,
-  setCurrentChat,
-  userMock,
-  token,
-  setIsDrawerOpen,
-}) {
-  useEffect(() => {
-    loadComponent(
-      chatInitConfig,
-      setComponentInfo,
-      setIsLoadingInitialState,
-      setView,
-      setCurrentChat,
-      userMock,
-      token
-    ).then(() => {
-      if (chatInitConfig?.openImmediately) {
-        setIsDrawerOpen(true);
-      }
-    });
-  }, [
+export default function useLoadComponent(propsToLoadComponent) {
+  const {
     chatInitConfig,
     setComponentInfo,
     setIsLoadingInitialState,
@@ -34,5 +11,25 @@ export default function useLoadComponent({
     setIsDrawerOpen,
     userMock,
     token,
-  ]);
+  } = propsToLoadComponent;
+
+  useEffect(
+    () => {
+      loadComponent(propsToLoadComponent).then(() => {
+        if (chatInitConfig?.openImmediately) {
+          setIsDrawerOpen(true);
+        }
+      });
+    }, // eslint-disable-next-line
+    [
+      chatInitConfig,
+      setComponentInfo,
+      setIsLoadingInitialState,
+      setView,
+      setCurrentChat,
+      setIsDrawerOpen,
+      userMock,
+      token,
+    ]
+  );
 }

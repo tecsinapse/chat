@@ -3,24 +3,31 @@ import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
 import { fetchMessages } from "./fetch";
 import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
+import { getChatId } from "../context";
 
-export async function loadComponent(
+export async function loadComponent({
   chatInitConfig,
   setComponentInfo,
   setIsLoadingInitialState,
   setView,
   setCurrentChat,
   userMock,
-  token
-) {
+  token,
+  setChatContext,
+}) {
   const info = await load({ ...chatInitConfig, userMock, token });
+  const chatsMap = new Map();
+  info.allChats.forEach((chat) => chatsMap.set(getChatId(chat), chat));
+  setChatContext(chatsMap);
+  delete info["allChats"];
   setComponentInfo(info);
   setIsLoadingInitialState(false);
+  const allChats = Array.from(chatsMap.values());
   if (info.currentClient && Object.keys(info.currentClient).length > 0) {
     // quando a visualização é de um cliente específico, então define as informações
     // desse cliente como currentChat e exibe o chat direto
     setView(COMPONENT_LOCATION.CHAT);
-    const chats = info.allChats.filter((chat) =>
+    const chats = allChats.filter((chat) =>
       info.currentClient.clientChatIds.includes(chat.chatId)
     );
     setCurrentChat({
@@ -34,7 +41,7 @@ export async function loadComponent(
   }
 }
 
-export const onSelectedChatMaker = ( {
+export const onSelectedChatMaker = ({
   initialInfo,
   setIsLoading,
   setCurrentChat,
@@ -43,8 +50,8 @@ export const onSelectedChatMaker = ( {
   chatApiUrl,
   messagesEndRef,
   onReadAllMessagesOfChat,
-  userNamesById }
-) => async (chat) => {
+  userNamesById,
+}) => async (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);
   const response = await fetchMessages({
