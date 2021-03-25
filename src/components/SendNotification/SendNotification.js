@@ -216,9 +216,9 @@ export const SendNotification = ({
             />
           </Grid>
           {customFields.map((customField, index) => (
-            <>
+            <React.Fragment key={`fragment-${index}`}>
               {customField.type === "INPUT" && (
-                <Grid item key={index} style={{ zIndex: 1 }}>
+                <Grid item key={`input-${index}`} style={{ zIndex: 1 }}>
                   <Input
                     name={customField.key}
                     label={customField.label}
@@ -230,7 +230,11 @@ export const SendNotification = ({
                 </Grid>
               )}
               {customField.type === "SELECT" && (
-                <Grid item key={index} style={{ zIndex: 999999999 }}>
+                <Grid
+                  item
+                  key={`select-${index}`}
+                  style={{ zIndex: 999999999 }}
+                >
                   <Select
                     value={customField.value}
                     options={customField.availableValues.map((v) => ({
@@ -244,7 +248,7 @@ export const SendNotification = ({
                   />
                 </Grid>
               )}
-            </>
+            </React.Fragment>
           ))}
           <Grid item style={{ zIndex: 999999998 }}>
             <Select
@@ -258,7 +262,7 @@ export const SendNotification = ({
             />
           </Grid>
           {args.map((arg, index) => (
-            <Grid item key={index}>
+            <Grid item key={`key-${index}`}>
               <Input
                 name={`args[${index}]`}
                 label={getArgDescription(index)}
@@ -270,7 +274,7 @@ export const SendNotification = ({
             </Grid>
           ))}
           {preview !== "" && (
-            <Grid item alignContent="center">
+            <Grid item>
               <Typography variant="caption">Mensagem:</Typography>
               <div className={classes.preview}>
                 <span className={classes.previewText}>{preview}</span>
