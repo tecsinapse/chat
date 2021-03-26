@@ -42,6 +42,7 @@ const InitWebsockets = ({
             onConnect={() => onConnectMainSocket(connectionKey)}
             onDisconnect={() => console.log("Disconnected")}
             ref={(client) => (mainSocketClientRefs[connectionKey] = client)}
+            options={{ sessionId: () => userkeycloakId }}
           />
         );
       })}

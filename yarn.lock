@@ -2481,10 +2481,10 @@
     "@svgr/plugin-svgo" "^4.3.1"
     loader-utils "^1.2.3"
 
-"@tecsinapse/chat@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-3.1.0.tgz#12e9e71214fa8a86f7618f33d438406d4f6fdd8e"
-  integrity sha512-aOnP+J5vXQS2G5R0bB+zGxEWLPuJtvv3u2NsWlw5n6Xkts0QJggARjs3d17TNNUgoJZFFOVoz2paPIN/K2dgTA==
+"@tecsinapse/chat@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-3.1.1.tgz#8ae4029cffd3bd3efa65a48d75bcb57c435763cc"
+  integrity sha512-Wj9iA7ojkOPiR2XldwCNfwFbUMz6RG43fanFZltNH0RlWnoOJoSX862gX1dc6mSVcv/9jLHgTl2rtNz5Clpiyw==
   dependencies:
     "@livechat/ui-kit" "^0.4.0-10"
     "@material-ui/core" "^4.11.1"
@@ -2493,8 +2493,8 @@
     "@mdi/react" "^1.4.0"
     "@tecsinapse/es-utils" "^6.0.10"
     "@tecsinapse/react-mic" "~1.3.1"
-    "@tecsinapse/ui-kit" "^5.5.4"
-    "@tecsinapse/uploader" "^2.5.4"
+    "@tecsinapse/ui-kit" "^5.5.5"
+    "@tecsinapse/uploader" "^2.5.5"
     clsx "^1.1.1"
     enumify "^1.0.4"
     moment "^2.27.0"
@@ -2536,18 +2536,18 @@
   resolved "https://registry.yarnpkg.com/@tecsinapse/react-mic/-/react-mic-1.3.1.tgz#0f71bb65aa52902d5773e4b1eabeb6efa09f9f40"
   integrity sha512-61N9IsN4h5JfxLJfYxJ7vNez2nacM09R77+KaFZTlQYKiK3TNHKM14XNN78+HZakb/36Omek9GMMWoW6cUhudQ==
 
-"@tecsinapse/table@^3.5.4":
-  version "3.5.4"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-3.5.4.tgz#2059256d5c456cf748466e9f041a70183e72739d"
-  integrity sha512-ey7nLVo75IFLuDwTixDZJl7mAMv8eN73N8U8fhXh1LZRgyLDOhGWXc8wUkvg4Qwl7jt9f94ASOfiobA2gtxkcA==
+"@tecsinapse/table@^3.5.5":
+  version "3.5.5"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-3.5.5.tgz#59841844e5eb56998dbe9c02185f249d13fdd24f"
+  integrity sha512-mBtny4nTkREVd3I+fHqy8Uxf83gxT6IZCBhY1sSigzSGymwCBYyONtNpyRqKyUtswms1hh8ePfZGBYIISOPaDA==
   dependencies:
-    "@tecsinapse/ui-kit" "^5.5.4"
+    "@tecsinapse/ui-kit" "^5.5.5"
     react-virtualized "^9.22.3"
 
-"@tecsinapse/ui-kit@^5.5.4":
-  version "5.5.4"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.5.4.tgz#8ac80ca96b8111e27fa028b7a97d5d91215b4227"
-  integrity sha512-ZXw2QkaoDZHSx3dADi8KmAuzFhglKCuOwzWyp7ZdTACZMA9wzgKLpSPVD+WIE1M1d0gpUT+G27Axa6zElPdbPQ==
+"@tecsinapse/ui-kit@^5.5.5":
+  version "5.5.5"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.5.5.tgz#39f0dbb517b0d992be7a7399d07369fa89dc457c"
+  integrity sha512-F0g7jIDTUysQfXY5v24aVoIQCxMFr4TcXs+WuNDA7Q58XfRezx6wAgFO8UzvIJ6ZBfh6bB2yzzBrsDLUBqApZA==
   dependencies:
     "@material-ui/core" "^4.11.1"
     "@material-ui/icons" "^4.11.1"
@@ -2562,12 +2562,12 @@
     text-mask-addons "^3.8.0"
     text-mask-core "^5.1.2"
 
-"@tecsinapse/uploader@^2.5.4":
-  version "2.5.4"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-2.5.4.tgz#ba4fc9f84eb9b23dc21a004cc2d7255c614581d4"
-  integrity sha512-Q3CF/3bGEO0xvQh28iIVSC5e1IVr8Sn1Z6mZ+mXRCTXTdfhnohRPAJgLftKPZVjrsOjQPA18gHm1yWomr/uSVw==
+"@tecsinapse/uploader@^2.5.5":
+  version "2.5.5"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-2.5.5.tgz#d282b7a9f77e4b59b1398dffe45d26a8338fddb9"
+  integrity sha512-YPn6S3R6LTyEfx+Z7837NJHwkvG8U/2mBaukmltFDGSTIsRV1pnkqSKljE+QWMvAUHUlp/8aIH70gYPA/6efpA==
   dependencies:
-    "@tecsinapse/ui-kit" "^5.5.4"
+    "@tecsinapse/ui-kit" "^5.5.5"
     react-dropzone "^11.3.1"
     uniqid "^5.3.0"
 
