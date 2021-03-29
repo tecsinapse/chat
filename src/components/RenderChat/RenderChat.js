@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { Chat, DELIVERY_STATUS } from "@tecsinapse/chat";
 import SockJsClient from "react-stomp";
 
+import uuidv1 from "uuid/v1";
 import {
   buildChatMessageObject,
   buildSendingMessage,
   setStatusMessageFunc,
 } from "../../utils/message";
-import uuidv1 from "uuid/v1";
 import { ChatOptions } from "./ChatOptions/ChatOptions";
 import { onSelectedChatMaker } from "../../utils/helpers";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
@@ -114,7 +114,7 @@ export const RenderChat = ({
       from: currentChat.chatId,
       type: "CHAT",
       text: newMessage,
-      localId: localId,
+      localId,
       userId: userkeycloakId,
     };
 
@@ -140,6 +140,7 @@ export const RenderChat = ({
   const sendData = (localId, title, file) => {
     runSendData(localId, title, file, propsToSendData);
   };
+
   const loadMore = async () => {
     if (isLoading || !hasMore) {
       return;
@@ -148,8 +149,7 @@ export const RenderChat = ({
     const response = await chatService.loadMessages(
       initialInfo,
       currentChat,
-      page,
-      chatApiUrl
+      page
     );
 
     const { content, last } = response;
@@ -162,6 +162,7 @@ export const RenderChat = ({
         )
       )
       .reverse();
+
     setMessages(loadedMessages.concat(messages));
     setIsLoading(false);
     setHasMore(!last);
@@ -178,9 +179,12 @@ export const RenderChat = ({
 
   const onMessageSend = (text) => {
     const localId = uuidv1();
+
     setMessages((prevMessages) => {
       const copyPrevMessages = [...prevMessages];
+
       copyPrevMessages.push(buildSendingMessage(localId, text));
+
       return copyPrevMessages;
     });
     // send to user and waits for response
@@ -188,15 +192,16 @@ export const RenderChat = ({
   };
 
   const title = getTitle(currentChat, initialInfo);
-  let subTitle = getSubTitle(currentChat);
+  const subTitle = getSubTitle(currentChat);
   const timeToExpire = getTimeToExpire(currentChat);
 
-  const actions = customActions ? customActions : currentChat.actions;
+  const actions = customActions || currentChat.actions;
   const hasActions =
     currentChat && actions && actions.length > 0 && navigateWhenCurrentChat;
 
   const onAudio = (blob) => {
     const localId = uuidv1();
+
     setMessages((prevMessages) => auxSetMessage(prevMessages, localId, blob));
 
     // send to user and waits for response
@@ -209,6 +214,7 @@ export const RenderChat = ({
 
     // Resend to backend
     const message = messages.find((m) => m.localId === localId);
+
     if (message && message.medias && message.medias.length > 0) {
       message.medias.forEach((media) =>
         sendData(localId, message.title, media.data)
@@ -225,6 +231,8 @@ export const RenderChat = ({
   const handleView = (view) => setView(view);
   const isBlocked = ChatStatus.isBlocked(currentChat?.status);
   const enabled = currentChat.enabled || ChatStatus.isOK(currentChat?.status);
+
+  const handleRef = (client) => (clientRef = client); // eslint-disable-line
 
   return (
     <div style={{ maxWidth: mobile ? "auto" : "40vW" }}>
@@ -284,7 +292,7 @@ export const RenderChat = ({
           ]}
           onMessage={handleNewExternalMessage}
           onConnect={onConnect}
-          ref={(client) => (clientRef = client)}
+          ref={handleRef}
         />
       )}
     </div>

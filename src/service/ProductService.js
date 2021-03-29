@@ -19,8 +19,8 @@ export class ProductService {
     );
   }
 
-  async deleteChat(deletedChat, token) {
-    return await noAuthJsonFetch(
+  deleteChat(deletedChat, token) {
+    return noAuthJsonFetch(
       `${this.url}/${deletedChat.connectionKey}/${deletedChat.chatId}`,
       "DELETE",
       {},

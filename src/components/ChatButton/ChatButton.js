@@ -11,6 +11,7 @@ export const ChatButton = ({
   setIsDrawerOpen,
 }) => {
   const classes = useStyle();
+
   return (
     <div className={classes.fabContainer}>
       <Tooltip title="Mostrar Painel do Chat" arrow placement="left">

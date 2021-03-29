@@ -1,7 +1,10 @@
 import React from "react";
-
+/* eslint-disable react/no-array-index-key */
 const normalize = (str) => {
-  if (!str) return "";
+  if (!str) {
+    return "";
+  }
+
   return str
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -29,6 +32,7 @@ export const matcher = (search, textToReplace) => {
   const tx = normalize(textToReplace);
 
   const r = new RegExp(`(${s})`, "g");
+
   return Array.from(tx.matchAll(r));
 };
 
@@ -43,19 +47,21 @@ const replacer = (search, textToReplace) => {
   const indexes = matchs.map((match) => match.index);
   const splited = split(textToReplace, indexes, search.length);
 
-  return splited.map((m, idx) =>
-    normalize(m) === s ? (
+  return splited.map((m, idx) => {
+    const spanStyles = { backgroundColor: "#ffb74d" };
+
+    return normalize(m) === s ? (
       <span
         key={`highlight-${m}${idx}`}
         id={`highlight-${m}`}
-        style={{ backgroundColor: "#ffb74d" }}
+        style={spanStyles}
       >
         {m}
       </span>
     ) : (
       <>{m}</>
-    )
-  );
+    );
+  });
 };
 
 export const highlight = (searchQuery, text) => {
@@ -65,3 +71,4 @@ export const highlight = (searchQuery, text) => {
 
   return text;
 };
+/* eslint-enable react/no-array-index-key */

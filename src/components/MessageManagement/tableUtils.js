@@ -1,10 +1,12 @@
 import React from "react";
 import { Badge, ListItem, ListItemText, Typography } from "@material-ui/core";
+import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
 import { format } from "../../utils/dates";
 import { MessageSource } from "../../constants";
-import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
 import { encodeChatData } from "../../utils/encodeChatData";
 import { highlight } from "./globalSearch";
+
+/* eslint-disable react/no-array-index-key */
 
 export const generateAction = (
   row,
@@ -29,6 +31,7 @@ export const generateAction = (
         label: actionLink.label,
         onClick: (rowData) => {
           const encodedData = encodeChatData(rowData, userkeycloakId);
+
           window.open(`${actionLink.path}?data=${encodedData}`, "_self");
         },
       });
@@ -70,35 +73,42 @@ export const generateColumns = (
     {
       title: "Cliente",
       field: "name",
-      customRender: (row) => {
-        const renderLastMessage = row.lastMessage;
+      customRender: ({
+        lastMessage,
+        name,
+        lastMessageSource,
+        extraInfo,
+        highlighted = false,
+        subName,
+      }) => {
+        const renderLastMessage = lastMessage;
 
         const lastSender =
           renderLastMessage &&
-          (MessageSource.isClient(row?.lastMessageSource)
-            ? row?.name?.split(" ")[0]
-            : row?.extraInfo?.responsavel?.split(" ")[0]);
+          (MessageSource.isClient(lastMessageSource)
+            ? name?.split(" ")[0]
+            : extraInfo?.responsavel?.split(" ")[0]);
         const fontItalic = { fontStyle: "italic" };
 
         return (
           <>
-            {row.highlighted ? (
+            {highlighted ? (
               <span className={classes.highlighted}>
-                {highlight(globalSearch, row.name)}
+                {highlight(globalSearch, name)}
               </span>
             ) : (
-              <span>{highlight(globalSearch, row.name)}</span>
+              <span>{highlight(globalSearch, name)}</span>
             )}
-            {row.subName && (
+            {subName && (
               <>
                 <br />
-                <span>{highlight(globalSearch, row.subName)}</span>
+                <span>{highlight(globalSearch, subName)}</span>
               </>
             )}
             <br />
             {renderLastMessage && (
               <Typography variant="caption" style={fontItalic}>
-                {lastSender}: {highlight(globalSearch, row?.lastMessage)}
+                {lastSender}: {highlight(globalSearch, lastMessage)}
               </Typography>
             )}
           </>
@@ -128,10 +138,12 @@ export const generateColumns = (
       title: "Ações",
       field: "",
       customRender: (row) => {
+        const { unread } = row;
+
         return (
           <Badge
             color="error"
-            badgeContent={row.unread}
+            badgeContent={unread}
             anchorOrigin={{
               vertical: "top",
               horizontal: "right",
@@ -150,8 +162,8 @@ export const generateColumns = (
                 setDeletingChat
               )}
               row={row}
-              verticalActions={true}
-              forceCollapseActions={true}
+              verticalActions
+              forceCollapseActions
             />
           </Badge>
         );
@@ -171,39 +183,38 @@ export const customActionsMobile = (
   setDrawerOpen,
   showDiscardOption,
   setDeletingChat
-) => {
-  return (
-    <div>
-      <ListItem key="showMsg" onClick={() => onSelectChat(data)}>
-        <ListItemText>{showMessagesLabel}</ListItemText>
-      </ListItem>
+) => (
+  <div>
+    <ListItem key="showMsg" onClick={() => onSelectChat(data)}>
+      <ListItemText>{showMessagesLabel}</ListItemText>
+    </ListItem>
 
-      {(customActions ? customActions : data?.actions).map(
-        (actionLink, key) => {
-          const handleClick = () => {
-            const encodedData = encodeChatData(data, userkeycloakId);
-            if (actionLink.action) {
-              setDrawerOpen(false);
-              actionLink.action(data, encodedData);
-            } else {
-              window.open(`${actionLink.path}?data=${encodedData}`, "_self");
-            }
-          };
-          return (
-            <ListItem key={key} onClick={handleClick}>
-              <ListItemText>
-                {actionLink.action ? actionLink.label(data) : actionLink.label}
-              </ListItemText>
-            </ListItem>
-          );
+    {(customActions || data?.actions).map((actionLink, key) => {
+      const handleClick = () => {
+        const encodedData = encodeChatData(data, userkeycloakId);
+
+        if (actionLink.action) {
+          setDrawerOpen(false);
+          actionLink.action(data, encodedData);
+        } else {
+          window.open(`${actionLink.path}?data=${encodedData}`, "_self");
         }
-      )}
+      };
 
-      {showDiscardOption && (
-        <ListItem key="discardMsg" onClick={() => setDeletingChat(data)}>
-          <ListItemText>Descartar Conversa</ListItemText>
+      return (
+        <ListItem key={`item-${key}`} onClick={handleClick}>
+          <ListItemText>
+            {actionLink.action ? actionLink.label(data) : actionLink.label}
+          </ListItemText>
         </ListItem>
-      )}
-    </div>
-  );
-};
+      );
+    })}
+
+    {showDiscardOption && (
+      <ListItem key="discardMsg" onClick={() => setDeletingChat(data)}>
+        <ListItemText>Descartar Conversa</ListItemText>
+      </ListItem>
+    )}
+  </div>
+);
+/* eslint-enable react/no-array-index-key */

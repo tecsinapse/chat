@@ -19,19 +19,21 @@ export class ChatService {
       `${this.url}/${selectedConnectionKey}/${destination}/notification/send`,
       "POST",
       {
-        phoneNumber: phoneNumber,
+        phoneNumber,
         template: selectedTemplate,
-        args: args,
+        args,
       }
     );
   }
-  async deleteSessionChat(deletedChat) {
-    return await defaultFetch(
+
+  deleteSessionChat(deletedChat) {
+    return defaultFetch(
       `${this.url}/${deletedChat.connectionKey}/${deletedChat.chatId}/sessions/finish`,
       "DELETE",
       {}
     );
   }
+
   getAllTampletes(connectionKey) {
     return defaultFetch(`${this.url}/${connectionKey}/templates`, "GET", {});
   }
@@ -45,13 +47,15 @@ export class ChatService {
     );
   }
 
-  async loadMessages(initialInfo, currentChat, page, chatApiUrl) {
-    return await fetchMessages({
-      chatApiUrl,
+  loadMessages(initialInfo, currentChat, page) {
+    const baseUrl = this.url;
+
+    return fetchMessages({
+      baseUrl,
       connectionKey: initialInfo.connectionKey,
       destination: initialInfo.destination,
       chatId: currentChat.chatId,
-      page: page,
+      page,
       updateUnreadWhenOpen: currentChat.updateUnreadWhenOpen,
     });
   }

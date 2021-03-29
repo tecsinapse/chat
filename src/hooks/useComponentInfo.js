@@ -7,6 +7,7 @@ export default function useComponentInfo(
   useEffect(() => {
     if (componentInfo?.connectionKeys) {
       const socketClientRefs = {};
+
       componentInfo.connectionKeys.forEach((connectionKey) => {
         socketClientRefs[connectionKey] = createRef();
       });

@@ -1,7 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useStyle } from "./styles";
 import { Table } from "@tecsinapse/table";
-import { toMoment } from "../../utils/dates";
 import {
   Button,
   Dialog,
@@ -10,6 +8,8 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@material-ui/core";
+import { useStyle } from "./styles";
+import { toMoment } from "../../utils/dates";
 import { TableHeader } from "./TableHeader";
 import { customActionsMobile, generateColumns } from "./tableUtils";
 import { getOptions, runSwitchToOnlyNotClients } from "./functions";
@@ -20,9 +20,16 @@ const sortChatsByContactAt = (allChats) =>
   allChats.sort((a, b) => {
     const contactA = toMoment(a?.contactAt);
     const contactB = toMoment(b?.contactAt);
-    if (contactA > contactB) return -1;
-    else if (contactA < contactB) return 1;
-    else return 0;
+
+    if (contactA > contactB) {
+      return -1;
+    }
+
+    if (contactA < contactB) {
+      return 1;
+    }
+
+    return 0;
   });
 
 export const MessageManagement = ({
@@ -125,7 +132,7 @@ export const MessageManagement = ({
         onClose={() => setDeletingChat({})}
         aria-labelledby="dialog-title"
       >
-        <DialogTitle id="dialog-title">{"Confirmação"}</DialogTitle>
+        <DialogTitle id="dialog-title">Confirmação</DialogTitle>
         <DialogContent>
           <DialogContentText>Descartar a conversa?</DialogContentText>
         </DialogContent>

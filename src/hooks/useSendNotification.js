@@ -14,6 +14,7 @@ export default function useSendNotification(
       setAuxInfo(info);
     } else {
       const { extraInfo } = chat || {};
+
       setAuxInfo({
         user: extraInfo?.responsavel || "",
         company: extraInfo?.dealer || "",
@@ -21,6 +22,7 @@ export default function useSendNotification(
         phone: phoneNumber,
       });
     }
+
     if (extraFields) {
       setCustomFields(extraFields);
     }

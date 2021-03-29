@@ -3,7 +3,6 @@ import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
 import { fetchMessages } from "./fetch";
 import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
-import { getChatId } from "../context";
 
 export async function loadComponent({
   chatInitConfig,
@@ -13,30 +12,27 @@ export async function loadComponent({
   setCurrentChat,
   userMock,
   token,
-  setChatContext,
 }) {
   const info = await load({ ...chatInitConfig, userMock, token });
-  const chatsMap = new Map();
-  info.allChats.forEach((chat) => chatsMap.set(getChatId(chat), chat));
-  setChatContext(chatsMap);
-  delete info["allChats"];
+
   setComponentInfo(info);
   setIsLoadingInitialState(false);
-  const allChats = Array.from(chatsMap.values());
-  if (info.currentClient && Object.keys(info.currentClient).length > 0) {
+
+  if (info?.currentClient && Object.keys(info?.currentClient).length > 0) {
     // quando a visualização é de um cliente específico, então define as informações
     // desse cliente como currentChat e exibe o chat direto
     setView(COMPONENT_LOCATION.CHAT);
-    const chats = allChats.filter((chat) =>
+    const chats = (info?.allChats || []).filter((chat) =>
       info.currentClient.clientChatIds.includes(chat.chatId)
     );
+
     setCurrentChat({
       name: info.currentClient.clientName,
       connectionKey: info.currentClient.connectionKey,
       destination: info.currentClient.destination,
       disabled: info.currentClient.disabled,
       status: info.currentClient.status,
-      chats: chats,
+      chats,
     });
   }
 }
@@ -69,14 +65,16 @@ export const onSelectedChatMaker = ({
       buildChatMessageObject(externalMessage, chat.chatId, userNamesById)
     )
     .reverse();
+
   setMessages(messages);
   setBlocked(chat, ChatStatus.isBlocked(chat.status));
   setIsLoading(false);
+
   if (chat.updateUnreadWhenOpen) {
     onReadAllMessagesOfChat(chat);
   }
 
-  setTimeout(function () {
+  setTimeout(() => {
     // workaround to wait for all elements to render
     if (messagesEndRef?.current) {
       messagesEndRef.current.scrollIntoView({
@@ -100,5 +98,6 @@ export const isEmpty = (obj) => {
       }
     }
   }
+
   return true;
 };

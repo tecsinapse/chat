@@ -15,6 +15,7 @@ export default function useFiltered(globalSearch, setChatsFiltered, chats) {
         matcher(globalSearch, el.extraInfo?.responsavel || "").length > 0 ||
         matcher(globalSearch, el.extraInfo?.dealer || "").length > 0
     );
+
     setChatsFiltered(filtered);
   }, [globalSearch, chats]); // eslint-disable-line react-hooks/exhaustive-deps
 }

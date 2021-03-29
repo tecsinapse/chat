@@ -29,6 +29,12 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
   });
 
   const listPadding = { paddingTop: 0, paddingBottom: 0 };
+  const textIconMargin = { marginTop: "3px" };
+  const unreadFontWeight = { fontWeight: "bold" };
+  const dividerMargin = { marginLeft: 0 };
+  const unreadGridHeight = { height: "100%" };
+
+  const lastDividerMargin = { marginLeft: 0 };
 
   return (
     <>
@@ -43,7 +49,7 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
                       path={mdiMessageText}
                       size={0.95}
                       color={theme.palette.text.secondary}
-                      style={{ marginTop: "3px" }}
+                      style={textIconMargin}
                     />
                   </Grid>
                   <Grid item>
@@ -51,7 +57,7 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
                       color="textSecondary"
                       variant="body1"
                       display="inline"
-                      style={{ fontWeight: "bold" }}
+                      style={unreadFontWeight}
                     >
                       {unreadTotal} Mensagens não lidas
                     </Typography>
@@ -60,9 +66,7 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
               </Grid>
             </Grid>
           </div>
-          {unreadTotal > 0 && (
-            <Divider variant="solid" style={{ marginLeft: 0 }} />
-          )}
+          {unreadTotal > 0 && <Divider variant="solid" style={dividerMargin} />}
           <List component="nav" style={listPadding}>
             {chatWithUnreadMessages.map((chat) => (
               <div key={chat.chatId} className={classes.border}>
@@ -98,7 +102,7 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
                         {chat.unread !== undefined && chat.unread > 0 && (
                           <Grid item>
                             <Grid
-                              style={{ height: "100%" }}
+                              style={unreadGridHeight}
                               container
                               align="center"
                               justify="center"
@@ -126,7 +130,7 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
             ))}
           </List>
         </div>
-        <Divider variant="solid" style={{ marginLeft: 0 }} />
+        <Divider variant="solid" style={lastDividerMargin} />
       </div>
     </>
   );

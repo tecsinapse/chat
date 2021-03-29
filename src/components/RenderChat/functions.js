@@ -1,9 +1,9 @@
+import { DELIVERY_STATUS } from "@tecsinapse/chat";
 import {
   buildChatMessageObject,
   buildSendingMessage,
   calcRemainTime,
 } from "../../utils/message";
-import { DELIVERY_STATUS } from "@tecsinapse/chat";
 import { ChatStatus } from "../../constants";
 
 const emptyChat = {
@@ -30,23 +30,17 @@ const uploadOptions = {
 const getTitle = (currentChat, initialInfo) =>
   currentChat.name || initialInfo.name || "Cliente";
 
-const getSubTitle = (currentChat) => {
-  return (
-    (currentChat.subName ? currentChat.subName + " - " : "") +
-    (currentChat.phone ? currentChat.phone : "")
-  );
-};
+const getSubTitle = (currentChat) =>
+  (currentChat.subName ? `${currentChat.subName} - ` : "") +
+  (currentChat.phone ? currentChat.phone : "");
 
-const getTimeToExpire = (currentChat) => {
-  return (
-    (currentChat &&
-      currentChat.minutesToBlock &&
-      `O envio de mensagem irá expirar em ${calcRemainTime(
-        currentChat.minutesToBlock
-      )}.`) ||
-    undefined
-  );
-};
+const getTimeToExpire = (currentChat) =>
+  (currentChat &&
+    currentChat.minutesToBlock &&
+    `O envio de mensagem irá expirar em ${calcRemainTime(
+      currentChat.minutesToBlock
+    )}.`) ||
+  undefined;
 
 const runSendData = (
   localId,
@@ -63,8 +57,10 @@ const runSendData = (
   chatService
 ) => {
   const formData = new FormData();
+
   formData.append("file", file);
   formData.append("localId", localId);
+
   if (title) {
     formData.append("title", title);
   }
@@ -83,6 +79,7 @@ const runSendData = (
 
 const auxSetMessage = (prevMessages, localId, blob) => {
   const copyPrevMessages = [...prevMessages];
+
   copyPrevMessages.push(
     buildSendingMessage(
       localId,
@@ -95,6 +92,7 @@ const auxSetMessage = (prevMessages, localId, blob) => {
       blob.blob
     )
   );
+
   return copyPrevMessages;
 };
 
@@ -126,11 +124,12 @@ const runHandleNewExternalMessage = (
       newMessage.from === currentChat.chatId ||
       newMessage.localId === undefined
     ) {
-      let message = buildChatMessageObject(
+      const message = buildChatMessageObject(
         newMessage,
         currentChat.chatId,
         userNamesById
       );
+
       setMessages([...messages, message]);
     } else {
       setStatusMessage(
@@ -159,9 +158,11 @@ const runHandleNewUserFiles = (
   Object.keys(files).forEach((uid) => {
     setMessages((prevMessages) => {
       const copyPrevMessages = [...prevMessages];
+
       copyPrevMessages.push(
         buildSendingMessage(uid, undefined, fileTitle, files[uid])
       );
+
       return copyPrevMessages;
     });
     runSendData(uid, fileTitle, files[uid].file, propsToSendData);

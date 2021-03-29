@@ -32,6 +32,7 @@ window.renderChatComponent = function renderChatComponent() {
   };
 
   let chatInitConfig = { ...defaultChatInitConfig };
+
   // merge da configuração default com o objeto passado para inicialização
   if (window.CHAT_INIT_CONFIG) {
     chatInitConfig = { ...defaultChatInitConfig, ...window.CHAT_INIT_CONFIG };

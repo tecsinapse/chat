@@ -31,14 +31,15 @@ export const send = ({
       if (process.env.NODE_ENV !== "development") {
         // call the product to create relationship between chat and client
         const fetchArgs = {};
-        const argsKeys = (
+        const { argsKeys } =
           templates.filter((t) => t.value === selectedTemplate)[0] ||
-          emptyTemplate
-        ).argsKeys;
+          emptyTemplate;
+
         for (let i = 0; i < argsKeys.length; i++) {
           fetchArgs[argsKeys[i]] = args[i];
         }
-        for (let custom of customFields) {
+
+        for (const custom of customFields) {
           fetchArgs[custom.key] = custom.value;
         }
 
@@ -52,7 +53,8 @@ export const send = ({
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.log(err); // eslint-disable-line
+
       if (err.status === 400) {
         setError(
           `Não foi possível enviar a mensagem. Verifique se o número ${phoneNumber} possui WhatsApp`
@@ -72,11 +74,13 @@ export const loadTemplates = (
 ) => {
   if (connectionKey === "") {
     setSelectedConnectionKey("");
+
     return;
   }
   chatService.getAllTampletes(connectionKey).then((templates) => {
     setTemplates(templates);
     const available = [emptyTemplate];
+
     templates.forEach((t) =>
       available.push({
         label: t.name,
@@ -88,16 +92,13 @@ export const loadTemplates = (
   });
 };
 
-export const getName = (chat, args, templates, selectedTemplate) => {
-  return (
-    chat?.name ||
-    args[
-      templates
-        .find((e) => e.value === selectedTemplate)
-        ?.argsKeys?.findIndex((i) => i === "name")
-    ]
-  );
-};
+export const getName = (chat, args, templates, selectedTemplate) =>
+  chat?.name ||
+  args[
+    templates
+      .find((e) => e.value === selectedTemplate)
+      ?.argsKeys?.findIndex((i) => i === "name")
+  ];
 
 export const getObjectToSetChat = (
   selectedConnectionKey,
@@ -105,27 +106,22 @@ export const getObjectToSetChat = (
   phone,
   phoneNumber,
   name
-) => {
-  return {
-    connectionKey: selectedConnectionKey,
-    destination,
-    chats: [
-      {
-        enabled: false,
-        name,
-        chatId: phone.startsWith("55") ? phone : `55${phone}`,
-        updateUnreadWhenOpen: true,
-        phone: formatPhone(phoneNumber),
-      },
-    ],
-  };
-};
+) => ({
+  connectionKey: selectedConnectionKey,
+  destination,
+  chats: [
+    {
+      enabled: false,
+      name,
+      chatId: phone.startsWith("55") ? phone : `55${phone}`,
+      updateUnreadWhenOpen: true,
+      phone: formatPhone(phoneNumber),
+    },
+  ],
+});
 
-export const getCanSend = (phoneNumber, selectedTemplate, args) => {
-  return (
-    phoneNumber !== "" &&
-    selectedTemplate !== "" &&
-    args.length > 0 &&
-    args.filter((a) => a !== "").length === args.length
-  );
-};
+export const getCanSend = (phoneNumber, selectedTemplate, args) =>
+  phoneNumber !== "" &&
+  selectedTemplate !== "" &&
+  args.length > 0 &&
+  args.filter((a) => a !== "").length === args.length;

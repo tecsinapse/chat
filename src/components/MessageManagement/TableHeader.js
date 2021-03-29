@@ -16,10 +16,11 @@ export const TableHeader = ({
   const classes = useStyle(mobile)();
 
   const iconMargin = { marginRight: 6 };
+  const headerStyles = { display: "flex" };
 
   return (
     <>
-      <div className={headerClass} style={{ display: "flex" }}>
+      <div className={headerClass} style={headerStyles}>
         <Typography variant="h6" className={classes.marginRight}>
           Clientes do Chat
         </Typography>
@@ -61,6 +62,7 @@ const useStyle = (mobile) =>
           backgroundColor: "rgba(0,0,0,0.06)",
         }
       : {};
+
     return {
       label: {
         fontSize: "12px",

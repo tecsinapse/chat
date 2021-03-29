@@ -48,6 +48,7 @@ import { loadComponent } from "../../utils/helpers";
 
 export const Init = (props) => {
   const [state, setState] = useState(allChatsMap);
+
   return (
     <ChatContext.Provider value={[state, setState]}>
       <InitContext {...props} />
@@ -82,6 +83,7 @@ const InitContext = ({
 
   const [chatContext, setChatContext] = useContext(ChatContext);
   const allChats = Array.from(chatContext.values());
+
   useComponentInfo(componentInfo, setMainSocketClientRefs);
 
   const propsToLoadComponent = {
@@ -95,12 +97,13 @@ const InitContext = ({
     setIsDrawerOpen,
     setChatContext,
   };
+
   useLoadComponent(propsToLoadComponent);
 
   const reloadComponent = () => loadComponent(propsToLoadComponent);
 
-  const chatIds = getChatIds(allChats);
-  let unreadTotal = getUnreadTotal(allChats);
+  const chatIds = getChatIds(componentInfo?.allChats);
+  const unreadTotal = getUnreadTotal(allChats);
 
   const onSelectUnreadChat = (chat) => {
     if (chatInitConfig.clickOnUnreadOpenFirstAction) {
@@ -143,6 +146,8 @@ const InitContext = ({
     chatInitConfig,
     chatViewAndIsBlocked
   );
+
+  const closeIconStyles = { cursor: "pointer" };
 
   return (
     <>
@@ -292,7 +297,7 @@ const InitContext = ({
                   onClick={() => setView(homeLocation)}
                   color={theme.palette.primary.main}
                   size={1.25}
-                  style={{ cursor: "pointer" }}
+                  style={closeIconStyles}
                   path={mdiClose}
                 />
               </div>
@@ -313,7 +318,8 @@ const InitContext = ({
                 setCurrentChat,
                 currentChat,
                 chatContext,
-                setChatContext
+                setChatContext,
+                componentInfo
               )
             }
             mainSocketClientRefs={mainSocketClientRefs}
@@ -328,7 +334,7 @@ const InitContext = ({
             onClose={() => setChatToOpenFirstAction({})}
             aria-labelledby="dialog-title"
           >
-            <DialogTitle id="dialog-title">{"Confirmação"}</DialogTitle>
+            <DialogTitle id="dialog-title">Confirmação</DialogTitle>
             <DialogContent>
               <DialogContentText>
                 Voce será direcionado e pode perder a ação que está executando
@@ -349,6 +355,7 @@ const InitContext = ({
                     chatToOpenFirstAction,
                     chatInitConfig.userkeycloakId
                   );
+
                   window.open(
                     `${chatToOpenFirstAction.actions[0].path}?data=${encodedData}`,
                     "_self"

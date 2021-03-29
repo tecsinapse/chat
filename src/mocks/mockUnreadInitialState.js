@@ -1,9 +1,17 @@
 export const mockUnreadInitialState = {
-  connectionKeys: ["sandbox-homolog"],
+  connectionKeys: ["sandbox-dev"],
   destination: ["fiat"],
+  // currentClient: {
+  //   clientName: "Denner",
+  //   connectionKey: "sandbox-dev",
+  //   destination: "fiat",
+  //   disabled: false,
+  //   status: "OK",
+  //   clientChatIds: ["5567992678000"],
+  // },
   allChats: [
     {
-      connectionKey: "sandbox-homolog",
+      connectionKey: "sandbox-dev",
       destination: "fiat",
       name: "Ryan",
       subName: null,
@@ -30,7 +38,7 @@ export const mockUnreadInitialState = {
       updateUnreadWhenOpen: true,
     },
     {
-      connectionKey: "sandbox-homolog",
+      connectionKey: "sandbox-dev",
       destination: "fiat",
       name: "Denner",
       subName: null,
@@ -57,12 +65,12 @@ export const mockUnreadInitialState = {
       updateUnreadWhenOpen: true,
     },
     {
-      connectionKey: "sandbox-homolog",
+      connectionKey: "sandbox-dev",
       destination: "fiat",
-      name: "Mauricio",
+      name: "Livio",
       subName: null,
-      phone: "(48) 99901-2888",
-      chatId: "5548999012888",
+      phone: "(83) 99988-1699",
+      chatId: "5583999881699",
       contactAt: "2020-11-05T17:53:39.869427",
       extraInfo: {
         responsavelId: "20",

@@ -1,22 +1,20 @@
-import {format} from "../../utils/dates";
+import { format } from "../../utils/dates";
 
-const getOptions = (chats, extraInfoColumns) => {
-  return {
-    exportFileName: "chat-mensagens",
-    position: "footer",
-    footerSpan: 2,
-    exportTypes: [
-      {
-        label: "Exportar para CSV",
-        type: "custom",
-        exportFunc: () => exportToCSV(chats, extraInfoColumns),
-      },
-    ],
-  };
-};
+const getOptions = (chats, extraInfoColumns) => ({
+  exportFileName: "chat-mensagens",
+  position: "footer",
+  footerSpan: 2,
+  exportTypes: [
+    {
+      label: "Exportar para CSV",
+      type: "custom",
+      exportFunc: () => exportToCSV(chats, extraInfoColumns),
+    },
+  ],
+});
 
 const exportToCSV = (chats, extraInfoColumns) => {
-  let fileNameWithExt = "gestao-mensagens.csv";
+  const fileNameWithExt = "gestao-mensagens.csv";
   const exportedColumns = ["Data do Contato", "Cliente", "Telefone"];
 
   Object.keys(extraInfoColumns).forEach((key) => {
@@ -24,8 +22,10 @@ const exportToCSV = (chats, extraInfoColumns) => {
   });
 
   const dataToExport = [];
+
   chats.forEach((chat) => {
     const row = [format(chat.lastMessageAt), chat.name, chat.phone];
+
     Object.keys(extraInfoColumns).forEach((key) => {
       row.push(chat.extraInfo[key]);
     });
@@ -61,6 +61,7 @@ const runSwitchToOnlyNotClients = (
   setShowOnlyNotClients
 ) => {
   const showOnly = !showOnlyNotClients;
+
   if (showOnly) {
     setChats([...allChats].filter((it) => it.highlighted));
   } else {

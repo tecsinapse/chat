@@ -15,6 +15,8 @@ import {
   getCanSend,
 } from "./functions";
 
+/* eslint-disable react/no-array-index-key */
+
 export const SendNotification = ({
   chat,
   chatApiUrl,
@@ -53,6 +55,7 @@ export const SendNotification = ({
     name: "",
     phone: phoneNumber,
   });
+
   useSendNotification(
     chat,
     phoneNumber,
@@ -68,6 +71,7 @@ export const SendNotification = ({
       value: "",
     },
   ];
+
   connectionKeys.forEach((c) =>
     availableConnectionKeys.push({
       label: c,
@@ -79,6 +83,7 @@ export const SendNotification = ({
     if (selectedConnectionKey !== "") {
       loadTemplates(selectedConnectionKey, propsToLoadTamplates);
     }
+
     if (phoneNumber === "") {
       setPhoneNumber(auxInfo.phone);
     }
@@ -95,6 +100,7 @@ export const SendNotification = ({
     const selected =
       templates.filter((t) => t.value === template)[0] || emptyTemplate;
     const argsArray = [];
+
     for (let i = 0; i < selected.args; i++) {
       argsArray.push(auxInfo[selected.argsKeys[i]] || "");
     }
@@ -105,6 +111,7 @@ export const SendNotification = ({
 
   const setArg = (index, arg) => {
     const argsArray = [...args];
+
     argsArray[index] = arg;
     setArgs(argsArray);
     updatePreview(selectedTemplate, argsArray);
@@ -113,23 +120,24 @@ export const SendNotification = ({
   const setCustomField = (index, value) => {
     const customFieldsArray = [...customFields];
     const customField = customFieldsArray[index];
+
     customField.value = value;
     customFieldsArray[index] = customField;
     setCustomFields(customFieldsArray);
   };
 
-  const getArgDescription = (index) => {
-    return (
-      templates.filter((t) => t.value === selectedTemplate)[0] || emptyTemplate
-    ).argsDescription[index];
-  };
+  const getArgDescription = (index) =>
+    (templates.filter((t) => t.value === selectedTemplate)[0] || emptyTemplate)
+      .argsDescription[index];
 
-  const updatePreview = (template, args) => {
-    let tpt = templates.filter((t) => t.value === template)[0] || emptyTemplate;
+  const updatePreview = (template, options) => {
+    const tpt =
+      templates.filter((t) => t.value === template)[0] || emptyTemplate;
     let prev = tpt.template;
-    for (let i = 0; i < args.length; i++) {
-      if (args[i] !== "") {
-        prev = prev.replace(`{{${tpt.argsKeys[i]}}}`, args[i]);
+
+    for (let i = 0; i < options.length; i++) {
+      if (options[i] !== "") {
+        prev = prev.replace(`{{${tpt.argsKeys[i]}}}`, options[i]);
       }
     }
     setPreview(prev);
@@ -147,7 +155,7 @@ export const SendNotification = ({
       phoneNumber,
       name
     );
-    console.log("objectToSetChat ", objectToSetChat);
+
     setChat(objectToSetChat);
 
     setSuccess("Mensagem enviada");
@@ -182,12 +190,18 @@ export const SendNotification = ({
     customFields,
   };
 
+  const selectGridZIndex = { zIndex: 9999999999 };
+  const inputGridZIndex = { zIndex: 1 };
+  const selectFieldZIndex = { zIndex: 999999999 };
+  const selectTemplateZIndex = { zIndex: 999999998 };
+  const sendButtonDivAlign = { textAlign: "center" };
+
   return (
     <>
       <div className={classes.root}>
         <HeaderSendNotification />
         <Grid container spacing={2} direction="column">
-          <Grid item style={{ zIndex: 9999999999 }}>
+          <Grid item style={selectGridZIndex}>
             <Select
               value={selectedConnectionKey}
               options={availableConnectionKeys}
@@ -218,7 +232,7 @@ export const SendNotification = ({
           {customFields.map((customField, index) => (
             <React.Fragment key={`fragment-${index}`}>
               {customField.type === "INPUT" && (
-                <Grid item key={`input-${index}`} style={{ zIndex: 1 }}>
+                <Grid item key={`input-${index}`} style={inputGridZIndex}>
                   <Input
                     name={customField.key}
                     label={customField.label}
@@ -230,11 +244,7 @@ export const SendNotification = ({
                 </Grid>
               )}
               {customField.type === "SELECT" && (
-                <Grid
-                  item
-                  key={`select-${index}`}
-                  style={{ zIndex: 999999999 }}
-                >
+                <Grid item key={`select-${index}`} style={selectFieldZIndex}>
                   <Select
                     value={customField.value}
                     options={customField.availableValues.map((v) => ({
@@ -250,7 +260,7 @@ export const SendNotification = ({
               )}
             </React.Fragment>
           ))}
-          <Grid item style={{ zIndex: 999999998 }}>
+          <Grid item style={selectTemplateZIndex}>
             <Select
               value={selectedTemplate}
               options={availableTemplates}
@@ -281,7 +291,7 @@ export const SendNotification = ({
               </div>
             </Grid>
           )}
-          <div style={{ textAlign: "center" }}>
+          <div style={sendButtonDivAlign}>
             {sending ? (
               <Loading />
             ) : (
@@ -312,3 +322,4 @@ export const SendNotification = ({
     </>
   );
 };
+/* eslint-enable react/no-array-index-key */
