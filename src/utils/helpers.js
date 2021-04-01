@@ -1,6 +1,5 @@
 import { load } from "./loadChatsInfos";
 import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
-import { fetchMessages } from "./fetch";
 import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
 
@@ -43,20 +42,14 @@ export const onSelectedChatMaker = ({
   setCurrentChat,
   setMessages,
   setBlocked,
-  chatApiUrl,
+  chatService,
   messagesEndRef,
   onReadAllMessagesOfChat,
   userNamesById,
 }) => async (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);
-  const response = await fetchMessages({
-    chatApiUrl,
-    connectionKey: initialInfo.connectionKey,
-    destination: initialInfo.destination,
-    chatId: chat.chatId,
-    updateUnreadWhenOpen: chat.updateUnreadWhenOpen,
-  });
+  const response = await chatService.loadMessages(initialInfo, chat);
 
   const { content } = response;
 

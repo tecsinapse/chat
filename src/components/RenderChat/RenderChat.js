@@ -25,7 +25,7 @@ import {
   runHandleNewUserFiles,
 } from "./functions";
 
-export const RenderChat = ({
+const RenderChatUnmemoized = ({
   chatApiUrl,
   initialInfo,
   userkeycloakId,
@@ -40,7 +40,7 @@ export const RenderChat = ({
   chatService,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentChat, setCurrentChat] = useState(emptyChat);
+  const [currentChat, setCurrentChat] = useState(initialInfo);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [page, setPage] = useState(1);
@@ -51,6 +51,9 @@ export const RenderChat = ({
   let clientRef = useRef();
   const setStatusMessage = setStatusMessageFunc(setMessages);
 
+  const isBlocked = ChatStatus.isBlocked(currentChat?.status);
+  const enabled = currentChat.enabled || ChatStatus.isOK(currentChat?.status);
+
   useEffect(() => {
     if (initialInfo.chats.length === 1) {
       onSelectedChatMaker(propsOnSelectChatMake)(initialInfo.chats[0]);
@@ -58,13 +61,14 @@ export const RenderChat = ({
     // eslint-disable-next-line
   }, []);
 
-  const setBlockedAndPropagateStatus = (chat) =>
+  const setBlockedAndPropagateStatus = (chat, blockedStatus) => {
     runBlockedAndPropagateStatus(
       chat,
-      isBlocked,
+      blockedStatus,
       setCurrentChat,
       onChatStatusChanged
     );
+  };
   const propsToSendData = {
     chatApiUrl,
     initialInfo,
@@ -80,7 +84,7 @@ export const RenderChat = ({
     setCurrentChat,
     setMessages,
     setBlocked: setBlockedAndPropagateStatus,
-    chatApiUrl,
+    chatService,
     messagesEndRef,
     onReadAllMessagesOfChat,
     userNamesById,
@@ -229,8 +233,6 @@ export const RenderChat = ({
   };
 
   const handleView = (view) => setView(view);
-  const isBlocked = ChatStatus.isBlocked(currentChat?.status);
-  const enabled = currentChat.enabled || ChatStatus.isOK(currentChat?.status);
 
   const handleRef = (client) => (clientRef = client); // eslint-disable-line
 
@@ -298,3 +300,5 @@ export const RenderChat = ({
     </div>
   );
 };
+
+export const RenderChat = React.memo(RenderChatUnmemoized);

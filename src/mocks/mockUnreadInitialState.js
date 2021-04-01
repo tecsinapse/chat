@@ -33,7 +33,7 @@ export const mockUnreadInitialState = {
           path: "/p/crm/clientes/telefone/associar",
         },
       ],
-      highlighted: true,
+      // highlighted: true,
       enabled: true,
       updateUnreadWhenOpen: true,
     },
@@ -71,7 +71,7 @@ export const mockUnreadInitialState = {
       subName: null,
       phone: "(83) 99988-1699",
       chatId: "5583999881699",
-      contactAt: "2020-11-05T17:53:39.869427",
+      contactAt: "2020-11-05T17:52:39.869427",
       extraInfo: {
         responsavelId: "20",
         segmento: "Autos",

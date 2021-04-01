@@ -6,6 +6,7 @@
   "files": [
     "build/"
   ],
+  "license": "MIT",
   "scripts": {
     "prestart": "yarn install",
     "start": "react-scripts start",
@@ -50,12 +51,13 @@
     "@mdi/js": "^5.9.55",
     "@mdi/react": "^1.4.0",
     "@tecsinapse/chat": "^3.1.1",
-    "@tecsinapse/table": "^3.5.5",
-    "@tecsinapse/ui-kit": "^5.5.5",
+    "@tecsinapse/table": "^3.5.7",
+    "@tecsinapse/ui-kit": "^5.5.7",
     "enumify": "^1.0.4",
     "jwt-simple": "^0.5.6",
     "moment": "^2.27.0",
     "react-app-polyfill": "^1.0.6",
+    "react-query": "^3.13.0",
     "react-stomp": "^5.0.0",
     "uuid": "^3.3.2"
   },

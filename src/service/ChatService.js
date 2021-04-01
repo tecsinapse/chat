@@ -48,15 +48,24 @@ export class ChatService {
   }
 
   loadMessages(initialInfo, currentChat, page) {
-    const baseUrl = this.url;
-
     return fetchMessages({
-      baseUrl,
+      chatApiUrl: `${this.url}`,
       connectionKey: initialInfo.connectionKey,
       destination: initialInfo.destination,
       chatId: currentChat.chatId,
       page,
       updateUnreadWhenOpen: currentChat.updateUnreadWhenOpen,
     });
+  }
+
+  async findMessagesByCurrentUser(groupedChats, page = 0, rowsPerPage = 10) {
+    const promiseMap = Array.from(groupedChats.keys()).map((key) => {
+      return defaultFetch(
+        `${this.url}/${key}/infos?page=${page}&size=${rowsPerPage}`,
+        "POST",
+        groupedChats.get(key)
+      );
+    });
+    return Promise.all(promiseMap);
   }
 }

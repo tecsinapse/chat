@@ -72,17 +72,16 @@ const onReadAllMessagesOfChat = (
   }
 };
 
-const onDeleteChat = async (
+const onDeleteChat = async ({
   deletedChat,
-  chatInitConfig,
   token,
   componentInfo,
   setComponentInfo,
   productService,
   chatService,
   chatContext,
-  setChatContext
-) => {
+  setChatContext,
+}) => {
   await productService.deleteChat(deletedChat, token);
   await chatService.deleteSessionChat(deletedChat);
   const toUpdateInfo = { ...componentInfo };

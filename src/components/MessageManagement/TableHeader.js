@@ -18,6 +18,8 @@ export const TableHeader = ({
   const iconMargin = { marginRight: 6 };
   const headerStyles = { display: "flex" };
 
+  const handleChange = (e) => setGlobalSearch(e.target.value);
+
   return (
     <>
       <div className={headerClass} style={headerStyles}>
@@ -46,7 +48,7 @@ export const TableHeader = ({
         startAdornment={
           <Icon path={mdiMagnify} size={1} color="#c6c6c6" style={iconMargin} />
         }
-        onChange={(e) => setGlobalSearch(e.target.value)}
+        onChange={handleChange}
       />
     </>
   );

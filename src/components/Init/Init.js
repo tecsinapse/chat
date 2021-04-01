@@ -12,6 +12,8 @@ import {
   Divider as MuiDivider,
   Drawer,
 } from "@material-ui/core";
+import { QueryClient, QueryClientProvider } from "react-query";
+
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { UnreadChats } from "../UnreadChats/UnreadChats";
 import { RenderChat } from "../RenderChat/RenderChat";
@@ -46,12 +48,22 @@ import { ChatService } from "../../service/ChatService";
 import ChatContext, { allChatsMap } from "../../context";
 import { loadComponent } from "../../utils/helpers";
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 export const Init = (props) => {
   const [state, setState] = useState(allChatsMap);
 
   return (
     <ChatContext.Provider value={[state, setState]}>
-      <InitContext {...props} />
+      <QueryClientProvider client={queryClient}>
+        <InitContext {...props} />
+      </QueryClientProvider>
     </ChatContext.Provider>
   );
 };
@@ -200,19 +212,6 @@ const InitContext = ({
                 chatApiUrl={chatInitConfig.chatApiUrl}
                 userkeycloakId={chatInitConfig.userkeycloakId}
                 chatService={chatService}
-                onDeleteChat={(deletedChat) =>
-                  onDeleteChat(
-                    deletedChat,
-                    chatInitConfig,
-                    token,
-                    componentInfo,
-                    setComponentInfo,
-                    productService,
-                    chatService,
-                    chatContext,
-                    setChatContext
-                  )
-                }
                 onReadAllMessagesOfChat={(readChat) =>
                   onReadAllMessagesOfChat(
                     componentInfo,
@@ -242,13 +241,16 @@ const InitContext = ({
                 componentInfo={componentInfo}
                 onSelectChat={onSelectChat}
                 onDeleteChat={(deletedChat) =>
-                  onDeleteChat(
+                  onDeleteChat({
                     deletedChat,
-                    chatInitConfig,
                     token,
                     componentInfo,
-                    setComponentInfo
-                  )
+                    setComponentInfo,
+                    productService,
+                    chatService,
+                    chatContext,
+                    setChatContext,
+                  })
                 }
                 userkeycloakId={chatInitConfig.userkeycloakId}
                 showMessagesLabel={chatInitConfig.showMessagesLabel}
@@ -257,6 +259,7 @@ const InitContext = ({
                 mobile={mobile}
                 customActions={customActions}
                 setDrawerOpen={setIsDrawerOpen}
+                chatService={chatService}
               />
             )}
             {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (

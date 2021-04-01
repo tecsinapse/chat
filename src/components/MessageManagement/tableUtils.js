@@ -189,7 +189,7 @@ export const customActionsMobile = (
       <ListItemText>{showMessagesLabel}</ListItemText>
     </ListItem>
 
-    {(customActions || data?.actions).map((actionLink, key) => {
+    {(customActions || data?.actions || []).map((actionLink, key) => {
       const handleClick = () => {
         const encodedData = encodeChatData(data, userkeycloakId);
 

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Table } from "@tecsinapse/table";
 import {
   Button,
@@ -9,28 +9,10 @@ import {
   DialogTitle,
 } from "@material-ui/core";
 import { useStyle } from "./styles";
-import { toMoment } from "../../utils/dates";
 import { TableHeader } from "./TableHeader";
 import { customActionsMobile, generateColumns } from "./tableUtils";
-import { getOptions, runSwitchToOnlyNotClients } from "./functions";
-import useFiltered from "../../hooks/useFiltered";
-import ChatContext from "../../context";
-
-const sortChatsByContactAt = (allChats) =>
-  allChats.sort((a, b) => {
-    const contactA = toMoment(a?.contactAt);
-    const contactB = toMoment(b?.contactAt);
-
-    if (contactA > contactB) {
-      return -1;
-    }
-
-    if (contactA < contactB) {
-      return 1;
-    }
-
-    return 0;
-  });
+import { getOptions, dataFetcher } from "./functions";
+import { useQueryClient } from "react-query";
 
 export const MessageManagement = ({
   componentInfo,
@@ -43,33 +25,19 @@ export const MessageManagement = ({
   mobile,
   customActions,
   setDrawerOpen,
+  chatService,
 }) => {
-  const [chatContext] = useContext(ChatContext);
+  const classes = useStyle();
+  const queryClient = useQueryClient();
   const { extraInfoColumns } = componentInfo;
-  const allChats = Array.from(chatContext.values());
-  const [chats, setChats] = useState(sortChatsByContactAt(allChats));
-  const [chatsFiltered, setChatsFiltered] = useState(
-    sortChatsByContactAt(allChats)
-  );
+
   const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
   const [deletingChat, setDeletingChat] = useState({});
   const [globalSearch, setGlobalSearch] = useState("");
-  const classes = useStyle();
-
-  useFiltered(globalSearch, setChatsFiltered, chats);
-
-  const switchToOnlyNotClients = () =>
-    runSwitchToOnlyNotClients(
-      showOnlyNotClients,
-      allChats,
-      setChats,
-      setShowOnlyNotClients
-    );
 
   const deleteChat = () => {
-    onDeleteChat(deletingChat).then((updatedAllChats) => {
+    onDeleteChat(deletingChat).then(() => {
       setDeletingChat({});
-      setChats(updatedAllChats);
     });
   };
 
@@ -97,13 +65,15 @@ export const MessageManagement = ({
     globalSearch
   );
 
-  const exportOptions = !mobile ? getOptions(chats, extraInfoColumns) : {};
+  const exportOptions = !mobile ? getOptions(extraInfoColumns) : {};
+
+  const handleSwitchClients = () => setShowOnlyNotClients(!showOnlyNotClients);
 
   const toolbarOptions = {
     title: (
       <TableHeader
         showNotClient={showOnlyNotClients}
-        switchToOnlyNotClients={switchToOnlyNotClients}
+        switchToOnlyNotClients={handleSwitchClients}
         headerClass={headerClass}
         globalSearch={globalSearch}
         setGlobalSearch={setGlobalSearch}
@@ -112,19 +82,29 @@ export const MessageManagement = ({
     ),
   };
 
+  const fetcherProps = {
+    queryClient,
+    componentInfo,
+    chatService,
+    showOnlyNotClients,
+    globalSearch,
+  };
+
   return (
     <>
       <Table
         onDrawerClose={() => {}}
         classes={{ rootMobile: classes.rootMobile }}
         columns={columns}
-        data={chatsFiltered}
+        data={dataFetcher(fetcherProps)}
         rowId={(row) => row.chatId}
         customActionsMobile={generateActionsMobile}
         pagination
         onRowClick={(row) => !mobile && onSelectChat(row)}
         exportOptions={exportOptions}
         toolbarOptions={toolbarOptions}
+        rowsPerPage={10}
+        rowsPerPageOptions={[5, 10, 20, 30, 50, 100]}
         hideSelectFilterLabel
       />
       <Dialog
