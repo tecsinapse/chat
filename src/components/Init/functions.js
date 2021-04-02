@@ -82,8 +82,12 @@ const onDeleteChat = async ({
   chatContext,
   setChatContext,
 }) => {
-  await productService.deleteChat(deletedChat, token);
-  await chatService.deleteSessionChat(deletedChat);
+  try {
+    await productService.deleteChat(deletedChat, token);
+    await chatService.deleteSessionChat(deletedChat);
+  } catch (e) {
+    console.error("[DELETE_CHAT] Error when deleting", e.message);
+  }
   const toUpdateInfo = { ...componentInfo };
 
   chatContext.delete(getChatId(deletedChat));
@@ -109,20 +113,13 @@ const onChatStatusChanged = (
 ) => {
   // controls if the current chat is expired and the button to send a notification is visible to a chat
   if (statusChangedChat) {
-    const chat = chatContext.get(getChatId(statusChangedChat));
+    const chat =
+      chatContext.get(getChatId(statusChangedChat)) || statusChangedChat;
 
     if (chat) {
       // will only show the button if the chat is blocked
       setChatToSendNotification(isBlocked ? chat : null);
-    }
-
-    // allChats.forEach((chat) => {
-    //   if (isEquals(chat, statusChangedChat)) {
-    //     // will only show the button if the chat is blocked
-    //     setChatToSendNotification(isBlocked ? chat : null);
-    //   }
-    // });
-    else {
+    } else {
       setChatToSendNotification(null);
     }
   }

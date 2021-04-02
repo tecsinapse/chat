@@ -260,6 +260,7 @@ const InitContext = ({
                 customActions={customActions}
                 setDrawerOpen={setIsDrawerOpen}
                 chatService={chatService}
+                reload={reloadComponent}
               />
             )}
             {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (

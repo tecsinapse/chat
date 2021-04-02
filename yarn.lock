@@ -1787,12 +1787,12 @@
   resolved "https://registry.yarnpkg.com/@tecsinapse/react-mic/-/react-mic-1.3.1.tgz#0f71bb65aa52902d5773e4b1eabeb6efa09f9f40"
   integrity sha512-61N9IsN4h5JfxLJfYxJ7vNez2nacM09R77+KaFZTlQYKiK3TNHKM14XNN78+HZakb/36Omek9GMMWoW6cUhudQ==
 
-"@tecsinapse/table@^3.5.7":
-  version "3.5.7"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-3.5.7.tgz#43508f2985e554c8b0ab63e0110a8ffad118e1cb"
-  integrity sha512-EkWKMAMfLIfO1zViMn5tOyTxHkfRDIkO1/fr85lUAhMaFEy4hCMh1l40G6Z0L+9rqX9EwfO5kGjhqxHPPIRhwQ==
+"@tecsinapse/table@^3.5.8":
+  version "3.5.8"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-3.5.8.tgz#285634a4403d2d82a6b2d3632193c9305a9be4bf"
+  integrity sha512-/l9cCxNXHWeDeDvv3SHWpmxFwHmQkjh2ioQtCAXts7Dam22VKT4Kg94p2E/tSCNHK3GbT+FH301dCNLaSgTkmw==
   dependencies:
-    "@tecsinapse/ui-kit" "^5.5.7"
+    "@tecsinapse/ui-kit" "^5.5.8"
     react-virtualized "^9.22.3"
 
 "@tecsinapse/ui-kit@^5.5.5":
@@ -1813,10 +1813,10 @@
     text-mask-addons "^3.8.0"
     text-mask-core "^5.1.2"
 
-"@tecsinapse/ui-kit@^5.5.7":
-  version "5.5.7"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.5.7.tgz#913a7cf72e2cc63d066ff195444cda871d522a7a"
-  integrity sha512-T1Xi9a30oZW/Luy+2cNP/gAk+pY27mHmCOeM9oCGHFtLmYDpKjy9rtAws3WW4uPkbtSeJgSA0TD13WmxjIPUEw==
+"@tecsinapse/ui-kit@^5.5.8":
+  version "5.5.8"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.5.8.tgz#d772a8522fd6f93193b97a98656f9ea64c4131db"
+  integrity sha512-ER2Ili62/kUp0Fth7IjMTd2T0HcCJBtwXD9WtgMGHE87JKoUhFkL8lwXEQ8RWia//jDbvTJPGCwJ9OuMad4Hyg==
   dependencies:
     "@material-ui/core" "^4.11.1"
     "@material-ui/icons" "^4.11.1"
@@ -5057,7 +5057,7 @@ eslint@6.6.0:
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
 
-eslint@^6.6.0:
+eslint@^6.6.0, eslint@^6.8.0:
   version "6.8.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-6.8.0.tgz#62262d6729739f9275723824302fb227c8c93ffb"
   integrity sha512-K+Iayyo2LtyYhDSYwz5D5QdWw0hCacNzyq1Y821Xna2xSJj7cijoLLYmLxTQgcgZ9mC61nryMy9S7GRbYpI5Ig==
@@ -10804,6 +10804,13 @@ reusify@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/reusify/-/reusify-1.0.4.tgz#90da382b1e126efc02146e90845a88db12925d76"
   integrity sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==
+
+rewire@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/rewire/-/rewire-5.0.0.tgz#c4e6558206863758f6234d8f11321793ada2dbff"
+  integrity sha512-1zfitNyp9RH5UDyGGLe9/1N0bMlPQ0WrX0Tmg11kMHBpqwPJI4gfPpP7YngFyLbFmhXh19SToAG0sKKEFcOIJA==
+  dependencies:
+    eslint "^6.8.0"
 
 rework-visit@1.0.0:
   version "1.0.0"

@@ -10,12 +10,13 @@
   "scripts": {
     "prestart": "yarn install",
     "start": "react-scripts start",
-    "build-dev": "REACT_APP_ENV=development react-scripts build",
-    "build": "REACT_APP_ENV=production && react-scripts build",
-    "build-win": "SET \"REACT_APP_ENV=production\" && react-scripts build",
+    "build:dev": "rimraf -rf build/ && REACT_APP_ENV=development react-scripts build",
+    "build": "rimraf -rf build/ && REACT_APP_ENV=production react-scripts build",
+    "build:nonsplit": "rimraf -rf build/ && REACT_APP_ENV=production node ./scripts/buildNonSplit.js",
+    "build:win": "rimraf -rf build/ && SET \"REACT_APP_ENV=production\" && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build-lib": "rimraf -rf build/ && babel src/ -d build/",
+    "build:lib": "rimraf -rf build/ && babel src/ -d build/",
     "eslint:fix": "eslint ./src --ext .js --fix",
     "prettify": "prettier --write src/**/*.{js,json} && prettier --write *.{js,json}"
   },
@@ -51,8 +52,8 @@
     "@mdi/js": "^5.9.55",
     "@mdi/react": "^1.4.0",
     "@tecsinapse/chat": "^3.1.1",
-    "@tecsinapse/table": "^3.5.7",
-    "@tecsinapse/ui-kit": "^5.5.7",
+    "@tecsinapse/table": "^3.5.8",
+    "@tecsinapse/ui-kit": "^5.5.8",
     "enumify": "^1.0.4",
     "jwt-simple": "^0.5.6",
     "moment": "^2.27.0",
@@ -81,6 +82,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
+    "rewire": "^5.0.0",
     "rollup-plugin-node-builtins": "^2.1.2"
   },
   "publishConfig": {

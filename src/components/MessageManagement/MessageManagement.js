@@ -26,6 +26,7 @@ export const MessageManagement = ({
   customActions,
   setDrawerOpen,
   chatService,
+  reload,
 }) => {
   const classes = useStyle();
   const queryClient = useQueryClient();
@@ -37,6 +38,7 @@ export const MessageManagement = ({
 
   const deleteChat = () => {
     onDeleteChat(deletingChat).then(() => {
+      reload();
       setDeletingChat({});
     });
   };
