@@ -15,8 +15,7 @@ export const fetchMessages = ({
 export function defaultFetch(path, method, data, formData) {
   const headers = new Headers({
     "Content-Type": "application/json",
-    Authorization:
-      "rks-(j4iWna<[t)Qm?6*f^/=20y:M!YyF?76{cTbM##H/>-6|*]4!WUsD,abVj:",
+    Authorization: process.env.REACT_APP_FETCH_TOKEN,
   });
 
   const init = {
