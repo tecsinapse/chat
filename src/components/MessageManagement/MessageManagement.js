@@ -38,8 +38,8 @@ export const MessageManagement = ({
 
   const deleteChat = () => {
     onDeleteChat(deletingChat).then(() => {
-      reload();
       setDeletingChat({});
+      reload();
     });
   };
 
