@@ -17,9 +17,9 @@ window.renderChatComponent = function renderChatComponent() {
     userkeycloakId: uuidv1(),
     chatApiUrl: `${process.env.REACT_APP_SERVER_URL}`,
     params: {},
-    getInitialStatePath: "http://localhost:8080/rest/chat/componentInfo",
-    deleteChatPath: "http://localhost:8080/rest/chat",
-    createPath: "http://localhost:8080/rest/chat",
+    getInitialStatePath: "/rest/chat/componentInfo",
+    deleteChatPath: "/rest/chat",
+    createPath: "/rest/chat",
     openImmediately: false,
     clickOnUnreadOpenFirstAction: false,
     showMessagesLabel: "Visualizar Mensagens",
@@ -29,7 +29,6 @@ window.renderChatComponent = function renderChatComponent() {
     onlyMessageManagement: false,
     canSendNotification: true,
     standalone,
-    token: null,
   };
 
   let chatInitConfig = { ...defaultChatInitConfig };
@@ -53,6 +52,6 @@ window.renderChatComponent = function renderChatComponent() {
   );
 };
 
-if (!standalone) {
+if (standalone) {
   window.renderChatComponent();
 }
