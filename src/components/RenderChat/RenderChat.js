@@ -54,13 +54,6 @@ const RenderChatUnmemoized = ({
   const isBlocked = ChatStatus.isBlocked(currentChat?.status);
   const enabled = currentChat.enabled || ChatStatus.isOK(currentChat?.status);
 
-  useEffect(() => {
-    if (initialInfo.chats.length === 1) {
-      onSelectedChatMaker(propsOnSelectChatMake)(initialInfo.chats[0]);
-    }
-    // eslint-disable-next-line
-  }, []);
-
   const setBlockedAndPropagateStatus = (chat, blockedStatus) => {
     runBlockedAndPropagateStatus(
       chat,
@@ -90,6 +83,13 @@ const RenderChatUnmemoized = ({
     userNamesById,
   };
   const onSelectedChat = onSelectedChatMaker(propsOnSelectChatMake);
+
+  useEffect(() => {
+    if (initialInfo.chats.length === 1) {
+      onSelectedChatMaker(propsOnSelectChatMake)(initialInfo.chats[0]);
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const handleNewExternalMessage = (newMessage) =>
     runHandleNewExternalMessage(

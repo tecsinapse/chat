@@ -2,6 +2,7 @@ import { load } from "./loadChatsInfos";
 import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
 import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
+import { stringFormattedToMoment, momentNow } from "../utils/dates";
 
 export async function loadComponent({
   chatInitConfig,
@@ -59,8 +60,16 @@ export const onSelectedChatMaker = ({
     )
     .reverse();
 
+  const lastMessageExpired = !stringFormattedToMoment(
+    messages[messages.length - 1].at
+  ).isBetween(momentNow().subtract(24, "hour"), momentNow());
+
+  const isBlocked =
+    ChatStatus.isBlocked(chat?.status || initialInfo?.status) ||
+    lastMessageExpired;
+
   setMessages(messages);
-  setBlocked(chat, ChatStatus.isBlocked(chat.status));
+  setBlocked(chat, isBlocked);
   setIsLoading(false);
 
   if (chat.updateUnreadWhenOpen) {

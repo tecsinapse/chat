@@ -18,3 +18,8 @@ export function toMoment(dateTime) {
 
   return moment(dateTime);
 }
+
+export const stringFormattedToMoment = (value) =>
+  moment(value, "DD/MM/YYYY HH:mm");
+
+export const momentNow = () => moment();
