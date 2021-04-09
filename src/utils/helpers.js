@@ -61,7 +61,7 @@ export const onSelectedChatMaker = ({
     .reverse();
 
   const lastMessageExpired = !stringFormattedToMoment(
-    messages[messages.length - 1].at
+    messages[messages.length - 1]?.at
   ).isBetween(momentNow().subtract(24, "hour"), momentNow());
 
   const isBlocked =
