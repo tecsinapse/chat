@@ -15,7 +15,7 @@ const InitWebsockets = ({
   const onConnectMainSocket = (connectionKey) => {
     mainSocketClientRefs[connectionKey].sendMessage(
       `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`,
-      JSON.stringify({ chatIds: chatIds }) // informação dos chats que esse usuário está acompanhando
+      JSON.stringify({ chatIds }) // informação dos chats que esse usuário está acompanhando
     );
   };
 
@@ -29,10 +29,17 @@ const InitWebsockets = ({
     }
   };
 
+  const onDisconnect = () => console.log("Disconnected"); // eslint-disable-line no-console
+
   return (
     <>
       {/* Conexões WebSocket com o tecsinapse-chat */}
       {connectionKeys.map((connectionKey) => {
+        // eslint-disable-next-line
+        const handleRef = (client) =>
+          // eslint-disable-next-line
+          (mainSocketClientRefs[connectionKey] = client);
+
         return (
           <SockJsClient
             key={connectionKey}
@@ -40,8 +47,9 @@ const InitWebsockets = ({
             topics={[`/topic/main.${userkeycloakId}`]}
             onMessage={handleNewMainWebsocketMessage}
             onConnect={() => onConnectMainSocket(connectionKey)}
-            onDisconnect={() => console.log("Disconnected")}
-            ref={(client) => (mainSocketClientRefs[connectionKey] = client)}
+            onDisconnect={onDisconnect}
+            ref={handleRef}
+            /* options={{ sessionId: () => userkeycloakId }} */
           />
         );
       })}

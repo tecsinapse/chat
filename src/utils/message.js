@@ -1,15 +1,12 @@
 import moment from "moment";
-import { MessageSource } from "../constants";
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
+import { MessageSource } from "../constants";
 
-const formatMessageStatus = (status) => {
-  return status.map((s) => {
-    return {
-      status: s.status.toLowerCase(),
-      at: s.at,
-    };
-  });
-};
+const formatMessageStatus = (status) =>
+  status.map((s) => ({
+    status: s.status.toLowerCase(),
+    at: s.at,
+  }));
 
 export const buildChatMessageObject = (
   externalMessage,
@@ -32,12 +29,12 @@ export const buildChatMessageObject = (
   const isOwner = MessageSource.isProduct(source);
   const authorName = userNamesByIds && isOwner ? userNamesByIds[userId] : name;
 
-  let message = {
+  const message = {
     at: moment(at).format("DD/MM/YYYY HH:mm"),
     own: isOwner,
     id: messageId,
-    text: text,
-    authorName: authorName,
+    text,
+    authorName,
     statusDetails: formatMessageStatus(statusDetails),
     status: status.toLowerCase(),
   };
@@ -45,12 +42,13 @@ export const buildChatMessageObject = (
   if (medias && medias.length > 0) {
     // when with media, show title instead of text
     delete message.text;
-    message.title = title ? title : text;
+    message.title = title || text;
 
     message.medias = medias.map((media) => {
       if (media.mediaType.startsWith("application")) {
         delete message.title;
       }
+
       return {
         url: media.url,
         mediaType: media.mediaType,
@@ -63,7 +61,7 @@ export const buildChatMessageObject = (
 };
 
 export const buildSendingMessage = (localId, text, title, file) => ({
-  localId: localId,
+  localId,
   at: moment().format("DD/MM/YYYY HH:mm"),
   own: true,
   id: Date.now().toString(), // Dummy only, it is set by backend
@@ -92,12 +90,15 @@ export const setStatusMessageFunc = (setMessages) => (
   setMessages((prevMessages) => {
     const copyMessages = [...prevMessages];
     const message = copyMessages.find((m) => m.localId === localId);
+
     if (message) {
       message.status = status.toLowerCase();
+
       if (status) {
         message.statusDetails = formatMessageStatus(details);
       }
     }
+
     return copyMessages;
   });
 };
@@ -105,5 +106,6 @@ export const setStatusMessageFunc = (setMessages) => (
 export const calcRemainTime = (time) => {
   const hours = Math.floor(time / 60);
   const minutes = time % 60;
+
   return (hours > 0 && `${hours} hora(s)`) || `${minutes} minuto(s)`;
 };

@@ -1,5 +1,10 @@
-import React from "react";
-import { Typography, FormControlLabel, Switch } from "@material-ui/core";
+import React, { useCallback, useRef } from "react";
+import {
+  Typography,
+  FormControlLabel,
+  Switch,
+  debounce,
+} from "@material-ui/core";
 import { Input } from "@tecsinapse/ui-kit";
 import { makeStyles } from "@material-ui/styles";
 import Icon from "@mdi/react";
@@ -14,12 +19,27 @@ export const TableHeader = ({
   mobile,
 }) => {
   const classes = useStyle(mobile)();
+  const ref = useRef(null);
 
   const iconMargin = { marginRight: 6 };
+  const headerStyles = { display: "flex" };
+
+  const debounceInput = useCallback(
+    debounce((value) => {
+      setGlobalSearch(value);
+    }, 800),
+    []
+  );
+
+  const handleChange = (e) => {
+    if (e.target.value !== globalSearch) {
+      debounceInput(e.target.value);
+    }
+  };
 
   return (
     <>
-      <div className={headerClass} style={{ display: "flex" }}>
+      <div className={headerClass} style={headerStyles}>
         <Typography variant="h6" className={classes.marginRight}>
           Clientes do Chat
         </Typography>
@@ -35,17 +55,18 @@ export const TableHeader = ({
         />
       </div>
       <Input
+        ref={ref}
         fullWidth
         placeholder="Pesquise por dados em qualquer campo"
         name="filtroGlobal"
-        value={globalSearch}
+        defaultValue={globalSearch}
         classes={{
           input: classes.input,
         }}
         startAdornment={
           <Icon path={mdiMagnify} size={1} color="#c6c6c6" style={iconMargin} />
         }
-        onChange={(e) => setGlobalSearch(e.target.value)}
+        onChange={handleChange}
       />
     </>
   );
@@ -61,6 +82,7 @@ const useStyle = (mobile) =>
           backgroundColor: "rgba(0,0,0,0.06)",
         }
       : {};
+
     return {
       label: {
         fontSize: "12px",

@@ -54,6 +54,7 @@ export const ChatOptions = ({
                 window.open(`${item.path}?data=${encodedData}`, "_self");
               }
             };
+
             return (
               <ListItem
                 key={item.label}

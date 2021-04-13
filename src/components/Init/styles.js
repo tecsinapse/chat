@@ -58,5 +58,6 @@ export const useStyle = (customize, mobile) =>
         : {},
     };
     const customStyle = customize ? customize(defaultStyle, theme) : {};
+
     return { ...defaultStyle, ...customStyle };
   });
