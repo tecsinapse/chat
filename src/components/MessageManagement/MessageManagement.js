@@ -8,11 +8,11 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@material-ui/core";
+import { useQueryClient } from "react-query";
 import { useStyle } from "./styles";
 import { TableHeader } from "./TableHeader";
 import { customActionsMobile, generateColumns } from "./tableUtils";
 import { getOptions, dataFetcher } from "./functions";
-import { useQueryClient } from "react-query";
 
 export const MessageManagement = ({
   componentInfo,

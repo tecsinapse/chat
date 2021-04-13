@@ -2,7 +2,7 @@ import { load } from "./loadChatsInfos";
 import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
 import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
-import { stringFormattedToMoment, momentNow } from "../utils/dates";
+import { stringFormattedToMoment, momentNow } from "./dates";
 
 export async function loadComponent({
   chatInitConfig,
@@ -60,9 +60,19 @@ export const onSelectedChatMaker = ({
     )
     .reverse();
 
+<<<<<<< HEAD
   const lastMessageExpired = !stringFormattedToMoment(
     messages[messages.length - 1]?.at
   ).isBetween(momentNow().subtract(24, "hour"), momentNow());
+=======
+  let lastMessageExpired = null;
+
+  if (messages.length > 0) {
+    lastMessageExpired = !stringFormattedToMoment(
+      messages[messages.length - 1].at
+    ).isBetween(momentNow().subtract(24, "hour"), momentNow());
+  }
+>>>>>>> 9e7f020 (component utiliza apenas 1 websocket)
 
   const isBlocked =
     ChatStatus.isBlocked(chat?.status || initialInfo?.status) ||

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useTheme } from "@material-ui/styles";
@@ -39,7 +39,6 @@ import {
   onStartSendNotification,
 } from "./functions";
 
-import useComponentInfo from "../../hooks/useComponentInfo";
 import useLoadComponent from "../../hooks/useLoadComponent";
 import { HeaderDrawer } from "./HeaderDrawer";
 import { ItemDrawer } from "./ItemDrawer";
@@ -91,12 +90,12 @@ const InitContext = ({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
   const [chatToSendNotification, setChatToSendNotification] = useState();
-  const [mainSocketClientRefs, setMainSocketClientRefs] = useState();
+  const [receivedMessage, setReceivedMessage] = useState();
+
+  const mainSocketRef = useRef();
 
   const [chatContext, setChatContext] = useContext(ChatContext);
   const allChats = Array.from(chatContext.values());
-
-  useComponentInfo(componentInfo, setMainSocketClientRefs);
 
   const propsToLoadComponent = {
     chatInitConfig,
@@ -234,6 +233,8 @@ const InitContext = ({
                 setView={setView}
                 customActions={customActions}
                 setDrawerOpen={setIsDrawerOpen}
+                clientRef={mainSocketRef}
+                receivedMessage={receivedMessage}
               />
             )}
             {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
@@ -326,7 +327,8 @@ const InitContext = ({
                 componentInfo
               )
             }
-            mainSocketClientRefs={mainSocketClientRefs}
+            mainSocketRef={mainSocketRef}
+            setReceivedMessage={setReceivedMessage}
           />
         )}
         {chatInitConfig.clickOnUnreadOpenFirstAction && (

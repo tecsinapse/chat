@@ -59,13 +59,14 @@ export class ChatService {
   }
 
   async findMessagesByCurrentUser(groupedChats, page = 0, rowsPerPage = 10) {
-    const promiseMap = Array.from(groupedChats.keys()).map((key) => {
-      return defaultFetch(
+    const promiseMap = Array.from(groupedChats.keys()).map((key) =>
+      defaultFetch(
         `${this.url}/${key}/infos?page=${page}&size=${rowsPerPage}`,
         "POST",
         groupedChats.get(key)
-      );
-    });
+      )
+    );
+
     return Promise.all(promiseMap);
   }
 }

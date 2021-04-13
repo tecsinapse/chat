@@ -75,14 +75,17 @@ const exportToCSV = (chats, extraInfoColumns) => {
 
 const getGroupedChats = (allChats) => {
   const groupedChatIds = new Map();
+
   (allChats || []).forEach((chat) => {
     const key = `${chat.connectionKey}/${chat.destination}`;
+
     if (groupedChatIds.has(key)) {
       groupedChatIds.get(key).push(chat.chatId);
     } else {
       groupedChatIds.set(key, [chat.chatId]);
     }
   });
+
   return groupedChatIds;
 };
 
@@ -139,6 +142,7 @@ const dataFetcher = ({
         search
       );
       const groupedChats = getGroupedChats(chatsToFetch);
+
       return chatService.findMessagesByCurrentUser(
         groupedChats,
         currentPage,
@@ -150,16 +154,14 @@ const dataFetcher = ({
   const mergedKeys = data
     ?.map((ckey) => {
       totalElements += ckey?.totalElements;
+
       return ckey.content;
     })
     .flat();
   const filledData = mergedKeys
-    ?.map((chatItem) => {
-      return completeChatInfoWith(
-        findInitialInfo(componentInfo, chatItem),
-        chatItem
-      );
-    })
+    ?.map((chatItem) =>
+      completeChatInfoWith(findInitialInfo(componentInfo, chatItem), chatItem)
+    )
     .sort((a, b) =>
       ascending && !!sortField
         ? sortChatsByContact(b, a)

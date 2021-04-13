@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chat, DELIVERY_STATUS } from "@tecsinapse/chat";
-import SockJsClient from "react-stomp";
 
 import uuidv1 from "uuid/v1";
 import {
@@ -38,6 +37,8 @@ const RenderChatUnmemoized = ({
   customActions,
   setDrawerOpen,
   chatService,
+  clientRef,
+  receivedMessage,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(initialInfo);
@@ -48,7 +49,7 @@ const RenderChatUnmemoized = ({
   const [messages, setMessages] = useState([]);
 
   const messagesEndRef = useRef(null);
-  let clientRef = useRef();
+
   const setStatusMessage = setStatusMessageFunc(setMessages);
 
   const isBlocked = ChatStatus.isBlocked(currentChat?.status);
@@ -91,27 +92,49 @@ const RenderChatUnmemoized = ({
     // eslint-disable-next-line
   }, []);
 
-  const handleNewExternalMessage = (newMessage) =>
-    runHandleNewExternalMessage(
-      newMessage,
-      currentChat,
-      messages,
-      userNamesById,
-      setMessages,
-      setStatusMessage
+  // handle new external message
+  useEffect(() => {
+    if (receivedMessage != null) {
+      runHandleNewExternalMessage(
+        receivedMessage,
+        currentChat,
+        messages,
+        userNamesById,
+        setMessages,
+        setStatusMessage
+      );
+    }
+    // eslint-disable-next-line
+  }, [receivedMessage]);
+
+  useEffect(() => {
+    if (!currentChat.chatId) {
+      return () => {};
+    }
+
+    clientRef.current._subscribe(
+      `/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`
     );
 
-  const onConnect = () => {
     const chatMessage = {
       from: currentChat.chatId,
       type: "JOIN",
     };
 
-    clientRef.sendMessage(
+    clientRef.current.sendMessage(
       `/chat/addUser/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`,
       JSON.stringify(chatMessage)
     );
-  };
+
+    const clientSock = clientRef.current;
+
+    return () => {
+      clientSock._unsubscribe(
+        `/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`
+      );
+    };
+    // eslint-disable-next-line
+  }, [currentChat]);
 
   const handleNewUserMessage = (newMessage, localId) => {
     const chatMessage = {
@@ -123,7 +146,7 @@ const RenderChatUnmemoized = ({
     };
 
     try {
-      clientRef.sendMessage(
+      clientRef.current.sendMessage(
         `/chat/sendMessage/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`,
         JSON.stringify(chatMessage)
       );
@@ -234,8 +257,6 @@ const RenderChatUnmemoized = ({
 
   const handleView = (view) => setView(view);
 
-  const handleRef = (client) => (clientRef = client); // eslint-disable-line
-
   return (
     <div style={{ maxWidth: mobile ? "auto" : "40vW" }}>
       <Chat
@@ -285,18 +306,6 @@ const RenderChatUnmemoized = ({
         userkeycloakId={userkeycloakId}
         setDrawerOpen={setDrawerOpen}
       />
-
-      {currentChat.chatId && (
-        <SockJsClient
-          url={`${chatApiUrl}/ws`}
-          topics={[
-            `/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`,
-          ]}
-          onMessage={handleNewExternalMessage}
-          onConnect={onConnect}
-          ref={handleRef}
-        />
-      )}
     </div>
   );
 };
