@@ -126,10 +126,19 @@ const RenderChatUnmemoized = ({
       JSON.stringify(chatMessage)
     );
 
-    const clientSock = clientRef.current;
+    const clientSocket = clientRef.current;
 
     return () => {
-      clientSock._unsubscribe(
+      const chatMessage = {
+        from: currentChat.chatId,
+        type: "LEAVE",
+      };
+      clientSocket.sendMessage(
+        `/chat/removeUser/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`,
+        JSON.stringify(chatMessage)
+      );
+
+      clientSocket._unsubscribe(
         `/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`
       );
     };
