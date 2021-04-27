@@ -70,6 +70,7 @@ const RenderChatUnmemoized = ({
     setStatusMessage,
     userkeycloakId,
     currentChat,
+    chatService,
   };
 
   const propsOnSelectChatMake = {
