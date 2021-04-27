@@ -53,8 +53,8 @@ const runSendData = (
     setStatusMessage,
     userkeycloakId,
     currentChat,
-  },
-  chatService
+    chatService,
+  }
 ) => {
   const formData = new FormData();
 
