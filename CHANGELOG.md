@@ -1,3 +1,9 @@
+## <small>3.1.3 (2021-04-28)</small>
+
+* fix: updating react mic ([be6dace](https://github.com/tecsinapse/chat/commit/be6dace))
+
+
+
 ## <small>3.1.2 (2021-04-28)</small>
 
 * fix: updating react mic ([8e2a614](https://github.com/tecsinapse/chat/commit/8e2a614))
