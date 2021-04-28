@@ -1,14 +1,6 @@
 export const mockUnreadInitialState = {
   connectionKeys: ["sandbox-dev"],
-  destination: ["fiat"],
-  // currentClient: {
-  //   clientName: "Denner",
-  //   connectionKey: "sandbox-dev",
-  //   destination: "fiat",
-  //   disabled: false,
-  //   status: "OK",
-  //   clientChatIds: ["5567992678000"],
-  // },
+  destination: "fiat",
   allChats: [
     {
       connectionKey: "sandbox-dev",

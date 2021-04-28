@@ -51,7 +51,7 @@
     "@material-ui/styles": "^4.11.1",
     "@mdi/js": "^5.9.55",
     "@mdi/react": "^1.4.0",
-    "@tecsinapse/chat": "^3.1.1",
+    "@tecsinapse/chat": "^3.1.3",
     "@tecsinapse/table": "^3.5.8",
     "@tecsinapse/ui-kit": "^5.5.8",
     "enumify": "^1.0.4",

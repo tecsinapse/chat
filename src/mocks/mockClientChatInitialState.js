@@ -3,12 +3,12 @@ import { mockUnreadInitialState } from "./mockUnreadInitialState";
 const mock = { ...mockUnreadInitialState };
 
 mock.currentClient = {
-  clientName: "Mauricio Dentz",
-  disabled: false,
-  // could have many chats to client contacts
-  clientChatIds: ["5548999012888"],
+  clientName: "Denner",
   connectionKey: "sandbox-dev",
   destination: "fiat",
+  disabled: false,
+  status: "OK",
+  clientChatIds: ["5567992678000"],
 };
 
 export const mockClientChatInitialState = mock;

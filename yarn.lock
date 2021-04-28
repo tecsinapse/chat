@@ -1732,10 +1732,10 @@
     "@svgr/plugin-svgo" "^4.3.1"
     loader-utils "^1.2.3"
 
-"@tecsinapse/chat@^3.1.1":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-3.1.1.tgz#8ae4029cffd3bd3efa65a48d75bcb57c435763cc"
-  integrity sha512-Wj9iA7ojkOPiR2XldwCNfwFbUMz6RG43fanFZltNH0RlWnoOJoSX862gX1dc6mSVcv/9jLHgTl2rtNz5Clpiyw==
+"@tecsinapse/chat@^3.1.3":
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-3.1.3.tgz#1aad664dd957ba2c19f87e3273ae0de3aa602fc5"
+  integrity sha512-7b3Z32JUN+NxNajgjOpORO+Ws+YZYJPR7UqvcMjeNsyY0qAwCGKFbsP0eAKvOXCYC5CjpJrfaFUqJbk0INmN3Q==
   dependencies:
     "@livechat/ui-kit" "^0.4.0-10"
     "@material-ui/core" "^4.11.1"
@@ -1743,7 +1743,7 @@
     "@mdi/js" "^5.9.55"
     "@mdi/react" "^1.4.0"
     "@tecsinapse/es-utils" "^6.0.10"
-    "@tecsinapse/react-mic" "~1.3.1"
+    "@tecsinapse/react-mic" "1.3.3"
     "@tecsinapse/ui-kit" "^5.5.5"
     "@tecsinapse/uploader" "^2.5.5"
     clsx "^1.1.1"
@@ -1782,10 +1782,10 @@
     eslint-plugin-react-hooks "^4.0.4"
     prettier "2.0.5"
 
-"@tecsinapse/react-mic@~1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/react-mic/-/react-mic-1.3.1.tgz#0f71bb65aa52902d5773e4b1eabeb6efa09f9f40"
-  integrity sha512-61N9IsN4h5JfxLJfYxJ7vNez2nacM09R77+KaFZTlQYKiK3TNHKM14XNN78+HZakb/36Omek9GMMWoW6cUhudQ==
+"@tecsinapse/react-mic@1.3.3":
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/react-mic/-/react-mic-1.3.3.tgz#095b7d12f6f1f5957f202b4d2d67800740f3a359"
+  integrity sha512-qVcFX+o18wqsXi1+FEp/0ov2mV2S/L778zaApz9zAvD/tYfrC/vaqIs5eh/5YYG/yIP/pi37G2gOQT9/BW/kTg==
 
 "@tecsinapse/table@^3.5.8":
   version "3.5.8"
