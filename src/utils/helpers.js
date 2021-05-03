@@ -22,8 +22,10 @@ export async function loadComponent({
     // quando a visualização é de um cliente específico, então define as informações
     // desse cliente como currentChat e exibe o chat direto
     setView(COMPONENT_LOCATION.CHAT);
-    const chats = (info?.allChats || []).filter((chat) =>
-      info.currentClient.clientChatIds.includes(chat.chatId)
+    const chats = (info?.allChats || []).filter(
+      (chat) =>
+        info.currentClient.clientChatIds.includes(chat.chatId) &&
+        info.currentClient.destination === chat.destination
     );
 
     setCurrentChat({

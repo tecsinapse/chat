@@ -87,6 +87,7 @@ const RenderChatUnmemoized = ({
   const onSelectedChat = onSelectedChatMaker(propsOnSelectChatMake);
 
   useEffect(() => {
+    // TODO: O que fazer quando "length > 1"?
     if (initialInfo.chats.length === 1) {
       onSelectedChatMaker(propsOnSelectChatMake)(initialInfo.chats[0]);
     }
