@@ -11,9 +11,13 @@ const InitWebsockets = ({
   reloadComponent,
   onChatUpdated,
   setReceivedMessage,
+  setConnectedAt,
   mainSocketRef,
 }) => {
   const onConnectMainSocket = () => {
+    // notifica a conexão do socket
+    setConnectedAt(Date.now());
+
     connectionKeys.forEach((connectionKey) => {
       const addUser = `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`;
       try {

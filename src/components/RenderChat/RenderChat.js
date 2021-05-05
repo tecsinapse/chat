@@ -39,6 +39,7 @@ const RenderChatUnmemoized = ({
   chatService,
   clientRef,
   receivedMessage,
+  connectedAt, // notificação de reconexão
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentChat, setCurrentChat] = useState(initialInfo);
@@ -63,6 +64,7 @@ const RenderChatUnmemoized = ({
       onChatStatusChanged
     );
   };
+
   const propsToSendData = {
     chatApiUrl,
     initialInfo,
@@ -84,6 +86,7 @@ const RenderChatUnmemoized = ({
     onReadAllMessagesOfChat,
     userNamesById,
   };
+
   const onSelectedChat = onSelectedChatMaker(propsOnSelectChatMake);
 
   useEffect(() => {
@@ -109,6 +112,7 @@ const RenderChatUnmemoized = ({
     // eslint-disable-next-line
   }, [receivedMessage]);
 
+  // inscreve a conversa nos tópicos no chat server
   useEffect(() => {
     if (!currentChat.chatId) {
       return () => {};
@@ -146,7 +150,7 @@ const RenderChatUnmemoized = ({
       }
     };
     // eslint-disable-next-line
-  }, [currentChat]);
+  }, [currentChat, connectedAt]);
 
   const handleNewUserMessage = (newMessage, localId) => {
     const chatMessage = {
