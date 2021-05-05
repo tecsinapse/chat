@@ -114,35 +114,36 @@ const RenderChatUnmemoized = ({
       return () => {};
     }
 
-    clientRef.current._subscribe(
-      `/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`
-    );
+    const clientSocket = clientRef.current;
+    const topic = `/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`;
+    const addUser = `/chat/addUser/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`;
 
-    const chatMessage = {
+    const joinMessage = {
       from: currentChat.chatId,
       type: "JOIN",
     };
 
-    clientRef.current.sendMessage(
-      `/chat/addUser/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`,
-      JSON.stringify(chatMessage)
-    );
-
-    const clientSocket = clientRef.current;
+    try {
+      clientSocket._subscribe(topic);
+      clientSocket.sendMessage(addUser, JSON.stringify(joinMessage));
+    } catch (e) {
+      console.log(e);
+    }
 
     return () => {
-      const chatMessage = {
+      const removeUser = `/chat/removeUser/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`;
+
+      const leaveMessage = {
         from: currentChat.chatId,
         type: "LEAVE",
       };
-      clientSocket.sendMessage(
-        `/chat/removeUser/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`,
-        JSON.stringify(chatMessage)
-      );
 
-      clientSocket._unsubscribe(
-        `/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`
-      );
+      try {
+        clientSocket.sendMessage(removeUser, JSON.stringify(leaveMessage));
+        clientSocket._unsubscribe(topic);
+      } catch (e) {
+        console.log(e);
+      }
     };
     // eslint-disable-next-line
   }, [currentChat]);
@@ -156,8 +157,10 @@ const RenderChatUnmemoized = ({
       userId: userkeycloakId,
     };
 
+    const clientSocket = clientRef.current;
+
     try {
-      clientRef.current.sendMessage(
+      clientSocket.sendMessage(
         `/chat/sendMessage/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`,
         JSON.stringify(chatMessage)
       );

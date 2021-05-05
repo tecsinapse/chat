@@ -2,11 +2,15 @@ import moment from "moment";
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
 import { MessageSource } from "../constants";
 
-const formatMessageStatus = (status) =>
-  status.map((s) => ({
+const formatMessageStatus = (status) => {
+  if (!status) {
+    return [];
+  }
+  return status.map((s) => ({
     status: s.status.toLowerCase(),
     at: s.at,
   }));
+}
 
 export const buildChatMessageObject = (
   externalMessage,

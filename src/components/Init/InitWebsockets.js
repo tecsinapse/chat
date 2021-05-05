@@ -15,10 +15,14 @@ const InitWebsockets = ({
 }) => {
   const onConnectMainSocket = () => {
     connectionKeys.forEach((connectionKey) => {
-      mainSocketRef.current.sendMessage(
-        `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`,
-        JSON.stringify({ chatIds }) // informação dos chats que esse usuário está acompanhando
-      );
+      const addUser = `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`;
+      try {
+        // informação dos chats que esse usuário está acompanhando
+        const payload = JSON.stringify({ chatIds });
+        mainSocketRef.current.sendMessage(addUser, payload);
+      } catch (e) {
+        console.log(e);
+      }
     });
   };
 
