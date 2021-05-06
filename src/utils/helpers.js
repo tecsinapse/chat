@@ -25,6 +25,7 @@ export async function loadComponent({
     const chats = (info?.allChats || []).filter(
       (chat) =>
         info.currentClient.clientChatIds.includes(chat.chatId) &&
+        info.currentClient.connectionKey === chat.connectionKey &&
         info.currentClient.destination === chat.destination
     );
 
