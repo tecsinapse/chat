@@ -6,11 +6,12 @@ const formatMessageStatus = (status) => {
   if (!status) {
     return [];
   }
+
   return status.map((s) => ({
     status: s.status.toLowerCase(),
     at: s.at,
   }));
-}
+};
 
 export const buildChatMessageObject = (
   externalMessage,

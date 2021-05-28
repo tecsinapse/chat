@@ -307,13 +307,13 @@ export const SendNotification = ({
           </div>
 
           {success !== "" && (
-            <Snackbar show variant="success">
+            <Snackbar show variant="success" onClose={() => setSuccess("")}>
               {success}
             </Snackbar>
           )}
 
           {error !== "" && (
-            <Snackbar show variant="error">
+            <Snackbar show variant="error" onClose={() => setError("")}>
               {error}
             </Snackbar>
           )}

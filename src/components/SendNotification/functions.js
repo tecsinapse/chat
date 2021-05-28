@@ -47,6 +47,11 @@ export const send = ({
           .createChat(selectedConnectionKey, phoneNumber, fetchArgs, token)
           .then(() => {
             successSend();
+          })
+          .catch((error) => {
+            setError(error.errors);
+            setTimeout(() => setError(""), 4000);
+            setSending(false);
           });
       } else {
         successSend();
