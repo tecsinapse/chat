@@ -4,6 +4,41 @@ import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
 import { stringFormattedToMoment, momentNow } from "./dates";
 
+export async function getObjectToSetChat(
+  chatService,
+  componentInfo,
+  connectionKey,
+  destination,
+  chatId,
+  clientName = undefined,
+) {
+  const chatInfo = await chatService.getChatInfo(connectionKey, destination, chatId);
+
+  const chat = componentInfo.allChats?.filter((chat) => 
+    chat.connectionKey === connectionKey &&
+    chat.destination === destination
+    && chat.chatId === chatId
+  )[0] || {};
+
+  const name = clientName || chat.name || chatInfo.name;
+
+  const chats = [
+    {
+      ...chat,
+      ...chatInfo,
+      name,
+    }
+  ];
+
+  return {
+    name,
+    connectionKey,
+    destination,
+    chatId,
+    chats,
+  };
+}
+
 export async function loadComponent({
   chatInitConfig,
   setComponentInfo,
@@ -12,16 +47,21 @@ export async function loadComponent({
   setCurrentChat,
   userMock,
   token,
+  chatService,
+  firstLoad,
+  setFirstLoad,
 }) {
   const info = await load({ ...chatInitConfig, userMock, token });
 
   setComponentInfo(info);
   setIsLoadingInitialState(false);
 
-  if (info?.currentClient && Object.keys(info?.currentClient).length > 0) {
+  if (firstLoad && info?.currentClient && Object.keys(info?.currentClient).length > 0) {
+    setFirstLoad(false);
     // quando a visualização é de um cliente específico, então define as informações
     // desse cliente como currentChat e exibe o chat direto
     setView(COMPONENT_LOCATION.CHAT);
+
     const chats = (info?.allChats || []).filter(
       (chat) =>
         info.currentClient.clientChatIds.includes(chat.chatId) &&
@@ -29,14 +69,27 @@ export async function loadComponent({
         info.currentClient.destination === chat.destination
     );
 
-    setCurrentChat({
-      name: info.currentClient.clientName,
-      connectionKey: info.currentClient.connectionKey,
-      destination: info.currentClient.destination,
-      disabled: info.currentClient.disabled,
-      status: info.currentClient.status,
-      chats,
-    });
+    let chatId = undefined;
+    if (info.currentClient.clientChatIds.length === 1) {
+      chatId = info.currentClient.clientChatIds[0];
+    } else if (info.currentClient.clientChatIds.length > 1) {
+      chatId = chats[0].chatId;
+    } else {
+      return;
+    }
+
+    const { connectionKey, destination, clientName } = info.currentClient;
+
+    const objectToSetChat = await getObjectToSetChat(
+      chatService,
+      info,
+      connectionKey,
+      destination,
+      chatId,
+      clientName,
+    );
+
+    setCurrentChat(objectToSetChat);
   }
 }
 

@@ -5,13 +5,13 @@ import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { cleanPhoneCharacters, emptyTemplate } from "./utils";
+import { getObjectToSetChat } from "../../utils/helpers";
 import useSendNotification from "../../hooks/useSendNotification";
 import { HeaderSendNotification } from "./HeaderSendNotification";
 import {
   send,
   loadTemplates,
   getName,
-  getObjectToSetChat,
   getCanSend,
 } from "./functions";
 
@@ -31,6 +31,7 @@ export const SendNotification = ({
   setChat,
   setView,
   token,
+  componentInfo,
 }) => {
   const classes = useStyle();
 
@@ -145,18 +146,9 @@ export const SendNotification = ({
 
   const canSend = getCanSend(phoneNumber, selectedTemplate, args);
 
-  const successSend = () => {
-    const name = getName(chat, args, templates, selectedTemplate);
-    const phone = cleanPhoneCharacters(phoneNumber);
-    const objectToSetChat = getObjectToSetChat(
-      selectedConnectionKey,
-      destination,
-      phone,
-      phoneNumber,
-      name
-    );
-
-    setChat(objectToSetChat);
+  const successSend = async () => {
+    const clientName = getName(chat, args, templates, selectedTemplate);
+    const chatId = cleanPhoneCharacters(phoneNumber);
 
     setSuccess("Mensagem enviada");
     setTimeout(() => setSuccess(""), 4000);
@@ -165,7 +157,19 @@ export const SendNotification = ({
     setArgs([]);
     setSelectedTemplate("");
     setPreview("");
-    reloadComponent();
+
+    await reloadComponent();
+
+    const objectToSetChat = await getObjectToSetChat(
+      chatService,
+      componentInfo,
+      selectedConnectionKey,
+      destination,
+      chatId,
+      clientName
+    );
+
+    setChat(objectToSetChat);
     setSending(false);
 
     setTimeout(() => setView(COMPONENT_LOCATION.CHAT), 4000);

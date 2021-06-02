@@ -1,4 +1,4 @@
-import { emptyTemplate, formatPhone } from "./utils";
+import { emptyTemplate } from "./utils";
 
 export const send = ({
   chatApiUrl,
@@ -104,26 +104,6 @@ export const getName = (chat, args, templates, selectedTemplate) =>
       .find((e) => e.value === selectedTemplate)
       ?.argsKeys?.findIndex((i) => i === "name")
   ];
-
-export const getObjectToSetChat = (
-  selectedConnectionKey,
-  destination,
-  phone,
-  phoneNumber,
-  name
-) => ({
-  connectionKey: selectedConnectionKey,
-  destination,
-  chats: [
-    {
-      enabled: false,
-      name,
-      chatId: phone.startsWith("55") ? phone : `55${phone}`,
-      updateUnreadWhenOpen: true,
-      phone: formatPhone(phoneNumber),
-    },
-  ],
-});
 
 export const getCanSend = (phoneNumber, selectedTemplate, args) =>
   phoneNumber !== "" &&

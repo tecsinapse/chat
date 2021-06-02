@@ -69,4 +69,11 @@ export class ChatService {
 
     return Promise.all(promiseMap);
   }
+
+  async getChatInfo(connectionKey, destination, chatId) {
+    return defaultFetch(
+      `${this.url}/${connectionKey}/${destination}/${chatId}/info`,
+      "GET",
+    );
+  }
 }

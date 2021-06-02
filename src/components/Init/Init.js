@@ -84,6 +84,7 @@ const InitContext = ({
   const classes = useStyle(customizeStyles, mobile)();
   const theme = useTheme();
   const [isLoadingInitialState, setIsLoadingInitialState] = useState(true);
+  const [firstLoad, setFirstLoad] = useState(true);
   const [view, setView] = useState(homeLocation);
   const [componentInfo, setComponentInfo] = useState({});
   const [currentChat, setCurrentChat] = useState({});
@@ -111,6 +112,9 @@ const InitContext = ({
     token,
     setIsDrawerOpen,
     setChatContext,
+    chatService,
+    firstLoad,
+    setFirstLoad
   };
 
   useLoadComponent(propsToLoadComponent);
@@ -284,6 +288,7 @@ const InitContext = ({
                 setChat={setCurrentChat}
                 setView={setView}
                 token={token}
+                componentInfo={componentInfo}
               />
             )}
             {showSendNotification && (
