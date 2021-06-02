@@ -73,7 +73,7 @@ export class ChatService {
   async getChatInfo(connectionKey, destination, chatId) {
     return defaultFetch(
       `${this.url}/${connectionKey}/${destination}/${chatId}/info`,
-      "GET",
+      "GET"
     );
   }
 }

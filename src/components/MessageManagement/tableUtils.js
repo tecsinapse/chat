@@ -128,7 +128,7 @@ export const generateColumns = (
         title: extraInfoColumns[key],
         field: `extraInfo.${key}`,
         customRender: (row) =>
-          highlight(globalSearch, row?.extraInfo[key] || ""),
+          highlight(globalSearch, (row?.extraInfo || {})[key] || ""),
       });
     });
   }

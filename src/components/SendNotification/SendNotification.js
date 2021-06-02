@@ -8,12 +8,7 @@ import { cleanPhoneCharacters, emptyTemplate } from "./utils";
 import { getObjectToSetChat } from "../../utils/helpers";
 import useSendNotification from "../../hooks/useSendNotification";
 import { HeaderSendNotification } from "./HeaderSendNotification";
-import {
-  send,
-  loadTemplates,
-  getName,
-  getCanSend,
-} from "./functions";
+import { send, loadTemplates, getName, getCanSend } from "./functions";
 
 /* eslint-disable react/no-array-index-key */
 
@@ -80,6 +75,13 @@ export const SendNotification = ({
     })
   );
 
+  const propsToLoadTamplates = {
+    setSelectedConnectionKey,
+    chatService,
+    setAvailableTemplates,
+    setTemplates,
+  };
+
   useEffect(() => {
     if (selectedConnectionKey !== "") {
       loadTemplates(selectedConnectionKey, propsToLoadTamplates);
@@ -90,11 +92,17 @@ export const SendNotification = ({
     }
   }, [selectedConnectionKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const propsToLoadTamplates = {
-    setSelectedConnectionKey,
-    chatService,
-    setAvailableTemplates,
-    setTemplates,
+  const updatePreview = (template, options) => {
+    const tpt =
+      templates.filter((t) => t.value === template)[0] || emptyTemplate;
+    let prev = tpt.template;
+
+    for (let i = 0; i < options.length; i++) {
+      if (options[i] !== "") {
+        prev = prev.replace(`{{${tpt.argsKeys[i]}}}`, options[i]);
+      }
+    }
+    setPreview(prev);
   };
 
   const onSelectTemplate = (template) => {
@@ -130,19 +138,6 @@ export const SendNotification = ({
   const getArgDescription = (index) =>
     (templates.filter((t) => t.value === selectedTemplate)[0] || emptyTemplate)
       .argsDescription[index];
-
-  const updatePreview = (template, options) => {
-    const tpt =
-      templates.filter((t) => t.value === template)[0] || emptyTemplate;
-    let prev = tpt.template;
-
-    for (let i = 0; i < options.length; i++) {
-      if (options[i] !== "") {
-        prev = prev.replace(`{{${tpt.argsKeys[i]}}}`, options[i]);
-      }
-    }
-    setPreview(prev);
-  };
 
   const canSend = getCanSend(phoneNumber, selectedTemplate, args);
 

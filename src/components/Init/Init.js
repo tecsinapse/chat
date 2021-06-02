@@ -114,7 +114,7 @@ const InitContext = ({
     setChatContext,
     chatService,
     firstLoad,
-    setFirstLoad
+    setFirstLoad,
   };
 
   useLoadComponent(propsToLoadComponent);

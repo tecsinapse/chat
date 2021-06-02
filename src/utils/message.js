@@ -97,7 +97,9 @@ export const setStatusMessageFunc = (setMessages) => (
     // É possível que a mensagem seja recuperada da api antes de ter seu status atualizado
     // com as notificações de leitura enviadas pelo cliente.
     // Nesse caso, a mensagem terá a propriedade `id` definida em vez do `localId`
-    const message = copyMessages.find((m) => m.localId === localId || m.id === localId);
+    const message = copyMessages.find(
+      (m) => m.localId === localId || m.id === localId
+    );
 
     if (message) {
       message.status = status.toLowerCase();

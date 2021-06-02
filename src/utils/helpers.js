@@ -10,15 +10,21 @@ export async function getObjectToSetChat(
   connectionKey,
   destination,
   chatId,
-  clientName = undefined,
+  clientName = undefined
 ) {
-  const chatInfo = await chatService.getChatInfo(connectionKey, destination, chatId);
+  const chatInfo = await chatService.getChatInfo(
+    connectionKey,
+    destination,
+    chatId
+  );
 
-  const chat = componentInfo.allChats?.filter((chat) => 
-    chat.connectionKey === connectionKey &&
-    chat.destination === destination
-    && chat.chatId === chatId
-  )[0] || {};
+  const chat =
+    componentInfo.allChats?.filter(
+      (_chat) =>
+        _chat.connectionKey === connectionKey &&
+        _chat.destination === destination &&
+        _chat.chatId === chatId
+    )[0] || {};
 
   const name = clientName || chat.name || chatInfo.name;
 
@@ -27,7 +33,7 @@ export async function getObjectToSetChat(
       ...chat,
       ...chatInfo,
       name,
-    }
+    },
   ];
 
   return {
@@ -56,7 +62,11 @@ export async function loadComponent({
   setComponentInfo(info);
   setIsLoadingInitialState(false);
 
-  if (firstLoad && info?.currentClient && Object.keys(info?.currentClient).length > 0) {
+  if (
+    firstLoad &&
+    info?.currentClient &&
+    Object.keys(info?.currentClient).length > 0
+  ) {
     setFirstLoad(false);
     // quando a visualização é de um cliente específico, então define as informações
     // desse cliente como currentChat e exibe o chat direto
@@ -69,9 +79,10 @@ export async function loadComponent({
         info.currentClient.destination === chat.destination
     );
 
-    let chatId = undefined;
+    let chatId;
+
     if (info.currentClient.clientChatIds.length === 1) {
-      chatId = info.currentClient.clientChatIds[0];
+      [chatId] = info.currentClient.clientChatIds;
     } else if (info.currentClient.clientChatIds.length > 1) {
       chatId = chats[0].chatId;
     } else {
@@ -86,7 +97,7 @@ export async function loadComponent({
       connectionKey,
       destination,
       chatId,
-      clientName,
+      clientName
     );
 
     setCurrentChat(objectToSetChat);
