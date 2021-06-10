@@ -1,6 +1,6 @@
-import moment from "moment";
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
 import { MessageSource } from "../constants";
+import { format, momentNow } from "./dates";
 
 const formatMessageStatus = (status) => {
   if (!status) {
@@ -35,7 +35,7 @@ export const buildChatMessageObject = (
   const authorName = userNamesByIds && isOwner ? userNamesByIds[userId] : name;
 
   const message = {
-    at: moment(at).format("DD/MM/YYYY HH:mm"),
+    at: format(at),
     own: isOwner,
     id: messageId,
     text,
@@ -67,7 +67,7 @@ export const buildChatMessageObject = (
 
 export const buildSendingMessage = (localId, text, title, file) => ({
   localId,
-  at: moment().format("DD/MM/YYYY HH:mm"),
+  at: format(momentNow()),
   own: true,
   id: Date.now().toString(), // Dummy only, it is set by backend
   authorName: "Você",

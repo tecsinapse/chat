@@ -34,17 +34,21 @@ echo "##########"
 cd ${BUILD_DIR}
 for ASSET in ${ASSETS[*]}; do
 	asset=${!ASSET}
-	echo -e "\tRenomenado main.${asset}..."
+	echo -e "\tRenomenado main.${asset} ..."
 	cp ${asset}/main*.${asset} ${asset}/main.${asset}
+	for map in ${asset}/main*.${asset}.map; do
+		echo -e "\tRenomenado sourcemap main.${asset}.map ..."
+		cp ${asset}/main*.${asset}.map ${asset}/main.${asset}.map
+	done
 done
 
 echo
 echo " #####"
-echo "# Copiando para o CDN[${CDN_CHAT_COMPONENT_DIR}]..."
+echo "# Copiando para o CDN[${CDN_CHAT_COMPONENT_DIR}] ..."
 echo "##########"
 for ASSET in ${ASSETS[*]}; do
         asset=${!ASSET}
-        echo -e "\tCopiando main.${asset}..."
+        echo -e "\tCopiando main.${asset} ..."
         mv ${asset}/main.${asset} ${CDN_CHAT_COMPONENT_DIR}/${asset}/main.${asset}
 done
 

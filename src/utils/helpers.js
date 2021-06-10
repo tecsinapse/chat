@@ -4,6 +4,10 @@ import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
 import { stringFormattedToMoment, momentNow } from "./dates";
 
+function last(array) {
+  return array[array.length - 1];
+}
+
 export async function getObjectToSetChat(
   chatService,
   componentInfo,
@@ -127,11 +131,12 @@ export const onSelectedChatMaker = ({
     )
     .reverse();
 
-  const lastClientMessage = (messages || []).filter((item) => !item.own);
+  const lastClientMessage = last((messages || []).filter((item) => !item.own));
 
+  const now = momentNow();
   const lastMessageExpired = !stringFormattedToMoment(
-    lastClientMessage[lastClientMessage.length - 1]?.at
-  ).isBetween(momentNow().subtract(24, "hour"), momentNow());
+    lastClientMessage?.at
+  ).isBetween(now.clone().subtract(24, "hour"), now);
 
   const isBlocked =
     ChatStatus.isBlocked(chat?.status || initialInfo?.status) ||
