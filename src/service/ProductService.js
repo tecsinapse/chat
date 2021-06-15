@@ -1,8 +1,6 @@
 import { noAuthJsonFetch } from "../utils/fetch";
 
 export class ProductService {
-  url = "";
-
   constructor(urlBase) {
     this.url = urlBase;
   }

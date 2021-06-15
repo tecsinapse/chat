@@ -1,8 +1,6 @@
 import { defaultFetch, fetchMessages } from "../utils/fetch";
 
 export class ChatService {
-  url = "";
-
   constructor(baseUrl) {
     this.url = baseUrl;
   }
