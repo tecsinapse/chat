@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Backdrop, CircularProgress, makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles(() => ({
+  backdrop: {
+    zIndex: 999,
+    color: '#fff',
+  },
+  imageMessage: {
+    maxHeight: '80vh',
+    maxWidth: '80vw',
+  },
+}));
 
 export const ImageLoader = ({ classes, url }) => {
   const [loading, setLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
+  const [imageOpen, setImageOpen] = useState(false);
+  const styles = useStyles();
 
   const onLoad = e => {
     e.stopPropagation();
@@ -38,7 +51,22 @@ export const ImageLoader = ({ classes, url }) => {
         onLoad={onLoad}
         onError={onError}
         className={classes.imageMessage}
+        onClick={() => setImageOpen(true)}
       />
+      <Backdrop
+        className={styles.backdrop}
+        open={imageOpen}
+        onClick={() => setImageOpen(false)}
+      >
+        <img
+          src={url}
+          alt={url}
+          onLoad={onLoad}
+          onError={onError}
+          className={styles.imageMessage}
+          onClick={() => setImageOpen(true)}
+        />
+      </Backdrop>
     </div>
   );
 };
