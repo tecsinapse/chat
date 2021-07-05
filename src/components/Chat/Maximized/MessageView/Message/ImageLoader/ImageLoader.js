@@ -64,7 +64,6 @@ export const ImageLoader = ({ classes, url }) => {
           onLoad={onLoad}
           onError={onError}
           className={styles.imageMessage}
-          onClick={() => setImageOpen(true)}
         />
       </Backdrop>
     </div>
