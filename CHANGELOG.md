@@ -1,3 +1,29 @@
+## <small>3.1.3 (2021-04-28)</small>
+
+* fix: updating react mic ([be6dace](https://github.com/tecsinapse/chat/commit/be6dace))
+
+
+
+## <small>3.1.2 (2021-04-28)</small>
+
+* fix: updating react mic ([8e2a614](https://github.com/tecsinapse/chat/commit/8e2a614))
+
+
+
+## <small>3.1.1 (2021-03-23)</small>
+
+* fix: updating ui-kit ([d1fcadf](https://github.com/tecsinapse/chat/commit/d1fcadf))
+
+
+
+## 3.1.0 (2021-03-15)
+
+* update: att versions material and mdi ([ff23bb9](https://github.com/tecsinapse/chat/commit/ff23bb9))
+* update: att versions material and mdi ([9e293dc](https://github.com/tecsinapse/chat/commit/9e293dc))
+* update: att versions material and mdi ([f3f551e](https://github.com/tecsinapse/chat/commit/f3f551e))
+
+
+
 ## <small>3.0.6 (2021-01-14)</small>
 
 * fix: updating ui-kit ([5c38a8d](https://github.com/tecsinapse/chat/commit/5c38a8d))
