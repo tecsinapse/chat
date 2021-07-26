@@ -75,6 +75,17 @@ export const useStyle = makeStyles(theme => ({
   imageMessage: {
     maxHeight: '200px',
   },
+  messageRootInfo: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  messageInfo: {
+    border: 'none',
+    borderRadius: '10px',
+    boxShadow: 'none',
+    margin: '10px 0px 10px',
+    textAlign: 'center',
+  },
   messageRootOwn: {
     display: 'flex',
     justifyContent: 'flex-end',
