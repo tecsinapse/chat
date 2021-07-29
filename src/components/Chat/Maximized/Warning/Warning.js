@@ -51,7 +51,7 @@ const useStyle = makeStyles(({ spacing }) => ({
     color: '#303030',
     '& a': {
       fontWeight: 500,
-      textDecoration: 'none',
+      textDecoration: 'underline',
       color: '#303030',
       '&:hover': {
         opacity: 0.8,
