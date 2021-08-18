@@ -1,3 +1,12 @@
+## 3.2.0 (2021-08-18)
+
+* fix: blocked message parameter to warning component in header ([835e11d](https://github.com/tecsinapse/chat/commit/835e11d))
+* fix: merge blocked message parameter ([a8f1e90](https://github.com/tecsinapse/chat/commit/a8f1e90))
+* [#155090] - Transbordo do diálogo Wingo para o Chat do operador ([a60d2b6](https://github.com/tecsinapse/chat/commit/a60d2b6)), closes [#155090](https://github.com/tecsinapse/chat/issues/155090)
+* [#155090] - Transbordo do diálogo Wingo para o Chat do operador ([6880146](https://github.com/tecsinapse/chat/commit/6880146)), closes [#155090](https://github.com/tecsinapse/chat/issues/155090)
+
+
+
 ## <small>3.1.4 (2021-07-05)</small>
 
 * fix(152791): [chat] Abrir imagem em nova aba (ou modal) ([526c435](https://github.com/tecsinapse/chat/commit/526c435))
