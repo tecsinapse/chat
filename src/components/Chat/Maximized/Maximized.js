@@ -92,6 +92,7 @@ const Maximized = ({
         errorMessage={error}
         warningMessage={warningMessage}
         backAction={backAction}
+        blockedMessage={blockedMessage}
       />
       <MessageList
         active

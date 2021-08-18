@@ -1,3 +1,10 @@
+## <small>3.1.4 (2021-07-05)</small>
+
+* fix(152791): [chat] Abrir imagem em nova aba (ou modal) ([526c435](https://github.com/tecsinapse/chat/commit/526c435))
+* fix(152791): [chat] Abrir imagem em nova aba (ou modal) ([0a91a78](https://github.com/tecsinapse/chat/commit/0a91a78))
+
+
+
 ## <small>3.1.3 (2021-04-28)</small>
 
 * fix: updating react mic ([be6dace](https://github.com/tecsinapse/chat/commit/be6dace))
