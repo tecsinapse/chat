@@ -22,7 +22,8 @@ import { ImageLoader } from './ImageLoader/ImageLoader';
 import { ApplicationLoader } from './ApplicationLoader/ApplicationLoader';
 import { VideoLoader } from './VideoLoader/VideoLoader';
 import { AudioLoader } from './AudioLoader/AudioLoader';
-import { DELIVERY_STATUS } from '../../../constants';
+import { DELIVERY_STATUS, MESSAGE_STYLE } from '../../../constants';
+import { Warning } from '../../Warning/Warning';
 
 export const Message = ({
   title,
@@ -32,7 +33,6 @@ export const Message = ({
   addMessageName,
   addMessageDate,
   theme,
-  id,
 }) => {
   const [showDate, setShowDate] = useState(false);
 
@@ -47,16 +47,23 @@ export const Message = ({
     message?.status,
     DELIVERY_STATUS.ERROR
   );
+
   const isSending = DELIVERY_STATUS.isEquals(
     message?.status,
     DELIVERY_STATUS.SENDING
   );
 
+  const isInfoStyle = MESSAGE_STYLE.isEquals(
+    message?.style,
+    MESSAGE_STYLE.INFO
+  );
+
   return (
     <div
       className={clsx({
-        [classes.messageRootOwn]: message.own,
-        [classes.messageRootError]: isError && message.own,
+        [classes.messageRootOwn]: !isInfoStyle && message.own,
+        [classes.messageRootError]: !isInfoStyle && isError && message.own,
+        [classes.messageRootInfo]: isInfoStyle,
       })}
     >
       <LiveChatMessage
@@ -65,7 +72,8 @@ export const Message = ({
           [classes.messageWithoutDate]: !addMessageDate,
         })}
         date={
-          addMessageName && (
+          addMessageName &&
+          !isInfoStyle && (
             <Typography variant="caption" className={classes.authorName}>
               {/* Workaround to overcome lack of authorName on message object */}
               {message.authorName}
@@ -85,69 +93,80 @@ export const Message = ({
         isOwn={message.own}
         key={message.id}
       >
-        <Bubble
-          isOwn={message.own}
-          onClick={
-            addMessageDate
-              ? undefined
-              : () => setShowDate(currentShowDate => !currentShowDate)
-          }
-        >
-          {message.text && (
-            <MessageText>
-              <Typography variant="body1">{message.text}</Typography>
-            </MessageText>
-          )}
-          {message.title && (
-            <MessageTitle
-              title={<Typography variant="body1">{message.title}</Typography>}
-            />
-          )}
-          {message.medias &&
-            message.medias.length > 0 &&
-            message.medias.map(media => (
-              <MessageMedia key={media.url}>
-                {(media.mediaType.startsWith('image') ||
-                  media.mediaType.startsWith('video')) && (
-                  <>
-                    {isSending || isError ? (
-                      <div className={classes.emptyBubble}>
-                        {isSending && (
-                          <CircularProgress className={classes.progress} />
-                        )}
-                        {isError && (
-                          <Icon
-                            path={mdiImageOff}
-                            size={1}
-                            color={message.own ? 'white' : 'black'}
-                            className={classes.imageError}
-                          />
-                        )}
-                      </div>
-                    ) : (
-                      <>
-                        {media.mediaType.startsWith('image') && (
-                          <ImageLoader url={media.url} classes={classes} />
-                        )}
+        {isInfoStyle && (
+          <Warning
+            infoMessage={message.text}
+            className={classes.messageInfo}
+            isShowIcon={false}
+            isClosable={false}
+            isDense
+          />
+        )}
+        {!isInfoStyle && (
+          <Bubble
+            isOwn={message.own}
+            onClick={
+              !addMessageDate
+                ? () => setShowDate(currentShowDate => !currentShowDate)
+                : undefined
+            }
+          >
+            {message.text && !isInfoStyle && (
+              <MessageText>
+                <Typography variant="body1">{message.text}</Typography>
+              </MessageText>
+            )}
+            {message.title && (
+              <MessageTitle
+                title={<Typography variant="body1">{message.title}</Typography>}
+              />
+            )}
+            {message.medias &&
+              message.medias.length > 0 &&
+              message.medias.map(media => (
+                <MessageMedia key={media.url}>
+                  {(media.mediaType.startsWith('image') ||
+                    media.mediaType.startsWith('video')) && (
+                    <>
+                      {isSending || isError ? (
+                        <div className={classes.emptyBubble}>
+                          {isSending && (
+                            <CircularProgress className={classes.progress} />
+                          )}
+                          {isError && (
+                            <Icon
+                              path={mdiImageOff}
+                              size={1}
+                              color={message.own ? 'white' : 'black'}
+                              className={classes.imageError}
+                            />
+                          )}
+                        </div>
+                      ) : (
+                        <>
+                          {media.mediaType.startsWith('image') && (
+                            <ImageLoader url={media.url} classes={classes} />
+                          )}
 
-                        {media.mediaType.startsWith('video') && (
-                          <VideoLoader media={media} classes={classes} />
-                        )}
-                      </>
-                    )}
-                  </>
-                )}
+                          {media.mediaType.startsWith('video') && (
+                            <VideoLoader media={media} classes={classes} />
+                          )}
+                        </>
+                      )}
+                    </>
+                  )}
 
-                {media.mediaType.startsWith('audio') && (
-                  <AudioLoader media={media} classes={classes} />
-                )}
+                  {media.mediaType.startsWith('audio') && (
+                    <AudioLoader media={media} classes={classes} />
+                  )}
 
-                {media.mediaType.startsWith('application') && (
-                  <ApplicationLoader message={message} media={media} />
-                )}
-              </MessageMedia>
-            ))}
-        </Bubble>
+                  {media.mediaType.startsWith('application') && (
+                    <ApplicationLoader message={message} media={media} />
+                  )}
+                </MessageMedia>
+              ))}
+          </Bubble>
+        )}
       </LiveChatMessage>
 
       {isError && (

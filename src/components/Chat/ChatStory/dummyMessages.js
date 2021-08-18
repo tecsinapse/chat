@@ -34,6 +34,14 @@ export const dummyMessagesTextError = [
   },
   {
     at: '02/03/2019 10:14',
+    id: `${Date.now().toString()}0`,
+    text:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis diam ipsum, nec ullamcorper risus blandit. <a href="http://tecsinapse.com.br" target="_blank">Clique aqui e saiba mais.</a>',
+    style: 'INFO',
+    localId: uuidv1(),
+  },
+  {
+    at: '02/03/2019 10:14',
     own: true,
     id: `${Date.now().toString()}3`,
     authorName: 'Você',
@@ -48,6 +56,15 @@ export const dummyMessagesTextError = [
     authorName: 'Você',
     text: 'oiiiii!',
     status: 'not_delivered',
+    localId: uuidv1(),
+  },
+  {
+    at: '02/03/2019 10:14',
+    status: 'not_delivered',
+    id: `${Date.now().toString()}0`,
+    text:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis diam ipsum, nec ullamcorper risus.',
+    style: 'INFO',
     localId: uuidv1(),
   },
   {
@@ -204,6 +221,14 @@ export const dummyGroupedMessages = [
     localId: uuidv1(),
   },
   {
+    at: '02/03/2019 10:14',
+    id: `${Date.now().toString()}0`,
+    text:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis diam ipsum, nec ullamcorper risus blandit. <a href="http://tecsinapse.com.br" target="_blank">Clique aqui e saiba mais.</a>',
+    style: 'INFO',
+    localId: uuidv1(),
+  },
+  {
     at: '02/03/2019 10:15',
     own: true,
     id: `${Date.now().toString()}2`,
@@ -219,6 +244,14 @@ export const dummyGroupedMessages = [
     authorName: 'Você',
     text: 'O que desaja solicitar ?',
     status: 'delivered',
+    localId: uuidv1(),
+  },
+  {
+    at: '03/03/2019 10:14',
+    id: `${Date.now().toString()}0`,
+    text:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis diam ipsum, nec ullamcorper risus.',
+    style: 'INFO',
     localId: uuidv1(),
   },
   {

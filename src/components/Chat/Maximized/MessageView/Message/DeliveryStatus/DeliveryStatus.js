@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import { DELIVERY_STATUS } from '../../../../constants';
+import { DELIVERY_STATUS, MESSAGE_STYLE } from '../../../../constants';
 
 const renderStatus = ({ statusProps, classes, deliveryStatus, showDate }) => (
   <>
@@ -21,7 +21,11 @@ export const DeliveryStatus = ({
   addMessageDate,
   showDate,
 }) => {
-  const { status, statusDetails = [], own, at } = message;
+  const { status, statusDetails = [], own, at, style } = message;
+
+  if (MESSAGE_STYLE.isEquals(style, MESSAGE_STYLE.INFO)) {
+    return null;
+  }
 
   if (!own) {
     return (
@@ -48,4 +52,5 @@ export const DeliveryStatus = ({
     showDate,
   });
 };
+
 export default DeliveryStatus;
