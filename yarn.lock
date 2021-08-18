@@ -1737,10 +1737,10 @@
     "@svgr/plugin-svgo" "^4.3.1"
     loader-utils "^1.2.3"
 
-"@tecsinapse/chat@^3.1.3":
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-3.1.3.tgz#1aad664dd957ba2c19f87e3273ae0de3aa602fc5"
-  integrity sha512-7b3Z32JUN+NxNajgjOpORO+Ws+YZYJPR7UqvcMjeNsyY0qAwCGKFbsP0eAKvOXCYC5CjpJrfaFUqJbk0INmN3Q==
+"@tecsinapse/chat@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-3.2.1.tgz#f059be09a7d807e285a122cd055e502da083df63"
+  integrity sha512-FDBFi4DEdc0v3GEf20W1HFk952u0YYbxVwEPV7bRZfwSvFnvBO85qVN4Szf5GPo55hlKxfJ6Fdn8IBQQpT8o2A==
   dependencies:
     "@livechat/ui-kit" "^0.4.0-10"
     "@material-ui/core" "^4.11.1"
@@ -1749,8 +1749,8 @@
     "@mdi/react" "^1.4.0"
     "@tecsinapse/es-utils" "^6.0.10"
     "@tecsinapse/react-mic" "1.3.3"
-    "@tecsinapse/ui-kit" "^5.5.5"
-    "@tecsinapse/uploader" "^2.5.5"
+    "@tecsinapse/ui-kit" "^5.6.3"
+    "@tecsinapse/uploader" "^2.6.5"
     clsx "^1.1.1"
     enumify "^1.0.4"
     moment "^2.27.0"
@@ -1792,18 +1792,18 @@
   resolved "https://registry.yarnpkg.com/@tecsinapse/react-mic/-/react-mic-1.3.3.tgz#095b7d12f6f1f5957f202b4d2d67800740f3a359"
   integrity sha512-qVcFX+o18wqsXi1+FEp/0ov2mV2S/L778zaApz9zAvD/tYfrC/vaqIs5eh/5YYG/yIP/pi37G2gOQT9/BW/kTg==
 
-"@tecsinapse/table@^3.5.8":
-  version "3.5.8"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-3.5.8.tgz#285634a4403d2d82a6b2d3632193c9305a9be4bf"
-  integrity sha512-/l9cCxNXHWeDeDvv3SHWpmxFwHmQkjh2ioQtCAXts7Dam22VKT4Kg94p2E/tSCNHK3GbT+FH301dCNLaSgTkmw==
+"@tecsinapse/table@^3.7.2":
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-3.7.2.tgz#1df0745f9ded3b01adabe84b5f6564468eea8e1a"
+  integrity sha512-W6SCGjBo5i9kTyiuqW3e6amA5oNussPL+vsXyoBhCbp+9BY1WKkYEOH0dKJ2kFVnZZepzG1iubnWbt1RD/fVFw==
   dependencies:
-    "@tecsinapse/ui-kit" "^5.5.8"
+    "@tecsinapse/ui-kit" "^5.6.3"
     react-virtualized "^9.22.3"
 
-"@tecsinapse/ui-kit@^5.5.5":
-  version "5.5.5"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.5.5.tgz#39f0dbb517b0d992be7a7399d07369fa89dc457c"
-  integrity sha512-F0g7jIDTUysQfXY5v24aVoIQCxMFr4TcXs+WuNDA7Q58XfRezx6wAgFO8UzvIJ6ZBfh6bB2yzzBrsDLUBqApZA==
+"@tecsinapse/ui-kit@^5.6.3":
+  version "5.6.3"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.6.3.tgz#2269bb67e271c7f69b056e091f3717f8d2b60e8a"
+  integrity sha512-+kBe5oq/PdqFlxGQLTezkoiNSRaGg6bsFvLBt/iEr4iRxEa8TozHpK6kq2Xa95ybsaVy1z8c6lfstcU48a8wvA==
   dependencies:
     "@material-ui/core" "^4.11.1"
     "@material-ui/icons" "^4.11.1"
@@ -1818,30 +1818,12 @@
     text-mask-addons "^3.8.0"
     text-mask-core "^5.1.2"
 
-"@tecsinapse/ui-kit@^5.5.8":
-  version "5.5.8"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.5.8.tgz#d772a8522fd6f93193b97a98656f9ea64c4131db"
-  integrity sha512-ER2Ili62/kUp0Fth7IjMTd2T0HcCJBtwXD9WtgMGHE87JKoUhFkL8lwXEQ8RWia//jDbvTJPGCwJ9OuMad4Hyg==
+"@tecsinapse/uploader@^2.6.5":
+  version "2.6.5"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-2.6.5.tgz#094044629898c05038852e79cc48c58b79e5d031"
+  integrity sha512-ApLY27SwGrf9GiyE4ZnAUI9vfKtJjzU+qsFpdy2HRmpTb8fL5EZCdcDpz0XBgq4CQgfd43e00Y3w6FzsdiSoMw==
   dependencies:
-    "@material-ui/core" "^4.11.1"
-    "@material-ui/icons" "^4.11.1"
-    "@material-ui/styles" "^4.11.1"
-    "@mdi/js" "^5.9.55"
-    "@mdi/react" "^1.4.0"
-    "@tecsinapse/es-utils" "^6.0.10"
-    material-ui-search-bar "1.0.0"
-    react-select "^3.2.0"
-    react-sizeme "^3.0.1"
-    react-text-mask "^5.4.3"
-    text-mask-addons "^3.8.0"
-    text-mask-core "^5.1.2"
-
-"@tecsinapse/uploader@^2.5.5":
-  version "2.5.5"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-2.5.5.tgz#d282b7a9f77e4b59b1398dffe45d26a8338fddb9"
-  integrity sha512-YPn6S3R6LTyEfx+Z7837NJHwkvG8U/2mBaukmltFDGSTIsRV1pnkqSKljE+QWMvAUHUlp/8aIH70gYPA/6efpA==
-  dependencies:
-    "@tecsinapse/ui-kit" "^5.5.5"
+    "@tecsinapse/ui-kit" "^5.6.3"
     react-dropzone "^11.3.1"
     uniqid "^5.3.0"
 
