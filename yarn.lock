@@ -3579,10 +3579,10 @@
   resolved "https://registry.yarnpkg.com/@tecsinapse/react-mic/-/react-mic-1.3.3.tgz#095b7d12f6f1f5957f202b4d2d67800740f3a359"
   integrity sha512-qVcFX+o18wqsXi1+FEp/0ov2mV2S/L778zaApz9zAvD/tYfrC/vaqIs5eh/5YYG/yIP/pi37G2gOQT9/BW/kTg==
 
-"@tecsinapse/ui-kit@^5.5.5":
-  version "5.5.5"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.5.5.tgz#39f0dbb517b0d992be7a7399d07369fa89dc457c"
-  integrity sha512-F0g7jIDTUysQfXY5v24aVoIQCxMFr4TcXs+WuNDA7Q58XfRezx6wAgFO8UzvIJ6ZBfh6bB2yzzBrsDLUBqApZA==
+"@tecsinapse/ui-kit@^5.6.3":
+  version "5.6.3"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.6.3.tgz#2269bb67e271c7f69b056e091f3717f8d2b60e8a"
+  integrity sha512-+kBe5oq/PdqFlxGQLTezkoiNSRaGg6bsFvLBt/iEr4iRxEa8TozHpK6kq2Xa95ybsaVy1z8c6lfstcU48a8wvA==
   dependencies:
     "@material-ui/core" "^4.11.1"
     "@material-ui/icons" "^4.11.1"
@@ -3597,12 +3597,12 @@
     text-mask-addons "^3.8.0"
     text-mask-core "^5.1.2"
 
-"@tecsinapse/uploader@^2.5.5":
-  version "2.5.5"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-2.5.5.tgz#d282b7a9f77e4b59b1398dffe45d26a8338fddb9"
-  integrity sha512-YPn6S3R6LTyEfx+Z7837NJHwkvG8U/2mBaukmltFDGSTIsRV1pnkqSKljE+QWMvAUHUlp/8aIH70gYPA/6efpA==
+"@tecsinapse/uploader@^2.6.5":
+  version "2.6.5"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-2.6.5.tgz#094044629898c05038852e79cc48c58b79e5d031"
+  integrity sha512-ApLY27SwGrf9GiyE4ZnAUI9vfKtJjzU+qsFpdy2HRmpTb8fL5EZCdcDpz0XBgq4CQgfd43e00Y3w6FzsdiSoMw==
   dependencies:
-    "@tecsinapse/ui-kit" "^5.5.5"
+    "@tecsinapse/ui-kit" "^5.6.3"
     react-dropzone "^11.3.1"
     uniqid "^5.3.0"
 
