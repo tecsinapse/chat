@@ -22,7 +22,12 @@ const useStyle = makeStyles(({ spacing }) => ({
   typo: { fontSize: '14px', color: '#fff', fontWeight: 400 },
 }));
 
-export const Warning = ({ errorMessage, warningMessage, isBlocked }) => {
+export const Warning = ({
+  errorMessage,
+  warningMessage,
+  blockedMessage,
+  isBlocked,
+}) => {
   const [showWarning, setShowWarning] = useState(true);
 
   useEffect(() => {
@@ -39,11 +44,7 @@ export const Warning = ({ errorMessage, warningMessage, isBlocked }) => {
 
   const error = isStringNotBlank(errorMessage) && errorMessage;
   const warning = isWarning && warningMessage;
-  const blocked = isBlocked && (
-    <>
-      O envio de mensagem expirou por <strong>inatividade</strong>.
-    </>
-  );
+  const blocked = isBlocked && blockedMessage;
 
   const warningText = error || warning || blocked;
 

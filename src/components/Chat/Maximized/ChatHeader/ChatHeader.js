@@ -39,6 +39,7 @@ export const ChatHeader = ({
   errorMessage,
   warningMessage,
   backAction,
+  blockedMessage,
 }) => {
   const {
     show: showChatOptions,
@@ -133,6 +134,7 @@ export const ChatHeader = ({
       <Warning
         errorMessage={errorMessage}
         warningMessage={warningMessage}
+        blockedMessage={blockedMessage}
         isBlocked={isBlocked}
       />
     </>
