@@ -1,3 +1,9 @@
+## <small>3.2.1 (2021-08-18)</small>
+
+* fix: blocked message parameter on composer ([2e2ba8f](https://github.com/tecsinapse/chat/commit/2e2ba8f))
+
+
+
 ## 3.2.0 (2021-08-18)
 
 * fix: blocked message parameter to warning component in header ([835e11d](https://github.com/tecsinapse/chat/commit/835e11d))
