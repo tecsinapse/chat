@@ -14,6 +14,9 @@ const useStyle = makeStyles(({ spacing }) => ({
     padding: spacing(5 / 12, 1, 5 / 12, 1.5),
     alignItems: 'center',
   },
+  rootDivDense: {
+    padding: spacing(1 / 12, 1, 1 / 12, 1.5),
+  },
   errorColor: {
     backgroundColor: '#f44336',
   },
@@ -60,6 +63,8 @@ const useStyle = makeStyles(({ spacing }) => ({
   },
 }));
 
+const hasHTML = content => /<\/?[a-z][\s\S]*>/i.test(content);
+
 export const Warning = ({
   className,
   errorMessage,
@@ -94,6 +99,7 @@ export const Warning = ({
   const blocked = isBlocked && blockedMessage;
 
   const warningText = error || warning || info || blocked;
+  const isHtmlMessage = hasHTML(warningText);
 
   if (!showWarning) {
     return null;
@@ -118,14 +124,25 @@ export const Warning = ({
             color="#fff"
           />
         )}
-        <Typography
-          className={clsx(classes.typo, {
-            [classes.typoDense]: isDense,
-            [classes.typoInfo]: isInfo,
-          })}
-        >
-          {warningText}
-        </Typography>
+        {isHtmlMessage && (
+          <Typography
+            className={clsx(classes.typo, {
+              [classes.typoDense]: isDense,
+              [classes.typoInfo]: isInfo,
+            })}
+            dangerouslySetInnerHTML={{ __html: warningText }}
+          />
+        )}
+        {!isHtmlMessage && (
+          <Typography
+            className={clsx(classes.typo, {
+              [classes.typoDense]: isDense,
+              [classes.typoInfo]: isInfo,
+            })}
+          >
+            {warningText}
+          </Typography>
+        )}
       </div>
       {isClosable && (
         <IconButton onClick={() => setShowWarning(false)}>
