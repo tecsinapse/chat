@@ -41,7 +41,7 @@ export const Warning = ({ errorMessage, warningMessage, isBlocked }) => {
   const warning = isWarning && warningMessage;
   const blocked = isBlocked && (
     <>
-      O envio de mensagem expirou por <strong>inatividade</strong>.
+      Para conversar com esse cliente clique em Iniciar Conversa 💬.
     </>
   );
 
