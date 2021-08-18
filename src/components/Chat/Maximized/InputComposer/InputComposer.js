@@ -35,7 +35,7 @@ export const InputComposer = ({
   onMediaSend,
   maxFileUploadSize,
   isBlocked,
-  blockedMessage,
+  composerBlockedMessage,
   disabledSend,
   droppedFiles,
   setDroppedFiles,
@@ -145,7 +145,7 @@ export const InputComposer = ({
               color="textSecondary"
               style={blockedMessageSpacing}
             >
-              {blockedMessage}
+              {composerBlockedMessage}
             </Typography>
           </Row>
         ) : (

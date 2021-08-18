@@ -43,6 +43,7 @@ const Maximized = ({
   warningMessage,
   uploadOptions,
   backAction,
+  composerBlockedMessage,
 }) => {
   const classes = useStyle();
   const theme = useTheme();
@@ -132,7 +133,7 @@ const Maximized = ({
           onMediaSend={onMediaSend}
           maxFileUploadSize={maxFileUploadSize}
           isBlocked={isBlocked}
-          blockedMessage={blockedMessage}
+          composerBlockedMessage={composerBlockedMessage}
           disabledSend={disabledSend}
           droppedFiles={droppedFiles}
           setDroppedFiles={setDroppedFiles}

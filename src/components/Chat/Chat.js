@@ -39,6 +39,7 @@ export const Chat = ({
   warningMessage,
   uploadOptions,
   backAction,
+  composerBlockedMessage,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
@@ -89,6 +90,7 @@ export const Chat = ({
                 warningMessage={warningMessage}
                 uploadOptions={uploadOptions}
                 backAction={backAction}
+                composerBlockedMessage={composerBlockedMessage}
               />
             </FixedWrapper.Maximized>
 
@@ -119,6 +121,7 @@ Chat.defaultProps = {
   onMessageResend: undefined,
   isBlocked: undefined,
   blockedMessage: 'The chat is blocked',
+  composerBlockedMessage: undefined,
   chatList: undefined,
   onBackToChatList: undefined,
   onSelectedChat: undefined,
@@ -218,6 +221,7 @@ Chat.propTypes = {
   isBlocked: PropTypes.bool,
   /** Message displayed when chat is blocked */
   blockedMessage: PropTypes.node,
+  composerBlockedMessage: PropTypes.string,
   /** Callback called after the ChatList view is rendered */
   onBackToChatList: PropTypes.func,
   /** ChatList with recipients */
