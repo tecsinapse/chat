@@ -65,6 +65,7 @@ export const Warning = ({
   errorMessage,
   warningMessage,
   infoMessage,
+  blockedMessage,
   isBlocked,
   isShowIcon = true,
   isClosable = true,
@@ -90,14 +91,8 @@ export const Warning = ({
   const error = isError && errorMessage;
   const warning = isWarning && warningMessage;
   const info = isInfo && infoMessage;
+  const blocked = isBlocked && blockedMessage;
 
-  const blocked = isBlocked && (
-    <>
-      O envio de mensagem expirou por <strong>inatividade</strong>.
-    </>
-  );
-
-  const infoLink = info && infoMessage.toLowerCase().includes('href');
   const warningText = error || warning || info || blocked;
 
   if (!showWarning) {
@@ -123,25 +118,14 @@ export const Warning = ({
             color="#fff"
           />
         )}
-        {infoLink && (
-          <Typography
-            className={clsx(classes.typo, {
-              [classes.typoDense]: isDense,
-              [classes.typoInfo]: isInfo,
-            })}
-            dangerouslySetInnerHTML={{ __html: warningText }}
-          />
-        )}
-        {!infoLink && (
-          <Typography
-            className={clsx(classes.typo, {
-              [classes.typoDense]: isDense,
-              [classes.typoInfo]: isInfo,
-            })}
-          >
-            {warningText}
-          </Typography>
-        )}
+        <Typography
+          className={clsx(classes.typo, {
+            [classes.typoDense]: isDense,
+            [classes.typoInfo]: isInfo,
+          })}
+        >
+          {warningText}
+        </Typography>
       </div>
       {isClosable && (
         <IconButton onClick={() => setShowWarning(false)}>

@@ -217,7 +217,7 @@ Chat.propTypes = {
   /** Chat blocked state */
   isBlocked: PropTypes.bool,
   /** Message displayed when chat is blocked */
-  blockedMessage: PropTypes.string,
+  blockedMessage: PropTypes.node,
   /** Callback called after the ChatList view is rendered */
   onBackToChatList: PropTypes.func,
   /** ChatList with recipients */
