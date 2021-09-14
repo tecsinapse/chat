@@ -279,6 +279,7 @@ export const SendNotification = ({
                 value={args[index]}
                 onChange={(e) => setArg(index, e.target.value)}
                 variantDevice="auto"
+                maxLength={255}
               />
             </Grid>
           ))}
