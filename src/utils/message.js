@@ -29,6 +29,7 @@ export const buildChatMessageObject = (
     statusDetails,
     source,
     status,
+    style,
   } = externalMessage;
 
   const isOwner = MessageSource.isProduct(source);
@@ -42,6 +43,7 @@ export const buildChatMessageObject = (
     authorName,
     statusDetails: formatMessageStatus(statusDetails),
     status: status.toLowerCase(),
+    style: style.toUpperCase(),
   };
 
   if (medias && medias.length > 0) {
