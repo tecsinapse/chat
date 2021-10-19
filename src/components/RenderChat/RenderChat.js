@@ -169,6 +169,7 @@ const RenderChatUnmemoized = ({
         JSON.stringify(chatMessage)
       );
     } catch (e) {
+      console.log(e);
       setStatusMessage(localId, DELIVERY_STATUS.REJECTED.key);
     }
   };
