@@ -17,7 +17,7 @@ In the project directory, you can run:
 Para fazer a build e poder integrar com os projetos é necessário:
 1. Executar `yarn build:nonsplit`
 2. Renomear o arquivo `main.XXYYZZ.{js,css}` da saída do build das pastas `build/static/css` e `build/static/js` apenas para `main.{css,js}` 
-2. Copiar os arquivos renomeados para a pasta especifica no repositório da [CDN](https://github.com/tecsinapse/cdn/tree/master/src/chat-component/static)
+2. Copiar os arquivos renomeados para a pasta especifica no repositório da [CDN](https://github.com/tecsinapse/cdn/tree/master/src/chat-component/)
 3. Fazer o deploy em [tecsinapse-cdn-prod-shell-script-deploy](https://jenkins.portaltecsinapse.com.br/job/tecsinapse-cdn-prod-shell-script-deploy/)
 
 Para gerar um build como biblioteca:
