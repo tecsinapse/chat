@@ -74,4 +74,29 @@ export class ChatService {
       "GET"
     );
   }
+
+  sendErrorReport(currentChat, userkeycloakId, chatMessage, error) {
+    let attempt = 1;
+
+    const data = JSON.stringify(chatMessage);
+    const {connectionKey, destination, chatId} = currentChat;
+    const at = (new Date()).toISOString();
+    const payload = {at, data, error, userId: userkeycloakId};
+
+    const execute = () => {
+      defaultFetch(
+        `${this.url}/${connectionKey}/${destination}/${chatId}/error-report`,
+        "POST",
+        payload,
+      ).catch(e => {
+        if (attempt++ === 5) {
+          console.log(e);
+          return;
+        }
+        setTimeout(execute, 1000 * 60);
+      });
+    }
+
+    execute();
+  }
 }

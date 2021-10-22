@@ -170,6 +170,7 @@ const RenderChatUnmemoized = ({
       );
     } catch (e) {
       console.log(e);
+      chatService.sendErrorReport(currentChat, userkeycloakId, chatMessage, e.message);
       setStatusMessage(localId, DELIVERY_STATUS.REJECTED.key);
     }
   };
