@@ -1,4 +1,5 @@
 import { defaultFetch, fetchMessages } from "../utils/fetch";
+import * as dates from "../utils/dates";
 
 export class ChatService {
   constructor(baseUrl) {
@@ -80,7 +81,7 @@ export class ChatService {
 
     const data = JSON.stringify(chatMessage);
     const {connectionKey, destination, chatId} = currentChat;
-    const at = (new Date()).toISOString();
+    const at = dates.momentNow().toISOString();
     const payload = {at, data, error, userId: userkeycloakId};
 
     const execute = () => {
