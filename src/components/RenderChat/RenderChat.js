@@ -161,19 +161,33 @@ const RenderChatUnmemoized = ({
       userId: userkeycloakId,
     };
 
-    const clientSocket = clientRef.current;
+    let attempt = 0;
+    const maxAttemps = 6;
+    const timeout = 1000 * 5; // 5 segundos
 
-    try {
-      clientSocket.sendMessage(
-        `/chat/sendMessage/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`,
-        JSON.stringify(chatMessage)
-      );
-    } catch (e) {
-      console.log(e);
-      chatService.sendErrorReport(currentChat, userkeycloakId, chatMessage, e.message);
-      setStatusMessage(localId, DELIVERY_STATUS.REJECTED.key);
-    }
-  };
+    const execute = () => {
+      const clientSocket = clientRef.current;
+      try {
+        clientSocket.sendMessage(
+          `/chat/sendMessage/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`,
+          JSON.stringify(chatMessage)
+        );
+      } catch (e) {
+        console.log(e);
+        attempt += 1;
+
+        if (attempt >= maxAttemps) {
+          setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
+          chatService.sendErrorReport(currentChat, userkeycloakId, chatMessage, e.message);
+          return;
+        }
+
+        setTimeout(execute, timeout);
+      }
+    };
+
+    execute();
+  }
 
   const handleNewUserFiles = (title, files) =>
     runHandleNewUserFiles(

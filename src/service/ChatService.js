@@ -77,7 +77,7 @@ export class ChatService {
   }
 
   sendErrorReport(currentChat, userkeycloakId, chatMessage, error) {
-    let attempt = 1;
+    let attempt = 0;
 
     const data = JSON.stringify(chatMessage);
     const {connectionKey, destination, chatId} = currentChat;
@@ -90,7 +90,8 @@ export class ChatService {
         "POST",
         payload,
       ).catch(e => {
-        if (attempt++ === 5) {
+        attempt += 1;
+        if (attempt >= 5) {
           console.log(e);
           return;
         }
