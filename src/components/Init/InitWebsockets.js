@@ -1,6 +1,12 @@
 import React from "react";
 import SockJsClient from "react-stomp";
 import { NotificationType } from "../../constants";
+import { momentNow } from "../../utils/dates";
+
+const debug = new URLSearchParams(window.location.search).has("__chat_debug_mode__");
+if (debug) {
+  console.log("Debug Mode");
+}
 
 const InitWebsockets = ({
   chatApiUrl,
@@ -15,8 +21,9 @@ const InitWebsockets = ({
   mainSocketRef,
 }) => {
   const onConnectMainSocket = () => {
+    console.log("WebSocket Connected");
     // notifica a conexão do socket
-    setConnectedAt(Date.now());
+    setConnectedAt(momentNow());
 
     connectionKeys.forEach((connectionKey) => {
       const addUser = `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`;
@@ -44,7 +51,20 @@ const InitWebsockets = ({
     }
   };
 
-  const onDisconnect = () => console.log("Disconnected"); // eslint-disable-line no-console
+  const onDisconnect = () => console.log("WebSocket Disconnected"); // eslint-disable-line no-console
+
+  const options = {
+    transports:[
+      "xhr-polling",
+      "jsonp-polling",
+      "xdr-polling",
+      "iframe-xhr-polling",
+      "xhr-streaming",
+      "xdr-streaming",
+      "iframe-htmlfile",
+      "iframe-eventsource",
+    ],
+  };
 
   return (
     <SockJsClient
@@ -54,6 +74,8 @@ const InitWebsockets = ({
       onConnect={onConnectMainSocket}
       onDisconnect={onDisconnect}
       ref={mainSocketRef}
+      options={options}
+      debug={debug}
     />
   );
 };
