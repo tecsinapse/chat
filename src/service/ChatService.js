@@ -1,5 +1,6 @@
 import { defaultFetch, fetchMessages } from "../utils/fetch";
 import * as dates from "../utils/dates";
+import { DELIVERY_STATUS } from "@tecsinapse/chat";
 
 export class ChatService {
   constructor(baseUrl) {
@@ -78,6 +79,8 @@ export class ChatService {
 
   sendErrorReport(currentChat, userkeycloakId, chatMessage, error) {
     let attempt = 0;
+    const maxAttemps = 5;
+    const timeout = 1000 * 60 // 1 minuto
 
     const data = JSON.stringify(chatMessage);
     const {connectionKey, destination, chatId} = currentChat;
@@ -91,14 +94,40 @@ export class ChatService {
         payload,
       ).catch(e => {
         attempt += 1;
-        if (attempt >= 5) {
+        if (attempt >= maxAttemps) {
           console.log(e);
           return;
         }
-        setTimeout(execute, 1000 * 60);
+        setTimeout(execute, timeout);
       });
     }
 
+    execute();
+  }
+
+  sendMessage(chatMessage, setStatusMessage, currentChat, userkeycloakId) {
+    let attempt = 0;
+    const maxAttemps = 6;
+    const timeout = 1000 * 5; // 5 segundos
+
+    const {localId, connectionKey, destination, chatId} = currentChat;
+
+    const execute = () => {
+      defaultFetch(
+        `${this.url}/${connectionKey}/${destination}/${chatId}/message/send`,
+        "POST",
+        chatMessage,
+      ).catch(e => {
+        console.log(e);
+        attempt += 1;
+        if (attempt >= maxAttemps) {
+          setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
+          this.sendErrorReport(currentChat, userkeycloakId, chatMessage, e.message);
+          return;
+        }
+        setTimeout(execute, timeout);
+      });
+    }
     execute();
   }
 }
