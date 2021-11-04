@@ -3,7 +3,10 @@ import SockJsClient from "react-stomp";
 import { NotificationType } from "../../constants";
 import { momentNow } from "../../utils/dates";
 
-const debug = new URLSearchParams(window.location.search).has("__chat_debug_mode__");
+const debug = new URLSearchParams(window.location.search).has(
+  "__chat_debug_mode__"
+);
+
 if (debug) {
   console.log("Debug Mode");
 }
@@ -54,13 +57,11 @@ const InitWebsockets = ({
   const onDisconnect = () => console.log("WebSocket Disconnected"); // eslint-disable-line no-console
 
   const options = {
-    transports:[
+    transports: [
+      "websocket",
       "xhr-polling",
-      "jsonp-polling",
-      "xdr-polling",
       "iframe-xhr-polling",
       "xhr-streaming",
-      "xdr-streaming",
       "iframe-htmlfile",
       "iframe-eventsource",
     ],
