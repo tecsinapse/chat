@@ -161,8 +161,13 @@ const RenderChatUnmemoized = ({
       userId: userkeycloakId,
     };
 
-    chatService.sendMessage(chatMessage, setStatusMessage, currentChat, userkeycloakId);
-  }
+    chatService.sendMessage(
+      chatMessage,
+      setStatusMessage,
+      currentChat,
+      userkeycloakId
+    );
+  };
 
   const handleNewUserFiles = (title, files) =>
     runHandleNewUserFiles(
