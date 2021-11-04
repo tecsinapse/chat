@@ -10315,6 +10315,11 @@ react-error-overlay@^6.0.7:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz#3c743010c9359608c375ecd6bc76f35d93995b0a"
   integrity sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==
 
+react-ga4@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-ga4/-/react-ga4-1.4.0.tgz#cee869f76c554a81790b8e2ad7f678fdd5e8cf71"
+  integrity sha512-pF74ndJMf+cR44s1QlGfUc+L1YlC2UKsJ/r6YL+iWlFLoYd/e3AWbRec4A4EXCzPD+c9FuBiVQDO/0ZcLWloDg==
+
 react-input-autosize@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-3.0.0.tgz#6b5898c790d4478d69420b55441fcc31d5c50a85"

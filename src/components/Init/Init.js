@@ -46,6 +46,7 @@ import { ProductService } from "../../service/ProductService";
 import { ChatService } from "../../service/ChatService";
 import ChatContext, { allChatsMap } from "../../context";
 import { loadComponent } from "../../utils/helpers";
+import ReactGA from "react-ga4";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -85,13 +86,21 @@ const InitContext = ({
   const theme = useTheme();
   const [isLoadingInitialState, setIsLoadingInitialState] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
-  const [view, setView] = useState(homeLocation);
+  const [view, _setView] = useState(homeLocation);
   const [componentInfo, setComponentInfo] = useState({});
   const [currentChat, setCurrentChat] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
   const [chatToSendNotification, setChatToSendNotification] = useState();
   const [receivedMessage, setReceivedMessage] = useState();
+
+  const setView = React.useCallback((args) => {
+    ReactGA.event({
+      category: `To ${[COMPONENT_LOCATION[args]]}`,
+      action: "Navigate",
+    });
+    _setView(args);
+  }, []);
 
   // Utilizado para notificar componentes quando o socket reconecta
   // na situação de haver perda de conexão
@@ -142,6 +151,10 @@ const InitContext = ({
       chats: [chat],
     });
     setView(COMPONENT_LOCATION.CHAT);
+    ReactGA.event({
+      category: `Chat ${chat.chatId}`,
+      action: "Navigate",
+    });
   };
 
   let showBackButton = isShowBackButton(view, chatInitConfig);
@@ -167,6 +180,8 @@ const InitContext = ({
   );
 
   const closeIconStyles = { cursor: "pointer" };
+
+  ReactGA.send({ hitType: "pageview", page: "/init" });
 
   return (
     <>

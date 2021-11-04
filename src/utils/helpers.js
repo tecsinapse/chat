@@ -139,8 +139,7 @@ export const onSelectedChatMaker = ({
   ).isBetween(now.clone().subtract(24, "hour"), now);
 
   const isBlocked =
-    ChatStatus.isBlocked(chat?.status || initialInfo?.status) ||
-    lastMessageExpired;
+    ChatStatus.isBlocked(initialInfo?.status) || lastMessageExpired;
 
   setMessages(messages);
   setBlocked(chat, isBlocked);

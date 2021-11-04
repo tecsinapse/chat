@@ -23,6 +23,7 @@ import {
   runHandleNewExternalMessage,
   runHandleNewUserFiles,
 } from "./functions";
+import ReactGA from "react-ga4";
 
 const RenderChatUnmemoized = ({
   chatApiUrl,
@@ -54,7 +55,7 @@ const RenderChatUnmemoized = ({
   const setStatusMessage = setStatusMessageFunc(setMessages);
 
   const isBlocked = ChatStatus.isBlocked(currentChat?.status);
-  const enabled = currentChat.enabled || ChatStatus.isOK(currentChat?.status);
+  const enabled = !currentChat.disabled || ChatStatus.isOK(currentChat?.status);
 
   const setBlockedAndPropagateStatus = (chat, blockedStatus) => {
     runBlockedAndPropagateStatus(
@@ -167,6 +168,11 @@ const RenderChatUnmemoized = ({
       currentChat,
       userkeycloakId
     );
+
+    ReactGA.event({
+      category: `To ${currentChat.chatId} / From: ${userkeycloakId}`,
+      action: "Send Message",
+    });
   };
 
   const handleNewUserFiles = (title, files) =>
