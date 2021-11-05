@@ -59,6 +59,10 @@ export const send = ({
             setSending(false);
           });
       } else {
+        ReactGA.event({
+          category: selectedTemplate,
+          action: "Send Notification",
+        });
         successSend();
       }
     })
@@ -72,6 +76,12 @@ export const send = ({
       } else {
         setError("Ocorreu um problema ao enviar a mensagem");
       }
+
+      ReactGA.event({
+        category: selectedTemplate,
+        action: "Send Notification Error",
+        nonInteraction: true,
+      });
       setSuccess("");
       setTimeout(() => setError(""), 4000);
       setSending(false);

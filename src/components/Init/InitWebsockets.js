@@ -2,6 +2,7 @@ import React from "react";
 import SockJsClient from "react-stomp";
 import { NotificationType } from "../../constants";
 import { momentNow } from "../../utils/dates";
+import ReactGA from "react-ga4";
 
 const debug = new URLSearchParams(window.location.search).has(
   "__chat_debug_mode__"
@@ -51,6 +52,11 @@ const InitWebsockets = ({
       } else {
         onChatUpdated(message);
       }
+      ReactGA.event({
+        category: message.connectionKey,
+        action: "Received Message",
+        nonInteraction: true,
+      });
     }
   };
 

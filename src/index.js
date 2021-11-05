@@ -45,7 +45,7 @@ window.renderChatComponent = function renderChatComponent() {
   });
 
   ReactGA.set({ userId: chatInitConfig.userkeycloakId });
-  ReactGA.set({ appVersion: process.env.REACT_APP_VERSION });
+  ReactGA.set({ chatVersion: process.env.REACT_APP_VERSION });
 
   ReactDOM.render(
     <StylesProvider generateClassName={generateClassName}>

@@ -13,6 +13,7 @@ import { useStyle } from "./styles";
 import { TableHeader } from "./TableHeader";
 import { customActionsMobile, generateColumns } from "./tableUtils";
 import { getOptions, dataFetcher } from "./functions";
+import ReactGA from "react-ga4";
 
 export const MessageManagement = ({
   componentInfo,
@@ -39,6 +40,10 @@ export const MessageManagement = ({
   const deleteChat = () => {
     onDeleteChat(deletingChat).then(() => {
       setDeletingChat({});
+      ReactGA.event({
+        category: deletingChat.connectionKey,
+        action: "Discard Chat",
+      });
       reload();
     });
   };
