@@ -140,7 +140,7 @@ const runHandleNewExternalMessage = (
       );
     }
     ReactGA.event({
-      category: `From ${currentChat.chatId}`,
+      category: currentChat.chatId || newMessage.localId,
       action: "Received Message",
     });
   }

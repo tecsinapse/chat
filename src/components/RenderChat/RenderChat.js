@@ -168,11 +168,6 @@ const RenderChatUnmemoized = ({
       currentChat,
       userkeycloakId
     );
-
-    ReactGA.event({
-      category: `To ${currentChat.chatId} / From: ${userkeycloakId}`,
-      action: "Send Message",
-    });
   };
 
   const handleNewUserFiles = (title, files) =>

@@ -1,4 +1,5 @@
 import { emptyTemplate } from "./utils";
+import ReactGA from "react-ga4";
 
 export const send = ({
   chatApiUrl,
@@ -46,6 +47,10 @@ export const send = ({
         productService
           .createChat(selectedConnectionKey, phoneNumber, fetchArgs, token)
           .then(() => {
+            ReactGA.event({
+              category: selectedTemplate,
+              action: "Send Notification",
+            });
             successSend();
           })
           .catch((error) => {

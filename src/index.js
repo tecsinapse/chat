@@ -44,10 +44,8 @@ window.renderChatComponent = function renderChatComponent() {
     productionPrefix: "chat",
   });
 
-  // createPath: url do produto
-  ReactGA.set({
-    gaOptions: { userId: chatInitConfig.userkeycloakId },
-  });
+  ReactGA.set({ userId: chatInitConfig.userkeycloakId });
+  ReactGA.set({ appVersion: process.env.REACT_APP_VERSION });
 
   ReactDOM.render(
     <StylesProvider generateClassName={generateClassName}>

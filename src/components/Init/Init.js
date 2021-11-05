@@ -96,7 +96,7 @@ const InitContext = ({
 
   const setView = React.useCallback((args) => {
     ReactGA.event({
-      category: `To ${[COMPONENT_LOCATION[args]]}`,
+      category: COMPONENT_LOCATION[args],
       action: "Navigate",
     });
     _setView(args);
@@ -151,10 +151,6 @@ const InitContext = ({
       chats: [chat],
     });
     setView(COMPONENT_LOCATION.CHAT);
-    ReactGA.event({
-      category: `Chat ${chat.chatId}`,
-      action: "Navigate",
-    });
   };
 
   let showBackButton = isShowBackButton(view, chatInitConfig);

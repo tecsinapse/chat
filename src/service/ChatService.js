@@ -1,6 +1,7 @@
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
 import { defaultFetch, fetchMessages } from "../utils/fetch";
 import * as dates from "../utils/dates";
+import ReactGA from "react-ga4";
 
 export class ChatService {
   constructor(baseUrl) {
@@ -92,16 +93,26 @@ export class ChatService {
         `${this.url}/${connectionKey}/${destination}/${chatId}/error-report`,
         "POST",
         payload
-      ).catch((e) => {
-        attempt += 1;
+      )
+        .then(() => {
+          ReactGA.event({
+            category: error,
+            action: "Error Report",
+          });
+        })
+        .catch((e) => {
+          attempt += 1;
 
-        if (attempt >= maxAttemps) {
-          console.log(e);
-
-          return;
-        }
-        setTimeout(execute, timeout);
-      });
+          if (attempt >= maxAttemps) {
+            console.log(e);
+            ReactGA.event({
+              category: "Max Attempts Reached",
+              action: "Error Report",
+            });
+            return;
+          }
+          setTimeout(execute, timeout);
+        });
     };
 
     execute();
@@ -119,23 +130,30 @@ export class ChatService {
         `${this.url}/${connectionKey}/${destination}/${chatId}/message/send`,
         "POST",
         chatMessage
-      ).catch((e) => {
-        console.log(e);
-        attempt += 1;
+      )
+        .then(() => {
+          ReactGA.event({
+            category: connectionKey,
+            action: "Send Message",
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          attempt += 1;
 
-        if (attempt >= maxAttemps) {
-          setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
-          this.sendErrorReport(
-            currentChat,
-            userkeycloakId,
-            chatMessage,
-            e.message
-          );
+          if (attempt >= maxAttemps) {
+            setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
+            this.sendErrorReport(
+              currentChat,
+              userkeycloakId,
+              chatMessage,
+              e.message
+            );
 
-          return;
-        }
-        setTimeout(execute, timeout);
-      });
+            return;
+          }
+          setTimeout(execute, timeout);
+        });
     };
 
     execute();
