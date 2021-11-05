@@ -5,7 +5,6 @@ import {
   calcRemainTime,
 } from "../../utils/message";
 import { ChatStatus } from "../../constants";
-import ReactGA from "react-ga4";
 
 const emptyChat = {
   chatId: null,
@@ -139,10 +138,6 @@ const runHandleNewExternalMessage = (
         newMessage.statusDetails
       );
     }
-    ReactGA.event({
-      category: currentChat.connectionKey,
-      action: "Received Message",
-    });
   }
 };
 
