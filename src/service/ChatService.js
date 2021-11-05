@@ -93,26 +93,24 @@ export class ChatService {
         `${this.url}/${connectionKey}/${destination}/${chatId}/error-report`,
         "POST",
         payload
-      )
-        .then(() => {
+      ).then(() => {
+        ReactGA.event({
+          category: error,
+          action: "Error Report",
+        });
+      }).catch((e) => {
+        attempt += 1;
+
+        if (attempt >= maxAttemps) {
+          console.log(e);
           ReactGA.event({
-            category: error,
+            category: "Max Attempts Reached",
             action: "Error Report",
           });
-        })
-        .catch((e) => {
-          attempt += 1;
-
-          if (attempt >= maxAttemps) {
-            console.log(e);
-            ReactGA.event({
-              category: "Max Attempts Reached",
-              action: "Error Report",
-            });
-            return;
-          }
-          setTimeout(execute, timeout);
-        });
+          return;
+        }
+        setTimeout(execute, timeout);
+      });
     };
 
     execute();
@@ -130,30 +128,28 @@ export class ChatService {
         `${this.url}/${connectionKey}/${destination}/${chatId}/message/send`,
         "POST",
         chatMessage
-      )
-        .then(() => {
-          ReactGA.event({
-            category: connectionKey,
-            action: "Send Message",
-          });
-        })
-        .catch((e) => {
-          console.log(e);
-          attempt += 1;
-
-          if (attempt >= maxAttemps) {
-            setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
-            this.sendErrorReport(
-              currentChat,
-              userkeycloakId,
-              chatMessage,
-              e.message
-            );
-
-            return;
-          }
-          setTimeout(execute, timeout);
+      ).then(() => {
+        ReactGA.event({
+          category: connectionKey,
+          action: "Send Message",
         });
+      }).catch((e) => {
+        console.log(e);
+        attempt += 1;
+
+        if (attempt >= maxAttemps) {
+          setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
+          this.sendErrorReport(
+            currentChat,
+            userkeycloakId,
+            chatMessage,
+            e.message
+          );
+
+          return;
+        }
+        setTimeout(execute, timeout);
+      });
     };
 
     execute();
