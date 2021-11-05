@@ -59,6 +59,10 @@ const queryClient = new QueryClient({
 export const Init = (props) => {
   const [state, setState] = useState(allChatsMap);
 
+  React.useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: "/init" });
+  }, []);
+
   return (
     <ChatContext.Provider value={[state, setState]}>
       <QueryClientProvider client={queryClient}>
@@ -176,8 +180,6 @@ const InitContext = ({
   );
 
   const closeIconStyles = { cursor: "pointer" };
-
-  ReactGA.send({ hitType: "pageview", page: "/init" });
 
   return (
     <>

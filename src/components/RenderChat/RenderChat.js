@@ -23,7 +23,6 @@ import {
   runHandleNewExternalMessage,
   runHandleNewUserFiles,
 } from "./functions";
-import ReactGA from "react-ga4";
 
 const RenderChatUnmemoized = ({
   chatApiUrl,
