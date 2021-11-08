@@ -12,7 +12,12 @@ import { Init } from "./components/Init/Init";
 import "./index.css";
 
 const standalone = process.env.REACT_APP_STANDALONE === "true";
-ReactGA.initialize(process.env.REACT_APP_GA_ID);
+ReactGA.initialize(process.env.REACT_APP_GA_ID, {
+  gaOptions: {
+    chatVersion: process.env.REACT_APP_VERSION,
+    appVersion: process.env.REACT_APP_VERSION,
+  },
+});
 
 window.renderChatComponent = function renderChatComponent() {
   const defaultChatInitConfig = {
@@ -44,8 +49,9 @@ window.renderChatComponent = function renderChatComponent() {
     productionPrefix: "chat",
   });
 
-  ReactGA.set({ userId: chatInitConfig.userkeycloakId });
-  ReactGA.set({ chatVersion: process.env.REACT_APP_VERSION });
+  ReactGA.set({
+    userId: chatInitConfig.userkeycloakId,
+  });
 
   ReactDOM.render(
     <StylesProvider generateClassName={generateClassName}>
