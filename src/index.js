@@ -6,18 +6,11 @@ import ReactDOM from "react-dom";
 import { ThemeProvider } from "@tecsinapse/ui-kit";
 import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
 import uuidv1 from "uuid/v1";
-import ReactGA from "react-ga4";
 
 import { Init } from "./components/Init/Init";
 import "./index.css";
 
 const standalone = process.env.REACT_APP_STANDALONE === "true";
-ReactGA.initialize(process.env.REACT_APP_GA_ID, {
-  gaOptions: {
-    chatVersion: process.env.REACT_APP_VERSION,
-    appVersion: process.env.REACT_APP_VERSION,
-  },
-});
 
 window.renderChatComponent = function renderChatComponent() {
   const defaultChatInitConfig = {
@@ -47,10 +40,6 @@ window.renderChatComponent = function renderChatComponent() {
 
   const generateClassName = createGenerateClassName({
     productionPrefix: "chat",
-  });
-
-  ReactGA.set({
-    userId: chatInitConfig.userkeycloakId,
   });
 
   ReactDOM.render(

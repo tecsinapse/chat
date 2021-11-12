@@ -59,9 +59,21 @@ const queryClient = new QueryClient({
 export const Init = (props) => {
   const [state, setState] = useState(allChatsMap);
 
-  React.useEffect(() => {
-    ReactGA.send({ hitType: "pageview", page: "/init" });
+  React.useLayoutEffect(() => {
+    ReactGA.initialize(process.env.REACT_APP_GA_ID, {
+      gaOptions: {
+        chatVersion: process.env.REACT_APP_VERSION,
+        appVersion: process.env.REACT_APP_VERSION,
+      },
+    });
   }, []);
+
+  React.useEffect(() => {
+    ReactGA.set({
+      userId: props?.chatInitConfig?.userkeycloakId,
+    });
+    ReactGA.send({ hitType: "pageview", page: "/init" });
+  }, [props]);
 
   return (
     <ChatContext.Provider value={[state, setState]}>
