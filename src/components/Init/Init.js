@@ -63,15 +63,12 @@ export const Init = (props) => {
     ReactGA.initialize(process.env.REACT_APP_GA_ID, {
       gaOptions: {
         chatVersion: process.env.REACT_APP_VERSION,
-        appVersion: process.env.REACT_APP_VERSION,
+        keycloakUser: props?.chatInitConfig?.userkeycloakId,
       },
     });
-  }, []);
+  }, [props]);
 
   React.useEffect(() => {
-    ReactGA.set({
-      userId: props?.chatInitConfig?.userkeycloakId,
-    });
     ReactGA.send({ hitType: "pageview", page: "/init" });
   }, [props]);
 

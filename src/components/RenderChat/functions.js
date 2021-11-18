@@ -5,6 +5,7 @@ import {
   calcRemainTime,
 } from "../../utils/message";
 import { ChatStatus } from "../../constants";
+import ReactGA from "react-ga4";
 
 const emptyChat = {
   chatId: null,
@@ -129,6 +130,11 @@ const runHandleNewExternalMessage = (
         currentChat.chatId,
         userNamesById
       );
+
+      ReactGA.event({
+        category: newMessage.connectionKey,
+        action: "Received Message",
+      });
 
       setMessages([...messages, message]);
     } else {
