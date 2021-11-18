@@ -132,7 +132,7 @@ const runHandleNewExternalMessage = (
       );
 
       ReactGA.event({
-        category: newMessage.connectionKey,
+        category: currentChat.connectionKey,
         action: "Received Message",
       });
 

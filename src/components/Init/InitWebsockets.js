@@ -49,12 +49,12 @@ const InitWebsockets = ({
         reloadComponent();
       } else if (message.type === "CHAT") {
         setReceivedMessage(message);
+      } else {
         ReactGA.event({
           category: message.connectionKey,
           action: "Unread Message",
           nonInteraction: true,
         });
-      } else {
         onChatUpdated(message);
       }
     }
