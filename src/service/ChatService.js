@@ -1,7 +1,8 @@
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
+import ReactGA from "react-ga4";
 import { defaultFetch, fetchMessages } from "../utils/fetch";
 import * as dates from "../utils/dates";
-import ReactGA from "react-ga4";
+import { ChatStatus } from "../constants";
 
 export class ChatService {
   constructor(baseUrl) {
@@ -111,6 +112,7 @@ export class ChatService {
               action: "Error Report",
               nonInteraction: true,
             });
+
             return;
           }
           setTimeout(execute, timeout);
@@ -120,12 +122,20 @@ export class ChatService {
     execute();
   }
 
-  sendMessage(chatMessage, setStatusMessage, currentChat, userkeycloakId) {
+  sendMessage(
+    chatMessage,
+    setStatusMessage,
+    currentChat,
+    setCurrentChat,
+    userkeycloakId,
+    setBlocked
+  ) {
     let attempt = 0;
     const maxAttemps = 6;
     const timeout = 1000 * 5; // 5 segundos
 
-    const { localId, connectionKey, destination, chatId } = currentChat;
+    const { localId } = chatMessage;
+    const { connectionKey, destination, chatId } = currentChat;
 
     const execute = () => {
       defaultFetch(
@@ -141,6 +151,18 @@ export class ChatService {
         })
         .catch((e) => {
           console.log(e);
+
+          if (e.status && e.status === 403 && e.errors === "Chat bloqueado") {
+            setBlocked(currentChat, true);
+            setCurrentChat((current) => ({
+              ...current,
+              status: ChatStatus.BLOCKED,
+              minutesToBlock: 0,
+            }));
+
+            return;
+          }
+
           attempt += 1;
 
           if (attempt >= maxAttemps) {
@@ -149,7 +171,7 @@ export class ChatService {
               currentChat,
               userkeycloakId,
               chatMessage,
-              e.message
+              e.message || e.errors
             );
 
             return;

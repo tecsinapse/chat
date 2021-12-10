@@ -9,11 +9,11 @@ import {
   DialogTitle,
 } from "@material-ui/core";
 import { useQueryClient } from "react-query";
+import ReactGA from "react-ga4";
 import { useStyle } from "./styles";
 import { TableHeader } from "./TableHeader";
 import { customActionsMobile, generateColumns } from "./tableUtils";
 import { getOptions, dataFetcher } from "./functions";
-import ReactGA from "react-ga4";
 
 export const MessageManagement = ({
   componentInfo,

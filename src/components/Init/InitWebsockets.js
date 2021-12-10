@@ -1,8 +1,8 @@
 import React from "react";
 import SockJsClient from "react-stomp";
+import ReactGA from "react-ga4";
 import { NotificationType } from "../../constants";
 import { momentNow } from "../../utils/dates";
-import ReactGA from "react-ga4";
 
 const debug = new URLSearchParams(window.location.search).has(
   "__chat_debug_mode__"

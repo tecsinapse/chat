@@ -1,11 +1,11 @@
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
+import ReactGA from "react-ga4";
 import {
   buildChatMessageObject,
   buildSendingMessage,
   calcRemainTime,
 } from "../../utils/message";
 import { ChatStatus } from "../../constants";
-import ReactGA from "react-ga4";
 
 const emptyChat = {
   chatId: null,

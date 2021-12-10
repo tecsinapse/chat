@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import { QueryClient, QueryClientProvider } from "react-query";
 
+import ReactGA from "react-ga4";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { UnreadChats } from "../UnreadChats/UnreadChats";
 import { RenderChat } from "../RenderChat/RenderChat";
@@ -46,7 +47,6 @@ import { ProductService } from "../../service/ProductService";
 import { ChatService } from "../../service/ChatService";
 import ChatContext, { allChatsMap } from "../../context";
 import { loadComponent } from "../../utils/helpers";
-import ReactGA from "react-ga4";
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -165,7 +165,9 @@ const RenderChatUnmemoized = ({
       chatMessage,
       setStatusMessage,
       currentChat,
-      userkeycloakId
+      setCurrentChat,
+      userkeycloakId,
+      setBlockedAndPropagateStatus
     );
   };
 

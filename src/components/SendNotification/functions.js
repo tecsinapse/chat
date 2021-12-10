@@ -1,5 +1,5 @@
-import { emptyTemplate } from "./utils";
 import ReactGA from "react-ga4";
+import { emptyTemplate } from "./utils";
 
 export const send = ({
   chatApiUrl,
