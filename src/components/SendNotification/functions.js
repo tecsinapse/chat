@@ -48,7 +48,8 @@ export const send = ({
           .createChat(selectedConnectionKey, phoneNumber, fetchArgs, token)
           .then(() => {
             ReactGA.event({
-              category: selectedTemplate,
+              category: selectedConnectionKey,
+              label: selectedTemplate,
               action: "Send Notification",
             });
             successSend();
@@ -60,7 +61,8 @@ export const send = ({
           });
       } else {
         ReactGA.event({
-          category: selectedTemplate,
+          category: selectedConnectionKey,
+          label: selectedTemplate,
           action: "Send Notification",
         });
         successSend();
