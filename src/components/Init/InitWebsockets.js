@@ -15,34 +15,13 @@ if (debug) {
 const InitWebsockets = ({
   chatApiUrl,
   userkeycloakId,
-  chatIds,
-  connectionKeys,
-  destination,
   reloadComponent,
   onChatUpdated,
   setReceivedMessage,
   setConnectedAt,
   mainSocketRef,
+  onConnectMainSocket,
 }) => {
-  const onConnectMainSocket = () => {
-    console.log("WebSocket Connected");
-    // notifica a conexão do socket
-    setConnectedAt(momentNow());
-
-    connectionKeys.forEach((connectionKey) => {
-      const addUser = `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`;
-
-      try {
-        // informação dos chats que esse usuário está acompanhando
-        const payload = JSON.stringify({ chatIds });
-
-        mainSocketRef.current.sendMessage(addUser, payload);
-      } catch (e) {
-        console.log(e);
-      }
-    });
-  };
-
   const handleNewMainWebsocketMessage = (message) => {
     if (message) {
       if (NotificationType.isRefreshUI(message)) {
@@ -58,6 +37,13 @@ const InitWebsockets = ({
         onChatUpdated(message);
       }
     }
+  };
+
+  const onConnect = () => {
+    console.log("WebSocket Connected");
+    // notifica a conexão do socket
+    setConnectedAt(momentNow());
+    onConnectMainSocket();
   };
 
   const onDisconnect = () => console.log("WebSocket Disconnected"); // eslint-disable-line no-console
@@ -78,7 +64,7 @@ const InitWebsockets = ({
       url={`${chatApiUrl}/ws`}
       topics={[`/topic/main.${userkeycloakId}`]}
       onMessage={handleNewMainWebsocketMessage}
-      onConnect={onConnectMainSocket}
+      onConnect={onConnect}
       onDisconnect={onDisconnect}
       ref={mainSocketRef}
       options={options}
