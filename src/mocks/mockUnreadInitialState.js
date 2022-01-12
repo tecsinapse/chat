@@ -1,5 +1,8 @@
 export const mockUnreadInitialState = {
-  connectionKeys: ["sandbox-dev2"],
+  connectionKeys: [
+    "sandbox-dev2",
+    { label: "Novo Mundo Jaboatão", value: "sandbox-dev" },
+  ],
   destination: "daf",
   allChats: [
     {
