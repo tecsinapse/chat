@@ -5,7 +5,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { ThemeProvider } from "@tecsinapse/ui-kit";
 import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
-import uuidv1 from "uuid/v1";
 
 import { Init } from "./components/Init/Init";
 import "./index.css";
@@ -14,7 +13,7 @@ const standalone = process.env.REACT_APP_STANDALONE === "true";
 
 window.renderChatComponent = function renderChatComponent() {
   const defaultChatInitConfig = {
-    userkeycloakId: uuidv1(),
+    userkeycloakId: "f92c5d90-73b2-11ec-81db-abe03bce8cb8",
     chatApiUrl: `${process.env.REACT_APP_SERVER_URL}`,
     params: {},
     getInitialStatePath: "/rest/chat/componentInfo",

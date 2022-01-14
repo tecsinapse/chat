@@ -13,7 +13,7 @@
     "build:dev": "rimraf -rf build/ && REACT_APP_ENV=development react-scripts build",
     "build": "rimraf -rf build/ && REACT_APP_ENV=production react-scripts build",
     "build:nonsplit": "rimraf -rf build/ && REACT_APP_ENV=production node ./scripts/buildNonSplit.js",
-    "build:win": "rimraf -rf build/ && SET \"REACT_APP_ENV=production\" && react-scripts build",
+    "build:win": "rimraf -rf build/ && SET \"REACT_APP_ENV=production\" && node ./scripts/buildNonSplit.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build:lib": "rimraf -rf build/ && babel src/ -d build/",

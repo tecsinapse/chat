@@ -3,6 +3,19 @@ import { completeChatInfoWith } from "../../utils/loadChatsInfos";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { getChatId } from "../../context";
 
+const notifyNewMessage = (userkeycloakId, name) => {
+  const title = "Nova mensagem";
+  const icon = `https://cdn.portaltecsinapse.com.br/src/chat-component/notification-icon.png`;
+  const body = `Você tem uma nova mensagem de ${name} no Chat.`;
+
+  if (Notification.permission === "granted") {
+    // eslint-disable-next-line
+    new Notification(title, { icon: icon, body: body });
+  }
+
+  playNotificationSound(userkeycloakId);
+};
+
 const getChatIds = (allChats) =>
   (allChats || []).map((chat) => chat.chatId).join(",");
 
@@ -12,6 +25,7 @@ const getUnreadTotal = (allChats) =>
     .reduce((acc, chat) => acc + chat.unread, 0);
 
 const onUpdatedChat = (
+  userkeycloakId,
   updatedChat,
   setCurrentChat,
   currentChat,
@@ -27,7 +41,6 @@ const onUpdatedChat = (
     componentInfoChatIndex > -1 || chatContext.has(getChatId(updatedChat));
 
   if (chatExists) {
-    // chatContext.set(getChatId(updatedChat), completeChatInfoWith(chat, updatedChat))
     const chat =
       componentInfo?.allChats[componentInfoChatIndex] ||
       chatContext.get(getChatId(updatedChat));
@@ -36,6 +49,10 @@ const onUpdatedChat = (
       getChatId(updatedChat),
       completeChatInfoWith(chat, updatedChat)
     );
+
+    if (updatedChat.notifyNewMessage) {
+      notifyNewMessage(userkeycloakId, chat.name);
+    }
   } else {
     chatContext.set(getChatId(updatedChat), updatedChat);
   }
@@ -150,7 +167,53 @@ const isShowSendNotification = (view, chatInitConfig, chatViewAndIsBlocked) =>
     view === COMPONENT_LOCATION.UNREAD ||
     chatViewAndIsBlocked);
 
+const playNotificationSound = (userkeycloakId) => {
+  if (isNotificationSoundEnabled(userkeycloakId)) {
+    const sound = `https://cdn.portaltecsinapse.com.br/src/chat-component/notification-sound.wav`;
+
+    new Audio(sound).play();
+  }
+};
+
+const getNotificationSoundStorageKey = (userkeycloakId) =>
+  `tecsinapseChat.${userkeycloakId}.notificationSound`;
+
+const isNotificationSoundEnabled = (userkeycloakId) => {
+  if (!userkeycloakId) {
+    return false;
+  }
+  const storageKey = getNotificationSoundStorageKey(userkeycloakId);
+  const storageItem = localStorage.getItem(storageKey);
+
+  if (storageItem) {
+    return storageItem === "enabled";
+  }
+  localStorage.setItem(storageKey, "enabled");
+
+  return true;
+};
+
+const enableNotificationSound = (userkeycloakId) => {
+  const storageKey = getNotificationSoundStorageKey(userkeycloakId);
+
+  localStorage.setItem(storageKey, "enabled");
+  playNotificationSound(userkeycloakId);
+};
+
+const disableNotificationSound = (userkeycloakId) => {
+  const storageKey = getNotificationSoundStorageKey(userkeycloakId);
+
+  localStorage.setItem(storageKey, "disabled");
+};
+
+const onLocalStorage = (userkeycloakId, setNotificationSound) => (storage) => {
+  if (storage.key === getNotificationSoundStorageKey(userkeycloakId)) {
+    setNotificationSound(isNotificationSoundEnabled(userkeycloakId));
+  }
+};
+
 export {
+  notifyNewMessage,
   getChatIds,
   getUnreadTotal,
   onUpdatedChat,
@@ -162,4 +225,10 @@ export {
   isChatViewAndIsBlocked,
   isShowSendNotification,
   onStartSendNotification,
+  playNotificationSound,
+  getNotificationSoundStorageKey,
+  isNotificationSoundEnabled,
+  enableNotificationSound,
+  disableNotificationSound,
+  onLocalStorage,
 };

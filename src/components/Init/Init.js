@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useTheme } from "@material-ui/styles";
@@ -27,17 +27,21 @@ import { useStyle } from "./styles";
 import { StartNewChatButton } from "../StartNewChatButton/StartNewChatButton";
 
 import {
-  getUnreadTotal,
-  onUpdatedChat,
+  disableNotificationSound,
+  enableNotificationSound,
   getChatIds,
-  onReadAllMessagesOfChat,
-  onDeleteChat,
-  onChatStatusChanged,
+  getUnreadTotal,
+  isChatViewAndIsBlocked,
+  isNotificationSoundEnabled,
   isShowBackButton,
   isShowMessageManagement,
-  isChatViewAndIsBlocked,
   isShowSendNotification,
+  onChatStatusChanged,
+  onDeleteChat,
+  onLocalStorage,
+  onReadAllMessagesOfChat,
   onStartSendNotification,
+  onUpdatedChat,
 } from "./functions";
 
 import useLoadComponent from "../../hooks/useLoadComponent";
@@ -106,6 +110,12 @@ const InitContext = ({
   const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
   const [chatToSendNotification, setChatToSendNotification] = useState();
   const [receivedMessage, setReceivedMessage] = useState();
+
+  const { userkeycloakId } = chatInitConfig;
+
+  const [notificationSound, setNotificationSound] = useState(
+    isNotificationSoundEnabled(userkeycloakId)
+  );
 
   const setView = React.useCallback((args) => {
     ReactGA.event({
@@ -188,6 +198,18 @@ const InitContext = ({
     chatViewAndIsBlocked
   );
 
+  const onNotificationSoundChange = () => {
+    if (notificationSound === true) {
+      disableNotificationSound(userkeycloakId);
+      setNotificationSound(false);
+    } else {
+      enableNotificationSound(userkeycloakId);
+      setNotificationSound(true);
+    }
+  };
+
+  window.onstorage = onLocalStorage(userkeycloakId, setNotificationSound);
+
   const closeIconStyles = { cursor: "pointer" };
 
   return (
@@ -222,6 +244,8 @@ const InitContext = ({
               setView={setView}
               showBackButton={showBackButton}
               unreadTotal={unreadTotal}
+              onNotificationSoundChange={onNotificationSoundChange}
+              notificationSound={notificationSound}
             />
             <MuiDivider variant="fullWidth" />
             {showMessageManagement && (
@@ -239,7 +263,7 @@ const InitContext = ({
               <RenderChat
                 initialInfo={currentChat}
                 chatApiUrl={chatInitConfig.chatApiUrl}
-                userkeycloakId={chatInitConfig.userkeycloakId}
+                userkeycloakId={userkeycloakId}
                 chatService={chatService}
                 onReadAllMessagesOfChat={(readChat) =>
                   onReadAllMessagesOfChat(
@@ -284,7 +308,7 @@ const InitContext = ({
                     setChatContext,
                   })
                 }
-                userkeycloakId={chatInitConfig.userkeycloakId}
+                userkeycloakId={userkeycloakId}
                 showMessagesLabel={chatInitConfig.showMessagesLabel}
                 showDiscardOption={chatInitConfig.showDiscardOption}
                 headerClass={classes.messageManagementHeader}
@@ -344,13 +368,14 @@ const InitContext = ({
         {!isLoadingInitialState && (
           <InitWebsockets
             chatApiUrl={chatInitConfig.chatApiUrl}
-            userkeycloakId={chatInitConfig.userkeycloakId}
+            userkeycloakId={userkeycloakId}
             chatIds={chatIds}
             reloadComponent={reloadComponent}
             connectionKeys={componentInfo.connectionKeys}
             destination={componentInfo.destination}
             onChatUpdated={(updatedChat) =>
               onUpdatedChat(
+                userkeycloakId,
                 updatedChat,
                 setCurrentChat,
                 currentChat,
@@ -392,7 +417,7 @@ const InitContext = ({
                 onClick={() => {
                   const encodedData = encodeChatData(
                     chatToOpenFirstAction,
-                    chatInitConfig.userkeycloakId
+                    userkeycloakId
                   );
 
                   window.open(

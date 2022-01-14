@@ -1,6 +1,6 @@
 import { Badge, Grid, makeStyles, Typography } from "@material-ui/core";
 import Icon from "@mdi/react";
-import { mdiArrowLeft, mdiClose } from "@mdi/js";
+import { mdiArrowLeft, mdiClose, mdiVolumeHigh, mdiVolumeOff } from "@mdi/js";
 import React from "react";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 
@@ -20,6 +20,8 @@ export const HeaderDrawer = ({
   chatInitConfig,
   setIsDrawerOpen,
   view,
+  onNotificationSoundChange,
+  notificationSound,
 }) => {
   const innerClasses = useStyles();
 
@@ -67,13 +69,31 @@ export const HeaderDrawer = ({
           </Grid>
         </Grid>
         <Grid item className={classes.drawerHeaderClose}>
-          <Icon
-            onClick={() => setIsDrawerOpen(false)}
-            color={theme.palette.primary.main}
-            size={1.25}
-            className={innerClasses.closeIconStyles}
-            path={mdiClose}
-          />
+          <Grid spacing={1} alignItems="center" container>
+            <Grid item>
+              <Typography variant="caption">
+                Versão: {process.env.REACT_APP_VERSION}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Icon
+                onClick={() => onNotificationSoundChange()}
+                color={theme.palette.primary.main}
+                size={0.8}
+                className={innerClasses.closeIconStyles}
+                path={notificationSound ? mdiVolumeHigh : mdiVolumeOff}
+              />
+            </Grid>
+            <Grid item>
+              <Icon
+                onClick={() => setIsDrawerOpen(false)}
+                color={theme.palette.primary.main}
+                size={1.25}
+                className={innerClasses.closeIconStyles}
+                path={mdiClose}
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </div>
