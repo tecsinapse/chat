@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useTheme } from "@material-ui/styles";
@@ -153,8 +153,38 @@ const InitContext = ({
 
   const reloadComponent = () => loadComponent(propsToLoadComponent);
 
-  const chatIds = getChatIds(componentInfo?.allChats);
   const unreadTotal = getUnreadTotal(allChats);
+
+  const registerChatIds = () => {
+    if (!componentInfo) {
+      return;
+    }
+
+    const mainSocket = mainSocketRef.current;
+
+    if (!mainSocket) {
+      return;
+    }
+
+    const { connectionKeys, destination } = componentInfo;
+    const { userkeycloakId } = chatInitConfig;
+    const chatIds = getChatIds(componentInfo?.allChats);
+
+    connectionKeys.forEach((connectionKey) => {
+      const addUser = `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`;
+
+      try {
+        // informação dos chats que esse usuário está acompanhando
+        const payload = JSON.stringify({ chatIds });
+
+        mainSocket.sendMessage(addUser, payload);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+  };
+
+  useEffect(registerChatIds, [chatInitConfig, componentInfo]);
 
   const onSelectUnreadChat = (chat) => {
     if (chatInitConfig.clickOnUnreadOpenFirstAction) {
@@ -369,10 +399,7 @@ const InitContext = ({
           <InitWebsockets
             chatApiUrl={chatInitConfig.chatApiUrl}
             userkeycloakId={userkeycloakId}
-            chatIds={chatIds}
             reloadComponent={reloadComponent}
-            connectionKeys={componentInfo.connectionKeys}
-            destination={componentInfo.destination}
             onChatUpdated={(updatedChat) =>
               onUpdatedChat(
                 userkeycloakId,
@@ -387,6 +414,7 @@ const InitContext = ({
             mainSocketRef={mainSocketRef}
             setReceivedMessage={setReceivedMessage}
             setConnectedAt={setConnectedAt}
+            onConnectMainSocket={registerChatIds}
           />
         )}
         {chatInitConfig.clickOnUnreadOpenFirstAction && (
