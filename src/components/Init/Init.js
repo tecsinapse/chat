@@ -171,7 +171,11 @@ const InitContext = ({
     const chatIds = getChatIds(componentInfo?.allChats);
 
     connectionKeys.forEach((connectionKey) => {
-      const addUser = `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`;
+      const connectionKeyValue = connectionKey.value
+        ? connectionKey.value
+        : connectionKey;
+
+      const addUser = `/chat/addUser/main/${connectionKeyValue}/${destination}/${userkeycloakId}`;
 
       try {
         // informação dos chats que esse usuário está acompanhando
