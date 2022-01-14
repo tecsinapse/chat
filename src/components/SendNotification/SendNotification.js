@@ -68,10 +68,10 @@ export const SendNotification = ({
     },
   ];
 
-  connectionKeys.forEach((c) =>
+  connectionKeys.forEach((connectionKey) =>
     availableConnectionKeys.push({
-      label: c,
-      value: c,
+      label: connectionKey.label ? connectionKey.label : connectionKey,
+      value: connectionKey.value ? connectionKey.value : connectionKey,
     })
   );
 
