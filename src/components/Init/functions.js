@@ -4,6 +4,10 @@ import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { getChatId } from "../../context";
 
 const notifyNewMessage = (userkeycloakId, name) => {
+  if (!userkeycloakId || !name) {
+    return;
+  }
+
   const title = "Nova mensagem";
   const icon = `https://cdn.portaltecsinapse.com.br/src/chat-component/notification-icon.png`;
   const body = `Você tem uma nova mensagem de ${name} no Chat.`;
@@ -45,13 +49,12 @@ const onUpdatedChat = (
       componentInfo?.allChats[componentInfoChatIndex] ||
       chatContext.get(getChatId(updatedChat));
 
-    chatContext.set(
-      getChatId(updatedChat),
-      completeChatInfoWith(chat, updatedChat)
-    );
+    const completeChatInfo = completeChatInfoWith(chat, updatedChat);
+
+    chatContext.set(getChatId(updatedChat), completeChatInfo);
 
     if (updatedChat.notifyNewMessage) {
-      notifyNewMessage(userkeycloakId, chat.name);
+      notifyNewMessage(userkeycloakId, completeChatInfo.name);
     }
   } else {
     chatContext.set(getChatId(updatedChat), updatedChat);
@@ -105,17 +108,20 @@ const onDeleteChat = async ({
   } catch (e) {
     console.error("[DELETE_CHAT] Error when deleting", e.message);
   }
-  const toUpdateInfo = { ...componentInfo };
-
   chatContext.delete(getChatId(deletedChat));
 
-  const { currentClient } = componentInfo;
+  const { connectionKey, destination, chatId } = deletedChat;
 
-  if (currentClient && Object.keys(currentClient).length > 0) {
-    if (currentClient.clientChatIds.includes(deletedChat.chatId)) {
-      toUpdateInfo.currentClient = {};
-    }
-  }
+  const allChatsUpdate = componentInfo.allChats.filter((value) => {
+    return !(
+      value.connectionKey === connectionKey &&
+      value.destination === destination &&
+      value.chatId === chatId
+    );
+  });
+
+  const toUpdateInfo = { ...componentInfo, allChats: allChatsUpdate };
+
   setComponentInfo(toUpdateInfo);
   setChatContext(new Map(chatContext));
 
