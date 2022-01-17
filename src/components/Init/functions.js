@@ -171,7 +171,10 @@ const playNotificationSound = (userkeycloakId) => {
   if (isNotificationSoundEnabled(userkeycloakId)) {
     const sound = `https://cdn.portaltecsinapse.com.br/src/chat-component/notification-sound.wav`;
 
-    new Audio(sound).play();
+    const audio = new Audio(sound);
+    audio.addEventListener("canplaythrough", () => {
+      audio.play();
+    });
   }
 };
 
