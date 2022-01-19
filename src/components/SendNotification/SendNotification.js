@@ -8,7 +8,13 @@ import { cleanPhoneCharacters, emptyTemplate } from "./utils";
 import { getObjectToSetChat } from "../../utils/helpers";
 import useSendNotification from "../../hooks/useSendNotification";
 import { HeaderSendNotification } from "./HeaderSendNotification";
-import { send, loadTemplates, getName, getCanSend } from "./functions";
+import {
+  send,
+  loadTemplates,
+  getName,
+  getCanSend,
+  getConnectionKeyArgs,
+} from "./functions";
 
 /* eslint-disable react/no-array-index-key */
 
@@ -33,9 +39,8 @@ export const SendNotification = ({
   const [phoneNumber, setPhoneNumber] = useState(
     chat == null ? "" : chat.phone.replace(/[^0-9]/g, "")
   );
-  const [selectedConnectionKey, setSelectedConnectionKey] = useState(
-    chat == null ? "" : chat.connectionKey
-  );
+  const [selectedConnectionKey, setSelectedConnectionKey] = useState("");
+  const [connectionKeyLabel, setConnectionKeyLabel] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [args, setArgs] = useState([]);
   const [preview, setPreview] = useState("");
@@ -70,10 +75,22 @@ export const SendNotification = ({
 
   connectionKeys.forEach((connectionKey) =>
     availableConnectionKeys.push({
-      label: connectionKey.label ? connectionKey.label : connectionKey,
-      value: connectionKey.value ? connectionKey.value : connectionKey,
+      label: connectionKey.label,
+      value: connectionKey.label,
     })
   );
+
+  const handleSelectConnectionKey = (value) => {
+    const connectionKey = connectionKeys.find((it) => it.label === value);
+    if (connectionKey) {
+      setConnectionKeyLabel(connectionKey.label);
+      setSelectedConnectionKey(connectionKey.value);
+    } else {
+      setConnectionKeyLabel("Selecione");
+      setSelectedConnectionKey("");
+      onSelectTemplate("");
+    }
+  };
 
   const propsToLoadTamplates = {
     setSelectedConnectionKey,
@@ -170,6 +187,11 @@ export const SendNotification = ({
     setTimeout(() => setView(COMPONENT_LOCATION.CHAT), 4000);
   };
 
+  const connectionKeyArgs = getConnectionKeyArgs(
+    connectionKeys,
+    connectionKeyLabel
+  );
+
   const propsToSend = {
     chatApiUrl,
     selectedConnectionKey,
@@ -186,6 +208,7 @@ export const SendNotification = ({
     setError,
     setSuccess,
     args,
+    connectionKeyArgs,
     customFields,
   };
 
@@ -202,11 +225,9 @@ export const SendNotification = ({
         <Grid container spacing={2} direction="column">
           <Grid item style={selectGridZIndex}>
             <Select
-              value={selectedConnectionKey}
+              value={connectionKeyLabel}
               options={availableConnectionKeys}
-              onChange={(connectionKey) =>
-                loadTemplates(connectionKey, propsToLoadTamplates)
-              }
+              onChange={handleSelectConnectionKey}
               label="Origem"
               variant="auto"
               fullWidth
@@ -264,7 +285,7 @@ export const SendNotification = ({
               value={selectedTemplate}
               options={availableTemplates}
               onChange={onSelectTemplate}
-              disabled={templates.length === 0}
+              disabled={templates.length === 0 || !selectedConnectionKey}
               label="Template da Mensagem"
               variant="auto"
               fullWidth
@@ -283,7 +304,7 @@ export const SendNotification = ({
               />
             </Grid>
           ))}
-          {preview !== "" && (
+          {preview && (
             <Grid item>
               <Typography variant="caption">Mensagem:</Typography>
               <div className={classes.preview}>

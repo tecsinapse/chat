@@ -1,9 +1,24 @@
 export const mockUnreadInitialState = {
-  connectionKeys: ["sandbox-dev2"],
+  connectionKeys: [{
+    label: "SandBox Dev (Vendas)",
+    value: "sandbox-dev",
+    args: {
+      SetorKey: "VENDAS",
+      OutroValorKey: "OutroValor",
+    },
+  },
+    {
+      label: "SandBox Dev (Oficina)",
+      value: "sandbox-dev",
+      args: {
+        SetorKey: "OFICINA",
+        OutroValorKey: "OutroValor",
+      },
+    },],
   destination: "daf",
   allChats: [
     {
-      connectionKey: "sandbox-dev2",
+      connectionKey: "sandbox-dev",
       destination: "daf",
       name: "Catto",
       subName: null,
@@ -30,7 +45,7 @@ export const mockUnreadInitialState = {
       updateUnreadWhenOpen: true,
     },
     {
-      connectionKey: "sandbox-dev2",
+      connectionKey: "sandbox-dev",
       destination: "daf",
       name: "Denner",
       subName: null,
@@ -57,7 +72,7 @@ export const mockUnreadInitialState = {
       updateUnreadWhenOpen: true,
     },
     {
-      connectionKey: "sandbox-dev2",
+      connectionKey: "sandbox-dev",
       destination: "daf",
       name: "Livio",
       subName: null,
@@ -90,13 +105,6 @@ export const mockUnreadInitialState = {
     segmento: "Segmento",
   },
   extraFields: [
-    {
-      key: "SelectTest",
-      label: "Setor",
-      type: "SELECT",
-      availableValues: ["VENDAS", "POS VENDAS"],
-      value: "POS VENDAS",
-    },
     {
       key: "InputTest",
       label: "Descrição",

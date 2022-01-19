@@ -16,6 +16,7 @@ export const send = ({
   setError,
   setSuccess,
   args,
+  connectionKeyArgs,
   customFields,
 }) => {
   setSending(true);
@@ -43,6 +44,10 @@ export const send = ({
         for (const custom of customFields) {
           fetchArgs[custom.key] = custom.value;
         }
+
+        Object.keys(connectionKeyArgs).forEach((argKey) => {
+          fetchArgs[argKey] = connectionKeyArgs[argKey];
+        });
 
         productService
           .createChat(selectedConnectionKey, phoneNumber, fetchArgs, token)
@@ -127,3 +132,12 @@ export const getCanSend = (phoneNumber, selectedTemplate, args) =>
   selectedTemplate !== "" &&
   args.length > 0 &&
   args.filter((a) => a !== "").length === args.length;
+
+export const getConnectionKeyArgs = (connectionKeys, label) => {
+  const connectionKey = connectionKeys.find((it) => it.label === label);
+  if (connectionKey && connectionKey.args) {
+    return connectionKey.args;
+  } else {
+    return {};
+  }
+};
