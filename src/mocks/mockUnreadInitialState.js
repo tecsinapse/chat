@@ -1,20 +1,24 @@
 export const mockUnreadInitialState = {
-  connectionKeys: [{
-    label: "SandBox Dev (Vendas)",
-    value: "sandbox-dev",
-    args: {
-      SetorKey: "VENDAS",
-      OutroValorKey: "OutroValor",
+  connectionKeys: [
+    {
+      label: "SandBox Dev (Vendas)",
+      value: "sandbox-dev",
+      args: {
+        SetorKey: "VENDAS",
+        DealerKey: "1",
+        OutroValorKey: "OutroValor",
+      },
     },
-  },
     {
       label: "SandBox Dev (Oficina)",
       value: "sandbox-dev",
       args: {
         SetorKey: "OFICINA",
+        DealerKey: "1",
         OutroValorKey: "OutroValor",
       },
-    },],
+    },
+  ],
   destination: "daf",
   allChats: [
     {
