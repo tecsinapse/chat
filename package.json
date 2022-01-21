@@ -1,6 +1,6 @@
 {
   "name": "@tecsinapse/chat-component",
-  "version": "1.5.3",
+  "version": "1.5.3-snapshot",
   "license": "MIT",
   "main": "build/index.js",
   "module": "build/index.js",

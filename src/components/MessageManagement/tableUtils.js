@@ -1,10 +1,19 @@
 import React from "react";
-import { Badge, ListItem, ListItemText, Typography } from "@material-ui/core";
+import {
+  Badge,
+  ListItem,
+  ListItemText,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
 import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
+import Icon from "@mdi/react";
+import { mdiInformation } from "@mdi/js";
 import { format } from "../../utils/dates";
 import { MessageSource } from "../../constants";
 import { encodeChatData } from "../../utils/encodeChatData";
 import { highlight } from "./globalSearch";
+import { MESSAGES_INFO } from "../../constants/MessagesInfo";
 
 /* eslint-disable react/no-array-index-key */
 
@@ -38,9 +47,27 @@ export const generateAction = (
     });
   }
 
+  const discardConversationCss = {
+    display: "flex",
+    alignItems: "center",
+  };
+
+  const discardConversationLabelCss = {
+    marginRight: "4px",
+  };
+
   if (showDiscardOption) {
     actions.push({
-      label: "Descartar Conversa",
+      label: (
+        <div style={discardConversationCss}>
+          <span style={discardConversationLabelCss}>
+            {MESSAGES_INFO.discard_label}
+          </span>
+          <Tooltip title={MESSAGES_INFO.discard_tooltip_text}>
+            <Icon path={mdiInformation} size={0.8} />
+          </Tooltip>
+        </div>
+      ),
       onClick: (rowData) => {
         setDeletingChat(rowData);
       },
@@ -212,7 +239,7 @@ export const customActionsMobile = (
 
     {showDiscardOption && (
       <ListItem key="discardMsg" onClick={() => setDeletingChat(data)}>
-        <ListItemText>Descartar Conversa</ListItemText>
+        <ListItemText>{MESSAGES_INFO.discard_label}</ListItemText>
       </ListItem>
     )}
   </div>

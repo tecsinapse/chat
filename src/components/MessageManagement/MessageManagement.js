@@ -14,6 +14,7 @@ import { useStyle } from "./styles";
 import { TableHeader } from "./TableHeader";
 import { customActionsMobile, generateColumns } from "./tableUtils";
 import { getOptions, dataFetcher } from "./functions";
+import { MESSAGES_INFO } from "../../constants/MessagesInfo";
 
 export const MessageManagement = ({
   componentInfo,
@@ -121,7 +122,7 @@ export const MessageManagement = ({
       >
         <DialogTitle id="dialog-title">Confirmação</DialogTitle>
         <DialogContent>
-          <DialogContentText>Descartar a conversa?</DialogContentText>
+          <DialogContentText>{MESSAGES_INFO.discard_label}?</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={() => setDeletingChat({})} color="primary">
