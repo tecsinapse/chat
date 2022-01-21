@@ -29,7 +29,7 @@ export const send = ({
       selectedTemplate,
       args
     )
-    .then(() => {
+    .then((chatId) => {
       if (process.env.NODE_ENV !== "development") {
         // call the product to create relationship between chat and client
         const fetchArgs = {};
@@ -45,19 +45,23 @@ export const send = ({
           fetchArgs[custom.key] = custom.value;
         }
 
-        Object.keys(connectionKeyArgs).forEach((argKey) => {
-          fetchArgs[argKey] = connectionKeyArgs[argKey];
-        });
-
         productService
-          .createChat(selectedConnectionKey, phoneNumber, fetchArgs, token)
+          .createChat(
+            selectedConnectionKey,
+            phoneNumber,
+            {
+              ...fetchArgs,
+              ...connectionKeyArgs,
+            },
+            token
+          )
           .then(() => {
             ReactGA.event({
               category: selectedConnectionKey,
               label: selectedTemplate,
               action: "Send Notification",
             });
-            successSend();
+            successSend(chatId);
           })
           .catch((error) => {
             setError(error.errors);
@@ -70,7 +74,7 @@ export const send = ({
           label: selectedTemplate,
           action: "Send Notification",
         });
-        successSend();
+        successSend(chatId);
       }
     })
     .catch((err) => {

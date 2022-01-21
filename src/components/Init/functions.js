@@ -1,7 +1,8 @@
-import { isEquals } from "../../utils/helpers";
-import { completeChatInfoWith } from "../../utils/loadChatsInfos";
-import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { getChatId } from "../../context";
+import {isEquals} from "../../utils/helpers";
+import {completeChatInfoWith} from "../../utils/loadChatsInfos";
+import {COMPONENT_LOCATION} from "../../constants/COMPONENT_LOCATION";
+import {getChatId} from "../../context";
+import {CDN_RESOURCES} from "../../constants/CDN_RESOURCES";
 
 const notifyNewMessage = (userkeycloakId, name) => {
   if (!userkeycloakId || !name) {
@@ -9,8 +10,8 @@ const notifyNewMessage = (userkeycloakId, name) => {
   }
 
   const title = "Nova mensagem";
-  const icon = `https://cdn.portaltecsinapse.com.br/src/chat-component/notification-icon.png`;
   const body = `Você tem uma nova mensagem de ${name} no Chat.`;
+  const icon = CDN_RESOURCES.NOTIFICATION_ICON;
 
   if (Notification.permission === "granted") {
     // eslint-disable-next-line
@@ -175,9 +176,7 @@ const isShowSendNotification = (view, chatInitConfig, chatViewAndIsBlocked) =>
 
 const playNotificationSound = (userkeycloakId) => {
   if (isNotificationSoundEnabled(userkeycloakId)) {
-    const sound = `https://cdn.portaltecsinapse.com.br/src/chat-component/notification-sound.wav`;
-
-    const audio = new Audio(sound);
+    const audio = new Audio(CDN_RESOURCES.NOTIFICATION_SOUND);
     audio.addEventListener("canplaythrough", () => {
       audio.play();
     });

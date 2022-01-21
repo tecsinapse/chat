@@ -1,4 +1,10 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, {
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+} from "react";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useTheme } from "@material-ui/styles";
@@ -155,7 +161,7 @@ const InitContext = ({
 
   const unreadTotal = getUnreadTotal(allChats);
 
-  const registerChatIds = () => {
+  const registerChatIds = useCallback(() => {
     if (!componentInfo) {
       return;
     }
@@ -170,12 +176,12 @@ const InitContext = ({
     const { userkeycloakId } = chatInitConfig;
     const chatIds = getChatIds(componentInfo?.allChats);
 
-    connectionKeys.forEach((connectionKey) => {
-      const connectionKeyValue = connectionKey.value
-        ? connectionKey.value
-        : connectionKey;
+    const distinctConnectionKeys = connectionKeys
+      .map((it) => it.value)
+      .filter((it, index, self) => self.indexOf(it) === index);
 
-      const addUser = `/chat/addUser/main/${connectionKeyValue}/${destination}/${userkeycloakId}`;
+    distinctConnectionKeys.forEach((connectionKey) => {
+      const addUser = `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`;
 
       try {
         // informação dos chats que esse usuário está acompanhando
@@ -183,10 +189,10 @@ const InitContext = ({
 
         mainSocket.sendMessage(addUser, payload);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     });
-  };
+  }, [chatInitConfig, componentInfo, mainSocketRef]);
 
   useEffect(registerChatIds, [chatInitConfig, componentInfo]);
 
