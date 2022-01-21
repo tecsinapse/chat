@@ -4,16 +4,16 @@ import { Grid, Typography } from "@material-ui/core";
 import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { cleanPhoneCharacters, emptyTemplate } from "./utils";
+import { emptyTemplate } from "./utils";
 import { getObjectToSetChat } from "../../utils/helpers";
 import useSendNotification from "../../hooks/useSendNotification";
 import { HeaderSendNotification } from "./HeaderSendNotification";
 import {
-  send,
-  loadTemplates,
-  getName,
   getCanSend,
   getConnectionKeyArgs,
+  getName,
+  loadTemplates,
+  send,
 } from "./functions";
 
 /* eslint-disable react/no-array-index-key */
@@ -158,9 +158,8 @@ export const SendNotification = ({
 
   const canSend = getCanSend(phoneNumber, selectedTemplate, args);
 
-  const successSend = async () => {
+  const successSend = async (chatId) => {
     const clientName = getName(chat, args, templates, selectedTemplate);
-    const chatId = cleanPhoneCharacters(phoneNumber);
 
     setSuccess("Mensagem enviada");
     setTimeout(() => setSuccess(""), 4000);
