@@ -61,9 +61,9 @@ export const generateAction = (
       label: (
         <div style={discardConversationCss}>
           <span style={discardConversationLabelCss}>
-            {MESSAGES_INFO.discard_label}
+            {MESSAGES_INFO.DISCARD_LABEL}
           </span>
-          <Tooltip title={MESSAGES_INFO.discard_tooltip_text}>
+          <Tooltip title={MESSAGES_INFO.DISCARD_TOOLTIP_TEXT}>
             <Icon path={mdiInformation} size={0.8} />
           </Tooltip>
         </div>
@@ -239,7 +239,7 @@ export const customActionsMobile = (
 
     {showDiscardOption && (
       <ListItem key="discardMsg" onClick={() => setDeletingChat(data)}>
-        <ListItemText>{MESSAGES_INFO.discard_label}</ListItemText>
+        <ListItemText>{MESSAGES_INFO.DISCARD_LABEL}</ListItemText>
       </ListItem>
     )}
   </div>

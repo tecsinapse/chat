@@ -122,7 +122,7 @@ export const MessageManagement = ({
       >
         <DialogTitle id="dialog-title">Confirmação</DialogTitle>
         <DialogContent>
-          <DialogContentText>{MESSAGES_INFO.discard_label}?</DialogContentText>
+          <DialogContentText>{MESSAGES_INFO.DISCARD_LABEL}?</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={() => setDeletingChat({})} color="primary">
