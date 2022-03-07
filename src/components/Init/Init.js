@@ -258,8 +258,6 @@ const InitContext = ({
 
   const closeIconStyles = { cursor: "pointer" };
 
-  const teste = () => console.log(chatInitConfig);
-
   return (
     <>
       {chatInitConfig.customChatButton &&
@@ -281,7 +279,6 @@ const InitContext = ({
           open={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
         >
-          <Button onClick={teste}>TESTE</Button>
           <div className={classes.drawerContainer}>
             <HeaderDrawer
               view={view}
