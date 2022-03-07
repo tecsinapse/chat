@@ -33,11 +33,14 @@ export const SendNotification = ({
   setView,
   token,
   componentInfo,
+  userPhoneNumber,
 }) => {
   const classes = useStyle();
 
   const [phoneNumber, setPhoneNumber] = useState(
-    chat == null ? "" : chat.phone.replace(/[^0-9]/g, "")
+    chat == null
+      ? userPhoneNumber.replace(/[^0-9]/g, "")
+      : chat.phone.replace(/[^0-9]/g, "")
   );
   const [selectedConnectionKey, setSelectedConnectionKey] = useState("");
   const [connectionKeyLabel, setConnectionKeyLabel] = useState("");
@@ -82,6 +85,7 @@ export const SendNotification = ({
 
   const handleSelectConnectionKey = (value) => {
     const connectionKey = connectionKeys.find((it) => it.label === value);
+
     if (connectionKey) {
       setConnectionKeyLabel(connectionKey.label);
       setSelectedConnectionKey(connectionKey.value);

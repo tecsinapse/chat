@@ -91,6 +91,11 @@ export const Init = (props) => {
   );
 };
 
+const defineLocation = (sendNotification: boolean) =>
+  sendNotification
+    ? COMPONENT_LOCATION.SEND_NOTIFICATION
+    : COMPONENT_LOCATION.UNREAD;
+
 const InitContext = ({
   chatInitConfig,
   customizeStyles,
@@ -101,9 +106,10 @@ const InitContext = ({
 }) => {
   const productService = new ProductService(chatInitConfig.createPath);
   const chatService = new ChatService(`${chatInitConfig.chatApiUrl}/api/chats`);
+
   const homeLocation = chatInitConfig.onlyMessageManagement
     ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
-    : COMPONENT_LOCATION.UNREAD;
+    : defineLocation(chatInitConfig.noHaveChatSendNotification);
 
   const classes = useStyle(customizeStyles, mobile)();
   const theme = useTheme();
@@ -252,6 +258,8 @@ const InitContext = ({
 
   const closeIconStyles = { cursor: "pointer" };
 
+  const teste = () => console.log(chatInitConfig);
+
   return (
     <>
       {chatInitConfig.customChatButton &&
@@ -273,6 +281,7 @@ const InitContext = ({
           open={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
         >
+          <Button onClick={teste}>TESTE</Button>
           <div className={classes.drawerContainer}>
             <HeaderDrawer
               view={view}
@@ -362,6 +371,7 @@ const InitContext = ({
             {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (
               <SendNotification
                 chat={chatToSendNotification}
+                userPhoneNumber={chatInitConfig.userPhoneNumber || ""}
                 chatApiUrl={chatInitConfig.chatApiUrl}
                 connectionKeys={componentInfo.connectionKeys}
                 destination={componentInfo.destination}
