@@ -200,6 +200,30 @@ const InitContext = ({
     });
   }, [chatInitConfig, componentInfo, mainSocketRef]);
 
+  useEffect(
+    () =>
+      window.addEventListener("message", async (event) => {
+        const json = JSON.parse(event.data);
+
+        if (json.tipo === "TEC-INIT-WHATSAPP") {
+          propsToLoadComponent.chatInitConfig.params.clienteId = json.clienteId;
+          propsToLoadComponent.chatInitConfig.noHaveChatSendNotification =
+            json.noHaveChatSendNotification;
+          propsToLoadComponent.chatInitConfig.userPhoneNumber =
+            json.userPhoneNumber;
+          propsToLoadComponent.startChat = () =>
+            onStartSendNotification(
+              COMPONENT_LOCATION.MESSAGE_MANAGEMENT,
+              setChatToSendNotification,
+              setView
+            );
+          await reloadComponent();
+          setIsDrawerOpen(true);
+        }
+      }),
+    []
+  );
+
   useEffect(registerChatIds, [chatInitConfig, componentInfo]);
 
   const onSelectUnreadChat = (chat) => {

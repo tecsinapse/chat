@@ -60,6 +60,7 @@ export async function loadComponent({
   chatService,
   firstLoad,
   setFirstLoad,
+  startChat,
 }) {
   const info = await load({ ...chatInitConfig, userMock, token });
 
@@ -74,8 +75,6 @@ export async function loadComponent({
     setFirstLoad(false);
     // quando a visualização é de um cliente específico, então define as informações
     // desse cliente como currentChat e exibe o chat direto
-    setView(COMPONENT_LOCATION.CHAT);
-
     const chats = (info?.allChats || []).filter(
       (chat) =>
         info.currentClient.clientChatIds.includes(chat.chatId) &&
@@ -105,6 +104,9 @@ export async function loadComponent({
     );
 
     setCurrentChat(objectToSetChat);
+    setView(COMPONENT_LOCATION.CHAT);
+  } else if (chatInitConfig.noHaveChatSendNotification && !!startChat) {
+    startChat();
   }
 }
 
