@@ -3,6 +3,7 @@ import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
 import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
 import { stringFormattedToMoment, momentNow } from "./dates";
+import { onStartSendNotification } from "../components/Init/functions";
 
 function last(array) {
   return array[array.length - 1];
@@ -177,4 +178,29 @@ export const isEmpty = (obj) => {
   }
 
   return true;
+};
+
+export const messageEventListener = async (
+  event,
+  propsToLoadComponent,
+  setChatToSendNotification,
+  setView
+) => {
+  const json = JSON.parse(event.data);
+
+  if (json.tipo === "TEC-INIT-WHATSAPP") {
+    const prop = { ...propsToLoadComponent };
+
+    prop.chatInitConfig.params.clienteId = json.clienteId;
+    prop.chatInitConfig.noHaveChatSendNotification =
+      json.noHaveChatSendNotification;
+    prop.chatInitConfig.userPhoneNumber = json.userPhoneNumber;
+    prop.startChat = () =>
+      onStartSendNotification(
+        COMPONENT_LOCATION.MESSAGE_MANAGEMENT,
+        setChatToSendNotification,
+        setView
+      );
+    await loadComponent(prop);
+  }
 };

@@ -56,7 +56,7 @@ import { ItemDrawer } from "./ItemDrawer";
 import { ProductService } from "../../service/ProductService";
 import { ChatService } from "../../service/ChatService";
 import ChatContext, { allChatsMap } from "../../context";
-import { loadComponent } from "../../utils/helpers";
+import { loadComponent, messageEventListener } from "../../utils/helpers";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -163,7 +163,10 @@ const InitContext = ({
 
   useLoadComponent(propsToLoadComponent);
 
-  const reloadComponent = () => loadComponent(propsToLoadComponent);
+  const reloadComponent = useCallback(
+    () => loadComponent(propsToLoadComponent),
+    [propsToLoadComponent]
+  );
 
   const unreadTotal = getUnreadTotal(allChats);
 
@@ -200,26 +203,18 @@ const InitContext = ({
     });
   }, [chatInitConfig, componentInfo, mainSocketRef]);
 
-  useEffect(() =>
-    window.addEventListener("message", async (event) => {
-      const json = JSON.parse(event.data);
-
-      if (json.tipo === "TEC-INIT-WHATSAPP") {
-        propsToLoadComponent.chatInitConfig.params.clienteId = json.clienteId;
-        propsToLoadComponent.chatInitConfig.noHaveChatSendNotification =
-          json.noHaveChatSendNotification;
-        propsToLoadComponent.chatInitConfig.userPhoneNumber =
-          json.userPhoneNumber;
-        propsToLoadComponent.startChat = () =>
-          onStartSendNotification(
-            COMPONENT_LOCATION.MESSAGE_MANAGEMENT,
-            setChatToSendNotification,
-            setView
-          );
-        await reloadComponent();
+  useEffect(
+    () =>
+      window.addEventListener("message", async (event) => {
+        await messageEventListener(
+          event,
+          propsToLoadComponent,
+          setChatToSendNotification,
+          setView
+        );
         setIsDrawerOpen(true);
-      }
-    })
+      }),
+    [propsToLoadComponent, setView, setChatToSendNotification]
   );
 
   useEffect(registerChatIds, [chatInitConfig, componentInfo]);
