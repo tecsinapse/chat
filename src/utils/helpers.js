@@ -106,7 +106,7 @@ export async function loadComponent({
 
     setCurrentChat(objectToSetChat);
     setView(COMPONENT_LOCATION.CHAT);
-  } else if (chatInitConfig.noHaveChatSendNotification && !!startChat) {
+  } else if (typeof startChat === "function") {
     startChat();
   }
 }
@@ -188,12 +188,10 @@ export const messageEventListener = async (
 ) => {
   const json = JSON.parse(event.data);
 
-  if (json.tipo === "TEC-INIT-WHATSAPP") {
+  if (json.tipo === "TEC-INIT-WINGO-CHAT") {
     const prop = { ...propsToLoadComponent };
 
     prop.chatInitConfig.params.clienteId = json.clienteId;
-    prop.chatInitConfig.noHaveChatSendNotification =
-      json.noHaveChatSendNotification;
     prop.chatInitConfig.userPhoneNumber = json.userPhoneNumber;
     prop.startChat = () =>
       onStartSendNotification(

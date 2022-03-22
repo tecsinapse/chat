@@ -28,7 +28,6 @@ window.renderChatComponent = function renderChatComponent() {
     onlyMessageManagement: false,
     canSendNotification: true,
     standalone,
-    noHaveChatSendNotification: false,
     userPhoneNumber: "",
   };
 

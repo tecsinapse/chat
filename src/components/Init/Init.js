@@ -91,11 +91,6 @@ export const Init = (props) => {
   );
 };
 
-const defineLocation = (sendNotification: boolean) =>
-  sendNotification
-    ? COMPONENT_LOCATION.SEND_NOTIFICATION
-    : COMPONENT_LOCATION.UNREAD;
-
 const InitContext = ({
   chatInitConfig,
   customizeStyles,
@@ -109,7 +104,7 @@ const InitContext = ({
 
   const homeLocation = chatInitConfig.onlyMessageManagement
     ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
-    : defineLocation(chatInitConfig.noHaveChatSendNotification);
+    : COMPONENT_LOCATION.UNREAD;
 
   const classes = useStyle(customizeStyles, mobile)();
   const theme = useTheme();
@@ -214,7 +209,8 @@ const InitContext = ({
         );
         setIsDrawerOpen(true);
       }),
-    [propsToLoadComponent, setView, setChatToSendNotification]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
   );
 
   useEffect(registerChatIds, [chatInitConfig, componentInfo]);
