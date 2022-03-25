@@ -18,6 +18,7 @@ export const send = ({
   args,
   connectionKeyArgs,
   customFields,
+  userId
 }) => {
   setSending(true);
   chatService
@@ -27,7 +28,8 @@ export const send = ({
       destination,
       phoneNumber,
       selectedTemplate,
-      args
+      args,
+      userId
     )
     .then((chatId) => {
       if (process.env.NODE_ENV !== "development") {

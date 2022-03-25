@@ -15,7 +15,8 @@ export class ChatService {
     destination,
     phoneNumber,
     selectedTemplate,
-    args
+    args,
+    userId
   ) {
     return defaultFetch(
       `${this.url}/${selectedConnectionKey}/${destination}/notification/send`,
@@ -24,6 +25,7 @@ export class ChatService {
         phoneNumber,
         template: selectedTemplate,
         args,
+        userId,
       }
     );
   }
