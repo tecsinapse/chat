@@ -4,6 +4,7 @@ import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
 import { stringFormattedToMoment, momentNow } from "./dates";
 import { onStartSendNotification } from "../components/Init/functions";
+import { countryPhoneNumber } from "../components/SendNotification/utils";
 
 function last(array) {
   return array[array.length - 1];
@@ -83,32 +84,76 @@ export async function loadComponent({
         info.currentClient.destination === chat.destination
     );
 
-    let chatId;
+    // when userPhoneNumber is null, keeped current behavior
+    if (!chatInitConfig.userPhoneNumber) {
+      const chatId = findChat(info.currentClient.clientChatIds, chats);
 
-    if (info.currentClient.clientChatIds.length === 1) {
-      [chatId] = info.currentClient.clientChatIds;
-    } else if (info.currentClient.clientChatIds.length > 1) {
-      chatId = chats[0].chatId;
+      if (chatId === null) {
+        return;
+      }
+
+      await renderChat(chatId, info, chatService, setView, setCurrentChat);
     } else {
-      return;
+      // when you have a userPhoneNumber, find the Chat with that userPhoneNumber
+      const chatId = findChat(
+        info.currentClient.clientChatIds,
+        chats,
+        chatInitConfig.userPhoneNumber
+      );
+
+      if (chatId === null || chatId === undefined) {
+        startChat();
+      } else {
+        await renderChat(chatId, info, chatService, setView, setCurrentChat);
+      }
     }
-
-    const { connectionKey, destination, clientName } = info.currentClient;
-
-    const objectToSetChat = await getObjectToSetChat(
-      chatService,
-      info,
-      connectionKey,
-      destination,
-      chatId,
-      clientName
-    );
-
-    setCurrentChat(objectToSetChat);
-    setView(COMPONENT_LOCATION.CHAT);
   } else if (typeof startChat === "function") {
     startChat();
   }
+}
+
+async function renderChat(chatId, info, chatService, setView, setCurrentChat) {
+  const { connectionKey, destination, clientName } = info.currentClient;
+
+  const objectToSetChat = await getObjectToSetChat(
+    chatService,
+    info,
+    connectionKey,
+    destination,
+    chatId,
+    clientName
+  );
+
+  setCurrentChat(objectToSetChat);
+  setView(COMPONENT_LOCATION.CHAT);
+}
+
+function findChat(chatsIds, chats, userPhoneNumber) {
+  if (chatsIds.length === 1 && !userPhoneNumber) {
+    return chatsIds;
+  }
+
+  if (chatsIds.length > 1 && !userPhoneNumber) {
+    return chats[0].chatId;
+  }
+
+  if (chatsIds.length === 1 && chatsIds[0] === userPhoneNumber) {
+    return chatsIds;
+  }
+
+  if (chatsIds.length > 1) {
+    let chatId;
+
+    chatsIds.forEach((it) => {
+      if (it === userPhoneNumber) {
+        chatId = it;
+      }
+    });
+
+    return chatId;
+  }
+
+  return undefined;
 }
 
 export const onSelectedChatMaker = ({
@@ -192,7 +237,9 @@ export const messageEventListener = async (
     const prop = { ...propsToLoadComponent };
 
     prop.chatInitConfig.params.clienteId = json.clienteId;
-    prop.chatInitConfig.userPhoneNumber = json.userPhoneNumber;
+    prop.chatInitConfig.userPhoneNumber = countryPhoneNumber(
+      json.userPhoneNumber
+    );
     prop.startChat = () =>
       onStartSendNotification(
         COMPONENT_LOCATION.MESSAGE_MANAGEMENT,

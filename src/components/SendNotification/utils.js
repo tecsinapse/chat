@@ -24,3 +24,34 @@ export const formatPhone = (phone) => {
 
   return value;
 };
+
+export const countryPhoneNumber = (raw) => {
+  if (raw !== null) {
+    let phoneNumber = raw.replace(/\D/g, "");
+
+    if (!phoneNumber) {
+      return null;
+    }
+
+    if (!isPhoneNumberStartWithCountryCode(phoneNumber)) {
+      phoneNumber = `55${phoneNumber}`;
+    }
+
+    if (phoneNumber.length === 12) {
+      const phoneWithNoDD = phoneNumber.substring(4);
+
+      if (phoneWithNoDD.substring(0, 1) > 5) {
+        const var10000 = phoneNumber.substring(0, 4);
+
+        phoneNumber = `${var10000}9${phoneWithNoDD}`;
+      }
+    }
+
+    return phoneNumber;
+  }
+
+  return null;
+};
+
+const isPhoneNumberStartWithCountryCode = (phoneNumber) =>
+  phoneNumber.startsWith("55") && phoneNumber.length >= 12;
