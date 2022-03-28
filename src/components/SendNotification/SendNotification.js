@@ -33,6 +33,7 @@ export const SendNotification = ({
   setView,
   token,
   componentInfo,
+  userId,
   userPhoneNumber,
 }) => {
   const classes = useStyle();
@@ -213,6 +214,7 @@ export const SendNotification = ({
     args,
     connectionKeyArgs,
     customFields,
+    userId,
   };
 
   const selectGridZIndex = { zIndex: 9999999999 };

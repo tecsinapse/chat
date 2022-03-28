@@ -395,6 +395,7 @@ const InitContext = ({
                 setView={setView}
                 token={token}
                 componentInfo={componentInfo}
+                userId={userkeycloakId}
               />
             )}
             {showSendNotification && (
