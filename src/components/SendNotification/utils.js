@@ -41,9 +41,9 @@ export const countryPhoneNumber = (raw) => {
       const phoneWithNoDD = phoneNumber.substring(4);
 
       if (phoneWithNoDD.substring(0, 1) > 5) {
-        const var10000 = phoneNumber.substring(0, 4);
+        const countryDDD = phoneNumber.substring(0, 4);
 
-        phoneNumber = `${var10000}9${phoneWithNoDD}`;
+        phoneNumber = `${countryDDD}9${phoneWithNoDD}`;
       }
     }
 

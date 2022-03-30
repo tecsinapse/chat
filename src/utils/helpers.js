@@ -88,7 +88,7 @@ export async function loadComponent({
     if (!chatInitConfig.userPhoneNumber) {
       const chatId = findChat(info.currentClient.clientChatIds, chats);
 
-      if (chatId === null) {
+      if (!chatId) {
         return;
       }
 
@@ -101,7 +101,7 @@ export async function loadComponent({
         chatInitConfig.userPhoneNumber
       );
 
-      if (chatId === null || chatId === undefined) {
+      if (!chatId) {
         startChat();
       } else {
         await renderChat(chatId, info, chatService, setView, setCurrentChat);
