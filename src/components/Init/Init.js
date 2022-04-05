@@ -205,9 +205,9 @@ const InitContext = ({
           event,
           propsToLoadComponent,
           setChatToSendNotification,
-          setView
+          setView,
+          setIsDrawerOpen
         );
-        setIsDrawerOpen(true);
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

@@ -229,23 +229,32 @@ export const messageEventListener = async (
   event,
   propsToLoadComponent,
   setChatToSendNotification,
-  setView
+  setView,
+  setIsDrawerOpen
 ) => {
-  const json = JSON.parse(event.data);
+  try {
+    const json = JSON.parse(event.data);
 
-  if (json.tipo === "TEC-INIT-WINGO-CHAT") {
-    const prop = { ...propsToLoadComponent };
+    if (json && json.tipo === "TEC-INIT-WINGO-CHAT") {
+      const prop = { ...propsToLoadComponent };
 
-    prop.chatInitConfig.params.clienteId = json.clienteId;
-    prop.chatInitConfig.userPhoneNumber = countryPhoneNumber(
-      json.userPhoneNumber
-    );
-    prop.startChat = () =>
-      onStartSendNotification(
-        COMPONENT_LOCATION.MESSAGE_MANAGEMENT,
-        setChatToSendNotification,
-        setView
-      );
-    await loadComponent(prop);
+      const phone = countryPhoneNumber(json.userPhoneNumber);
+
+      prop.chatInitConfig.params.clienteId = json.clienteId;
+      prop.chatInitConfig.userPhoneNumber = phone;
+
+      prop.startChat = () =>
+        onStartSendNotification(
+          COMPONENT_LOCATION.MESSAGE_MANAGEMENT,
+          setChatToSendNotification,
+          setView
+        );
+
+      await loadComponent(prop);
+
+      setIsDrawerOpen(true);
+    }
+  } catch (e) {
+    // nothing
   }
 };
