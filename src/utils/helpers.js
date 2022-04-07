@@ -101,6 +101,8 @@ export async function loadComponent({
         chatInitConfig.userPhoneNumber
       );
 
+      console.log("whats is chatId: ", chatId);
+
       if (!chatId) {
         startChat();
       } else {
@@ -130,7 +132,7 @@ async function renderChat(chatId, info, chatService, setView, setCurrentChat) {
 
 function findChat(chatsIds, chats, userPhoneNumber) {
   if (chatsIds.length === 1 && !userPhoneNumber) {
-    return chatsIds;
+    return chatsIds[0];
   }
 
   if (chatsIds.length > 1 && !userPhoneNumber) {
@@ -138,7 +140,7 @@ function findChat(chatsIds, chats, userPhoneNumber) {
   }
 
   if (chatsIds.length === 1 && chatsIds[0] === userPhoneNumber) {
-    return chatsIds;
+    return chatsIds[0];
   }
 
   if (chatsIds.length > 1) {
