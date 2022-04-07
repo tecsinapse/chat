@@ -101,8 +101,6 @@ export async function loadComponent({
         chatInitConfig.userPhoneNumber
       );
 
-      console.log("whats is chatId: ", chatId);
-
       if (!chatId) {
         startChat();
       } else {
