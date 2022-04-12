@@ -15,6 +15,7 @@ if (debug) {
 const InitWebsockets = ({
   chatApiUrl,
   userkeycloakId,
+  destination,
   reloadComponent,
   onChatUpdated,
   setReceivedMessage,
@@ -62,7 +63,7 @@ const InitWebsockets = ({
   return (
     <SockJsClient
       url={`${chatApiUrl}/ws`}
-      topics={[`/topic/main.${userkeycloakId}`]}
+      topics={[`/topic/main.${destination}.${userkeycloakId}`]}
       onMessage={handleNewMainWebsocketMessage}
       onConnect={onConnect}
       onDisconnect={onDisconnect}

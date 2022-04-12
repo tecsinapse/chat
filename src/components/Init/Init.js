@@ -430,6 +430,7 @@ const InitContext = ({
           <InitWebsockets
             chatApiUrl={chatInitConfig.chatApiUrl}
             userkeycloakId={userkeycloakId}
+            destination={componentInfo.destination}
             reloadComponent={reloadComponent}
             onChatUpdated={(updatedChat) =>
               onUpdatedChat(
