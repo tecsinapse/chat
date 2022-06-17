@@ -3,6 +3,7 @@ import Icon from "@mdi/react";
 import { mdiArrowLeft, mdiClose, mdiVolumeHigh, mdiVolumeOff } from "@mdi/js";
 import React from "react";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { CDN_RESOURCES } from "../../constants/CDN_RESOURCES";
 
 const useStyles = makeStyles(({ spacing }) => ({
   backIconStyles: { cursor: "pointer", marginLeft: "-8px" },
@@ -71,9 +72,11 @@ export const HeaderDrawer = ({
         <Grid item className={classes.drawerHeaderClose}>
           <Grid spacing={1} alignItems="center" container>
             <Grid item>
-              <Typography variant="caption">
-                Versão: {process.env.REACT_APP_VERSION}
-              </Typography>
+              <img
+                id="logo-wingo"
+                src={CDN_RESOURCES.WINGO_CHAT_LOGO}
+                alt="wingo-logo"
+              />
             </Grid>
             <Grid item>
               <Icon

@@ -17,6 +17,7 @@ import {
   DialogTitle,
   Divider as MuiDivider,
   Drawer,
+  Typography,
 } from "@material-ui/core";
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -424,6 +425,10 @@ const InitContext = ({
                 />
               </div>
             )}
+
+            <Typography variant="caption" id="version">
+              Versão: {process.env.REACT_APP_VERSION}
+            </Typography>
           </div>
         </Drawer>
         {!isLoadingInitialState && (
