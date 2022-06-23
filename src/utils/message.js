@@ -9,6 +9,7 @@ const formatMessageStatus = (status) => {
 
   return status.map((s) => ({
     status: s.status.toLowerCase(),
+    statusMessage: s.statusMessage,
     at: s.at,
   }));
 };

@@ -1737,10 +1737,10 @@
     "@svgr/plugin-svgo" "^4.3.1"
     loader-utils "^1.2.3"
 
-"@tecsinapse/chat@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-3.2.1.tgz#f059be09a7d807e285a122cd055e502da083df63"
-  integrity sha512-FDBFi4DEdc0v3GEf20W1HFk952u0YYbxVwEPV7bRZfwSvFnvBO85qVN4Szf5GPo55hlKxfJ6Fdn8IBQQpT8o2A==
+"@tecsinapse/chat@^3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/chat/-/chat-3.2.2.tgz#6d85a294d75afc22c1f30141979b809066f48fe5"
+  integrity sha512-K7lB2k8cRNsPZH6RcbptO0yC4rH23zBUuE19ocMngG/h4mZlnjrA8chks73Dq6WO4Kih8wGWveXBBDcDDDikBQ==
   dependencies:
     "@livechat/ui-kit" "^0.4.0-10"
     "@material-ui/core" "^4.11.1"
