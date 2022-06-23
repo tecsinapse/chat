@@ -1,3 +1,9 @@
+## <small>3.2.2 (2022-06-23)</small>
+
+* [#177272] - Informar usuário sobre rejeição de sua mensagem pelos motivos 1013 e 471 ([3ad12e8](https://github.com/tecsinapse/chat/commit/3ad12e8)), closes [#177272](https://github.com/tecsinapse/chat/issues/177272)
+
+
+
 ## <small>3.2.1 (2021-08-18)</small>
 
 * fix: blocked message parameter on composer ([2e2ba8f](https://github.com/tecsinapse/chat/commit/2e2ba8f))
