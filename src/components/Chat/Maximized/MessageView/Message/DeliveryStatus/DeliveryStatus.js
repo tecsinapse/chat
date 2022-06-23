@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Tooltip, Typography } from '@material-ui/core';
 import { DELIVERY_STATUS, MESSAGE_STYLE } from '../../../../constants';
 
 const renderStatus = ({ statusProps, classes, deliveryStatus, showDate }) => (
@@ -10,7 +10,14 @@ const renderStatus = ({ statusProps, classes, deliveryStatus, showDate }) => (
           {deliveryStatus?.label({ ...statusProps, showDate })}
         </Typography>
       </span>
-      {deliveryStatus?.icon(classes.messageStatusIcon)}
+      {statusProps.statusMessage && (
+        <Tooltip title={statusProps.statusMessage} placement="bottom-end" arrow>
+          <span>{deliveryStatus?.icon(classes.messageStatusIcon)}</span>
+        </Tooltip>
+      )}
+      {!statusProps.statusMessage && (
+        <span>{deliveryStatus?.icon(classes.messageStatusIcon)}</span>
+      )}
     </div>
   </>
 );

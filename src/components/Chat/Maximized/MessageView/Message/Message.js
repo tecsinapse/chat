@@ -170,7 +170,7 @@ export const Message = ({
       </LiveChatMessage>
 
       {isError && (
-        <Tooltip title="Reenviar" placement="top">
+        <Tooltip title="Reenviar" placement="bottom-end" arrow>
           <IconButtonMaterial
             key="send again"
             onClick={() => {

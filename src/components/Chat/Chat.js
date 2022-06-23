@@ -181,6 +181,7 @@ Chat.propTypes = {
       statusDetails: PropTypes.arrayOf(
         PropTypes.shape({
           status: PropTypes.oneOf(DELIVERY_STATUS.keyNames()),
+          statusMessage: PropTypes.string,
           at: PropTypes.string,
         })
       ),

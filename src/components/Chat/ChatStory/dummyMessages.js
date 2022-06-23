@@ -16,10 +16,14 @@ export const dummyMessagesTextError = [
     id: `${Date.now().toString()}1`,
     authorName: 'Você',
     text: 'Tudo sim!',
-    status: 'read',
+    status: 'rejected',
     statusDetails: [
       { status: 'sent', at: '2019-03-02 10:12:00' },
-      { status: DELIVERY_STATUS.READ, at: '2019-03-02 10:22:02' },
+      {
+        status: DELIVERY_STATUS.REJECTED,
+        statusMessage: 'Este telefone não possui WhatsApp',
+        at: '2019-03-02 10:22:02',
+      },
     ],
     localId: uuidv1(),
   },
