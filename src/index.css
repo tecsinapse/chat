@@ -25,12 +25,6 @@ body {
   box-shadow: none !important;
 }
 
-#version {
-  position: absolute;
-  bottom: 3px;
-  padding-left: 8px;
-}
-
 #logo-wingo {
   height: 1.5rem;
   margin-top: 0.5rem;

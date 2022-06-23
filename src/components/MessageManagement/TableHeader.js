@@ -23,6 +23,7 @@ export const TableHeader = ({
 
   const iconMargin = { marginRight: 6 };
   const headerStyles = { display: "flex" };
+  const versionStyle = { marginTop: 6, right: 10, position: "absolute" };
 
   const debounceInput = useCallback(
     debounce((value) => {
@@ -53,6 +54,9 @@ export const TableHeader = ({
             label: classes.label,
           }}
         />
+        <Typography variant="caption" style={versionStyle}>
+          Versão: {process.env.REACT_APP_VERSION}
+        </Typography>
       </div>
       <Input
         ref={ref}
