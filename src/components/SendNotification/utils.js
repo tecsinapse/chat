@@ -27,10 +27,14 @@ export const formatPhone = (phone) => {
 
 export const countryPhoneNumber = (raw) => {
   if (raw !== null) {
-    let phoneNumber = raw.replace(/\D/g, "");
+    let phoneNumber = raw.replace(/\W/g, "");
 
     if (!phoneNumber) {
       return null;
+    }
+
+    if (/\D/.test(phoneNumber)) {
+      phoneNumber = removePhoneCharacters(raw, phoneNumber);
     }
 
     if (!isPhoneNumberStartWithCountryCode(phoneNumber)) {
@@ -55,3 +59,9 @@ export const countryPhoneNumber = (raw) => {
 
 const isPhoneNumberStartWithCountryCode = (phoneNumber) =>
   phoneNumber.startsWith("55") && phoneNumber.length >= 12;
+
+const removePhoneCharacters = (raw, phoneNumber) => {
+  const index = raw.indexOf(/\D/.exec(phoneNumber));
+
+  return raw.substring(0, index).replace(/\W/g, "");
+};
