@@ -1,3 +1,9 @@
+## <small>3.2.3 (2022-07-21)</small>
+
+* [#179074] - No chat, exibir a data/hora que a mensagem foi enviada (SENT) e não a hora que foi lida  ([92ca7c1](https://github.com/tecsinapse/chat/commit/92ca7c1)), closes [#179074](https://github.com/tecsinapse/chat/issues/179074)
+
+
+
 ## <small>3.2.2 (2022-06-23)</small>
 
 * [#177272] - Informar usuário sobre rejeição de sua mensagem pelos motivos 1013 e 471 ([3ad12e8](https://github.com/tecsinapse/chat/commit/3ad12e8)), closes [#177272](https://github.com/tecsinapse/chat/issues/177272)
