@@ -15,8 +15,13 @@ import RejectedIcon from '../../../../assets/message-status-rejected.svg';
 
 class DELIVERY_STATUS extends Enum {}
 
-const defaultLabel = props =>
-  moment(props?.at).format(props?.showDate ? 'DD/MM/YYYY HH:mm' : 'HH:mm');
+const defaultLabel = props => {
+  if (props.showDate || !props.at) {
+    return props.at
+  }
+  return props.at.split(' ')[1];
+}
+
 
 DELIVERY_STATUS.initEnum({
   SENDING: {
