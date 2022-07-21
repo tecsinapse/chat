@@ -2,12 +2,22 @@ import React from 'react';
 import { Tooltip, Typography } from '@material-ui/core';
 import { DELIVERY_STATUS, MESSAGE_STYLE } from '../../../../constants';
 
-const renderStatus = ({ statusProps, classes, deliveryStatus, showDate }) => (
+const renderStatus = ({
+  statusProps,
+  classes,
+  deliveryStatus,
+  messageAt,
+  showDate,
+}) => (
   <>
     <div className={classes.messageStatusContainer}>
       <span className={classes.messageStatusAtContainer}>
         <Typography variant="caption" className={classes.at}>
-          {deliveryStatus?.label({ ...statusProps, showDate })}
+          {deliveryStatus?.label({
+            status: statusProps.status,
+            at: messageAt,
+            showDate,
+          })}
         </Typography>
       </span>
       {statusProps.statusMessage && (
@@ -28,7 +38,7 @@ export const DeliveryStatus = ({
   addMessageDate,
   showDate,
 }) => {
-  const { status, statusDetails = [], own, at, style } = message;
+  const { status, statusDetails = [], own, at: messageAt, style } = message;
 
   if (MESSAGE_STYLE.isEquals(style, MESSAGE_STYLE.INFO)) {
     return null;
@@ -39,7 +49,7 @@ export const DeliveryStatus = ({
       <>
         {(addMessageDate || showDate) && (
           <Typography variant="caption" className={classes.at}>
-            {at}
+            {messageAt}
           </Typography>
         )}
       </>
@@ -53,6 +63,7 @@ export const DeliveryStatus = ({
     ) || {};
 
   return renderStatus({
+    messageAt,
     statusProps,
     classes,
     deliveryStatus,
