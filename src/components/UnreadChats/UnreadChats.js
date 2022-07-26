@@ -22,7 +22,7 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
 
   // verificar se função tem o mesmmo retorno de getUnreadTotal
   chats.forEach((chat) => {
-    if (chat.unread > 0) {
+    if (chat.unread > 0 && !chat.archived) {
       unreadTotal += chat.unread;
       chatWithUnreadMessages.push(chat);
     }

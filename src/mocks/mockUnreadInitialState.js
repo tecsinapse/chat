@@ -29,6 +29,8 @@ export const mockUnreadInitialState = {
       phone: "(67) 99284-6268",
       chatId: "5567984115139",
       contactAt: "2020-11-05T17:53:39.869427",
+      archived: false,
+      unread: 100,
       extraInfo: {
         responsavelId: "20",
         segmento: "Autos",
@@ -56,6 +58,8 @@ export const mockUnreadInitialState = {
       phone: "(67) 99267-8000",
       chatId: "5567992678000",
       contactAt: "2020-11-05T17:53:39.869427",
+      archived: false,
+      unread: 100,
       extraInfo: {
         responsavelId: "20",
         segmento: "Autos",
@@ -83,6 +87,8 @@ export const mockUnreadInitialState = {
       phone: "(83) 99988-1699",
       chatId: "5583999881699",
       contactAt: "2020-11-05T17:52:39.869427",
+      archived: false,
+      unread: 100,
       extraInfo: {
         responsavelId: "20",
         segmento: "Autos",

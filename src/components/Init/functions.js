@@ -1,8 +1,8 @@
-import {isEquals} from "../../utils/helpers";
-import {completeChatInfoWith} from "../../utils/loadChatsInfos";
-import {COMPONENT_LOCATION} from "../../constants/COMPONENT_LOCATION";
-import {getChatId} from "../../context";
-import {CDN_RESOURCES} from "../../constants/CDN_RESOURCES";
+import { isEquals } from "../../utils/helpers";
+import { completeChatInfoWith } from "../../utils/loadChatsInfos";
+import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { getChatId } from "../../context";
+import { CDN_RESOURCES } from "../../constants/CDN_RESOURCES";
 
 const notifyNewMessage = (userkeycloakId, name) => {
   if (!userkeycloakId || !name) {
@@ -26,7 +26,7 @@ const getChatIds = (allChats) =>
 
 const getUnreadTotal = (allChats) =>
   (allChats || [])
-    .filter((chat) => !!chat.unread)
+    .filter((chat) => !!chat.unread && !chat.archived)
     .reduce((acc, chat) => acc + chat.unread, 0);
 
 const onUpdatedChat = (
@@ -54,7 +54,7 @@ const onUpdatedChat = (
 
     chatContext.set(getChatId(updatedChat), completeChatInfo);
 
-    if (updatedChat.notifyNewMessage) {
+    if (updatedChat.notifyNewMessage && !completeChatInfo.archived) {
       notifyNewMessage(userkeycloakId, completeChatInfo.name);
     }
   } else {
@@ -113,13 +113,14 @@ const onDeleteChat = async ({
 
   const { connectionKey, destination, chatId } = deletedChat;
 
-  const allChatsUpdate = componentInfo.allChats.filter((value) => {
-    return !(
-      value.connectionKey === connectionKey &&
-      value.destination === destination &&
-      value.chatId === chatId
-    );
-  });
+  const allChatsUpdate = componentInfo.allChats.filter(
+    (value) =>
+      !(
+        value.connectionKey === connectionKey &&
+        value.destination === destination &&
+        value.chatId === chatId
+      )
+  );
 
   const toUpdateInfo = { ...componentInfo, allChats: allChatsUpdate };
 
@@ -177,6 +178,7 @@ const isShowSendNotification = (view, chatInitConfig, chatViewAndIsBlocked) =>
 const playNotificationSound = (userkeycloakId) => {
   if (isNotificationSoundEnabled(userkeycloakId)) {
     const audio = new Audio(CDN_RESOURCES.NOTIFICATION_SOUND);
+
     audio.addEventListener("canplaythrough", () => {
       audio.play();
     });

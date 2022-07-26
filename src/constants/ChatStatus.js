@@ -5,9 +5,10 @@ class ChatStatus extends Enum {}
 
 ChatStatus.initEnum(["BLOCKED", "OK"]);
 
-ChatStatus.isBlocked = (status) =>
-  EnumUtils.isEquals(ChatStatus.BLOCKED, status);
+ChatStatus.isBlocked = (chat) =>
+  EnumUtils.isEquals(ChatStatus.BLOCKED, chat?.status) || chat.archived;
 
-ChatStatus.isOK = (status) => EnumUtils.isEquals(ChatStatus.OK, status);
+ChatStatus.isOK = (chat) =>
+  EnumUtils.isEquals(ChatStatus.OK, chat?.status) && !chat.archived;
 
 export default ChatStatus;

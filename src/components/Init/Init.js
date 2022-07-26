@@ -231,6 +231,7 @@ const InitContext = ({
       disabled: !chat.enabled,
       status: chat.status,
       chats: [chat],
+      archived: chat.archived,
     });
     setView(COMPONENT_LOCATION.CHAT);
   };

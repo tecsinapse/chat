@@ -9,6 +9,7 @@ mock.currentClient = {
   disabled: false,
   status: "OK",
   clientChatIds: ["5567992678000"],
+  archived: false,
 };
 
 export const mockClientChatInitialState = mock;

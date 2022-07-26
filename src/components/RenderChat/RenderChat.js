@@ -53,8 +53,8 @@ const RenderChatUnmemoized = ({
 
   const setStatusMessage = setStatusMessageFunc(setMessages);
 
-  const isBlocked = ChatStatus.isBlocked(currentChat?.status);
-  const enabled = !currentChat.disabled || ChatStatus.isOK(currentChat?.status);
+  const isBlocked = ChatStatus.isBlocked(currentChat);
+  const enabled = !currentChat.disabled || ChatStatus.isOK(currentChat);
 
   const setBlockedAndPropagateStatus = (chat, blockedStatus) => {
     runBlockedAndPropagateStatus(

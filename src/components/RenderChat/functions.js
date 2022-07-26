@@ -37,6 +37,7 @@ const getSubTitle = (currentChat) =>
 
 const getTimeToExpire = (currentChat) =>
   (currentChat &&
+    !currentChat.archived &&
     currentChat.minutesToBlock &&
     `O envio de mensagem irá expirar em ${calcRemainTime(
       currentChat.minutesToBlock

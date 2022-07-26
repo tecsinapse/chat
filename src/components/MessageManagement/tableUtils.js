@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Badge,
+  Chip,
   ListItem,
   ListItemText,
   Tooltip,
@@ -95,7 +96,19 @@ export const generateColumns = (
       options: {
         sort: true,
       },
-      customRender: (row) => highlight(globalSearch, format(row.contactAt)),
+      customRender: ({ archived, contactAt }) => (
+        <>
+          {archived ? (
+            <span>
+              {highlight(globalSearch, format(contactAt))}
+              <br />
+              <Chip size="small" label={highlight(globalSearch, "Arquivada")} />
+            </span>
+          ) : (
+            <span>{highlight(globalSearch, format(contactAt))}</span>
+          )}
+        </>
+      ),
     },
     {
       title: "Cliente",
