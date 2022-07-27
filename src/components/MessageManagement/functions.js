@@ -142,7 +142,7 @@ const dataFetcher = ({
         search
       );
       const groupedChats = !globalSearch
-        ? getGroupedChats(chatsToFetch.filter((it) => it.archived === false))
+        ? getGroupedChats(chatsToFetch.filter((it) => !it.archived))
         : getGroupedChats(chatsToFetch);
 
       return chatService.findMessagesByCurrentUser(
