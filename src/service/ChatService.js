@@ -57,6 +57,7 @@ export class ChatService {
       connectionKey: initialInfo.connectionKey,
       destination: initialInfo.destination,
       chatId: currentChat.chatId,
+      archived: currentChat.archived,
       page,
       updateUnreadWhenOpen: currentChat.updateUnreadWhenOpen,
     });

@@ -4,10 +4,11 @@ export const fetchMessages = ({
   connectionKey,
   destination,
   chatId,
+  archived = false,
   page = 0,
   updateUnreadWhenOpen = true,
 }) => {
-  const uri = `${chatApiUrl}/${connectionKey}/${destination}/${chatId}/messages?page=${page}&size=50&updateUnread=${updateUnreadWhenOpen}`;
+  const uri = `${chatApiUrl}/${connectionKey}/${destination}/${chatId}/messages?page=${page}&size=50&updateUnread=${updateUnreadWhenOpen}&archived=${archived}`;
 
   return defaultFetch(uri, "GET", {});
 };
