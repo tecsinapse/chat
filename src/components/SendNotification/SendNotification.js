@@ -222,7 +222,7 @@ export const SendNotification = ({
   const selectGridZIndex = { zIndex: 9999999999 };
   const inputGridZIndex = { zIndex: 1 };
   const selectFieldZIndex = { zIndex: 999999999 };
-  const selectTemplateZIndex = { zIndex: 999999998 };
+  const selectTemplateZIndex = { zIndex: 999999998, padding: "12px" };
   const sendButtonDivAlign = { textAlign: "center" };
 
   return (
@@ -287,7 +287,7 @@ export const SendNotification = ({
               )}
             </React.Fragment>
           ))}
-          <Grid item style={selectTemplateZIndex} alignItems="center">
+          <Grid container style={selectTemplateZIndex} alignItems="center">
             <Select
               value={selectedTemplate}
               options={availableTemplates}
@@ -295,13 +295,13 @@ export const SendNotification = ({
               disabled={templates.length === 0 || !selectedConnectionKey}
               label="Modelo da Mensagem"
               variant="auto"
-              fullWidth
+              minWidth={450}
             />
             <Tooltip title="Sugerir Modelo de Mensagem">
               <Icon
                 path={mdiPlusBoxOutline}
                 size={1.5}
-                color="primary"
+                color="#646464"
                 onClick={() => setView(COMPONENT_LOCATION.SUGESTION_MESSAGE)}
               />
             </Tooltip>
