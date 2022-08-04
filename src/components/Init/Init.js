@@ -57,6 +57,7 @@ import { ProductService } from "../../service/ProductService";
 import { ChatService } from "../../service/ChatService";
 import ChatContext, { allChatsMap } from "../../context";
 import { loadComponent, messageEventListener } from "../../utils/helpers";
+import { SugestionMessage } from "../SugestionMessage/SugestionMessage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -423,6 +424,9 @@ const InitContext = ({
                   path={mdiClose}
                 />
               </div>
+            )}
+            {view === COMPONENT_LOCATION.SUGESTION_MESSAGE && (
+              <SugestionMessage keycloakId={userkeycloakId} />
             )}
           </div>
         </Drawer>

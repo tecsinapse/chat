@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Select, Snackbar } from "@tecsinapse/ui-kit";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Tooltip, Typography } from "@material-ui/core";
+import Icon from "@mdi/react";
+import { mdiPlusBoxOutline } from "@mdi/js";
 import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
@@ -285,16 +287,24 @@ export const SendNotification = ({
               )}
             </React.Fragment>
           ))}
-          <Grid item style={selectTemplateZIndex}>
+          <Grid item style={selectTemplateZIndex} alignItems="center">
             <Select
               value={selectedTemplate}
               options={availableTemplates}
               onChange={onSelectTemplate}
               disabled={templates.length === 0 || !selectedConnectionKey}
-              label="Template da Mensagem"
+              label="Modelo da Mensagem"
               variant="auto"
               fullWidth
             />
+            <Tooltip title="Sugerir Modelo de Mensagem">
+              <Icon
+                path={mdiPlusBoxOutline}
+                size={1.5}
+                color="primary"
+                onClick={() => setView(COMPONENT_LOCATION.SUGESTION_MESSAGE)}
+              />
+            </Tooltip>
           </Grid>
           {args.map((arg, index) => (
             <Grid item key={`key-${index}`}>

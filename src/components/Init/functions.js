@@ -1,8 +1,8 @@
-import {isEquals} from "../../utils/helpers";
-import {completeChatInfoWith} from "../../utils/loadChatsInfos";
-import {COMPONENT_LOCATION} from "../../constants/COMPONENT_LOCATION";
-import {getChatId} from "../../context";
-import {CDN_RESOURCES} from "../../constants/CDN_RESOURCES";
+import { isEquals } from "../../utils/helpers";
+import { completeChatInfoWith } from "../../utils/loadChatsInfos";
+import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { getChatId } from "../../context";
+import { CDN_RESOURCES } from "../../constants/CDN_RESOURCES";
 
 const notifyNewMessage = (userkeycloakId, name) => {
   if (!userkeycloakId || !name) {
@@ -152,11 +152,13 @@ const onChatStatusChanged = (
 const isShowBackButton = (view, chatInitConfig) =>
   view === COMPONENT_LOCATION.CHAT ||
   view === COMPONENT_LOCATION.SEND_NOTIFICATION ||
+  view === COMPONENT_LOCATION.SUGESTION_MESSAGE ||
   (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
     !chatInitConfig.onlyMessageManagement);
 
 const isShowMessageManagement = (view) =>
-  view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT;
+  view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
+  view !== COMPONENT_LOCATION.SUGESTION_MESSAGE;
 
 const isChatViewAndIsBlocked = (view, chatToSendNotification) =>
   view === COMPONENT_LOCATION.CHAT && chatToSendNotification != null;
