@@ -1,9 +1,6 @@
 import { format } from "../../utils/dates";
 import { matcher } from "./globalSearch";
-import {
-  completeChatInfoWith,
-  removeDuplicateChatId,
-} from "../../utils/loadChatsInfos";
+import { completeChatInfoWith } from "../../utils/loadChatsInfos";
 
 const filterChatsByFields = (chats, globalSearch) =>
   chats.filter(
@@ -123,16 +120,6 @@ const sortChatsByContact = (a, b) => {
   return 0;
 };
 
-const chatsBySearch = (componentInfo, search) => {
-  if (search && search !== "") {
-    return removeDuplicateChatId(componentInfo.allChats);
-  }
-
-  return removeDuplicateChatId(
-    componentInfo.allChats.filter((it) => !it.archived)
-  );
-};
-
 const dataFetcher = ({
   queryClient,
   componentInfo,
@@ -150,11 +137,13 @@ const dataFetcher = ({
         globalSearch: search,
       } = queryKey[1];
       const chatsToFetch = filterChats(
-        chatsBySearch(componentInfo, search),
+        componentInfo?.allChats,
         onlyNotClients,
         search
       );
-      const groupedChats = getGroupedChats(chatsToFetch);
+      const groupedChats = !globalSearch
+        ? getGroupedChats(chatsToFetch.filter((it) => !it.archived))
+        : getGroupedChats(chatsToFetch);
 
       return chatService.findMessagesByCurrentUser(
         groupedChats,
