@@ -58,3 +58,13 @@ export function completeChatInfoWith(initialInfo, updatedInfo) {
 
   return finalInfo;
 }
+
+export const removeDuplicateChatId = (chats) =>
+  Array.from(
+    chats.reduce((map, obj) => {
+      map.set(obj.chatId, obj);
+
+      return map;
+    }, new Map()),
+    ([_, value]) => value
+  );
