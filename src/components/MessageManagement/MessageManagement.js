@@ -105,7 +105,7 @@ export const MessageManagement = ({
         classes={{ rootMobile: classes.rootMobile }}
         columns={columns}
         data={dataFetcher(fetcherProps)}
-        rowId={(row) => row.chatId}
+        rowId={(row) => row.chatId + '-' + row.connectionKey}
         customActionsMobile={generateActionsMobile}
         pagination
         onRowClick={(row) => !mobile && onSelectChat(row)}

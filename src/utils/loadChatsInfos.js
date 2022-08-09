@@ -1,6 +1,6 @@
 import { noAuthJsonFetch } from "./fetch";
 import { mockUnreadInitialState } from "../mocks/mockUnreadInitialState";
-import { format } from "./dates";
+import { format, toMoment } from "./dates";
 
 /**
  * Busca dos dados para inicializar o componente
@@ -50,6 +50,14 @@ export function completeChatInfoWith(initialInfo, updatedInfo) {
 
   if (initialInfo.phone && initialInfo.phone !== "") {
     finalInfo.phone = initialInfo.phone;
+  }
+
+  if (
+    initialInfo.contactAt &&
+    updatedInfo.lastMessageAt &&
+    toMoment(updatedInfo.lastMessageAt).isAfter(toMoment(initialInfo.contactAt))
+  ) {
+    finalInfo.contactAt = updatedInfo.lastMessageAt;
   }
 
   if (finalInfo.lastMessageAt) {
