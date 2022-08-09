@@ -118,6 +118,7 @@ const InitContext = ({
   const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
   const [chatToSendNotification, setChatToSendNotification] = useState();
   const [receivedMessage, setReceivedMessage] = useState();
+  const [paramNewMessage, setParamNewMessage] = useState("");
 
   const { userkeycloakId } = chatInitConfig;
 
@@ -397,6 +398,7 @@ const InitContext = ({
                 token={token}
                 componentInfo={componentInfo}
                 userId={userkeycloakId}
+                setParamNewMessage={setParamNewMessage}
               />
             )}
             {showSendNotification && (
@@ -426,7 +428,10 @@ const InitContext = ({
               </div>
             )}
             {view === COMPONENT_LOCATION.SUGESTION_MESSAGE && (
-              <SugestionMessage keycloakId={userkeycloakId} />
+              <SugestionMessage
+                keycloakId={userkeycloakId}
+                connectionKey={paramNewMessage}
+              />
             )}
           </div>
         </Drawer>

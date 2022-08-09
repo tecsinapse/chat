@@ -38,6 +38,7 @@ export const SendNotification = ({
   componentInfo,
   userId,
   userPhoneNumber,
+  setParamNewMessage,
 }) => {
   const classes = useStyle();
 
@@ -94,6 +95,7 @@ export const SendNotification = ({
     if (connectionKey) {
       setConnectionKeyLabel(connectionKey.label);
       setSelectedConnectionKey(connectionKey.value);
+      setParamNewMessage(connectionKey.value);
     } else {
       setConnectionKeyLabel("Selecione");
       setSelectedConnectionKey("");
@@ -308,18 +310,20 @@ export const SendNotification = ({
                 fullWidth
               />
             </Grid>
-            <Tooltip
-              title={<Typography>{tooltipTitle}</Typography>}
-              placement="bottom-start"
-              arrow
-            >
-              <Icon
-                path={mdiPlusBoxOutline}
-                size={1.5}
-                color="#646464"
-                onClick={() => setView(COMPONENT_LOCATION.SUGESTION_MESSAGE)}
-              />
-            </Tooltip>
+            {selectedConnectionKey && (
+              <Tooltip
+                title={<Typography>{tooltipTitle}</Typography>}
+                placement="bottom-start"
+                arrow
+              >
+                <Icon
+                  path={mdiPlusBoxOutline}
+                  size={1.5}
+                  color="#646464"
+                  onClick={() => setView(COMPONENT_LOCATION.SUGESTION_MESSAGE)}
+                />
+              </Tooltip>
+            )}
           </Grid>
           {args.map((arg, index) => (
             <Grid item key={`key-${index}`}>
