@@ -1,9 +1,9 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback } from "react";
 import {
-  Typography,
+  debounce,
   FormControlLabel,
   Switch,
-  debounce,
+  Typography,
 } from "@material-ui/core";
 import { Input } from "@tecsinapse/ui-kit";
 import { makeStyles } from "@material-ui/styles";
@@ -19,7 +19,6 @@ export const TableHeader = ({
   mobile,
 }) => {
   const classes = useStyle(mobile)();
-  const ref = useRef(null);
 
   const iconMargin = { marginRight: 6 };
   const headerStyles = { display: "flex" };
@@ -59,7 +58,6 @@ export const TableHeader = ({
         </Typography>
       </div>
       <Input
-        ref={ref}
         fullWidth
         placeholder="Pesquise por dados em qualquer campo"
         name="filtroGlobal"

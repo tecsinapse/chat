@@ -69,10 +69,13 @@ export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
           {unreadTotal > 0 && <Divider variant="solid" style={dividerMargin} />}
           <List component="nav" style={listPadding}>
             {chatWithUnreadMessages.map((chat) => (
-              <div key={chat.chatId} className={classes.border}>
+              <div
+                key={"div" + chat.chatId + "-" + chat.connectionKey}
+                className={classes.border}
+              >
                 <ListItem
                   button
-                  key={chat.chatId}
+                  key={"item" + chat.chatId + "-" + chat.connectionKey}
                   onClick={() => onSelectChat(chat)}
                 >
                   <ListItemText
