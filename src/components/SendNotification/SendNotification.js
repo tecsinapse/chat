@@ -17,6 +17,7 @@ import {
   loadTemplates,
   send,
 } from "./functions";
+import { MESSAGES_INFO } from "../../constants/MessagesInfo";
 
 /* eslint-disable react/no-array-index-key */
 
@@ -62,6 +63,7 @@ export const SendNotification = ({
     name: "",
     phone: phoneNumber,
   });
+  const tooltipTitle = MESSAGES_INFO.SUGESTION_MESSAGE_TOOLTIP;
 
   useSendNotification(
     chat,
@@ -287,17 +289,30 @@ export const SendNotification = ({
               )}
             </React.Fragment>
           ))}
-          <Grid container style={selectTemplateZIndex} alignItems="center">
-            <Select
-              value={selectedTemplate}
-              options={availableTemplates}
-              onChange={onSelectTemplate}
-              disabled={templates.length === 0 || !selectedConnectionKey}
-              label="Modelo da Mensagem"
-              variant="auto"
-              minWidth={450}
-            />
-            <Tooltip title="Sugerir Modelo de Mensagem">
+          <Grid
+            container
+            direction="row"
+            style={selectTemplateZIndex}
+            alignItems="center"
+            justifyContent="space-between"
+            spacing={3}
+          >
+            <Grid item xs={11}>
+              <Select
+                value={selectedTemplate}
+                options={availableTemplates}
+                onChange={onSelectTemplate}
+                disabled={templates.length === 0 || !selectedConnectionKey}
+                label="Modelo da Mensagem"
+                variant="auto"
+                fullWidth
+              />
+            </Grid>
+            <Tooltip
+              title={<Typography>{tooltipTitle}</Typography>}
+              placement="bottom-start"
+              arrow
+            >
               <Icon
                 path={mdiPlusBoxOutline}
                 size={1.5}
