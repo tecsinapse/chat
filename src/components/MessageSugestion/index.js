@@ -1,0 +1,1 @@
+export { MessageSugestion } from "./MessageSugestion";

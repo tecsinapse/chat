@@ -57,7 +57,7 @@ import { ProductService } from "../../service/ProductService";
 import { ChatService } from "../../service/ChatService";
 import ChatContext, { allChatsMap } from "../../context";
 import { loadComponent, messageEventListener } from "../../utils/helpers";
-import { SugestionMessage } from "../SugestionMessage/SugestionMessage";
+import { MessageSugestion } from "../MessageSugestion";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -427,8 +427,8 @@ const InitContext = ({
                 />
               </div>
             )}
-            {view === COMPONENT_LOCATION.SUGESTION_MESSAGE && (
-              <SugestionMessage
+            {view === COMPONENT_LOCATION.MESSAGE_SUGESTION && (
+              <MessageSugestion
                 keycloakId={userkeycloakId}
                 connectionKey={paramNewMessage}
               />

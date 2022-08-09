@@ -64,7 +64,7 @@ export const SendNotification = ({
     name: "",
     phone: phoneNumber,
   });
-  const tooltipTitle = MESSAGES_INFO.SUGESTION_MESSAGE_TOOLTIP;
+  const tooltipTitle = MESSAGES_INFO.MESSAGE_SUGESTION_TOOLTIP;
 
   useSendNotification(
     chat,
@@ -320,7 +320,7 @@ export const SendNotification = ({
                   path={mdiPlusBoxOutline}
                   size={1.5}
                   color="#646464"
-                  onClick={() => setView(COMPONENT_LOCATION.SUGESTION_MESSAGE)}
+                  onClick={() => setView(COMPONENT_LOCATION.MESSAGE_SUGESTION)}
                 />
               </Tooltip>
             )}

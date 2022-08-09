@@ -152,13 +152,13 @@ const onChatStatusChanged = (
 const isShowBackButton = (view, chatInitConfig) =>
   view === COMPONENT_LOCATION.CHAT ||
   view === COMPONENT_LOCATION.SEND_NOTIFICATION ||
-  view === COMPONENT_LOCATION.SUGESTION_MESSAGE ||
+  view === COMPONENT_LOCATION.MESSAGE_SUGESTION ||
   (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
     !chatInitConfig.onlyMessageManagement);
 
 const isShowMessageManagement = (view) =>
   view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
-  view !== COMPONENT_LOCATION.SUGESTION_MESSAGE;
+  view !== COMPONENT_LOCATION.MESSAGE_SUGESTION;
 
 const isChatViewAndIsBlocked = (view, chatToSendNotification) =>
   view === COMPONENT_LOCATION.CHAT && chatToSendNotification != null;
