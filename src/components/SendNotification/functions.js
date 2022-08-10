@@ -63,7 +63,7 @@ export const send = ({
               label: selectedTemplate,
               action: "Send Notification",
             });
-            successSend(chatId);
+            successSend(String(chatId));
           })
           .catch((error) => {
             setError(error.errors);
@@ -76,7 +76,7 @@ export const send = ({
           label: selectedTemplate,
           action: "Send Notification",
         });
-        successSend(chatId);
+        successSend(String(chatId));
       }
     })
     .catch((err) => {
