@@ -26,14 +26,6 @@ export const HeaderDrawer = ({
 }) => {
   const innerClasses = useStyles();
 
-  const handleBackButton = () => {
-    setView(
-      view === COMPONENT_LOCATION.MESSAGE_SUGESTION
-        ? COMPONENT_LOCATION.SEND_NOTIFICATION
-        : homeLocation
-    );
-  };
-
   return (
     <div className={classes.drawerHeader}>
       <Grid container justify="space-between">
@@ -52,7 +44,7 @@ export const HeaderDrawer = ({
                   }}
                 >
                   <Icon
-                    onClick={handleBackButton}
+                    onClick={() => setView(homeLocation)}
                     color={theme.palette.primary.main}
                     size={1.25}
                     className={innerClasses.backIconStyles}

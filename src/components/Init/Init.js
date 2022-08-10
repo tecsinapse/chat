@@ -57,7 +57,6 @@ import { ProductService } from "../../service/ProductService";
 import { ChatService } from "../../service/ChatService";
 import ChatContext, { allChatsMap } from "../../context";
 import { loadComponent, messageEventListener } from "../../utils/helpers";
-import { MessageSugestion } from "../MessageSugestion";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -118,7 +117,6 @@ const InitContext = ({
   const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
   const [chatToSendNotification, setChatToSendNotification] = useState();
   const [receivedMessage, setReceivedMessage] = useState();
-  const [paramNewMessage, setParamNewMessage] = useState("");
 
   const { userkeycloakId } = chatInitConfig;
 
@@ -398,7 +396,6 @@ const InitContext = ({
                 token={token}
                 componentInfo={componentInfo}
                 userId={userkeycloakId}
-                setParamNewMessage={setParamNewMessage}
               />
             )}
             {showSendNotification && (
@@ -426,12 +423,6 @@ const InitContext = ({
                   path={mdiClose}
                 />
               </div>
-            )}
-            {view === COMPONENT_LOCATION.MESSAGE_SUGESTION && (
-              <MessageSugestion
-                keycloakId={userkeycloakId}
-                connectionKey={paramNewMessage}
-              />
             )}
           </div>
         </Drawer>

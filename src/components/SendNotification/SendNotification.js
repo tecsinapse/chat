@@ -38,7 +38,6 @@ export const SendNotification = ({
   componentInfo,
   userId,
   userPhoneNumber,
-  setParamNewMessage,
 }) => {
   const classes = useStyle();
 
@@ -95,7 +94,6 @@ export const SendNotification = ({
     if (connectionKey) {
       setConnectionKeyLabel(connectionKey.label);
       setSelectedConnectionKey(connectionKey.value);
-      setParamNewMessage(connectionKey.value);
     } else {
       setConnectionKeyLabel("Selecione");
       setSelectedConnectionKey("");
@@ -228,6 +226,12 @@ export const SendNotification = ({
   const selectFieldZIndex = { zIndex: 999999999 };
   const selectTemplateZIndex = { zIndex: 999999998, padding: "12px" };
   const sendButtonDivAlign = { textAlign: "center" };
+  const url = `${process.env.REACT_APP_MESSAGE_SUGESTION_URL}?kcid=${userId}&connectionkey=${selectedConnectionKey}`;
+  const styleProps = "&alignCenter=1&transparentBackground=1";
+
+  const handleOpenMessageSugestion = () => {
+    window.open(`${url}${styleProps}`, "_blank");
+  };
 
   return (
     <>
@@ -320,7 +324,7 @@ export const SendNotification = ({
                   path={mdiPlusBoxOutline}
                   size={1.5}
                   color="#646464"
-                  onClick={() => setView(COMPONENT_LOCATION.MESSAGE_SUGESTION)}
+                  onClick={handleOpenMessageSugestion}
                 />
               </Tooltip>
             )}
