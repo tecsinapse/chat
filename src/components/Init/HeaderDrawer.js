@@ -1,10 +1,16 @@
 import { Badge, Grid, makeStyles, Typography } from "@material-ui/core";
 import Icon from "@mdi/react";
-import { mdiArrowLeft, mdiClose, mdiVolumeHigh, mdiVolumeOff } from "@mdi/js";
+import {
+  mdiArrowLeft,
+  mdiClose,
+  mdiVolumeHigh,
+  mdiVolumeOff,
+  mdiWhatsapp,
+} from "@mdi/js";
 import React from "react";
+import { Button } from "@tecsinapse/ui-kit";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { CDN_RESOURCES } from "../../constants/CDN_RESOURCES";
-import { Button } from "@tecsinapse/ui-kit";
 
 const useStyles = makeStyles(({ spacing }) => ({
   backIconStyles: { cursor: "pointer", marginLeft: "-8px" },
@@ -84,15 +90,6 @@ export const HeaderDrawer = ({
               />
             </Grid>
             <Grid item>
-              <Button onClick={handleOpenTips}>
-                <Icon
-                  color={theme.palette.primary.main}
-                  size={0.8}
-                  className={innerClasses.closeIconStyles}
-                />
-              </Button>
-            </Grid>
-            <Grid item>
               <Icon
                 onClick={() => onNotificationSoundChange()}
                 color={theme.palette.primary.main}
@@ -101,6 +98,19 @@ export const HeaderDrawer = ({
                 path={notificationSound ? mdiVolumeHigh : mdiVolumeOff}
               />
             </Grid>
+            {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="small"
+                  onClick={handleOpenTips}
+                >
+                  <Icon color="white" size={0.8} path={mdiWhatsapp} />
+                  <Typography>DICAS</Typography>
+                </Button>
+              </Grid>
+            )}
             <Grid item>
               <Icon
                 onClick={() => setIsDrawerOpen(false)}
