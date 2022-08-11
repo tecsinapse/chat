@@ -4,6 +4,7 @@ import { mdiArrowLeft, mdiClose, mdiVolumeHigh, mdiVolumeOff } from "@mdi/js";
 import React from "react";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { CDN_RESOURCES } from "../../constants/CDN_RESOURCES";
+import { Button } from "@tecsinapse/ui-kit";
 
 const useStyles = makeStyles(({ spacing }) => ({
   backIconStyles: { cursor: "pointer", marginLeft: "-8px" },
@@ -25,6 +26,10 @@ export const HeaderDrawer = ({
   notificationSound,
 }) => {
   const innerClasses = useStyles();
+
+  const handleOpenTips = () => {
+    window.open(CDN_RESOURCES.TIPS, "_blank");
+  };
 
   return (
     <div className={classes.drawerHeader}>
@@ -77,6 +82,15 @@ export const HeaderDrawer = ({
                 src={CDN_RESOURCES.WINGO_CHAT_LOGO}
                 alt="wingo-logo"
               />
+            </Grid>
+            <Grid item>
+              <Button onClick={handleOpenTips}>
+                <Icon
+                  color={theme.palette.primary.main}
+                  size={0.8}
+                  className={innerClasses.closeIconStyles}
+                />
+              </Button>
             </Grid>
             <Grid item>
               <Icon
