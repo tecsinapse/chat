@@ -1,7 +1,14 @@
 import { Badge, Grid, makeStyles, Typography } from "@material-ui/core";
 import Icon from "@mdi/react";
-import { mdiArrowLeft, mdiClose, mdiVolumeHigh, mdiVolumeOff } from "@mdi/js";
+import {
+  mdiArrowLeft,
+  mdiClose,
+  mdiVolumeHigh,
+  mdiVolumeOff,
+  mdiWhatsapp,
+} from "@mdi/js";
 import React from "react";
+import { Button } from "@tecsinapse/ui-kit";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { CDN_RESOURCES } from "../../constants/CDN_RESOURCES";
 
@@ -25,6 +32,10 @@ export const HeaderDrawer = ({
   notificationSound,
 }) => {
   const innerClasses = useStyles();
+
+  const handleOpenTips = () => {
+    window.open(CDN_RESOURCES.TIPS, "_blank");
+  };
 
   return (
     <div className={classes.drawerHeader}>
@@ -87,6 +98,19 @@ export const HeaderDrawer = ({
                 path={notificationSound ? mdiVolumeHigh : mdiVolumeOff}
               />
             </Grid>
+            {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="small"
+                  onClick={handleOpenTips}
+                >
+                  <Icon color="white" size={0.8} path={mdiWhatsapp} />
+                  <Typography>DICAS</Typography>
+                </Button>
+              </Grid>
+            )}
             <Grid item>
               <Icon
                 onClick={() => setIsDrawerOpen(false)}
