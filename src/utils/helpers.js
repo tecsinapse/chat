@@ -25,12 +25,12 @@ export async function getObjectToSetChat(
   );
 
   const chat =
-    componentInfo.allChats?.filter(
-      (_chat) =>
-        _chat.connectionKey === connectionKey &&
-        _chat.destination === destination &&
-        _chat.chatId === chatId
-    )[0] || {};
+    componentInfo.allChats?.find(
+      (it) =>
+        it.connectionKey === connectionKey &&
+        it.destination === destination &&
+        it.chatId === chatId
+    ) || {};
 
   const name = clientName || chat.name || chatInfo.name;
 
@@ -48,6 +48,7 @@ export async function getObjectToSetChat(
     destination,
     chatId,
     chats,
+    status: chatInfo?.status,
   };
 }
 
