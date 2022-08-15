@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Select, Snackbar } from "@tecsinapse/ui-kit";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Tooltip, Typography } from "@material-ui/core";
+import Icon from "@mdi/react";
+import { mdiPlusBoxOutline } from "@mdi/js";
 import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
@@ -15,6 +17,7 @@ import {
   loadTemplates,
   send,
 } from "./functions";
+import { MESSAGES_INFO } from "../../constants/MessagesInfo";
 
 /* eslint-disable react/no-array-index-key */
 
@@ -60,6 +63,7 @@ export const SendNotification = ({
     name: "",
     phone: phoneNumber,
   });
+  const tooltipTitle = MESSAGES_INFO.MESSAGE_SUGESTION_TOOLTIP;
 
   useSendNotification(
     chat,
@@ -220,8 +224,14 @@ export const SendNotification = ({
   const selectGridZIndex = { zIndex: 9999999999 };
   const inputGridZIndex = { zIndex: 1 };
   const selectFieldZIndex = { zIndex: 999999999 };
-  const selectTemplateZIndex = { zIndex: 999999998 };
+  const selectTemplateZIndex = { zIndex: 999999998, padding: "12px" };
   const sendButtonDivAlign = { textAlign: "center" };
+  const url = `${process.env.REACT_APP_MESSAGE_SUGESTION_URL}?kcid=${userId}&connectionkey=${selectedConnectionKey}`;
+  const styleProps = "&alignCenter=1&transparentBackground=1";
+
+  const handleOpenMessageSugestion = () => {
+    window.open(`${url}${styleProps}`, "_blank");
+  };
 
   return (
     <>
@@ -285,16 +295,39 @@ export const SendNotification = ({
               )}
             </React.Fragment>
           ))}
-          <Grid item style={selectTemplateZIndex}>
-            <Select
-              value={selectedTemplate}
-              options={availableTemplates}
-              onChange={onSelectTemplate}
-              disabled={templates.length === 0 || !selectedConnectionKey}
-              label="Template da Mensagem"
-              variant="auto"
-              fullWidth
-            />
+          <Grid
+            container
+            direction="row"
+            style={selectTemplateZIndex}
+            alignItems="center"
+            justifyContent="space-between"
+            spacing={3}
+          >
+            <Grid item xs={11}>
+              <Select
+                value={selectedTemplate}
+                options={availableTemplates}
+                onChange={onSelectTemplate}
+                disabled={templates.length === 0 || !selectedConnectionKey}
+                label="Modelo da Mensagem"
+                variant="auto"
+                fullWidth
+              />
+            </Grid>
+            {selectedConnectionKey && (
+              <Tooltip
+                title={<Typography>{tooltipTitle}</Typography>}
+                placement="bottom-start"
+                arrow
+              >
+                <Icon
+                  path={mdiPlusBoxOutline}
+                  size={1.5}
+                  color="#646464"
+                  onClick={handleOpenMessageSugestion}
+                />
+              </Tooltip>
+            )}
           </Grid>
           {args.map((arg, index) => (
             <Grid item key={`key-${index}`}>
