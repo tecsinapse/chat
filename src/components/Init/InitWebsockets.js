@@ -22,6 +22,7 @@ const InitWebsockets = ({
   setConnectedAt,
   mainSocketRef,
   onConnectMainSocket,
+  componentInfo,
 }) => {
   const handleNewMainWebsocketMessage = (message) => {
     if (message) {
@@ -35,7 +36,7 @@ const InitWebsockets = ({
           action: "Unread Message",
           nonInteraction: true,
         });
-        onChatUpdated(message);
+        onChatUpdated(componentInfo, message);
       }
     }
   };
@@ -75,8 +76,17 @@ const InitWebsockets = ({
 };
 
 export default React.memo(InitWebsockets, (oldProps, newProps) => {
-  const { connectionKeys: old } = oldProps;
-  const { connectionKeys: news } = newProps;
+  const {
+    connectionKeys: oldConnectionKeys,
+    componentInfo: oldComponentInfo,
+  } = oldProps;
+  const {
+    connectionKeys: newConnectionKeys,
+    componentInfo: newComponentInfo,
+  } = newProps;
 
-  return JSON.stringify(old) === JSON.stringify(news);
+  return (
+    JSON.stringify(oldConnectionKeys) === JSON.stringify(newConnectionKeys) &&
+    JSON.stringify(oldComponentInfo) === JSON.stringify(newComponentInfo)
+  );
 });

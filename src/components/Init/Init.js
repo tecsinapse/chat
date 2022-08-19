@@ -188,9 +188,7 @@ const InitContext = ({
       const addUser = `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`;
 
       try {
-        // informação dos chats que esse usuário está acompanhando
         const payload = JSON.stringify({ chatIds });
-
         mainSocket.sendMessage(addUser, payload);
       } catch (e) {
         console.error(e);
@@ -360,8 +358,6 @@ const InitContext = ({
                   onDeleteChat({
                     deletedChat,
                     token,
-                    componentInfo,
-                    setComponentInfo,
                     productService,
                     chatService,
                     chatContext,
@@ -433,7 +429,7 @@ const InitContext = ({
             userkeycloakId={userkeycloakId}
             destination={componentInfo.destination}
             reloadComponent={reloadComponent}
-            onChatUpdated={(updatedChat) =>
+            onChatUpdated={(componentInfo, updatedChat) =>
               onUpdatedChat(
                 userkeycloakId,
                 updatedChat,
@@ -448,6 +444,7 @@ const InitContext = ({
             setReceivedMessage={setReceivedMessage}
             setConnectedAt={setConnectedAt}
             onConnectMainSocket={registerChatIds}
+            componentInfo={componentInfo}
           />
         )}
         {chatInitConfig.clickOnUnreadOpenFirstAction && (

@@ -57,7 +57,7 @@ export const generateAction = (
     marginRight: "4px",
   };
 
-  if (showDiscardOption) {
+  if (showDiscardOption && !row.archived) {
     actions.push({
       label: (
         <div style={discardConversationCss}>

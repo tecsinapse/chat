@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Select, Snackbar } from "@tecsinapse/ui-kit";
+import {
+  Button,
+  IconButton,
+  Input,
+  Select,
+  Snackbar,
+} from "@tecsinapse/ui-kit";
 import { Grid, Tooltip, Typography } from "@material-ui/core";
 import Icon from "@mdi/react";
 import { mdiPlusBoxOutline } from "@mdi/js";
@@ -300,10 +306,9 @@ export const SendNotification = ({
             direction="row"
             style={selectTemplateZIndex}
             alignItems="center"
-            justifyContent="space-between"
             spacing={3}
           >
-            <Grid item xs={11}>
+            <Grid item xs={12}>
               <Select
                 value={selectedTemplate}
                 options={availableTemplates}
@@ -311,23 +316,26 @@ export const SendNotification = ({
                 disabled={templates.length === 0 || !selectedConnectionKey}
                 label="Modelo da Mensagem"
                 variant="auto"
+                customIndicators={
+                  selectedConnectionKey && (
+                    <Tooltip
+                      title={tooltipTitle}
+                      placement="bottom-start"
+                      arrow
+                    >
+                      <IconButton onClick={handleOpenMessageSugestion}>
+                        <Icon
+                          path={mdiPlusBoxOutline}
+                          size={0.8}
+                          color="#646464"
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  )
+                }
                 fullWidth
               />
             </Grid>
-            {selectedConnectionKey && (
-              <Tooltip
-                title={<Typography>{tooltipTitle}</Typography>}
-                placement="bottom-start"
-                arrow
-              >
-                <Icon
-                  path={mdiPlusBoxOutline}
-                  size={1.5}
-                  color="#646464"
-                  onClick={handleOpenMessageSugestion}
-                />
-              </Tooltip>
-            )}
           </Grid>
           {args.map((arg, index) => (
             <Grid item key={`key-${index}`}>

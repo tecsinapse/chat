@@ -96,8 +96,6 @@ const onReadAllMessagesOfChat = (
 const onDeleteChat = async ({
   deletedChat,
   token,
-  componentInfo,
-  setComponentInfo,
   productService,
   chatService,
   chatContext,
@@ -109,22 +107,8 @@ const onDeleteChat = async ({
   } catch (e) {
     console.error("[DELETE_CHAT] Error when deleting", e.message);
   }
+
   chatContext.delete(getChatId(deletedChat));
-
-  const { connectionKey, destination, chatId } = deletedChat;
-
-  const allChatsUpdate = componentInfo.allChats.filter(
-    (value) =>
-      !(
-        value.connectionKey === connectionKey &&
-        value.destination === destination &&
-        value.chatId === chatId
-      )
-  );
-
-  const toUpdateInfo = { ...componentInfo, allChats: allChatsUpdate };
-
-  setComponentInfo(toUpdateInfo);
   setChatContext(new Map(chatContext));
 
   return Array.from(chatContext.values());

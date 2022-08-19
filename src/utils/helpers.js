@@ -2,7 +2,7 @@ import { load } from "./loadChatsInfos";
 import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
 import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
-import { stringFormattedToMoment, momentNow } from "./dates";
+import { momentNow, stringFormattedToMoment } from "./dates";
 import { onStartSendNotification } from "../components/Init/functions";
 import { countryPhoneNumber } from "../components/SendNotification/utils";
 
@@ -65,39 +65,48 @@ export async function loadComponent({
   setFirstLoad,
   startChat,
 }) {
-  const info = await load({ ...chatInitConfig, userMock, token });
+  const newComponentInfo = await load({ ...chatInitConfig, userMock, token });
 
-  setComponentInfo(info);
+  setComponentInfo(newComponentInfo);
   setIsLoadingInitialState(false);
 
   if (
     firstLoad &&
-    info?.currentClient &&
-    Object.keys(info?.currentClient).length > 0
+    newComponentInfo?.currentClient &&
+    Object.keys(newComponentInfo?.currentClient).length > 0
   ) {
     setFirstLoad(false);
     // quando a visualização é de um cliente específico, então define as informações
     // desse cliente como currentChat e exibe o chat direto
-    const chats = (info?.allChats || []).filter(
+    const chats = (newComponentInfo?.allChats || []).filter(
       (chat) =>
-        info.currentClient.clientChatIds.includes(chat.chatId) &&
-        info.currentClient.connectionKey === chat.connectionKey &&
-        info.currentClient.destination === chat.destination
+        newComponentInfo.currentClient.clientChatIds.includes(chat.chatId) &&
+        newComponentInfo.currentClient.connectionKey === chat.connectionKey &&
+        newComponentInfo.currentClient.destination === chat.destination
     );
 
     // when userPhoneNumber is null, keeped current behavior
     if (!chatInitConfig.userPhoneNumber) {
-      const chatId = findChat(info.currentClient.clientChatIds, chats);
+      const chatId = findChat(
+        newComponentInfo.currentClient.clientChatIds,
+        chats
+      );
 
       if (!chatId) {
         return;
       }
 
-      await renderChat(chatId, info, chatService, setView, setCurrentChat);
+      await renderChat(
+        chatId,
+        newComponentInfo,
+        chatService,
+        setView,
+        setCurrentChat
+      );
     } else {
       // when you have a userPhoneNumber, find the Chat with that userPhoneNumber
       const chatId = findChat(
-        info.currentClient.clientChatIds,
+        newComponentInfo.currentClient.clientChatIds,
         chats,
         chatInitConfig.userPhoneNumber
       );
@@ -105,7 +114,13 @@ export async function loadComponent({
       if (!chatId) {
         startChat();
       } else {
-        await renderChat(chatId, info, chatService, setView, setCurrentChat);
+        await renderChat(
+          chatId,
+          newComponentInfo,
+          chatService,
+          setView,
+          setCurrentChat
+        );
       }
     }
   } else if (typeof startChat === "function") {
