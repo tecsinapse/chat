@@ -9,6 +9,7 @@ import {
 } from "@mdi/js";
 import React from "react";
 import { Button } from "@tecsinapse/ui-kit";
+import ReactGA from "react-ga4";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { CDN_RESOURCES } from "../../constants/CDN_RESOURCES";
 
@@ -34,6 +35,11 @@ export const HeaderDrawer = ({
   const innerClasses = useStyles();
 
   const handleOpenTips = () => {
+    ReactGA.event({
+      category: "CLICK_BTN_DICAS",
+      label: "CLICK_BTN_DICAS",
+      action: "View Chats Tips",
+    });
     window.open(CDN_RESOURCES.TIPS, "_blank");
   };
 
