@@ -108,7 +108,6 @@ const InitContext = ({
 
   const classes = useStyle(customizeStyles, mobile)();
   const theme = useTheme();
-  const [isLoadingInitialState, setIsLoadingInitialState] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
   const [view, _setView] = useState(homeLocation);
   const [componentInfo, setComponentInfo] = useState({});
@@ -144,7 +143,7 @@ const InitContext = ({
   const propsToLoadComponent = {
     chatInitConfig,
     setComponentInfo,
-    setIsLoadingInitialState,
+    view,
     setView,
     setCurrentChat,
     userMock,
@@ -274,14 +273,14 @@ const InitContext = ({
     <>
       {chatInitConfig.customChatButton &&
         chatInitConfig.customChatButton(
-          isLoadingInitialState,
+          firstLoad,
           unreadTotal,
           setIsDrawerOpen
         )}
       <div className="Chat">
         {!chatInitConfig.customChatButton && !isDrawerOpen && (
           <ChatButton
-            isLoadingInitialState={isLoadingInitialState}
+            firstLoad={firstLoad}
             setIsDrawerOpen={setIsDrawerOpen}
             unreadTotal={unreadTotal}
           />
@@ -352,6 +351,7 @@ const InitContext = ({
             )}
             {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
               <MessageManagement
+                chatContext={chatContext}
                 componentInfo={componentInfo}
                 onSelectChat={onSelectChat}
                 onDeleteChat={(deletedChat) =>
@@ -372,7 +372,6 @@ const InitContext = ({
                 customActions={customActions}
                 setDrawerOpen={setIsDrawerOpen}
                 chatService={chatService}
-                reload={reloadComponent}
               />
             )}
             {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (
@@ -423,7 +422,7 @@ const InitContext = ({
             )}
           </div>
         </Drawer>
-        {!isLoadingInitialState && (
+        {!firstLoad && (
           <InitWebsockets
             chatApiUrl={chatInitConfig.chatApiUrl}
             userkeycloakId={userkeycloakId}

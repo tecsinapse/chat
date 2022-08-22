@@ -7,7 +7,7 @@ import { useStyle } from "./styles";
 
 export const ChatButton = ({
   unreadTotal,
-  isLoadingInitialState,
+  firstLoad,
   setIsDrawerOpen,
 }) => {
   const classes = useStyle();
@@ -28,14 +28,14 @@ export const ChatButton = ({
         >
           <FloatingButton
             onClick={() => {
-              if (!isLoadingInitialState) {
+              if (!firstLoad) {
                 setIsDrawerOpen(true);
               }
             }}
             variant="extended"
             className={classes.fab}
           >
-            {isLoadingInitialState ? (
+            {firstLoad ? (
               <CircularProgress size={20} className={classes.fabProgress} />
             ) : (
               <Icon path={mdiForum} size={1} color="#7b4e00" />

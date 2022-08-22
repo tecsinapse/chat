@@ -13,7 +13,7 @@ import ReactGA from "react-ga4";
 import { useStyle } from "./styles";
 import { TableHeader } from "./TableHeader";
 import { customActionsMobile, generateColumns } from "./tableUtils";
-import { getOptions, dataFetcher } from "./functions";
+import { dataFetcher, getOptions } from "./functions";
 import { MESSAGES_INFO } from "../../constants/MessagesInfo";
 
 export const MessageManagement = ({
@@ -28,7 +28,6 @@ export const MessageManagement = ({
   customActions,
   setDrawerOpen,
   chatService,
-  reload,
 }) => {
   const classes = useStyle();
   const queryClient = useQueryClient();
@@ -45,7 +44,6 @@ export const MessageManagement = ({
         category: deletingChat.connectionKey,
         action: "Discard Chat",
       });
-      reload();
     });
   };
 
@@ -105,7 +103,7 @@ export const MessageManagement = ({
         classes={{ rootMobile: classes.rootMobile }}
         columns={columns}
         data={dataFetcher(fetcherProps)}
-        rowId={(row) => row.chatId + '-' + row.connectionKey}
+        rowId={(row) => row.chatId + "-" + row.connectionKey}
         customActionsMobile={generateActionsMobile}
         pagination
         onRowClick={(row) => !mobile && onSelectChat(row)}

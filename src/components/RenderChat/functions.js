@@ -29,7 +29,7 @@ const uploadOptions = {
 };
 
 const getTitle = (currentChat, initialInfo) =>
-  currentChat.name || initialInfo.name || "Cliente";
+  currentChat.name || initialInfo.name || "CLIENTE NÃO CADASTRADO";
 
 const getSubTitle = (currentChat) =>
   (currentChat.subName ? `${currentChat.subName} - ` : "") +

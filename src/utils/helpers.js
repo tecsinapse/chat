@@ -3,7 +3,10 @@ import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
 import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
 import { momentNow, stringFormattedToMoment } from "./dates";
-import { onStartSendNotification } from "../components/Init/functions";
+import {
+  notifyNewChat,
+  onStartSendNotification,
+} from "../components/Init/functions";
 import { countryPhoneNumber } from "../components/SendNotification/utils";
 
 function last(array) {
@@ -55,7 +58,7 @@ export async function getObjectToSetChat(
 export async function loadComponent({
   chatInitConfig,
   setComponentInfo,
-  setIsLoadingInitialState,
+  view,
   setView,
   setCurrentChat,
   userMock,
@@ -67,15 +70,29 @@ export async function loadComponent({
 }) {
   const newComponentInfo = await load({ ...chatInitConfig, userMock, token });
 
-  setComponentInfo(newComponentInfo);
-  setIsLoadingInitialState(false);
+  setComponentInfo((oldComponentInfo) => {
+    if (!firstLoad && view !== COMPONENT_LOCATION.SEND_NOTIFICATION) {
+      const notArchivedOldComponentInfo =
+        oldComponentInfo?.allChats.filter((it) => !it.archived).length || 0;
+
+      const notArchivedNewComponentInfo =
+        newComponentInfo?.allChats.filter((it) => !it.archived).length || 0;
+
+      if (notArchivedOldComponentInfo < notArchivedNewComponentInfo) {
+        notifyNewChat(chatInitConfig.userkeycloakId);
+      }
+    }
+
+    return newComponentInfo;
+  });
+
+  setFirstLoad(false);
 
   if (
     firstLoad &&
     newComponentInfo?.currentClient &&
     Object.keys(newComponentInfo?.currentClient).length > 0
   ) {
-    setFirstLoad(false);
     // quando a visualização é de um cliente específico, então define as informações
     // desse cliente como currentChat e exibe o chat direto
     const chats = (newComponentInfo?.allChats || []).filter(
@@ -93,7 +110,7 @@ export async function loadComponent({
       );
 
       if (!chatId) {
-        return;
+        return newComponentInfo;
       }
 
       await renderChat(
@@ -126,6 +143,8 @@ export async function loadComponent({
   } else if (typeof startChat === "function") {
     startChat();
   }
+
+  return newComponentInfo;
 }
 
 async function renderChat(chatId, info, chatService, setView, setCurrentChat) {

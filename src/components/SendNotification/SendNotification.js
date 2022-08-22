@@ -184,11 +184,11 @@ export const SendNotification = ({
     setSelectedTemplate("");
     setPreview("");
 
-    await reloadComponent();
+    const newComponentInfo = await reloadComponent();
 
     const objectToSetChat = await getObjectToSetChat(
       chatService,
-      componentInfo,
+      newComponentInfo,
       selectedConnectionKey,
       destination,
       chatId,

@@ -4,6 +4,23 @@ import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { getChatId } from "../../context";
 import { CDN_RESOURCES } from "../../constants/CDN_RESOURCES";
 
+const notifyNewChat = (userkeycloakId) => {
+  if (!userkeycloakId) {
+    return;
+  }
+
+  const title = "Nova conversa";
+  const body = `Você tem uma nova conversa no Chat.`;
+  const icon = CDN_RESOURCES.NOTIFICATION_ICON;
+
+  if (Notification.permission === "granted") {
+    // eslint-disable-next-line
+    new Notification(title, { icon: icon, body: body });
+  }
+
+  playNotificationSound(userkeycloakId);
+};
+
 const notifyNewMessage = (userkeycloakId, name) => {
   if (!userkeycloakId || !name) {
     return;
@@ -207,6 +224,7 @@ const onLocalStorage = (userkeycloakId, setNotificationSound) => (storage) => {
 };
 
 export {
+  notifyNewChat,
   notifyNewMessage,
   getChatIds,
   getUnreadTotal,

@@ -5,7 +5,6 @@ export default function useLoadComponent(propsToLoadComponent) {
   const {
     chatInitConfig,
     setComponentInfo,
-    setIsLoadingInitialState,
     setView,
     setCurrentChat,
     setIsDrawerOpen,
@@ -24,7 +23,6 @@ export default function useLoadComponent(propsToLoadComponent) {
     [
       chatInitConfig,
       setComponentInfo,
-      setIsLoadingInitialState,
       setView,
       setCurrentChat,
       setIsDrawerOpen,
