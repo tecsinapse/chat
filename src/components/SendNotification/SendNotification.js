@@ -9,6 +9,7 @@ import {
 import { Grid, Tooltip, Typography } from "@material-ui/core";
 import Icon from "@mdi/react";
 import { mdiPlusBoxOutline } from "@mdi/js";
+import ReactGA from "react-ga4";
 import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
@@ -236,6 +237,11 @@ export const SendNotification = ({
   const styleProps = "&alignCenter=1&transparentBackground=1";
 
   const handleOpenMessageSugestion = () => {
+    ReactGA.event({
+      category: selectedConnectionKey,
+      label: "CLICK_BTN_NOVO_MODELO_MSG",
+      action: "Suggest Message Template",
+    });
     window.open(`${url}${styleProps}`, "_blank");
   };
 
