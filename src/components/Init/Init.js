@@ -131,10 +131,6 @@ const InitContext = ({
     _setView(args);
   }, []);
 
-  // Utilizado para notificar componentes quando o socket reconecta
-  // na situação de haver perda de conexão
-  const [connectedAt, setConnectedAt] = useState();
-
   const mainSocketRef = useRef();
 
   const [chatContext, setChatContext] = useContext(ChatContext);
@@ -346,7 +342,6 @@ const InitContext = ({
                 setDrawerOpen={setIsDrawerOpen}
                 clientRef={mainSocketRef}
                 receivedMessage={receivedMessage}
-                connectedAt={connectedAt}
               />
             )}
             {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
@@ -441,7 +436,6 @@ const InitContext = ({
             }
             mainSocketRef={mainSocketRef}
             setReceivedMessage={setReceivedMessage}
-            setConnectedAt={setConnectedAt}
             onConnectMainSocket={registerChatIds}
             componentInfo={componentInfo}
           />

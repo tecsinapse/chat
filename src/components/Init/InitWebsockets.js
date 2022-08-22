@@ -2,7 +2,6 @@ import React from "react";
 import SockJsClient from "react-stomp";
 import ReactGA from "react-ga4";
 import { NotificationType } from "../../constants";
-import { momentNow } from "../../utils/dates";
 
 const debug = new URLSearchParams(window.location.search).has(
   "__chat_debug_mode__"
@@ -19,7 +18,6 @@ const InitWebsockets = ({
   reloadComponent,
   onChatUpdated,
   setReceivedMessage,
-  setConnectedAt,
   mainSocketRef,
   onConnectMainSocket,
   componentInfo,
@@ -43,8 +41,6 @@ const InitWebsockets = ({
 
   const onConnect = () => {
     console.log("WebSocket Connected");
-    // notifica a conexão do socket
-    setConnectedAt(momentNow());
     onConnectMainSocket();
   };
 

@@ -193,6 +193,7 @@ function findChat(chatsIds, chats, userPhoneNumber) {
 
 export const onSelectedChatMaker = ({
   initialInfo,
+  setReadyToSubscribe,
   setIsLoading,
   setCurrentChat,
   setMessages,
@@ -226,6 +227,7 @@ export const onSelectedChatMaker = ({
   setMessages(messages);
   setBlocked(chat, isBlocked);
   setIsLoading(false);
+  setReadyToSubscribe(true);
 
   if (chat.updateUnreadWhenOpen) {
     onReadAllMessagesOfChat(chat);

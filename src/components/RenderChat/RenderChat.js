@@ -39,10 +39,10 @@ const RenderChatUnmemoized = ({
   chatService,
   clientRef,
   receivedMessage,
-  connectedAt, // notificação de reconexão
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentChat, setCurrentChat] = useState(initialInfo);
+  const [readyToSubscribe, setReadyToSubscribe] = useState(false);
+  const [currentChat, setCurrentChat] = useState(initialInfo.chats[0]);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [page, setPage] = useState(1);
@@ -77,6 +77,7 @@ const RenderChatUnmemoized = ({
 
   const propsOnSelectChatMake = {
     initialInfo,
+    setReadyToSubscribe,
     setIsLoading,
     setCurrentChat,
     setMessages,
@@ -90,7 +91,6 @@ const RenderChatUnmemoized = ({
   const onSelectedChat = onSelectedChatMaker(propsOnSelectChatMake);
 
   useEffect(() => {
-    // TODO: O que fazer quando "length > 1"?
     if (initialInfo.chats.length === 1) {
       onSelectedChat(initialInfo.chats[0]);
     }
@@ -114,7 +114,7 @@ const RenderChatUnmemoized = ({
 
   // inscreve a conversa nos tópicos no chat server
   useEffect(() => {
-    if (!currentChat.chatId) {
+    if (!currentChat.chatId || isLoading) {
       return () => {};
     }
 
@@ -150,7 +150,7 @@ const RenderChatUnmemoized = ({
       }
     };
     // eslint-disable-next-line
-  }, [currentChat, connectedAt]);
+  }, [readyToSubscribe]);
 
   const handleNewUserMessage = (newMessage, localId) => {
     const chatMessage = {
