@@ -1,6 +1,5 @@
 import React from "react";
 import SockJsClient from "react-stomp";
-import ReactGA from "react-ga4";
 import { NotificationType } from "../../constants";
 
 const debug = new URLSearchParams(window.location.search).has(
@@ -29,11 +28,6 @@ const InitWebsockets = ({
       } else if (message.type === "CHAT") {
         setReceivedMessage(message);
       } else {
-        ReactGA.event({
-          category: message.connectionKey,
-          action: "Unread Message",
-          nonInteraction: true,
-        });
         onChatUpdated(componentInfo, message);
       }
     }
