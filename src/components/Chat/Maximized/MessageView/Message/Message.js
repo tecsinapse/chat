@@ -69,7 +69,7 @@ export const Message = ({
             <Typography variant="caption" className={classes.authorName}>
               {/* Workaround to overcome lack of authorName on message object */}
               {message.authorName}
-              {!isStringNotBlank(message.authorName) && message.own && 'Você'}
+              {!isStringNotBlank(message.authorName) && message.own && 'Wingo'}
               {!isStringNotBlank(message.authorName) && !message.own && title}
             </Typography>
           )
