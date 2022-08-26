@@ -1,3 +1,8 @@
+## <small>3.2.6 (2022-08-26)</small>
+
+
+
+
 ## <small>3.2.5 (2022-08-26)</small>
 
 * [#180096] Substituir o nome do remetente de "Voce" para "Wingo" quando o usuário que enviou a mensag ([5b59a98](https://github.com/tecsinapse/chat/commit/5b59a98)), closes [#180096](https://github.com/tecsinapse/chat/issues/180096)
