@@ -1,3 +1,9 @@
+## <small>3.2.5 (2022-08-26)</small>
+
+* [#180096] Substituir o nome do remetente de "Voce" para "Wingo" quando o usuário que enviou a mensag ([5b59a98](https://github.com/tecsinapse/chat/commit/5b59a98)), closes [#180096](https://github.com/tecsinapse/chat/issues/180096)
+
+
+
 ## <small>3.2.4 (2022-07-21)</small>
 
 * [#179074] - No chat, exibir a data/hora que a mensagem foi enviada (SENT) e não a hora que foi lida  ([0eb06e0](https://github.com/tecsinapse/chat/commit/0eb06e0)), closes [#179074](https://github.com/tecsinapse/chat/issues/179074)
