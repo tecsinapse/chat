@@ -128,6 +128,7 @@ export const generateColumns = (
           (MessageSource.isClient(lastMessageSource)
             ? name?.split(" ")[0]
             : extraInfo?.responsavel?.split(" ")[0]);
+
         const fontItalic = { fontStyle: "italic" };
 
         return (
@@ -148,7 +149,7 @@ export const generateColumns = (
             <br />
             {renderLastMessage && (
               <Typography variant="caption" style={fontItalic}>
-                {lastSender}: {highlight(globalSearch, lastMessage)}
+                {lastSender || "Você"}: {highlight(globalSearch, lastMessage)}
               </Typography>
             )}
           </>

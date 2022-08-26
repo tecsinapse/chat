@@ -1,18 +1,7 @@
-import { noAuthJsonFetch } from "./fetch";
+import { defaultFetch, noAuthJsonFetch } from "./fetch";
 import { mockUnreadInitialState } from "../mocks/mockUnreadInitialState";
 import { format, toMoment } from "./dates";
 
-/**
- * Busca dos dados para inicializar o componente
- *
- * @param chatApiUrl            URL da api do tec-chat
- * @param getInitialStatePath   caminho para o endpoint do produto de informações iniciais dos chats
- * @param params                objeto JSON para busca dos dados
- * @param standalone            condicional de renderização se o ambiente atual é desenvolvimento
- * @param userMock              dados de configuração do usuário logado para testes em desenvolvimento
- * @param token                 token keycloack do usuário
- * @returns {Promise<[]>}       informações completas do objeto que representa esse componente
- */
 export async function load({
   chatApiUrl,
   getInitialStatePath,
@@ -21,15 +10,12 @@ export async function load({
   userMock = mockUnreadInitialState,
   token,
 }) {
-  // primeiro busca a informação do produto local. É essa informação que fará a inicialização do chat
-  // é essa informação que carrega quais chats são do usuário que está acessando o componente
-  let initialInfoFromProduct;
+  let completeChatInfos;
 
   if (standalone) {
-    // mock para tela de UNREAD
-    initialInfoFromProduct = userMock;
+    completeChatInfos = userMock;
   } else {
-    initialInfoFromProduct = await noAuthJsonFetch(
+    completeChatInfos = await noAuthJsonFetch(
       getInitialStatePath,
       "POST",
       params,
@@ -37,13 +23,29 @@ export async function load({
     );
   }
 
-  return initialInfoFromProduct;
+  const { allChats, connectionKeys, destination } = completeChatInfos;
+
+  for (const connectionKey of getDistinctConnectionKeys(connectionKeys)) {
+    const chatIds = getChatIdsByConnectionKey(allChats, connectionKey);
+
+    const coreChatInfos = await defaultFetch(
+      `${chatApiUrl}/api/chats/${connectionKey}/${destination}/infos`,
+      "POST",
+      chatIds
+    );
+
+    completeChatInfos.allChats = completeChatInfosWith(
+      completeChatInfos.allChats,
+      coreChatInfos
+    );
+  }
+
+  return completeChatInfos;
 }
 
 export function completeChatInfoWith(initialInfo, updatedInfo) {
   const finalInfo = { ...initialInfo, ...updatedInfo };
 
-  // deve manter somente algumas informações dos valores iniciais
   if (initialInfo.name && initialInfo.name !== "") {
     finalInfo.name = initialInfo.name;
   }
@@ -66,3 +68,27 @@ export function completeChatInfoWith(initialInfo, updatedInfo) {
 
   return finalInfo;
 }
+
+const completeChatInfosWith = (initialChatInfos, chatInfos) => {
+  initialChatInfos.forEach((chat, index) => {
+    const chatInfo = chatInfos.find(
+      (chatInfo) => getChatId(chat) === getChatId(chatInfo)
+    );
+    initialChatInfos[index] = completeChatInfoWith(chat, chatInfo);
+  });
+
+  return initialChatInfos;
+};
+
+const getChatIdsByConnectionKey = (chatInfos, connectionKey) =>
+  (chatInfos || [])
+    .filter((it) => it.connectionKey === connectionKey)
+    .map((it) => it.chatId);
+
+const getDistinctConnectionKeys = (connectionKeys) =>
+  connectionKeys
+    .map((it) => it.value)
+    .filter((it, index, self) => self.indexOf(it) === index);
+
+const getChatId = (chat) =>
+  `${chat.chatId}.${chat.connectionKey}.${chat.destination}`;

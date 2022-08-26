@@ -93,8 +93,6 @@ export async function loadComponent({
     newComponentInfo?.currentClient &&
     Object.keys(newComponentInfo?.currentClient).length > 0
   ) {
-    // quando a visualização é de um cliente específico, então define as informações
-    // desse cliente como currentChat e exibe o chat direto
     const chats = (newComponentInfo?.allChats || []).filter(
       (chat) =>
         newComponentInfo.currentClient.clientChatIds.includes(chat.chatId) &&
@@ -102,7 +100,6 @@ export async function loadComponent({
         newComponentInfo.currentClient.destination === chat.destination
     );
 
-    // when userPhoneNumber is null, keeped current behavior
     if (!chatInitConfig.userPhoneNumber) {
       const chatId = findChat(
         newComponentInfo.currentClient.clientChatIds,
@@ -121,7 +118,6 @@ export async function loadComponent({
         setCurrentChat
       );
     } else {
-      // when you have a userPhoneNumber, find the Chat with that userPhoneNumber
       const chatId = findChat(
         newComponentInfo.currentClient.clientChatIds,
         chats,

@@ -1,13 +1,7 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { mdiClose } from "@mdi/js";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {mdiClose} from "@mdi/js";
 import Icon from "@mdi/react";
-import { useTheme } from "@material-ui/styles";
+import {useTheme} from "@material-ui/styles";
 import {
   Button,
   Dialog,
@@ -18,24 +12,24 @@ import {
   Divider as MuiDivider,
   Drawer,
 } from "@material-ui/core";
-import { QueryClient, QueryClientProvider } from "react-query";
+import {QueryClient, QueryClientProvider} from "react-query";
 
 import ReactGA from "react-ga4";
-import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { UnreadChats } from "../UnreadChats/UnreadChats";
-import { RenderChat } from "../RenderChat/RenderChat";
+import {COMPONENT_LOCATION} from "../../constants/COMPONENT_LOCATION";
+import {UnreadChats} from "../UnreadChats/UnreadChats";
+import {RenderChat} from "../RenderChat/RenderChat";
 import InitWebsockets from "./InitWebsockets";
-import { MessageManagement } from "../MessageManagement/MessageManagement";
-import { ChatButton } from "../ChatButton/ChatButton";
-import { encodeChatData } from "../../utils/encodeChatData";
-import { SendNotification } from "../SendNotification/SendNotification";
-import { useStyle } from "./styles";
-import { StartNewChatButton } from "../StartNewChatButton/StartNewChatButton";
+import {MessageManagement} from "../MessageManagement/MessageManagement";
+import {ChatButton} from "../ChatButton/ChatButton";
+import {encodeChatData} from "../../utils/encodeChatData";
+import {SendNotification} from "../SendNotification/SendNotification";
+import {useStyle} from "./styles";
+import {StartNewChatButton} from "../StartNewChatButton/StartNewChatButton";
 
 import {
   disableNotificationSound,
   enableNotificationSound,
-  getChatIds,
+  getChatIdsByConnectionKey,
   getUnreadTotal,
   isChatViewAndIsBlocked,
   isNotificationSoundEnabled,
@@ -49,14 +43,11 @@ import {
   onStartSendNotification,
   onUpdatedChat,
 } from "./functions";
-
-import useLoadComponent from "../../hooks/useLoadComponent";
-import { HeaderDrawer } from "./HeaderDrawer";
-import { ItemDrawer } from "./ItemDrawer";
-import { ProductService } from "../../service/ProductService";
-import { ChatService } from "../../service/ChatService";
-import ChatContext, { allChatsMap } from "../../context";
-import { loadComponent, messageEventListener } from "../../utils/helpers";
+import {HeaderDrawer} from "./HeaderDrawer";
+import {ItemDrawer} from "./ItemDrawer";
+import {ProductService} from "../../service/ProductService";
+import {ChatService} from "../../service/ChatService";
+import {loadComponent, messageEventListener} from "../../utils/helpers";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,8 +58,6 @@ const queryClient = new QueryClient({
 });
 
 export const Init = (props) => {
-  const [state, setState] = useState(allChatsMap);
-
   React.useLayoutEffect(() => {
     ReactGA.initialize(process.env.REACT_APP_GA_ID, {
       gaOptions: {
@@ -83,11 +72,9 @@ export const Init = (props) => {
   }, [props]);
 
   return (
-    <ChatContext.Provider value={[state, setState]}>
-      <QueryClientProvider client={queryClient}>
-        <InitContext {...props} />
-      </QueryClientProvider>
-    </ChatContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <InitContext {...props} />
+    </QueryClientProvider>
   );
 };
 
@@ -116,6 +103,7 @@ const InitContext = ({
   const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
   const [chatToSendNotification, setChatToSendNotification] = useState();
   const [receivedMessage, setReceivedMessage] = useState();
+  const [unreadTotal, setUnreadTotal] = useState(0);
 
   const { userkeycloakId } = chatInitConfig;
 
@@ -133,9 +121,6 @@ const InitContext = ({
 
   const mainSocketRef = useRef();
 
-  const [chatContext, setChatContext] = useContext(ChatContext);
-  const allChats = Array.from(chatContext.values());
-
   const propsToLoadComponent = {
     chatInitConfig,
     setComponentInfo,
@@ -145,20 +130,34 @@ const InitContext = ({
     userMock,
     token,
     setIsDrawerOpen,
-    setChatContext,
     chatService,
     firstLoad,
     setFirstLoad,
   };
 
-  useLoadComponent(propsToLoadComponent);
+  useEffect(
+    () => {
+      loadComponent(propsToLoadComponent).then(() => {
+        if (chatInitConfig?.openImmediately) {
+          setIsDrawerOpen(true);
+        }
+      });
+    }, // eslint-disable-next-line
+    [
+      chatInitConfig,
+      setComponentInfo,
+      setView,
+      setCurrentChat,
+      setIsDrawerOpen,
+      userMock,
+      token,
+    ]
+  );
 
   const reloadComponent = useCallback(
     () => loadComponent(propsToLoadComponent),
     [propsToLoadComponent]
   );
-
-  const unreadTotal = getUnreadTotal(allChats);
 
   const registerChatIds = useCallback(() => {
     if (!componentInfo) {
@@ -173,7 +172,6 @@ const InitContext = ({
 
     const { connectionKeys, destination } = componentInfo;
     const { userkeycloakId } = chatInitConfig;
-    const chatIds = getChatIds(componentInfo?.allChats);
 
     const distinctConnectionKeys = connectionKeys
       .map((it) => it.value)
@@ -182,9 +180,13 @@ const InitContext = ({
     distinctConnectionKeys.forEach((connectionKey) => {
       const addUser = `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`;
 
+      const chatIds = getChatIdsByConnectionKey(
+        componentInfo.allChats,
+        connectionKey
+      );
+
       try {
-        const payload = JSON.stringify({ chatIds });
-        mainSocket.sendMessage(addUser, payload);
+        mainSocket.sendMessage(addUser, chatIds.join(","));
       } catch (e) {
         console.error(e);
       }
@@ -206,7 +208,15 @@ const InitContext = ({
     []
   );
 
-  useEffect(registerChatIds, [chatInitConfig, componentInfo]);
+  useEffect(registerChatIds, [firstLoad]);
+
+  useEffect(() => {
+    if (componentInfo && componentInfo.allChats) {
+      const newUnreadTotal = getUnreadTotal(componentInfo?.allChats);
+      console.log("recontou unreads", newUnreadTotal);
+      setUnreadTotal(newUnreadTotal);
+    }
+  }, [componentInfo]);
 
   const onSelectUnreadChat = (chat) => {
     if (chatInitConfig.clickOnUnreadOpenFirstAction) {
@@ -307,7 +317,8 @@ const InitContext = ({
             <MuiDivider variant="fullWidth" />
             {view === COMPONENT_LOCATION.UNREAD && (
               <UnreadChats
-                chats={allChats}
+                chats={componentInfo.allChats}
+                unreadTotal={unreadTotal}
                 onSelectChat={onSelectUnreadChat}
                 mobile={mobile}
               />
@@ -321,9 +332,8 @@ const InitContext = ({
                 onReadAllMessagesOfChat={(readChat) =>
                   onReadAllMessagesOfChat(
                     componentInfo,
-                    readChat,
-                    chatContext,
-                    setChatContext
+                    setComponentInfo,
+                    readChat
                   )
                 }
                 navigateWhenCurrentChat={chatInitConfig.navigateWhenCurrentChat}
@@ -331,7 +341,7 @@ const InitContext = ({
                   onChatStatusChanged(
                     statusChangedChat,
                     isBlocked,
-                    chatContext,
+                    componentInfo,
                     setChatToSendNotification
                   )
                 }
@@ -346,7 +356,6 @@ const InitContext = ({
             )}
             {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
               <MessageManagement
-                chatContext={chatContext}
                 componentInfo={componentInfo}
                 onSelectChat={onSelectChat}
                 onDeleteChat={(deletedChat) =>
@@ -355,8 +364,6 @@ const InitContext = ({
                     token,
                     productService,
                     chatService,
-                    chatContext,
-                    setChatContext,
                   })
                 }
                 userkeycloakId={userkeycloakId}
@@ -385,7 +392,6 @@ const InitContext = ({
                 setChat={setCurrentChat}
                 setView={setView}
                 token={token}
-                componentInfo={componentInfo}
                 userId={userkeycloakId}
               />
             )}
@@ -429,9 +435,8 @@ const InitContext = ({
                 updatedChat,
                 setCurrentChat,
                 currentChat,
-                chatContext,
-                setChatContext,
-                componentInfo
+                componentInfo,
+                setComponentInfo
               )
             }
             mainSocketRef={mainSocketRef}

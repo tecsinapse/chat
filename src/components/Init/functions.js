@@ -1,7 +1,6 @@
 import { isEquals } from "../../utils/helpers";
 import { completeChatInfoWith } from "../../utils/loadChatsInfos";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { getChatId } from "../../context";
 import { CDN_RESOURCES } from "../../constants/CDN_RESOURCES";
 
 const notifyNewChat = (userkeycloakId) => {
@@ -38,46 +37,44 @@ const notifyNewMessage = (userkeycloakId, name) => {
   playNotificationSound(userkeycloakId);
 };
 
-const getChatIds = (allChats) =>
-  (allChats || []).map((chat) => chat.chatId).join(",");
+const getChatIdsByConnectionKey = (allChats, connectionKey) =>
+  (allChats || [])
+    .filter((it) => it.connectionKey === connectionKey)
+    .map((it) => it.chatId);
 
 const getUnreadTotal = (allChats) =>
   (allChats || [])
     .filter((chat) => !!chat.unread && !chat.archived)
     .reduce((acc, chat) => acc + chat.unread, 0);
 
+const getChatId = (chat) =>
+  `${chat.chatId}.${chat.connectionKey}.${chat.destination}`;
+
 const onUpdatedChat = (
   userkeycloakId,
   updatedChat,
   setCurrentChat,
   currentChat,
-  chatContext,
-  setChatContext,
-  componentInfo
+  componentInfo,
+  setComponentInfo
 ) => {
   const componentInfoChatIndex = componentInfo?.allChats?.findIndex(
     (item) => getChatId(item) === getChatId(updatedChat)
   );
 
-  const chatExists =
-    componentInfoChatIndex > -1 || chatContext.has(getChatId(updatedChat));
+  if (componentInfoChatIndex > -1) {
+    const initialChatInfo = componentInfo.allChats[componentInfoChatIndex];
+    const completeChatInfo = completeChatInfoWith(initialChatInfo, updatedChat);
 
-  if (chatExists) {
-    const chat =
-      componentInfo?.allChats[componentInfoChatIndex] ||
-      chatContext.get(getChatId(updatedChat));
-
-    const completeChatInfo = completeChatInfoWith(chat, updatedChat);
-
-    chatContext.set(getChatId(updatedChat), completeChatInfo);
+    const newComponentInfo = { ...componentInfo };
+    newComponentInfo.allChats[componentInfoChatIndex] = completeChatInfo;
+    setComponentInfo(newComponentInfo);
 
     if (updatedChat.notifyNewMessage && !completeChatInfo.archived) {
       notifyNewMessage(userkeycloakId, completeChatInfo.name);
     }
-  } else {
-    chatContext.set(getChatId(updatedChat), updatedChat);
   }
-  setChatContext(new Map(chatContext));
+
   const currentChatUpdated = { ...currentChat };
   let needToUpdate = false;
 
@@ -96,17 +93,18 @@ const onUpdatedChat = (
   }
 };
 
-const onReadAllMessagesOfChat = (
-  componentInfo,
-  readChat,
-  chatContext,
-  setChatContext
-) => {
-  const chat = chatContext.get(getChatId(readChat));
+const onReadAllMessagesOfChat = (componentInfo, setComponentInfo, readChat) => {
+  const componentInfoChatIndex = componentInfo?.allChats?.findIndex(
+    (item) => getChatId(item) === getChatId(readChat)
+  );
 
-  if (chat) {
-    chat.unread = 0;
-    setChatContext(new Map(chatContext));
+  if (
+    componentInfoChatIndex > -1 &&
+    componentInfo.allChats[componentInfoChatIndex].unread > 0
+  ) {
+    const newComponentInfo = { ...componentInfo };
+    newComponentInfo.allChats[componentInfoChatIndex].unread = 0;
+    setComponentInfo(newComponentInfo);
   }
 };
 
@@ -115,8 +113,6 @@ const onDeleteChat = async ({
   token,
   productService,
   chatService,
-  chatContext,
-  setChatContext,
 }) => {
   try {
     await productService.deleteChat(deletedChat, token);
@@ -124,26 +120,20 @@ const onDeleteChat = async ({
   } catch (e) {
     console.error("[DELETE_CHAT] Error when deleting", e.message);
   }
-
-  chatContext.delete(getChatId(deletedChat));
-  setChatContext(new Map(chatContext));
-
-  return Array.from(chatContext.values());
 };
 
 const onChatStatusChanged = (
   statusChangedChat,
   isBlocked,
-  chatContext,
+  componentInfo,
   setChatToSendNotification
 ) => {
-  // controls if the current chat is expired and the button to send a notification is visible to a chat
   if (statusChangedChat) {
-    const chat =
-      chatContext.get(getChatId(statusChangedChat)) || statusChangedChat;
+    const chat = componentInfo?.allChats?.find(
+      (it) => getChatId(it) === getChatId(statusChangedChat)
+    );
 
     if (chat) {
-      // will only show the button if the chat is blocked
       setChatToSendNotification(isBlocked ? chat : null);
     } else {
       setChatToSendNotification(null);
@@ -226,7 +216,7 @@ const onLocalStorage = (userkeycloakId, setNotificationSound) => (storage) => {
 export {
   notifyNewChat,
   notifyNewMessage,
-  getChatIds,
+  getChatIdsByConnectionKey,
   getUnreadTotal,
   onUpdatedChat,
   onReadAllMessagesOfChat,

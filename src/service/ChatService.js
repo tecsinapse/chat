@@ -82,6 +82,14 @@ export class ChatService {
     );
   }
 
+  async getChatInfos(connectionKey, destination, chatIds) {
+    return defaultFetch(
+      `${this.url}/${connectionKey}/${destination}/infos`,
+      "POST",
+      chatIds
+    );
+  }
+
   sendErrorReport(currentChat, userkeycloakId, chatMessage, error) {
     let attempt = 0;
     const maxAttemps = 5;

@@ -14,8 +14,7 @@ import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { emptyTemplate } from "./utils";
-import { getObjectToSetChat } from "../../utils/helpers";
-import useSendNotification from "../../hooks/useSendNotification";
+import { getObjectToSetChat, isEmpty } from "../../utils/helpers";
 import { HeaderSendNotification } from "./HeaderSendNotification";
 import {
   getCanSend,
@@ -42,7 +41,6 @@ export const SendNotification = ({
   setChat,
   setView,
   token,
-  componentInfo,
   userId,
   userPhoneNumber,
 }) => {
@@ -72,14 +70,24 @@ export const SendNotification = ({
   });
   const tooltipTitle = MESSAGES_INFO.MESSAGE_SUGESTION_TOOLTIP;
 
-  useSendNotification(
-    chat,
-    phoneNumber,
-    extraFields,
-    info,
-    setCustomFields,
-    setAuxInfo
-  );
+  useEffect(() => {
+    if (!isEmpty(info)) {
+      setAuxInfo(info);
+    } else {
+      const { extraInfo } = chat || {};
+
+      setAuxInfo({
+        user: extraInfo?.responsavel || "",
+        company: extraInfo?.dealer || "",
+        name: chat?.name || "",
+        phone: phoneNumber,
+      });
+    }
+
+    if (extraFields) {
+      setCustomFields(extraFields);
+    }
+  }, [chat, info, extraFields, phoneNumber]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const availableConnectionKeys = [
     {

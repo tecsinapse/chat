@@ -13,17 +13,14 @@ import {
 import { format } from "../../utils/dates";
 import { useStyle } from "./styles";
 
-export const UnreadChats = ({ chats, onSelectChat, mobile }) => {
+export const UnreadChats = ({ chats, unreadTotal, onSelectChat, mobile }) => {
   const classes = useStyle();
   const theme = useTheme();
 
-  let unreadTotal = 0;
   const chatWithUnreadMessages = [];
 
-  // verificar se função tem o mesmmo retorno de getUnreadTotal
   chats.forEach((chat) => {
     if (chat.unread > 0 && !chat.archived) {
-      unreadTotal += chat.unread;
       chatWithUnreadMessages.push(chat);
     }
   });
