@@ -148,7 +148,8 @@ export const generateColumns = (
             <br />
             {renderLastMessage && (
               <Typography variant="caption" style={fontItalic}>
-                {lastSender}: {highlight(globalSearch, lastMessage)}
+                {lastSender && `${lastSender}: `}
+                {highlight(globalSearch, lastMessage)}
               </Typography>
             )}
           </>
