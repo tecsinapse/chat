@@ -13,12 +13,12 @@ const standalone = process.env.REACT_APP_STANDALONE === "true";
 
 window.renderChatComponent = function renderChatComponent() {
   const defaultChatInitConfig = {
-    userkeycloakId: "f92c5d90-73b2-11ec-81db-abe03bce8cb8",
+    userkeycloakId: "dd573238-8e0a-4de5-a73b-0dfee75fd905",
     chatApiUrl: `${process.env.REACT_APP_SERVER_URL}`,
     params: {},
-    getInitialStatePath: "/rest/chat/componentInfo",
-    deleteChatPath: "/rest/chat",
-    createPath: "/rest/chat",
+    getInitialStatePath: "http://localhost:8080/rest/chat/componentInfo",
+    deleteChatPath: "http://localhost:8080/rest/chat",
+    createPath: "http://localhost:8080/rest/chat",
     openImmediately: false,
     clickOnUnreadOpenFirstAction: false,
     showMessagesLabel: "Visualizar Mensagens",
@@ -27,8 +27,9 @@ window.renderChatComponent = function renderChatComponent() {
     showDiscardOption: true,
     onlyMessageManagement: false,
     canSendNotification: true,
-    standalone,
+    standalone: false,
     userPhoneNumber: "",
+    pageSize: 10,
   };
 
   let chatInitConfig = { ...defaultChatInitConfig };

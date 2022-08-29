@@ -1,7 +1,7 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {mdiClose} from "@mdi/js";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
-import {useTheme} from "@material-ui/styles";
+import { useTheme } from "@material-ui/styles";
 import {
   Button,
   Dialog,
@@ -12,19 +12,19 @@ import {
   Divider as MuiDivider,
   Drawer,
 } from "@material-ui/core";
-import {QueryClient, QueryClientProvider} from "react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 import ReactGA from "react-ga4";
-import {COMPONENT_LOCATION} from "../../constants/COMPONENT_LOCATION";
-import {UnreadChats} from "../UnreadChats/UnreadChats";
-import {RenderChat} from "../RenderChat/RenderChat";
+import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { UnreadChats } from "../UnreadChats/UnreadChats";
+import { RenderChat } from "../RenderChat/RenderChat";
 import InitWebsockets from "./InitWebsockets";
-import {MessageManagement} from "../MessageManagement/MessageManagement";
-import {ChatButton} from "../ChatButton/ChatButton";
-import {encodeChatData} from "../../utils/encodeChatData";
-import {SendNotification} from "../SendNotification/SendNotification";
-import {useStyle} from "./styles";
-import {StartNewChatButton} from "../StartNewChatButton/StartNewChatButton";
+import { MessageManagement } from "../MessageManagement/MessageManagement";
+import { ChatButton } from "../ChatButton/ChatButton";
+import { oldEncodeChatData } from "../../utils/oldEncodeChatData";
+import { SendNotification } from "../SendNotification/SendNotification";
+import { useStyle } from "./styles";
+import { StartNewChatButton } from "../StartNewChatButton/StartNewChatButton";
 
 import {
   disableNotificationSound,
@@ -37,17 +37,16 @@ import {
   isShowMessageManagement,
   isShowSendNotification,
   onChatStatusChanged,
-  onDeleteChat,
   onLocalStorage,
   onReadAllMessagesOfChat,
   onStartSendNotification,
   onUpdatedChat,
 } from "./functions";
-import {HeaderDrawer} from "./HeaderDrawer";
-import {ItemDrawer} from "./ItemDrawer";
-import {ProductService} from "../../service/ProductService";
-import {ChatService} from "../../service/ChatService";
-import {loadComponent, messageEventListener} from "../../utils/helpers";
+import { HeaderDrawer } from "./HeaderDrawer";
+import { ItemDrawer } from "./ItemDrawer";
+import { ProductService } from "../../service/ProductService";
+import { ChatService } from "../../service/ChatService";
+import { loadComponent, messageEventListener } from "../../utils/helpers";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -98,14 +97,21 @@ const InitContext = ({
   const [firstLoad, setFirstLoad] = useState(true);
   const [view, _setView] = useState(homeLocation);
   const [componentInfo, setComponentInfo] = useState({});
-  const [currentChat, setCurrentChat] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
   const [chatToSendNotification, setChatToSendNotification] = useState();
   const [receivedMessage, setReceivedMessage] = useState();
   const [unreadTotal, setUnreadTotal] = useState(0);
 
-  const { userkeycloakId } = chatInitConfig;
+  const [loading, setLoading] = useState(true);
+  const [onlyNotClients, setOnlyNotClients] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState("");
+  const [page, setPage] = useState(0);
+
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [currentChat, setCurrentChat] = useState(null);
+
+  const { userkeycloakId, pageSize } = chatInitConfig;
 
   const [notificationSound, setNotificationSound] = useState(
     isNotificationSoundEnabled(userkeycloakId)
@@ -123,6 +129,7 @@ const InitContext = ({
 
   const propsToLoadComponent = {
     chatInitConfig,
+    globalSearch,
     setComponentInfo,
     view,
     setView,
@@ -133,6 +140,7 @@ const InitContext = ({
     chatService,
     firstLoad,
     setFirstLoad,
+    page,
   };
 
   useEffect(
@@ -222,21 +230,8 @@ const InitContext = ({
     if (chatInitConfig.clickOnUnreadOpenFirstAction) {
       setChatToOpenFirstAction(chat);
     } else {
-      onSelectChat(chat);
+      //handleSelectChat(chat);
     }
-  };
-
-  const onSelectChat = (chat) => {
-    setCurrentChat({
-      name: chat.name,
-      connectionKey: chat.connectionKey,
-      destination: chat.destination,
-      disabled: !chat.enabled,
-      status: chat.status,
-      chats: [chat],
-      archived: chat.archived,
-    });
-    setView(COMPONENT_LOCATION.CHAT);
   };
 
   let showBackButton = isShowBackButton(view, chatInitConfig);
@@ -356,23 +351,22 @@ const InitContext = ({
             )}
             {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
               <MessageManagement
+                loading={loading}
+                setLoading={setLoading}
+                onlyNotClients={onlyNotClients}
+                setOnlyNotClients={setOnlyNotClients}
+                globalSearch={globalSearch}
+                setGlobalSearch={setGlobalSearch}
+                selectedChat={selectedChat}
+                setSelectedChat={setSelectedChat}
+                setCurrentChat={setCurrentChat}
                 componentInfo={componentInfo}
-                onSelectChat={onSelectChat}
-                onDeleteChat={(deletedChat) =>
-                  onDeleteChat({
-                    deletedChat,
-                    token,
-                    productService,
-                    chatService,
-                  })
-                }
                 userkeycloakId={userkeycloakId}
-                showMessagesLabel={chatInitConfig.showMessagesLabel}
-                showDiscardOption={chatInitConfig.showDiscardOption}
-                headerClass={classes.messageManagementHeader}
-                mobile={mobile}
-                customActions={customActions}
-                setDrawerOpen={setIsDrawerOpen}
+                setView={setView}
+                page={page}
+                setPage={setPage}
+                pageSize={pageSize}
+                productService={productService}
                 chatService={chatService}
               />
             )}
@@ -471,7 +465,7 @@ const InitContext = ({
               </Button>
               <Button
                 onClick={() => {
-                  const encodedData = encodeChatData(
+                  const encodedData = oldEncodeChatData(
                     chatToOpenFirstAction,
                     userkeycloakId
                   );

@@ -6,93 +6,58 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Input } from "@tecsinapse/ui-kit";
-import { makeStyles } from "@material-ui/styles";
 import Icon from "@mdi/react";
 import { mdiMagnify } from "@mdi/js";
+import { useStyle } from "./styles";
 
 export const TableHeader = ({
-  showNotClient,
-  switchToOnlyNotClients,
-  headerClass,
+  onlyNotClients,
+  setOnlyNotClients,
   globalSearch,
   setGlobalSearch,
-  mobile,
 }) => {
-  const classes = useStyle(mobile)();
+  const classes = useStyle();
 
-  const iconMargin = { marginRight: 6 };
-  const headerStyles = { display: "flex" };
-  const versionStyle = { marginTop: 6, right: 10, position: "absolute" };
+  const handleChangeOnlyNotClients = () => {
+    setOnlyNotClients(!onlyNotClients);
+  };
 
-  const debounceInput = useCallback(
+  const debounceGlobalSearch = useCallback(
     debounce((value) => {
       setGlobalSearch(value);
     }, 800),
     []
   );
 
-  const handleChange = (e) => {
-    if (e.target.value !== globalSearch) {
-      debounceInput(e.target.value);
+  const handleChangeGlobalSearch = (event) => {
+    if (event.target.value !== globalSearch) {
+      debounceGlobalSearch(event.target.value);
     }
   };
 
   return (
     <>
-      <div className={headerClass} style={headerStyles}>
-        <Typography variant="h6" className={classes.marginRight}>
-          Clientes do Chat
-        </Typography>
+      <div className={classes.display}>
+        <Typography variant="h6">Clientes do Chat</Typography>
         <FormControlLabel
-          control={<Switch size="small" />}
-          checked={showNotClient}
-          onChange={switchToOnlyNotClients}
           label="Exibir apenas clientes não cadastrados no sistema"
-          classes={{
-            root: classes.marginRight,
-            label: classes.label,
-          }}
+          control={<Switch size="small" />}
+          onChange={handleChangeOnlyNotClients}
+          checked={onlyNotClients}
         />
-        <Typography variant="caption" style={versionStyle}>
+        <Typography variant="caption" className={classes.appVersion}>
           Versão: {process.env.REACT_APP_VERSION}
         </Typography>
       </div>
       <Input
         fullWidth
         placeholder="Pesquise por dados em qualquer campo"
-        name="filtroGlobal"
+        name="globalSearch"
         defaultValue={globalSearch}
-        classes={{
-          input: classes.input,
-        }}
-        startAdornment={
-          <Icon path={mdiMagnify} size={1} color="#c6c6c6" style={iconMargin} />
-        }
-        onChange={handleChange}
+        classes={{ input: classes.input }}
+        startAdornment={<Icon path={mdiMagnify} size={1} color="#c6c6c6" />}
+        onChange={handleChangeGlobalSearch}
       />
     </>
   );
 };
-
-const useStyle = (mobile) =>
-  makeStyles(({ spacing }) => {
-    const mobileStyles = mobile
-      ? {
-          marginTop: 6,
-          width: "105vw",
-          left: -20,
-          backgroundColor: "rgba(0,0,0,0.06)",
-        }
-      : {};
-
-    return {
-      label: {
-        fontSize: "12px",
-        fontWeight: "bold",
-      },
-      marginRight: { marginRight: spacing(2) },
-      input: {
-        ...mobileStyles,
-      },
-    };
-  });

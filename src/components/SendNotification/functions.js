@@ -54,8 +54,7 @@ export const send = ({
             {
               ...fetchArgs,
               ...connectionKeyArgs,
-            },
-            token
+            }
           )
           .then(() => {
             ReactGA.event({

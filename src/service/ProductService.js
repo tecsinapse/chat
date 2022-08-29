@@ -5,24 +5,22 @@ export class ProductService {
     this.url = urlBase;
   }
 
-  createChat(connectionKey, phoneNumber, args, token) {
+  createChat(connectionKey, phoneNumber, args) {
     return noAuthJsonFetch(
       `${this.url}/${connectionKey}/${phoneNumber.replace(
         /[^0-9]/g,
         ""
       )}/create`,
       "POST",
-      args,
-      token
+      args
     );
   }
 
-  deleteChat(deletedChat, token) {
+  deleteChat(chat) {
     return noAuthJsonFetch(
-      `${this.url}/${deletedChat.connectionKey}/${deletedChat.chatId}`,
+      `${this.url}/${chat.connectionKey}/${chat.chatId}`,
       "DELETE",
-      {},
-      token
+      {}
     );
   }
 }

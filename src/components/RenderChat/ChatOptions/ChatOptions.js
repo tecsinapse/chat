@@ -6,7 +6,7 @@ import {
   Popover,
 } from "@material-ui/core";
 import React from "react";
-import { encodeChatData } from "../../../utils/encodeChatData";
+import { oldEncodeChatData } from "../../../utils/oldEncodeChatData";
 
 const useStyles = makeStyles(() => ({
   listFont: {
@@ -27,7 +27,7 @@ export const ChatOptions = ({
     setAnchorEl(null);
   };
   const open = Boolean(anchorEl);
-  const encodedData = encodeChatData(data, userkeycloakId);
+  const encodedData = oldEncodeChatData(data, userkeycloakId);
 
   return (
     <Popover

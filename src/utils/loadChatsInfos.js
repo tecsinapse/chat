@@ -7,6 +7,9 @@ export async function load({
   getInitialStatePath,
   params,
   standalone,
+  pageSize,
+  page,
+  globalSearch,
   userMock = mockUnreadInitialState,
   token,
 }) {
@@ -18,7 +21,7 @@ export async function load({
     completeChatInfos = await noAuthJsonFetch(
       getInitialStatePath,
       "POST",
-      params,
+      { ...params, global, page, pageSize },
       token
     );
   }

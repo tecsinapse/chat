@@ -1792,10 +1792,10 @@
   resolved "https://registry.yarnpkg.com/@tecsinapse/react-mic/-/react-mic-1.3.3.tgz#095b7d12f6f1f5957f202b4d2d67800740f3a359"
   integrity sha512-qVcFX+o18wqsXi1+FEp/0ov2mV2S/L778zaApz9zAvD/tYfrC/vaqIs5eh/5YYG/yIP/pi37G2gOQT9/BW/kTg==
 
-"@tecsinapse/table@^3.7.2":
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-3.7.2.tgz#1df0745f9ded3b01adabe84b5f6564468eea8e1a"
-  integrity sha512-W6SCGjBo5i9kTyiuqW3e6amA5oNussPL+vsXyoBhCbp+9BY1WKkYEOH0dKJ2kFVnZZepzG1iubnWbt1RD/fVFw==
+"@tecsinapse/table@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/table/-/table-4.0.2.tgz#16a47b381aa6a44fd513503b97f65139786fa1b8"
+  integrity sha512-uwlJm9wt7sNLSUT2CtgaIIjFFQpFnR5qUEczUEyfnIcovQqdQSEJKQS+nuz+X59VhH1TZAF0nHDLJ7/QSvVivQ==
   dependencies:
     "@tecsinapse/ui-kit" "^5.6.3"
     react-virtualized "^9.22.3"

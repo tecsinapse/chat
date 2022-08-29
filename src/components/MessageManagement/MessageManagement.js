@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Table } from "@tecsinapse/table";
 import {
   Button,
@@ -8,129 +8,122 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@material-ui/core";
-import { useQueryClient } from "react-query";
 import ReactGA from "react-ga4";
-import { useStyle } from "./styles";
 import { TableHeader } from "./TableHeader";
-import { customActionsMobile, generateColumns } from "./tableUtils";
-import { dataFetcher, getOptions } from "./functions";
 import { MESSAGES_INFO } from "../../constants/MessagesInfo";
+import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { Loading } from "../../utils/Loading";
+import { generateColumns } from "./utils";
 
 export const MessageManagement = ({
+  loading,
+  setLoading,
+  onlyNotClients,
+  setOnlyNotClients,
+  globalSearch,
+  setGlobalSearch,
+  selectedChat,
+  setSelectedChat,
+  setCurrentChat,
   componentInfo,
-  onSelectChat,
-  onDeleteChat,
   userkeycloakId,
-  showMessagesLabel,
-  showDiscardOption,
-  headerClass,
-  mobile,
-  customActions,
-  setDrawerOpen,
+  setView,
+  page,
+  setPage,
+  pageSize,
+  productService,
   chatService,
 }) => {
-  const classes = useStyle();
-  const queryClient = useQueryClient();
-  const { extraInfoColumns } = componentInfo;
-
-  const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
-  const [deletingChat, setDeletingChat] = useState({});
-  const [globalSearch, setGlobalSearch] = useState("");
-
-  const deleteChat = () => {
-    onDeleteChat(deletingChat).then(() => {
-      setDeletingChat({});
-      ReactGA.event({
-        category: deletingChat.connectionKey,
-        action: "Discard Chat",
-      });
-    });
+  const handleSelectChat = (chat) => {
+    setSelectedChat(chat);
   };
 
-  const generateActionsMobile = (data) =>
-    customActionsMobile(
-      data,
-      onSelectChat,
-      showMessagesLabel,
-      customActions,
-      userkeycloakId,
-      setDrawerOpen,
-      showDiscardOption,
-      setDeletingChat
-    );
+  const handleSelectCurrentChat = (chat) => {
+    setCurrentChat(chat);
+    setView(COMPONENT_LOCATION.CHAT);
+  };
+
+  const handleDeleteChat = async () => {
+    try {
+      setLoading(true);
+
+      await productService.deleteChat(selectedChat);
+      await chatService.deleteSessionChat(selectedChat);
+
+      ReactGA.event({
+        category: selectedChat.connectionKey,
+        action: "Discard Chat",
+      });
+    } catch (e) {
+      console.error("[DELETE_CHAT] Error when deleting", e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCloseDeleteChat = () => {
+    setSelectedChat(null);
+  };
+
+  const { chats, totalChats, extraInfoColumns } = componentInfo;
 
   const columns = generateColumns(
     extraInfoColumns,
-    mobile,
-    showMessagesLabel,
-    showDiscardOption,
     userkeycloakId,
-    onSelectChat,
-    setDeletingChat,
-    classes,
+    handleSelectCurrentChat,
+    handleSelectChat,
     globalSearch
   );
 
-  const exportOptions = !mobile ? getOptions(extraInfoColumns) : {};
-
-  const handleSwitchClients = () => setShowOnlyNotClients(!showOnlyNotClients);
-
-  const toolbarOptions = {
-    title: (
-      <TableHeader
-        showNotClient={showOnlyNotClients}
-        switchToOnlyNotClients={handleSwitchClients}
-        headerClass={headerClass}
-        globalSearch={globalSearch}
-        setGlobalSearch={setGlobalSearch}
-        mobile={mobile}
-      />
-    ),
-  };
-
-  const fetcherProps = {
-    queryClient,
-    componentInfo,
-    chatService,
-    showOnlyNotClients,
-    globalSearch,
-  };
-
   return (
     <>
-      <Table
-        onDrawerClose={() => {}}
-        classes={{ rootMobile: classes.rootMobile }}
-        columns={columns}
-        data={dataFetcher(fetcherProps)}
-        rowId={(row) => row.chatId + "-" + row.connectionKey}
-        customActionsMobile={generateActionsMobile}
-        pagination
-        onRowClick={(row) => !mobile && onSelectChat(row)}
-        exportOptions={exportOptions}
-        toolbarOptions={toolbarOptions}
-        rowsPerPage={10}
-        rowsPerPageOptions={[5, 10, 20, 30, 50, 100]}
-        hideSelectFilterLabel
-      />
-      <Dialog
-        open={deletingChat && Object.keys(deletingChat).length > 0}
-        onClose={() => setDeletingChat({})}
-        aria-labelledby="dialog-title"
-      >
-        <DialogTitle id="dialog-title">Confirmação</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{MESSAGES_INFO.DISCARD_LABEL}?</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={() => setDeletingChat({})} color="primary">
-            Não
-          </Button>
-          <Button onClick={deleteChat} color="primary" autoFocus>
-            Sim
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {loading ? (
+        <Loading />
+      ) : (
+        <Table
+          columns={columns}
+          data={{ data: chats, totalCount: totalChats }}
+          rowId={({ chatId, connectionKey }) => chatId + "-" + connectionKey}
+          onRowClick={handleSelectCurrentChat}
+          toolbarOptions={{
+            title: (
+              <TableHeader
+                onlyNotClients={onlyNotClients}
+                setOnlyNotClients={setOnlyNotClients}
+                globalSearch={globalSearch}
+                setGlobalSearch={setGlobalSearch}
+              />
+            ),
+          }}
+          page={page}
+          setPage={setPage}
+          rowsPerPage={pageSize}
+          hideSelectFilterLabel
+          pagination
+        />
+      )}
+      {selectedChat && (
+        <Dialog
+          open={selectedChat}
+          onClose={handleCloseDeleteChat}
+          aria-labelledby="dialog-title"
+        >
+          <DialogTitle id="dialog-title">Confirmação</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {MESSAGES_INFO.DISCARD_LABEL}?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleCloseDeleteChat} color="primary">
+              Não
+            </Button>
+            <Button onClick={handleDeleteChat} color="primary" autoFocus>
+              Sim
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 };

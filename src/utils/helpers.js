@@ -57,6 +57,7 @@ export async function getObjectToSetChat(
 
 export async function loadComponent({
   chatInitConfig,
+  globalSearch,
   setComponentInfo,
   view,
   setView,
@@ -67,8 +68,27 @@ export async function loadComponent({
   firstLoad,
   setFirstLoad,
   startChat,
+  page,
 }) {
-  const newComponentInfo = await load({ ...chatInitConfig, userMock, token });
+  const {
+    chatApiUrl,
+    getInitialStatePath,
+    params,
+    standalone,
+    pageSize,
+  } = chatInitConfig;
+
+  const newComponentInfo = await load({
+    chatApiUrl,
+    getInitialStatePath,
+    params,
+    standalone,
+    pageSize,
+    page,
+    globalSearch,
+    userMock,
+    token,
+  });
 
   setComponentInfo((oldComponentInfo) => {
     if (!firstLoad && view !== COMPONENT_LOCATION.SEND_NOTIFICATION) {
