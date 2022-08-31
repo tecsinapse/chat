@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useTheme } from "@material-ui/styles";
@@ -16,9 +16,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import ReactGA from "react-ga4";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { UnreadChats } from "../UnreadChats/UnreadChats";
 import { RenderChat } from "../RenderChat/RenderChat";
-import InitWebsockets from "./InitWebsockets";
+import { InitWebSockets } from "../InitWebSockets/InitWebSockets";
 import { MessageManagement } from "../MessageManagement/MessageManagement";
 import { ChatButton } from "../ChatButton/ChatButton";
 import { oldEncodeChatData } from "../../utils/oldEncodeChatData";
@@ -27,26 +26,21 @@ import { useStyle } from "./styles";
 import { StartNewChatButton } from "../StartNewChatButton/StartNewChatButton";
 
 import {
-  disableNotificationSound,
-  enableNotificationSound,
-  getChatIdsByConnectionKey,
-  getUnreadTotal,
   isChatViewAndIsBlocked,
-  isNotificationSoundEnabled,
   isShowBackButton,
   isShowMessageManagement,
   isShowSendNotification,
   onChatStatusChanged,
-  onLocalStorage,
   onReadAllMessagesOfChat,
   onStartSendNotification,
-  onUpdatedChat,
 } from "./functions";
-import { HeaderDrawer } from "./HeaderDrawer";
-import { ItemDrawer } from "./ItemDrawer";
+import { HeaderDrawer } from "../HeaderDrawer/HeaderDrawer";
 import { ProductService } from "../../service/ProductService";
 import { ChatService } from "../../service/ChatService";
-import { loadComponent, messageEventListener } from "../../utils/helpers";
+import { messageEventListener } from "../../utils/helpers";
+import { loadComponentInfo } from "./utils";
+import { MessageManagementLink } from "../MessageManagementLink/MessageManagementLink";
+import { handleLocalStorage, isNotificationSoundEnabled } from "../utils";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,6 +64,8 @@ export const Init = (props) => {
     ReactGA.send({ hitType: "pageview", page: "/init" });
   }, [props]);
 
+  console.log(props);
+
   return (
     <QueryClientProvider client={queryClient}>
       <InitContext {...props} />
@@ -85,25 +81,29 @@ const InitContext = ({
   userMock,
   token,
 }) => {
-  const productService = new ProductService(chatInitConfig.createPath);
-  const chatService = new ChatService(`${chatInitConfig.chatApiUrl}/api/chats`);
+  const {
+    userkeycloakId,
+    chatUrl,
+    chatApiUrl,
+    productChatPath,
+    openImmediately,
+    pageSize,
+  } = chatInitConfig;
 
-  const homeLocation = chatInitConfig.onlyMessageManagement
-    ? COMPONENT_LOCATION.MESSAGE_MANAGEMENT
-    : COMPONENT_LOCATION.UNREAD;
+  const productService = new ProductService(productChatPath);
+  const chatService = new ChatService(chatApiUrl);
 
-  const classes = useStyle(customizeStyles, mobile)();
-  const theme = useTheme();
-  const [firstLoad, setFirstLoad] = useState(true);
-  const [view, _setView] = useState(homeLocation);
-  const [componentInfo, setComponentInfo] = useState({});
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [view, setView] = useState(COMPONENT_LOCATION.MESSAGE_MANAGEMENT);
   const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
   const [chatToSendNotification, setChatToSendNotification] = useState();
   const [receivedMessage, setReceivedMessage] = useState();
   const [unreadTotal, setUnreadTotal] = useState(0);
 
+  //----------------------------------------------------------------------
   const [loading, setLoading] = useState(true);
+  const [firstLoad, setFirstLoad] = useState(true);
+  const [componentInfo, setComponentInfo] = useState({});
+
   const [onlyNotClients, setOnlyNotClients] = useState(false);
   const [globalSearch, setGlobalSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -111,120 +111,57 @@ const InitContext = ({
   const [selectedChat, setSelectedChat] = useState(null);
   const [currentChat, setCurrentChat] = useState(null);
 
-  const { userkeycloakId, pageSize } = chatInitConfig;
+  const [connectionKeys, setConnectionKeys] = useState([]);
+  const [destination, setDestination] = useState(null);
+  const [webSocketRef, setWebSocketRef] = useState(null);
+
+  const [openDrawer, setOpenDrawer] = useState(false);
 
   const [notificationSound, setNotificationSound] = useState(
     isNotificationSoundEnabled(userkeycloakId)
   );
 
-  const setView = React.useCallback((args) => {
-    ReactGA.event({
-      category: COMPONENT_LOCATION[args],
-      action: "Navigate",
-    });
-    _setView(args);
-  }, []);
+  const classes = useStyle(view)();
+  const theme = useTheme();
 
-  const mainSocketRef = useRef();
-
-  const propsToLoadComponent = {
-    chatInitConfig,
-    globalSearch,
-    setComponentInfo,
-    view,
-    setView,
-    setCurrentChat,
-    userMock,
-    token,
-    setIsDrawerOpen,
-    chatService,
-    firstLoad,
-    setFirstLoad,
-    page,
-  };
-
-  useEffect(
-    () => {
-      loadComponent(propsToLoadComponent).then(() => {
-        if (chatInitConfig?.openImmediately) {
-          setIsDrawerOpen(true);
-        }
-      });
-    }, // eslint-disable-next-line
-    [
-      chatInitConfig,
+  useEffect(() => {
+    loadComponentInfo({
+      chatService,
+      productService,
+      globalSearch,
+      onlyNotClients,
+      setLoading,
+      setConnectionKeys,
+      setDestination,
       setComponentInfo,
-      setView,
-      setCurrentChat,
-      setIsDrawerOpen,
-      userMock,
-      token,
-    ]
-  );
-
-  const reloadComponent = useCallback(
-    () => loadComponent(propsToLoadComponent),
-    [propsToLoadComponent]
-  );
-
-  const registerChatIds = useCallback(() => {
-    if (!componentInfo) {
-      return;
-    }
-
-    const mainSocket = mainSocketRef.current;
-
-    if (!mainSocket) {
-      return;
-    }
-
-    const { connectionKeys, destination } = componentInfo;
-    const { userkeycloakId } = chatInitConfig;
-
-    const distinctConnectionKeys = connectionKeys
-      .map((it) => it.value)
-      .filter((it, index, self) => self.indexOf(it) === index);
-
-    distinctConnectionKeys.forEach((connectionKey) => {
-      const addUser = `/chat/addUser/main/${connectionKey}/${destination}/${userkeycloakId}`;
-
-      const chatIds = getChatIdsByConnectionKey(
-        componentInfo.allChats,
-        connectionKey
-      );
-
-      try {
-        mainSocket.sendMessage(addUser, chatIds.join(","));
-      } catch (e) {
-        console.error(e);
+      setFirstLoad,
+      page,
+      pageSize,
+    }).then(() => {
+      if (openImmediately) {
+        setOpenDrawer(true);
       }
     });
-  }, [chatInitConfig, componentInfo, mainSocketRef]);
+  }, [globalSearch, onlyNotClients, page]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const reloadComponent = () => {
+    console.log("reloadComponent");
+  };
 
   useEffect(
     () =>
       window.addEventListener("message", async (event) => {
         await messageEventListener(
           event,
-          propsToLoadComponent,
+          //propsToLoadComponent,
           setChatToSendNotification,
           setView,
-          setIsDrawerOpen
+          setOpenDrawer
         );
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-
-  useEffect(registerChatIds, [firstLoad]);
-
-  useEffect(() => {
-    if (componentInfo && componentInfo.allChats) {
-      const newUnreadTotal = getUnreadTotal(componentInfo?.allChats);
-      console.log("recontou unreads", newUnreadTotal);
-      setUnreadTotal(newUnreadTotal);
-    }
-  }, [componentInfo]);
 
   const onSelectUnreadChat = (chat) => {
     if (chatInitConfig.clickOnUnreadOpenFirstAction) {
@@ -238,7 +175,7 @@ const InitContext = ({
   let showMessageManagement = isShowMessageManagement(view);
 
   if (
-    view === COMPONENT_LOCATION.CHAT &&
+    view === COMPONENT_LOCATION.CHAT_MESSAGES &&
     !chatInitConfig.navigateWhenCurrentChat
   ) {
     showBackButton = false;
@@ -256,69 +193,63 @@ const InitContext = ({
     chatViewAndIsBlocked
   );
 
-  const onNotificationSoundChange = () => {
-    if (notificationSound === true) {
-      disableNotificationSound(userkeycloakId);
-      setNotificationSound(false);
-    } else {
-      enableNotificationSound(userkeycloakId);
-      setNotificationSound(true);
-    }
-  };
-
-  window.onstorage = onLocalStorage(userkeycloakId, setNotificationSound);
+  window.onstorage = handleLocalStorage(userkeycloakId, setNotificationSound);
 
   const closeIconStyles = { cursor: "pointer" };
 
+  const handleSetView = (view) => {
+    ReactGA.event({
+      category: COMPONENT_LOCATION[view],
+      action: "Navigate",
+    });
+    setView(view);
+  };
+
+  const handleWebSocketConnect = (webSocketRef) => {
+    const mainSocket = webSocketRef.current;
+
+    connectionKeys.forEach((connectionKey) => {
+      const addUser = `/chat/addUser/main/${connectionKey}/${destination}`;
+      mainSocket.sendMessage(addUser, userkeycloakId);
+    });
+
+    setWebSocketRef(webSocketRef);
+  };
+
+  const handleWebSocketMessage = (message) => {
+    console.log("handleWebSocketMessage", message);
+  };
+
+  const handleCloseDrawer = () => {
+    setOpenDrawer(false);
+  };
+
   return (
     <>
-      {chatInitConfig.customChatButton &&
-        chatInitConfig.customChatButton(
-          firstLoad,
-          unreadTotal,
-          setIsDrawerOpen
-        )}
       <div className="Chat">
-        {!chatInitConfig.customChatButton && !isDrawerOpen && (
+        {!openDrawer && (
           <ChatButton
             firstLoad={firstLoad}
-            setIsDrawerOpen={setIsDrawerOpen}
-            unreadTotal={unreadTotal}
+            setOpenDrawer={setOpenDrawer}
+            unreads={componentInfo?.totalUnreads}
           />
         )}
-        <Drawer
-          anchor="right"
-          open={isDrawerOpen}
-          onClose={() => setIsDrawerOpen(false)}
-        >
+        <Drawer anchor="right" open={openDrawer} onClose={handleCloseDrawer}>
           <div className={classes.drawerContainer}>
             <HeaderDrawer
-              view={view}
-              chatInitConfig={chatInitConfig}
-              theme={theme}
-              classes={classes}
-              homeLocation={homeLocation}
-              setIsDrawerOpen={setIsDrawerOpen}
-              setView={setView}
-              showBackButton={showBackButton}
-              unreadTotal={unreadTotal}
-              onNotificationSoundChange={onNotificationSoundChange}
+              userkeycloakId={userkeycloakId}
+              setOpenDrawer={setOpenDrawer}
               notificationSound={notificationSound}
+              setNotificationSound={setNotificationSound}
+              view={view}
+              setView={handleSetView}
             />
             <MuiDivider variant="fullWidth" />
-            {showMessageManagement && (
-              <ItemDrawer classes={classes} theme={theme} setView={setView} />
+            {view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
+              <MessageManagementLink setView={handleSetView} />
             )}
             <MuiDivider variant="fullWidth" />
-            {view === COMPONENT_LOCATION.UNREAD && (
-              <UnreadChats
-                chats={componentInfo.allChats}
-                unreadTotal={unreadTotal}
-                onSelectChat={onSelectUnreadChat}
-                mobile={mobile}
-              />
-            )}
-            {view === COMPONENT_LOCATION.CHAT && (
+            {view === COMPONENT_LOCATION.CHAT_MESSAGES && (
               <RenderChat
                 initialInfo={currentChat}
                 chatApiUrl={chatInitConfig.chatApiUrl}
@@ -344,8 +275,8 @@ const InitContext = ({
                 mobile={mobile}
                 setView={setView}
                 customActions={customActions}
-                setDrawerOpen={setIsDrawerOpen}
-                clientRef={mainSocketRef}
+                setDrawerOpen={setOpenDrawer}
+                clientRef={webSocketRef}
                 receivedMessage={receivedMessage}
               />
             )}
@@ -362,7 +293,7 @@ const InitContext = ({
                 setCurrentChat={setCurrentChat}
                 componentInfo={componentInfo}
                 userkeycloakId={userkeycloakId}
-                setView={setView}
+                setView={handleSetView}
                 page={page}
                 setPage={setPage}
                 pageSize={pageSize}
@@ -404,10 +335,10 @@ const InitContext = ({
                 mobile={mobile}
               />
             )}
-            {view === COMPONENT_LOCATION.CHAT && mobile && (
+            {view === COMPONENT_LOCATION.CHAT_MESSAGES && mobile && (
               <div className={classes.mobileCloseChatButton}>
                 <Icon
-                  onClick={() => setView(homeLocation)}
+                  onClick={() => setView(COMPONENT_LOCATION.MESSAGE_MANAGEMENT)}
                   color={theme.palette.primary.main}
                   size={1.25}
                   style={closeIconStyles}
@@ -418,25 +349,12 @@ const InitContext = ({
           </div>
         </Drawer>
         {!firstLoad && (
-          <InitWebsockets
-            chatApiUrl={chatInitConfig.chatApiUrl}
+          <InitWebSockets
+            chatUrl={chatUrl}
             userkeycloakId={userkeycloakId}
-            destination={componentInfo.destination}
-            reloadComponent={reloadComponent}
-            onChatUpdated={(componentInfo, updatedChat) =>
-              onUpdatedChat(
-                userkeycloakId,
-                updatedChat,
-                setCurrentChat,
-                currentChat,
-                componentInfo,
-                setComponentInfo
-              )
-            }
-            mainSocketRef={mainSocketRef}
-            setReceivedMessage={setReceivedMessage}
-            onConnectMainSocket={registerChatIds}
-            componentInfo={componentInfo}
+            destination={destination}
+            handleConnect={handleWebSocketConnect}
+            handleMessage={handleWebSocketMessage}
           />
         )}
         {chatInitConfig.clickOnUnreadOpenFirstAction && (

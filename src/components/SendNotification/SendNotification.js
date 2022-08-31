@@ -207,7 +207,7 @@ export const SendNotification = ({
     setChat(objectToSetChat);
     setSending(false);
 
-    setTimeout(() => setView(COMPONENT_LOCATION.CHAT), 4000);
+    setTimeout(() => setView(COMPONENT_LOCATION.CHAT_MESSAGES), 4000);
   };
 
   const connectionKeyArgs = getConnectionKeyArgs(

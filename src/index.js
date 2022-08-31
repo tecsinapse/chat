@@ -13,10 +13,11 @@ const standalone = process.env.REACT_APP_STANDALONE === "true";
 
 window.renderChatComponent = function renderChatComponent() {
   const defaultChatInitConfig = {
-    userkeycloakId: "dd573238-8e0a-4de5-a73b-0dfee75fd905",
-    chatApiUrl: `${process.env.REACT_APP_SERVER_URL}`,
-    params: {},
-    getInitialStatePath: "http://localhost:8080/rest/chat/componentInfo",
+    userkeycloakId: "4a2979b6-e7db-4be1-bd73-e14aeab8006a",
+    chatUrl: `${process.env.REACT_APP_SERVER_URL}`,
+    chatApiUrl: `${process.env.REACT_APP_SERVER_URL}/api/chats`,
+    productChatPath: "http://localhost:8080/rest/chat",
+    componentInfoPath: "http://localhost:8080/rest/chat/componentInfo",
     deleteChatPath: "http://localhost:8080/rest/chat",
     createPath: "http://localhost:8080/rest/chat",
     openImmediately: false,

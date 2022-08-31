@@ -1,19 +1,26 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Table } from "@tecsinapse/table";
 import {
   Button,
+  debounce,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControlLabel,
+  Switch,
+  Typography,
 } from "@material-ui/core";
 import ReactGA from "react-ga4";
-import { TableHeader } from "./TableHeader";
 import { MESSAGES_INFO } from "../../constants/MessagesInfo";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { Loading } from "../../utils/Loading";
 import { generateColumns } from "./utils";
+import { Input } from "@tecsinapse/ui-kit";
+import Icon from "@mdi/react";
+import { mdiMagnify } from "@mdi/js";
+import { useStyle } from "./styles";
 
 export const MessageManagement = ({
   loading,
@@ -34,13 +41,34 @@ export const MessageManagement = ({
   productService,
   chatService,
 }) => {
+  const classes = useStyle();
+
+  const { chats, totalChats, extraInfoColumns } = componentInfo;
+
+  const handleChangeOnlyNotClients = () => {
+    setOnlyNotClients(!onlyNotClients);
+  };
+
+  const debounceGlobalSearch = useCallback(
+    debounce((value) => {
+      setGlobalSearch(value);
+    }, 800),
+    []
+  );
+
+  const handleChangeGlobalSearch = (event) => {
+    if (event.target.value !== globalSearch) {
+      debounceGlobalSearch(event.target.value);
+    }
+  };
+
   const handleSelectChat = (chat) => {
     setSelectedChat(chat);
   };
 
   const handleSelectCurrentChat = (chat) => {
     setCurrentChat(chat);
-    setView(COMPONENT_LOCATION.CHAT);
+    setView(COMPONENT_LOCATION.CHAT_MESSAGES);
   };
 
   const handleDeleteChat = async () => {
@@ -50,8 +78,10 @@ export const MessageManagement = ({
       await productService.deleteChat(selectedChat);
       await chatService.deleteSessionChat(selectedChat);
 
+      const { connectionKey } = selectedChat;
+
       ReactGA.event({
-        category: selectedChat.connectionKey,
+        category: connectionKey,
         action: "Discard Chat",
       });
     } catch (e) {
@@ -65,34 +95,63 @@ export const MessageManagement = ({
     setSelectedChat(null);
   };
 
-  const { chats, totalChats, extraInfoColumns } = componentInfo;
-
-  const columns = generateColumns(
-    extraInfoColumns,
-    userkeycloakId,
-    handleSelectCurrentChat,
-    handleSelectChat,
-    globalSearch
-  );
+  const handleFetchTableData = () =>
+    new Promise(function (resolve) {
+      resolve({ data: chats, totalCount: totalChats });
+    });
 
   return (
-    <>
+    <div className={classes.container}>
       {loading ? (
-        <Loading />
+        <div className={classes.loadingContainer}>
+          <Loading />
+        </div>
       ) : (
         <Table
-          columns={columns}
-          data={{ data: chats, totalCount: totalChats }}
+          columns={generateColumns(
+            classes,
+            extraInfoColumns,
+            userkeycloakId,
+            handleSelectCurrentChat,
+            handleSelectChat,
+            globalSearch
+          )}
+          data={handleFetchTableData}
           rowId={({ chatId, connectionKey }) => chatId + "-" + connectionKey}
           onRowClick={handleSelectCurrentChat}
           toolbarOptions={{
             title: (
-              <TableHeader
-                onlyNotClients={onlyNotClients}
-                setOnlyNotClients={setOnlyNotClients}
-                globalSearch={globalSearch}
-                setGlobalSearch={setGlobalSearch}
-              />
+              <>
+                <div className={classes.toolbarContainer}>
+                  <FormControlLabel
+                    label="Exibir apenas clientes não cadastrados no sistema"
+                    control={<Switch size="small" />}
+                    onChange={handleChangeOnlyNotClients}
+                    checked={onlyNotClients}
+                    classes={{
+                      root: classes.toolbarSwitch,
+                      label: classes.toolbarSwitchLabel,
+                    }}
+                  />
+                  <Typography
+                    variant="caption"
+                    className={classes.toolbarAppVersion}
+                  >
+                    Versão: {process.env.REACT_APP_VERSION}
+                  </Typography>
+                  <br />
+                </div>
+                <Input
+                  placeholder="Pesquise por dados em qualquer campo"
+                  name="globalSearch"
+                  defaultValue={globalSearch}
+                  startAdornment={
+                    <Icon path={mdiMagnify} size={1} color="#c6c6c6" />
+                  }
+                  onChange={handleChangeGlobalSearch}
+                  fullWidth
+                />
+              </>
             ),
           }}
           page={page}
@@ -103,12 +162,8 @@ export const MessageManagement = ({
         />
       )}
       {selectedChat && (
-        <Dialog
-          open={selectedChat}
-          onClose={handleCloseDeleteChat}
-          aria-labelledby="dialog-title"
-        >
-          <DialogTitle id="dialog-title">Confirmação</DialogTitle>
+        <Dialog open={selectedChat} onClose={handleCloseDeleteChat}>
+          <DialogTitle>Confirmação</DialogTitle>
           <DialogContent>
             <DialogContentText>
               {MESSAGES_INFO.DISCARD_LABEL}?
@@ -124,6 +179,6 @@ export const MessageManagement = ({
           </DialogActions>
         </Dialog>
       )}
-    </>
+    </div>
   );
 };

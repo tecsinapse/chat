@@ -4,27 +4,18 @@ import { format, toMoment } from "./dates";
 
 export async function load({
   chatApiUrl,
-  getInitialStatePath,
-  params,
-  standalone,
+  componentInfoPath,
+  globalSearch,
+  onlyNotClients,
   pageSize,
   page,
-  globalSearch,
-  userMock = mockUnreadInitialState,
-  token,
 }) {
-  let completeChatInfos;
-
-  if (standalone) {
-    completeChatInfos = userMock;
-  } else {
-    completeChatInfos = await noAuthJsonFetch(
-      getInitialStatePath,
-      "POST",
-      { ...params, global, page, pageSize },
-      token
-    );
-  }
+  const completeChatInfos = await noAuthJsonFetch(componentInfoPath, "POST", {
+    globalSearch,
+    onlyNotClients,
+    page,
+    pageSize,
+  });
 
   const { allChats, connectionKeys, destination } = completeChatInfos;
 

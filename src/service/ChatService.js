@@ -90,6 +90,14 @@ export class ChatService {
     );
   }
 
+  async completeComponentInfo(componentInfo) {
+    return defaultFetch(
+      `${this.url}/completeComponentInfo`,
+      "POST",
+      componentInfo
+    );
+  }
+
   sendErrorReport(currentChat, userkeycloakId, chatMessage, error) {
     let attempt = 0;
     const maxAttemps = 5;

@@ -11,7 +11,7 @@ export const StartNewChatButton = ({
   theme,
   mobile,
 }) => {
-  const isChatView = view === COMPONENT_LOCATION.CHAT;
+  const isChatView = view === COMPONENT_LOCATION.CHAT_MESSAGES;
 
   if (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT || isChatView) {
     const style = {

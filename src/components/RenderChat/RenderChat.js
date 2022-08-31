@@ -43,7 +43,7 @@ const RenderChatUnmemoized = ({
   const [isLoading, setIsLoading] = useState(true);
   const [readyToSubscribe, setReadyToSubscribe] = useState(false);
   const [currentChat, setCurrentChat] = useState(initialInfo);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);

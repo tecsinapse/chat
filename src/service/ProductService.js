@@ -5,12 +5,18 @@ export class ProductService {
     this.url = urlBase;
   }
 
+  loadComponentInfo(globalSearch, onlyNotClients, page, pageSize) {
+    return noAuthJsonFetch(`${this.url}/componentInfo`, "POST", {
+      globalSearch,
+      onlyNotClients,
+      page,
+      pageSize,
+    });
+  }
+
   createChat(connectionKey, phoneNumber, args) {
     return noAuthJsonFetch(
-      `${this.url}/${connectionKey}/${phoneNumber.replace(
-        /[^0-9]/g,
-        ""
-      )}/create`,
+      `${this.url}/${connectionKey}/${phoneNumber}/create`,
       "POST",
       args
     );

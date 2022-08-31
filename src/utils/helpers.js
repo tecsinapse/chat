@@ -3,10 +3,7 @@ import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
 import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
 import { momentNow, stringFormattedToMoment } from "./dates";
-import {
-  notifyNewChat,
-  onStartSendNotification,
-} from "../components/Init/functions";
+import { onStartSendNotification } from "../components/Init/functions";
 import { countryPhoneNumber } from "../components/SendNotification/utils";
 
 function last(array) {
@@ -56,109 +53,26 @@ export async function getObjectToSetChat(
 }
 
 export async function loadComponent({
-  chatInitConfig,
+  chatApiUrl,
+  componentInfoPath,
   globalSearch,
+  onlyNotClients,
   setComponentInfo,
-  view,
-  setView,
-  setCurrentChat,
-  userMock,
-  token,
-  chatService,
-  firstLoad,
   setFirstLoad,
-  startChat,
   page,
+  pageSize,
 }) {
-  const {
-    chatApiUrl,
-    getInitialStatePath,
-    params,
-    standalone,
-    pageSize,
-  } = chatInitConfig;
-
   const newComponentInfo = await load({
     chatApiUrl,
-    getInitialStatePath,
-    params,
-    standalone,
+    componentInfoPath,
+    globalSearch,
+    onlyNotClients,
     pageSize,
     page,
-    globalSearch,
-    userMock,
-    token,
   });
 
-  setComponentInfo((oldComponentInfo) => {
-    if (!firstLoad && view !== COMPONENT_LOCATION.SEND_NOTIFICATION) {
-      const notArchivedOldComponentInfo =
-        oldComponentInfo?.allChats.filter((it) => !it.archived).length || 0;
-
-      const notArchivedNewComponentInfo =
-        newComponentInfo?.allChats.filter((it) => !it.archived).length || 0;
-
-      if (notArchivedOldComponentInfo < notArchivedNewComponentInfo) {
-        notifyNewChat(chatInitConfig.userkeycloakId);
-      }
-    }
-
-    return newComponentInfo;
-  });
-
+  setComponentInfo(newComponentInfo);
   setFirstLoad(false);
-
-  if (
-    firstLoad &&
-    newComponentInfo?.currentClient &&
-    Object.keys(newComponentInfo?.currentClient).length > 0
-  ) {
-    const chats = (newComponentInfo?.allChats || []).filter(
-      (chat) =>
-        newComponentInfo.currentClient.clientChatIds.includes(chat.chatId) &&
-        newComponentInfo.currentClient.connectionKey === chat.connectionKey &&
-        newComponentInfo.currentClient.destination === chat.destination
-    );
-
-    if (!chatInitConfig.userPhoneNumber) {
-      const chatId = findChat(
-        newComponentInfo.currentClient.clientChatIds,
-        chats
-      );
-
-      if (!chatId) {
-        return newComponentInfo;
-      }
-
-      await renderChat(
-        chatId,
-        newComponentInfo,
-        chatService,
-        setView,
-        setCurrentChat
-      );
-    } else {
-      const chatId = findChat(
-        newComponentInfo.currentClient.clientChatIds,
-        chats,
-        chatInitConfig.userPhoneNumber
-      );
-
-      if (!chatId) {
-        startChat();
-      } else {
-        await renderChat(
-          chatId,
-          newComponentInfo,
-          chatService,
-          setView,
-          setCurrentChat
-        );
-      }
-    }
-  } else if (typeof startChat === "function") {
-    startChat();
-  }
 
   return newComponentInfo;
 }
@@ -176,7 +90,7 @@ async function renderChat(chatId, info, chatService, setView, setCurrentChat) {
   );
 
   setCurrentChat(objectToSetChat);
-  setView(COMPONENT_LOCATION.CHAT);
+  setView(COMPONENT_LOCATION.CHAT_MESSAGES);
 }
 
 function findChat(chatsIds, chats, userPhoneNumber) {

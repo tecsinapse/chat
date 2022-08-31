@@ -17,7 +17,7 @@ export const generateActions = (
 ) => {
   const actions = [
     {
-      label: MESSAGES_INFO.MESSAGES_VIEW_LABEL,
+      label: "Visualizar Mensagens",
       onClick: (rowData) => {
         handleSelectCurrentChat(rowData);
       },
@@ -59,6 +59,7 @@ export const generateActions = (
 };
 
 export const generateColumns = (
+  classes,
   extraInfoColumns,
   userkeycloakId,
   handleSelectCurrentChat,
@@ -108,7 +109,8 @@ export const generateColumns = (
             )}
             <br />
             <Typography variant="caption" style={{ fontStyle: "italic" }}>
-              {lastSender}: {highlight(globalSearch, lastMessage)}
+              {Boolean(lastSender) && lastSender + ": "}
+              {highlight(globalSearch, lastMessage)}
             </Typography>
           </>
         );
@@ -127,7 +129,7 @@ export const generateColumns = (
         title: extraInfoColumns[key],
         field: `extraInfo.${key}`,
         customRender: (row) =>
-          highlight(globalSearch, (row?.extraInfo || {})[key] || ""),
+          highlight(globalSearch, (row?.extraInfos || {})[key] || ""),
       });
     });
   }
@@ -136,21 +138,18 @@ export const generateColumns = (
     title: "Ações",
     field: "",
     customRender: (row) => {
-      const { unread } = row;
+      const { unreads } = row;
 
       return (
         <Badge
           color="error"
-          badgeContent={unread}
+          badgeContent={unreads}
           anchorOrigin={{
             vertical: "top",
             horizontal: "right",
           }}
           classes={{
-            anchorOriginTopRightRectangle: {
-              top: "8px",
-              right: "12px",
-            },
+            anchorOriginTopRightRectangle: classes.badgeAlign,
           }}
         >
           <RowActions
