@@ -19,7 +19,6 @@ export const InitWebSockets = ({
   const webSocketRef = useRef();
 
   const onMessage = (message) => {
-    console.log("message", message);
     handleMessage(message);
   };
 

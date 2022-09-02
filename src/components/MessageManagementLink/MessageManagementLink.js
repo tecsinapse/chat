@@ -13,13 +13,8 @@ export const MessageManagementLink = ({ setView }) => {
   };
 
   return (
-    <div className={classes.container}>
-      <Grid
-        justify="space-between"
-        alignItems="center"
-        onClick={handleLinkClick}
-        container
-      >
+    <div className={classes.container} onClick={handleLinkClick}>
+      <Grid justify="space-between" alignItems="center" container>
         <Grid item>
           <Grid container spacing={1} alignItems="center">
             <Grid item>

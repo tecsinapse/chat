@@ -1,17 +1,4 @@
 /* eslint-disable prefer-promise-reject-errors */
-export const fetchMessages = ({
-  chatApiUrl,
-  connectionKey,
-  destination,
-  chatId,
-  archived = false,
-  page = 0,
-  updateUnreadWhenOpen = true,
-}) => {
-  const uri = `${chatApiUrl}/${connectionKey}/${destination}/${chatId}/messages?page=${page}&size=50&updateUnread=${updateUnreadWhenOpen}&archived=${archived}`;
-
-  return defaultFetch(uri, "GET", {});
-};
 
 export function defaultFetch(path, method, data, formData) {
   const headers = new Headers({

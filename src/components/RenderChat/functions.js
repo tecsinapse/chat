@@ -7,15 +7,6 @@ import {
 } from "../../utils/message";
 import { ChatStatus } from "../../constants";
 
-const emptyChat = {
-  chatId: null,
-  status: null,
-  name: null,
-  phone: null,
-  lastMessage: null,
-  unread: 0,
-};
-
 const uploadOptions = {
   maxFilesPerMessage: 10,
   maximumFileLimitMessage: (limit) =>
@@ -182,7 +173,6 @@ const runHandleNewUserFiles = (
 };
 
 export {
-  emptyChat,
   uploadOptions,
   getTitle,
   getSubTitle,

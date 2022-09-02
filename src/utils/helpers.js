@@ -1,10 +1,10 @@
 import { load } from "./loadChatsInfos";
 import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
-import { buildChatMessageObject } from "./message";
 import { ChatStatus } from "../constants";
 import { momentNow, stringFormattedToMoment } from "./dates";
 import { onStartSendNotification } from "../components/Init/functions";
 import { countryPhoneNumber } from "../components/SendNotification/utils";
+import {getChatMessageObject} from "../components/RenderChat/utils";
 
 function last(array) {
   return array[array.length - 1];
@@ -122,7 +122,7 @@ function findChat(chatsIds, chats, userPhoneNumber) {
 }
 
 export const onSelectedChatMaker = ({
-  initialInfo,
+  currentChat,
   setReadyToSubscribe,
   setIsLoading,
   setCurrentChat,
@@ -135,13 +135,22 @@ export const onSelectedChatMaker = ({
 }) => async (chat) => {
   setIsLoading(true);
   setCurrentChat(chat);
-  const response = await chatService.loadMessages(initialInfo, chat);
+
+  const { connectionKey, destination, chatId, archived } = currentChat;
+
+  const response = await chatService.loadMessages(
+    connectionKey,
+    destination,
+    chatId,
+    archived,
+    0
+  );
 
   const { content } = response;
 
   const messages = content
     .map((externalMessage) =>
-      buildChatMessageObject(externalMessage, chat.chatId, userNamesById)
+      getChatMessageObject(externalMessage, chat.chatId, userNamesById)
     )
     .reverse();
 
@@ -152,7 +161,7 @@ export const onSelectedChatMaker = ({
     lastClientMessage?.at
   ).isBetween(now.clone().subtract(24, "hour"), now);
 
-  const isBlocked = ChatStatus.isBlocked(initialInfo) || lastMessageExpired;
+  const isBlocked = ChatStatus.isBlocked(currentChat) || lastMessageExpired;
 
   setMessages(messages);
   setBlocked(chat, isBlocked);

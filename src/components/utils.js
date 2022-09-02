@@ -1,4 +1,6 @@
 import { CDN_RESOURCES } from "../constants/CDN_RESOURCES";
+import { toMoment } from "../utils/dates";
+import moment from "moment-timezone";
 
 export const notifyNewChat = (userkeycloakId) => {
   if (!userkeycloakId) {
@@ -80,3 +82,16 @@ export const isNotificationSoundEnabled = (userkeycloakId) => {
 
   return true;
 };
+
+export const getChatId = (chat) => {
+  return `${chat.chatId}.${chat.connectionKey}.${chat.destination}`;
+};
+
+export function formatDateTime(dateTime) {
+  const m = toMoment(dateTime);
+  return m.isValid() ? m.format("DD/MM/YYYY HH:mm") : dateTime;
+}
+
+export const getMomentNow = () => {
+  return moment().tz("America/Sao_Paulo");
+}

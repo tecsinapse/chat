@@ -96,15 +96,6 @@ const onChatStatusChanged = (
   }
 };
 
-const isShowBackButton = (view, chatInitConfig) =>
-  view === COMPONENT_LOCATION.CHAT_MESSAGES ||
-  view === COMPONENT_LOCATION.SEND_NOTIFICATION ||
-  (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
-    !chatInitConfig.onlyMessageManagement);
-
-const isShowMessageManagement = (view) =>
-  view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT;
-
 const isChatViewAndIsBlocked = (view, chatToSendNotification) =>
   view === COMPONENT_LOCATION.CHAT_MESSAGES && chatToSendNotification != null;
 
@@ -124,8 +115,6 @@ export {
   onReadAllMessagesOfChat,
   onDeleteChat,
   onChatStatusChanged,
-  isShowBackButton,
-  isShowMessageManagement,
   isChatViewAndIsBlocked,
   isShowSendNotification,
   onStartSendNotification,
