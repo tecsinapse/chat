@@ -8,8 +8,8 @@ import {
 } from '@livechat/ui-kit';
 import { Typography } from '@material-ui/core';
 import {
-  mdiImage,
   mdiFilmstripBoxMultiple,
+  mdiImage,
   mdiMicrophone,
   mdiPaperclip,
   mdiSend,
@@ -131,25 +131,35 @@ export const InputComposer = ({
   return (
     <>
       <PreviewList files={files} setFiles={setFiles} />
-      <TextComposer
-        onSend={onSend}
-        onKeyDown={onKeyDown}
-        onChange={onChange}
-        inputRef={inputRef1}
-        active={!disabledSend}
-      >
-        {isBlocked ? (
-          <Row align="center" justifyContent="space-around">
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              style={blockedMessageSpacing}
-            >
-              {composerBlockedMessage}
-            </Typography>
-          </Row>
-        ) : (
-          <>
+      <>
+        {isBlocked && composerBlockedMessage && (
+          <TextComposer
+            onSend={onSend}
+            onKeyDown={onKeyDown}
+            onChange={onChange}
+            inputRef={inputRef1}
+            active={!disabledSend}
+          >
+            <Row align="center" justifyContent="space-around">
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                style={blockedMessageSpacing}
+              >
+                {composerBlockedMessage}
+              </Typography>
+            </Row>
+          </TextComposer>
+        )}
+
+        {!isBlocked && (
+          <TextComposer
+            onSend={onSend}
+            onKeyDown={onKeyDown}
+            onChange={onChange}
+            inputRef={inputRef1}
+            active={!disabledSend && !isBlocked}
+          >
             <Row align="center">
               {!recording && (
                 <TextInput fill="true" placeholder="Digite uma mensagem" />
@@ -276,11 +286,9 @@ export const InputComposer = ({
               maxFileUploadSize={maxFileUploadSize}
               uploadOptions={uploadOptions}
             />
-          </>
+          </TextComposer>
         )}
-      </TextComposer>
+      </>
     </>
   );
 };
-
-export default InputComposer;
