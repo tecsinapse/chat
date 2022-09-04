@@ -1,3 +1,9 @@
+## <small>3.2.7 (2022-09-04)</small>
+
+* [#180265] - Simplificar uso dos estados, paginar resultados e melhorar uso do websocket no component ([9a01430](https://github.com/tecsinapse/chat/commit/9a01430)), closes [#180265](https://github.com/tecsinapse/chat/issues/180265)
+
+
+
 ## <small>3.2.6 (2022-08-26)</small>
 
 
