@@ -84,7 +84,7 @@ export const isNotificationSoundEnabled = (userkeycloakId) => {
 };
 
 export const getChatId = (chat) => {
-  return `${chat.chatId}.${chat.connectionKey}.${chat.destination}`;
+  return `${chat.chatId}.${chat.connectionKey}`;
 };
 
 export function formatDateTime(dateTime) {

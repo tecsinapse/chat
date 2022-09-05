@@ -52,9 +52,9 @@ export const getChatMessageObject = (message, chatId, userNamesByIds = {}) => {
   return chatMessage;
 };
 
-export const getSendingMessage = (localId) => ({
+export const getSendingMessage = (localId, authorName) => ({
   at: formatDateTime(getMomentNow()),
-  authorName: "Você",
+  authorName: authorName || "Você",
   id: localId,
   localId: localId,
   own: true,
@@ -73,18 +73,18 @@ export const getSendingMedia = (file) => ({
   ],
 });
 
-export const getSendingNewMessage = (localId, text) => ({
-  ...getSendingMessage(localId),
+export const getSendingNewMessage = (localId, text, authorName) => ({
+  ...getSendingMessage(localId, authorName),
   text: text,
 });
 
-export const getSendingNewAudio = (localId, file) => ({
-  ...getSendingMessage(localId),
+export const getSendingNewAudio = (localId, file, authorName) => ({
+  ...getSendingMessage(localId, authorName),
   ...getSendingMedia(file),
 });
 
-export const getSendingNewFile = (localId, title, file) => ({
-  ...getSendingMessage(localId),
+export const getSendingNewFile = (localId, title, file, authorName) => ({
+  ...getSendingMessage(localId, authorName),
   ...getSendingMedia(file),
   title: title,
 });

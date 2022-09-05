@@ -51,14 +51,7 @@ export const Init = (props) => {
   );
 };
 
-const InitContext = ({
-  chatInitConfig,
-  customizeStyles,
-  customActions,
-  mobile = false,
-  userMock,
-  token,
-}) => {
+const InitContext = ({ chatInitConfig, token }) => {
   const {
     userkeycloakId,
     chatUrl,
@@ -73,15 +66,13 @@ const InitContext = ({
   const chatService = new ChatService(chatApiUrl);
 
   const [view, setView] = useState(COMPONENT_LOCATION.MESSAGE_MANAGEMENT);
-  const [chatToOpenFirstAction, setChatToOpenFirstAction] = useState({});
-  const [unreadTotal, setUnreadTotal] = useState(0);
-
-  //----------------------------------------------------------------------
   const [loading, setLoading] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
   const [componentInfo, setComponentInfo] = useState({});
+  const [reload, setReload] = useState(false);
 
   const [onlyNotClients, setOnlyNotClients] = useState(false);
+  const [onlyUnreads, setOnlyUnreads] = useState(false);
   const [globalSearch, setGlobalSearch] = useState("");
   const [page, setPage] = useState(0);
 
@@ -103,11 +94,18 @@ const InitContext = ({
 
   const classes = useStyle(view)();
 
-  useEffect(() => {
+  const loadComponentInfo = async () => {
     setLoading(true);
 
     productService
-      .loadComponentInfo(globalSearch, onlyNotClients, page, pageSize)
+      .loadComponentInfo(
+        globalSearch,
+        onlyNotClients,
+        onlyUnreads,
+        componentInfo?.chatIds,
+        page,
+        pageSize
+      )
       .then((componentInfo) => {
         chatService
           .completeComponentInfo(componentInfo)
@@ -118,17 +116,25 @@ const InitContext = ({
             setComponentInfo(completeComponentInfo);
             setFirstLoad(false);
             setLoading(false);
-
-            if (openImmediately) {
-              setOpenDrawer(true);
-            }
           });
       });
-  }, [globalSearch, onlyNotClients, page]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const reloadComponent = () => {
-    console.log("reloadComponent");
   };
+
+  useEffect(() => {
+    loadComponentInfo().then(() => {
+      if (openImmediately) {
+        setOpenDrawer(true);
+      }
+    });
+  }, [globalSearch, onlyNotClients, onlyUnreads, page]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (reload) {
+      loadComponentInfo().then(() => {
+        setReload(false);
+      });
+    }
+  }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(
     () =>
@@ -150,7 +156,13 @@ const InitContext = ({
       category: COMPONENT_LOCATION[view],
       action: "Navigate",
     });
-    setView(view);
+
+    setView((oldView) => {
+      if (oldView === COMPONENT_LOCATION.CHAT_MESSAGES) {
+        setReload(true);
+      }
+      return view;
+    });
   };
 
   const handleWebSocketConnect = (webSocketRef) => {
@@ -180,10 +192,6 @@ const InitContext = ({
     minutesToBlock,
     setBlocked
   ) => {
-    const index = componentInfo?.chats?.findIndex(
-      (it) => getChatId(it) === getChatId(currentChat)
-    );
-
     const newCurrentChat = {
       ...currentChat,
       minutesToBlock: minutesToBlock,
@@ -191,23 +199,19 @@ const InitContext = ({
     };
 
     if (!archived && newCurrentChat.unreads > 0) {
+      const currentChatId = getChatId(currentChat);
+
+      const index = componentInfo.chatIds.findIndex(
+        (it) => getChatId(it) === currentChatId
+      );
+
+      componentInfo.chatIds[index].unreads = 0;
       newCurrentChat.unreads = 0;
     }
 
-    const needUpdate =
-      newCurrentChat.blocked !== currentChat.blocked ||
-      newCurrentChat.unreads !== currentChat.unreads ||
-      newCurrentChat.minutesToBlock !== currentChat.minutesToBlock;
-
-    if (needUpdate) {
-      const newComponentInfo = { ...componentInfo };
-      newComponentInfo[index] = newCurrentChat;
-      setComponentInfo(newComponentInfo);
-      setCurrentChatSend(blocked ? newCurrentChat : null);
-      setCurrentChat(newCurrentChat);
-    }
-
     setBlocked(blocked);
+    setCurrentChatSend(blocked ? newCurrentChat : null);
+    setCurrentChat(newCurrentChat);
   };
 
   const handleStartSendNotification = () => {
@@ -247,6 +251,7 @@ const InitContext = ({
                 userkeycloakId={userkeycloakId}
                 currentChat={currentChat}
                 setCurrentChat={setCurrentChat}
+                setReload={setReload}
                 setDrawerOpen={setOpenDrawer}
                 handleAfterLoadMessage={handleAfterLoadMessage}
                 receivedMessage={receivedMessage}
@@ -260,6 +265,8 @@ const InitContext = ({
                 setLoading={setLoading}
                 onlyNotClients={onlyNotClients}
                 setOnlyNotClients={setOnlyNotClients}
+                onlyUnreads={onlyUnreads}
+                setOnlyUnreads={setOnlyUnreads}
                 globalSearch={globalSearch}
                 setGlobalSearch={setGlobalSearch}
                 selectedChat={selectedChat}
@@ -287,7 +294,7 @@ const InitContext = ({
                 chatService={chatService}
                 info={componentInfo.sendNotificationInfo}
                 extraFields={componentInfo.extraFields}
-                reloadComponent={reloadComponent}
+                reloadComponent={() => console.log("reloadComponent")}
                 setChat={setCurrentChat}
                 setView={setView}
                 token={token}
@@ -296,7 +303,8 @@ const InitContext = ({
             )}
             {canSendNotification &&
               (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT ||
-                currentChat?.blocked) && (
+                (view === COMPONENT_LOCATION.CHAT_MESSAGES &&
+                  currentChat?.blocked)) && (
                 <StartNewChatButton
                   handleStartSendNotification={handleStartSendNotification}
                 />

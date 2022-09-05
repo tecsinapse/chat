@@ -14,7 +14,7 @@ export const StartNewChatButton = ({ handleStartSendNotification }) => {
       onClick={handleStartSendNotification}
       className={classes.floatingButton}
     >
-      <Tooltip title="Iniciar nova conversa" placement={"top"} arrow>
+      <Tooltip title="Iniciar nova conversa" placement="right-start" arrow>
         <Icon path={mdiMessageText} size={1} color="white" />
       </Tooltip>
     </FloatingButton>

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactGA from "react-ga4";
 import uuidv1 from "uuid/v1";
 import { Chat, DELIVERY_STATUS } from "@tecsinapse/chat";
-import { ChatOptions } from "./ChatOptions/ChatOptions";
 import {
   formatMessageStatus,
   getChatMessageObject,
@@ -13,6 +12,8 @@ import {
   getSendingNewMessage,
   getTimeToExpireChat,
 } from "./utils";
+import { List, ListItem, ListItemText, Popover } from "@material-ui/core";
+import { encodeChatData } from "../MessageManagement/utils";
 
 export const RenderChat = ({
   chatService,
@@ -26,8 +27,6 @@ export const RenderChat = ({
   webSocketRef,
 }) => {
   const { connectionKey, destination, chatId, archived, actions } = currentChat;
-
-  console.log("currentChat", currentChat);
 
   const [loading, setLoading] = useState(true);
   const [readyToSubscribe, setReadyToSubscribe] = useState(false);
@@ -213,7 +212,8 @@ export const RenderChat = ({
 
     setMessages((oldMessages) => {
       const newMessages = [...oldMessages];
-      const newMessage = getSendingNewMessage(localId, text);
+      const authorName = userNamesById[userkeycloakId];
+      const newMessage = getSendingNewMessage(localId, text, authorName);
       newMessages.push(newMessage);
       return newMessages;
     });
@@ -240,10 +240,15 @@ export const RenderChat = ({
 
     setMessages((oldMessages) => {
       const newMessages = [...oldMessages];
-      const newMessage = getSendingNewAudio(localId, {
-        mediaType: "audio",
-        data: blob.blobURL,
-      });
+      const authorName = userNamesById[userkeycloakId];
+      const newMessage = getSendingNewAudio(
+        localId,
+        {
+          mediaType: "audio",
+          data: blob.blobURL,
+        },
+        authorName
+      );
       newMessages.push(newMessage);
       return newMessages;
     });
@@ -265,7 +270,13 @@ export const RenderChat = ({
 
       setMessages((oldMessages) => {
         const newMessages = [...oldMessages];
-        const newMessage = getSendingNewFile(localId, fileTitle, files[uid]);
+        const authorName = userNamesById[userkeycloakId];
+        const newMessage = getSendingNewFile(
+          localId,
+          fileTitle,
+          files[uid],
+          authorName
+        );
         newMessages.push(newMessage);
         return newMessages;
       });
@@ -283,9 +294,15 @@ export const RenderChat = ({
     setAnchorEl(event.currentTarget);
   };
 
+  const handleCloseActions = () => {
+    setAnchorEl(null);
+  };
+
   const handleBackToChatList = () => {
     // não faz nada
   };
+
+  const encodedData = encodeChatData(currentChat, userkeycloakId);
 
   return (
     <div style={{ maxWidth: "40vW" }}>
@@ -334,14 +351,46 @@ export const RenderChat = ({
         }}
       />
 
-      <ChatOptions
+      <Popover
+        open={Boolean(anchorEl)}
         anchorEl={anchorEl}
-        setAnchorEl={setAnchorEl}
-        options={actions}
-        data={currentChat}
-        userkeycloakId={userkeycloakId}
-        setDrawerOpen={setDrawerOpen}
-      />
+        onClose={handleCloseActions}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <List>
+          {actions &&
+            actions.map((item) => {
+              const handleClick = () => {
+                if (item.action) {
+                  setDrawerOpen(false);
+                  item.action(currentChat, encodedData);
+                } else {
+                  window.open(`${item.path}?data=${encodedData}`, "_self");
+                }
+              };
+
+              return (
+                <ListItem
+                  key={item.label}
+                  component="a"
+                  onClick={handleClick}
+                  button
+                >
+                  <ListItemText
+                    primary={item.action ? item.label(currentChat) : item.label}
+                  />
+                </ListItem>
+              );
+            })}
+        </List>
+      </Popover>
     </div>
   );
 };

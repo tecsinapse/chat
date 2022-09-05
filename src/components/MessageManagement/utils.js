@@ -1,7 +1,7 @@
 import React from "react";
 import jwt from "jwt-simple";
 import { format } from "../../utils/dates";
-import { Badge, Chip, Tooltip, Typography } from "@material-ui/core";
+import { Badge, Box, Chip, Tooltip, Typography } from "@material-ui/core";
 import { MessageSource } from "../../constants";
 import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
 import { oldEncodeChatData } from "../../utils/oldEncodeChatData";
@@ -89,6 +89,7 @@ export const generateColumns = (
       field: "name",
       customRender: ({
         name,
+        phone,
         lastMessage,
         lastMessageSource,
         extraInfos,
@@ -99,38 +100,48 @@ export const generateColumns = (
           : extraInfos?.responsavel?.split(" ")[0];
 
         return (
-          <>
+          <div style={{ minWidth: "400px", maxWidth: "520px" }}>
+            <Typography variant="caption">
+              {highlight(globalSearch, phone)}
+            </Typography>
+            <br />
             {highlighted ? (
-              <span style={{ fontWeight: "bold", color: "#e6433f" }}>
-                {highlight(globalSearch, name)}
+              <span style={{ color: "#e6433f" }}>
+                <b>{highlight(globalSearch, name)}</b>
               </span>
             ) : (
               <span>{highlight(globalSearch, name)}</span>
             )}
             <br />
-            <Typography variant="caption" style={{ fontStyle: "italic" }}>
-              {Boolean(lastSender) && lastSender + ": "}
-              {highlight(globalSearch, lastMessage)}
+            <Typography variant="caption">
+              <i>
+                {Boolean(lastSender)
+                  ? lastSender + ": " + lastMessage
+                  : lastMessage}
+              </i>
             </Typography>
-          </>
+          </div>
         );
       },
-    },
-    {
-      title: "Telefone",
-      field: "phone",
-      customRender: (row) => highlight(globalSearch, row.phone),
     },
   ];
 
   if (extraInfoColumns && Object.keys(extraInfoColumns).length > 0) {
-    Object.keys(extraInfoColumns).forEach((key) => {
-      columns.push({
-        title: extraInfoColumns[key],
-        field: `extraInfo.${key}`,
-        customRender: (row) =>
-          highlight(globalSearch, (row?.extraInfos || {})[key] || ""),
-      });
+    columns.push({
+      title: "Informações Extras",
+      field: `extraInfos`,
+      customRender: ({ extraInfos }) => (
+        <Box display="grid">
+          {Object.keys(extraInfoColumns).map((key) => (
+            <Typography key={key} variant="caption">
+              <b>{extraInfoColumns[key]}: </b>
+              {extraInfos[key]
+                ? highlight(globalSearch, extraInfos[key])
+                : "Indefinido"}
+            </Typography>
+          ))}
+        </Box>
+      ),
     });
   }
 
@@ -177,7 +188,10 @@ export const encodeChatData = (chat, userkeycloakId) => {
 
 export const normalize = (value) => {
   if (value) {
-    return value.normalize("NFD").toLowerCase();
+    return value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
   } else {
     return "";
   }
@@ -199,16 +213,11 @@ export const split = (value, indexes, size) => {
   return result.filter((e) => e);
 };
 
-export const matcher = (search, textToReplace) => {
-  const s = normalize(search);
-  const tx = normalize(textToReplace);
-  const r = new RegExp(`(${s})`, "g");
-  return Array.from(tx.matchAll(r));
-};
-
 export const replacer = (search, textToReplace) => {
   const normalizedSearch = normalize(search);
-  const matchs = matcher(search, textToReplace);
+  const normalizedTextToReplace = normalize(textToReplace);
+  const regex = new RegExp(`(${normalizedSearch})`, "g");
+  const matchs = Array.from(normalizedTextToReplace.matchAll(regex));
 
   if (matchs.length <= 0) {
     return textToReplace;
@@ -237,4 +246,11 @@ export const highlight = (search, textToReplace) => {
     return replacer(search, textToReplace);
   }
   return textToReplace;
+};
+
+const truncate = (value, limit) => {
+  if (!value || value.length <= limit) {
+    return value;
+  }
+  return value.slice(0, limit) + "...";
 };

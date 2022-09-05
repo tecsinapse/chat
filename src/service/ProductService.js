@@ -5,10 +5,19 @@ export class ProductService {
     this.url = urlBase;
   }
 
-  loadComponentInfo(globalSearch, onlyNotClients, page, pageSize) {
+  loadComponentInfo(
+    globalSearch,
+    onlyNotClients,
+    onlyUnreads,
+    chatIds,
+    page,
+    pageSize
+  ) {
     return noAuthJsonFetch(`${this.url}/componentInfo`, "POST", {
       globalSearch,
       onlyNotClients,
+      onlyUnreads,
+      unreadChatIds: onlyUnreads ? chatIds.filter((it) => it.unreads > 0) : [],
       page,
       pageSize,
     });

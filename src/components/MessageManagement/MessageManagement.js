@@ -27,6 +27,8 @@ export const MessageManagement = ({
   setLoading,
   onlyNotClients,
   setOnlyNotClients,
+  onlyUnreads,
+  setOnlyUnreads,
   globalSearch,
   setGlobalSearch,
   selectedChat,
@@ -47,6 +49,10 @@ export const MessageManagement = ({
 
   const handleChangeOnlyNotClients = () => {
     setOnlyNotClients(!onlyNotClients);
+  };
+
+  const handleChangeOnlyUnreads = () => {
+    setOnlyUnreads(!onlyUnreads);
   };
 
   const debounceGlobalSearch = useCallback(
@@ -133,6 +139,16 @@ export const MessageManagement = ({
                       label: classes.toolbarSwitchLabel,
                     }}
                   />
+                  <FormControlLabel
+                    label="Exibir apenas conversas com mensagens não lidas"
+                    control={<Switch size="small" />}
+                    onChange={handleChangeOnlyUnreads}
+                    checked={onlyUnreads}
+                    classes={{
+                      root: classes.toolbarSwitch,
+                      label: classes.toolbarSwitchLabel,
+                    }}
+                  />
                   <Typography
                     variant="caption"
                     className={classes.toolbarAppVersion}
@@ -157,6 +173,7 @@ export const MessageManagement = ({
           page={page}
           setPage={setPage}
           rowsPerPage={pageSize}
+          rowsPerPageOptions={[10]}
           hideSelectFilterLabel
           pagination
         />

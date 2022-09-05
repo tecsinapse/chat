@@ -1,8 +1,14 @@
 import { makeStyles } from "@material-ui/styles";
 
-export const useStyle = makeStyles(({ spacing }) => ({
+export const useStyle = makeStyles(() => ({
   container: {
     height: "100%",
+    "& .MuiTablePagination-spacer": {
+      display: "none",
+    },
+    "& .MuiTablePagination-toolbar": {
+      paddingLeft: "18px",
+    },
   },
   loadingContainer: {
     top: "35%",
