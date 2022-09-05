@@ -60,6 +60,7 @@ const InitContext = ({ chatInitConfig, token }) => {
     openImmediately,
     pageSize,
     canSendNotification,
+    createPath,
   } = chatInitConfig;
 
   const productService = new ProductService(productChatPath);
@@ -147,8 +148,7 @@ const InitContext = ({ chatInitConfig, token }) => {
           setOpenDrawer
         );
       }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const handleSetView = (view) => {
@@ -225,102 +225,105 @@ const InitContext = ({ chatInitConfig, token }) => {
   window.onstorage = handleLocalStorage(userkeycloakId, setNotificationSound);
 
   return (
-    <>
-      <div className="Chat">
-        {!openDrawer && (
-          <ChatButton
-            firstLoad={firstLoad}
-            setOpenDrawer={setOpenDrawer}
-            unreads={componentInfo?.totalUnreads}
-          />
-        )}
-        <Drawer anchor="right" open={openDrawer} onClose={handleCloseDrawer}>
-          <div className={classes.drawerContainer}>
-            <HeaderDrawer
-              userkeycloakId={userkeycloakId}
-              setOpenDrawer={setOpenDrawer}
-              notificationSound={notificationSound}
-              setNotificationSound={setNotificationSound}
-              view={view}
-              setView={handleSetView}
-            />
-            <MuiDivider variant="fullWidth" />
-            {view === COMPONENT_LOCATION.CHAT_MESSAGES && (
-              <RenderChat
-                chatService={chatService}
-                userkeycloakId={userkeycloakId}
-                currentChat={currentChat}
-                setCurrentChat={setCurrentChat}
-                setReload={setReload}
-                setDrawerOpen={setOpenDrawer}
-                handleAfterLoadMessage={handleAfterLoadMessage}
-                receivedMessage={receivedMessage}
-                userNamesById={componentInfo?.userNameById}
-                webSocketRef={webSocketRef}
-              />
-            )}
-            {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
-              <MessageManagement
-                loading={loading}
-                setLoading={setLoading}
-                onlyNotClients={onlyNotClients}
-                setOnlyNotClients={setOnlyNotClients}
-                onlyUnreads={onlyUnreads}
-                setOnlyUnreads={setOnlyUnreads}
-                globalSearch={globalSearch}
-                setGlobalSearch={setGlobalSearch}
-                selectedChat={selectedChat}
-                setSelectedChat={setSelectedChat}
-                setCurrentChat={setCurrentChat}
-                componentInfo={componentInfo}
-                userkeycloakId={userkeycloakId}
-                setView={handleSetView}
-                page={page}
-                setPage={setPage}
-                pageSize={pageSize}
-                productService={productService}
-                chatService={chatService}
-              />
-            )}
-            {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (
-              <SendNotification
-                chat={currentChatSend}
-                userPhoneNumber={chatInitConfig.userPhoneNumber || ""}
-                chatApiUrl={chatInitConfig.chatApiUrl}
-                connectionKeys={componentInfo.connectionKeys}
-                destination={componentInfo.destination}
-                createPath={chatInitConfig.createPath}
-                productService={productService}
-                chatService={chatService}
-                info={componentInfo.sendNotificationInfo}
-                extraFields={componentInfo.extraFields}
-                reloadComponent={() => console.log("reloadComponent")}
-                setChat={setCurrentChat}
-                setView={setView}
-                token={token}
-                userId={userkeycloakId}
-              />
-            )}
-            {canSendNotification &&
-              (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT ||
-                (view === COMPONENT_LOCATION.CHAT_MESSAGES &&
-                  currentChat?.blocked)) && (
-                <StartNewChatButton
-                  handleStartSendNotification={handleStartSendNotification}
-                />
-              )}
-          </div>
-        </Drawer>
-        {!firstLoad && (
-          <InitWebSockets
-            chatUrl={chatUrl}
+    <div>
+      {!openDrawer && (
+        <ChatButton
+          firstLoad={firstLoad}
+          setOpenDrawer={setOpenDrawer}
+          unreads={componentInfo?.totalUnreads}
+        />
+      )}
+      <Drawer
+        anchor="right"
+        open={openDrawer}
+        onClose={handleCloseDrawer}
+        ModalProps={{
+          container: document.getElementById("wingo-chat"),
+        }}
+      >
+        <div className={classes.drawerContainer}>
+          <HeaderDrawer
             userkeycloakId={userkeycloakId}
-            destination={destination}
-            handleConnect={handleWebSocketConnect}
-            handleMessage={handleWebSocketMessage}
+            setOpenDrawer={setOpenDrawer}
+            notificationSound={notificationSound}
+            setNotificationSound={setNotificationSound}
+            view={view}
+            setView={handleSetView}
           />
-        )}
-      </div>
-    </>
+          <MuiDivider variant="fullWidth" />
+          {view === COMPONENT_LOCATION.CHAT_MESSAGES && (
+            <RenderChat
+              chatService={chatService}
+              userkeycloakId={userkeycloakId}
+              currentChat={currentChat}
+              setCurrentChat={setCurrentChat}
+              setReload={setReload}
+              setDrawerOpen={setOpenDrawer}
+              handleAfterLoadMessage={handleAfterLoadMessage}
+              receivedMessage={receivedMessage}
+              userNamesById={componentInfo?.userNameById}
+              webSocketRef={webSocketRef}
+            />
+          )}
+          {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
+            <MessageManagement
+              loading={loading}
+              setLoading={setLoading}
+              onlyNotClients={onlyNotClients}
+              setOnlyNotClients={setOnlyNotClients}
+              onlyUnreads={onlyUnreads}
+              setOnlyUnreads={setOnlyUnreads}
+              globalSearch={globalSearch}
+              setGlobalSearch={setGlobalSearch}
+              selectedChat={selectedChat}
+              setSelectedChat={setSelectedChat}
+              setCurrentChat={setCurrentChat}
+              componentInfo={componentInfo}
+              userkeycloakId={userkeycloakId}
+              setView={handleSetView}
+              page={page}
+              setPage={setPage}
+              pageSize={pageSize}
+              productService={productService}
+              chatService={chatService}
+            />
+          )}
+          {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (
+            <SendNotification
+              chatApiUrl={chatApiUrl}
+              connectionKeys={componentInfo?.connectionKeys}
+              destination={destination}
+              createPath={createPath}
+              productService={productService}
+              chatService={chatService}
+              currentChat={currentChatSend}
+              reloadComponent={() => console.log("reloadComponent")}
+              setChat={setCurrentChat}
+              setView={setView}
+              token={token}
+              userkeycloakId={userkeycloakId}
+              userNamesById={componentInfo?.userNameById}
+            />
+          )}
+          {canSendNotification &&
+            (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT ||
+              (view === COMPONENT_LOCATION.CHAT_MESSAGES &&
+                currentChat?.blocked)) && (
+              <StartNewChatButton
+                handleStartSendNotification={handleStartSendNotification}
+              />
+            )}
+        </div>
+      </Drawer>
+      {!firstLoad && (
+        <InitWebSockets
+          chatUrl={chatUrl}
+          userkeycloakId={userkeycloakId}
+          destination={destination}
+          handleConnect={handleWebSocketConnect}
+          handleMessage={handleWebSocketMessage}
+        />
+      )}
+    </div>
   );
 };

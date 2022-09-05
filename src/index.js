@@ -1,12 +1,9 @@
-import "react-app-polyfill/ie9";
-import "react-app-polyfill/stable";
-
 import React from "react";
 import ReactDOM from "react-dom";
 import { ThemeProvider } from "@tecsinapse/ui-kit";
-import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
-
 import { Init } from "./components/Init/Init";
+import "react-app-polyfill/ie9";
+import "react-app-polyfill/stable";
 import "./index.css";
 
 const standalone = process.env.REACT_APP_STANDALONE === "true";
@@ -40,17 +37,11 @@ window.renderChatComponent = function renderChatComponent() {
     chatInitConfig = { ...defaultChatInitConfig, ...window.CHAT_INIT_CONFIG };
   }
 
-  const generateClassName = createGenerateClassName({
-    productionPrefix: "chat",
-  });
-
   ReactDOM.render(
-    <StylesProvider generateClassName={generateClassName}>
-      <ThemeProvider variant="orange">
-        <Init chatInitConfig={chatInitConfig} />
-      </ThemeProvider>
-    </StylesProvider>,
-    document.getElementById("chat-component-div")
+    <ThemeProvider variant="orange">
+      <Init chatInitConfig={chatInitConfig} />
+    </ThemeProvider>,
+    document.getElementById("wingo-chat")
   );
 };
 

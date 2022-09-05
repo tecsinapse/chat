@@ -83,9 +83,9 @@ export const HeaderDrawer = ({
           <Grid spacing={1} alignItems="center" container>
             <Grid item>
               <img
-                id="logo-wingo"
+                className={classes.wingoLogo}
                 src={CDN_RESOURCES.WINGO_CHAT_LOGO}
-                alt="wingo-logo"
+                alt="Wingo Chat"
               />
             </Grid>
             <Grid item>
