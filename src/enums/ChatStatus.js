@@ -1,5 +1,5 @@
 import { Enum } from "enumify";
-import { EnumUtils } from "../utils";
+import EnumUtils from "./utils";
 
 class ChatStatus extends Enum {}
 

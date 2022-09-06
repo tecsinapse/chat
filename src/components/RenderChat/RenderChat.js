@@ -13,7 +13,7 @@ import {
   getTimeToExpireChat,
 } from "./utils";
 import { List, ListItem, ListItemText, Popover } from "@material-ui/core";
-import { encodeChatData } from "../MessageManagement/utils";
+import { encodeChatData } from "../utils";
 
 export const RenderChat = ({
   chatService,

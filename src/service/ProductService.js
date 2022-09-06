@@ -1,4 +1,4 @@
-import { noAuthJsonFetch } from "../utils/fetch";
+import { noAuthJsonFetch } from "./utils";
 
 export class ProductService {
   constructor(urlBase) {

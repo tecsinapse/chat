@@ -10,7 +10,7 @@ import { Box, ButtonGroup, Grid, Tooltip, Typography } from "@material-ui/core";
 import Icon from "@mdi/react";
 import { mdiPlusBoxOutline } from "@mdi/js";
 import ReactGA from "react-ga4";
-import { Loading } from "../../utils/Loading";
+import { Loading } from "../Loading/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { normalize } from "../utils";

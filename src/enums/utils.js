@@ -1,4 +1,4 @@
-import { EnumUtils } from "./index";
+import EnumUtils from "./utils";
 
 const isEquals = (enumm, param) => [enumm, enumm.name].includes(param);
 

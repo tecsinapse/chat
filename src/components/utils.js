@@ -1,5 +1,5 @@
+import jwt from "jwt-simple";
 import { CDN_RESOURCES } from "../constants/CDN_RESOURCES";
-import { toMoment } from "../utils/dates";
 import moment from "moment-timezone";
 
 export const notifyNewChat = (userkeycloakId) => {
@@ -94,15 +94,25 @@ export const normalize = (value) => {
   }
 };
 
+export const encodeChatData = (chat, userkeycloakId) => {
+  return jwt.encode({ data: JSON.stringify(chat) }, userkeycloakId, "HS256");
+};
+
 export const getChatId = (chat) => {
   return `${chat.chatId}.${chat.connectionKey}`;
 };
 
-export function formatDateTime(dateTime) {
-  const m = toMoment(dateTime);
-  return m.isValid() ? m.format("DD/MM/YYYY HH:mm") : dateTime;
-}
+export const normalizeMoment = (value) => {
+  return value.tz("America/Sao_Paulo", true);
+};
 
-export const getMomentNow = () => {
-  return moment().tz("America/Sao_Paulo");
+export const momentNow = () => {
+  return normalizeMoment(moment());
+};
+
+export const formatDateTime = (dateTime) => {
+  const normalizedMoment = normalizeMoment(moment(dateTime));
+  return normalizedMoment.isValid()
+    ? normalizedMoment.format("DD/MM/YYYY HH:mm")
+    : dateTime;
 };

@@ -1,5 +1,5 @@
-import { MessageSource } from "../../enums";
-import { formatDateTime, getMomentNow } from "../utils";
+import MessageSource from "../../enums/MessageSource";
+import { formatDateTime, momentNow } from "../utils";
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
 
 export const getChatMessageObject = (message, chatId, userNamesByIds = {}) => {
@@ -53,7 +53,7 @@ export const getChatMessageObject = (message, chatId, userNamesByIds = {}) => {
 };
 
 export const getSendingMessage = (localId, authorName) => ({
-  at: formatDateTime(getMomentNow()),
+  at: formatDateTime(momentNow()),
   authorName: authorName || "Você",
   id: localId,
   localId: localId,

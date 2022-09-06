@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import ReactGA from "react-ga4";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { Loading } from "../../utils/Loading";
+import { Loading } from "../Loading/Loading";
 import { generateColumns } from "./utils";
 import { Input } from "@tecsinapse/ui-kit";
 import Icon from "@mdi/react";

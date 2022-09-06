@@ -1,7 +1,7 @@
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
 import ReactGA from "react-ga4";
-import { defaultFetch } from "../utils/fetch";
-import * as dates from "../utils/dates";
+import { defaultFetch } from "./utils";
+import { momentNow } from "../components/utils";
 
 export class ChatService {
   constructor(baseUrl) {
@@ -88,7 +88,7 @@ export class ChatService {
 
     const data = JSON.stringify(chatMessage);
     const { connectionKey, destination, chatId } = currentChat;
-    const at = dates.momentNow().toISOString();
+    const at = momentNow().toISOString();
     const payload = { at, data, error, userId: userkeycloakId };
 
     const execute = () => {

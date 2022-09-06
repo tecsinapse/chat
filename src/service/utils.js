@@ -50,7 +50,9 @@ export async function customFetch(path, init) {
     if (res.status === 400 || res.status === 500) {
       const errors = await res.json();
 
-      console.log(`Error while fetching data from server: ${errors.join(",")}`); // eslint-disable-line
+      console.error(
+        `Error while fetching data from server: ${errors.join(",")}`
+      );
 
       return Promise.reject({
         status: res.status,
@@ -59,15 +61,13 @@ export async function customFetch(path, init) {
     }
 
     if (res.status === 403) {
-      // chat is blocked. Perhaps user can't send message because of vendor (Blip) rules of active messages
-      // https://tecsinapse.tpondemand.com/entity/125511-bloquear-envio-de-mensagens-apos-24h
       return Promise.reject({
         status: res.status,
         errors: "Chat bloqueado",
       });
     }
-    // eslint-disable-next-line
-    console.log(
+
+    console.error(
       `Server returning with error ${res.status} while fetching data from path ${path}`
     );
 

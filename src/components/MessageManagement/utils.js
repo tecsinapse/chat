@@ -1,13 +1,10 @@
 import React from "react";
-import jwt from "jwt-simple";
-import { format } from "../../utils/dates";
 import { Badge, Box, Chip, Tooltip, Typography } from "@material-ui/core";
-import { MessageSource } from "../../enums";
 import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
-import { oldEncodeChatData } from "../../utils/oldEncodeChatData";
 import Icon from "@mdi/react";
 import { mdiInformation } from "@mdi/js";
-import { normalize } from "../utils";
+import { encodeChatData, formatDateTime, normalize } from "../utils";
+import MessageSource from "../../enums/MessageSource";
 
 export const generateActions = (
   row,
@@ -29,7 +26,7 @@ export const generateActions = (
       actions.push({
         label: actionLink.label,
         onClick: (rowData) => {
-          const encodedData = oldEncodeChatData(rowData, userkeycloakId);
+          const encodedData = encodeChatData(rowData, userkeycloakId);
 
           window.open(`${actionLink.path}?data=${encodedData}`, "_self");
         },
@@ -72,12 +69,12 @@ export const generateColumns = (
         <>
           {archived ? (
             <span>
-              {highlight(globalSearch, format(contactAt))}
+              {highlight(globalSearch, formatDateTime(contactAt))}
               <br />
               <Chip size="small" label={"Arquivada"} />
             </span>
           ) : (
-            <span>{highlight(globalSearch, format(contactAt))}</span>
+            <span>{highlight(globalSearch, formatDateTime(contactAt))}</span>
           )}
         </>
       ),
@@ -178,10 +175,6 @@ export const generateColumns = (
   });
 
   return columns;
-};
-
-export const encodeChatData = (chat, userkeycloakId) => {
-  return jwt.encode({ data: JSON.stringify(chat) }, userkeycloakId, "HS256");
 };
 
 export const split = (value, indexes, size) => {

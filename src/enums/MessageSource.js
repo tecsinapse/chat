@@ -1,9 +1,9 @@
 import { Enum } from "enumify";
-import { EnumUtils } from "../utils";
+import EnumUtils from "./utils";
 
 class MessageSource extends Enum {}
 
-MessageSource.initEnum(["PRODUCT", "CLIENT"]);
+MessageSource.initEnum({ PRODUCT: "PRODUCT", CLIENT: "CLIENT" });
 
 MessageSource.isProduct = (source) =>
   EnumUtils.isEquals(MessageSource.PRODUCT, source);
