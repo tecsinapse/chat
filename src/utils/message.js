@@ -1,5 +1,5 @@
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
-import { MessageSource } from "../constants";
+import { MessageSource } from "../enums";
 import { format, momentNow } from "./dates";
 
 const formatMessageStatus = (status) => {

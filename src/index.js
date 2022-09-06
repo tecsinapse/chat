@@ -5,6 +5,7 @@ import { Init } from "./components/Init/Init";
 import "react-app-polyfill/ie9";
 import "react-app-polyfill/stable";
 import "./index.css";
+import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
 
 const standalone = process.env.REACT_APP_STANDALONE === "true";
 
@@ -37,10 +38,16 @@ window.renderChatComponent = function renderChatComponent() {
     chatInitConfig = { ...defaultChatInitConfig, ...window.CHAT_INIT_CONFIG };
   }
 
+  const generateClassName = createGenerateClassName({
+    productionPrefix: "wingo-chat",
+  });
+
   ReactDOM.render(
-    <ThemeProvider variant="orange">
-      <Init chatInitConfig={chatInitConfig} />
-    </ThemeProvider>,
+    <StylesProvider generateClassName={generateClassName}>
+      <ThemeProvider variant="orange">
+        <Init chatInitConfig={chatInitConfig} />
+      </ThemeProvider>
+    </StylesProvider>,
     document.getElementById("wingo-chat")
   );
 };

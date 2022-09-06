@@ -83,6 +83,17 @@ export const isNotificationSoundEnabled = (userkeycloakId) => {
   return true;
 };
 
+export const normalize = (value) => {
+  if (value) {
+    return value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  } else {
+    return "";
+  }
+};
+
 export const getChatId = (chat) => {
   return `${chat.chatId}.${chat.connectionKey}`;
 };
@@ -94,4 +105,4 @@ export function formatDateTime(dateTime) {
 
 export const getMomentNow = () => {
   return moment().tz("America/Sao_Paulo");
-}
+};

@@ -13,7 +13,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import ReactGA from "react-ga4";
-import { MESSAGES_INFO } from "../../constants/MessagesInfo";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { Loading } from "../../utils/Loading";
 import { generateColumns } from "./utils";
@@ -182,9 +181,7 @@ export const MessageManagement = ({
         <Dialog open={selectedChat} onClose={handleCloseDeleteChat}>
           <DialogTitle>Confirmação</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              {MESSAGES_INFO.DISCARD_LABEL}?
-            </DialogContentText>
+            <DialogContentText>Arquivar Conversa</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button autoFocus onClick={handleCloseDeleteChat} color="primary">

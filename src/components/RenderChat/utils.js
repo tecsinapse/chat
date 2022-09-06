@@ -1,4 +1,4 @@
-import { MessageSource } from "../../constants";
+import { MessageSource } from "../../enums";
 import { formatDateTime, getMomentNow } from "../utils";
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
 

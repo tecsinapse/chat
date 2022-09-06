@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Divider as MuiDivider, Drawer } from "@material-ui/core";
-import { QueryClient, QueryClientProvider } from "react-query";
-
 import ReactGA from "react-ga4";
+import { Divider as MuiDivider, Drawer } from "@material-ui/core";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
 import { RenderChat } from "../RenderChat/RenderChat";
 import { InitWebSockets } from "../InitWebSockets/InitWebSockets";
@@ -22,14 +20,6 @@ import {
 } from "../utils";
 import { getDistinctConnectionKeys } from "./utils";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
-
 export const Init = (props) => {
   React.useLayoutEffect(() => {
     ReactGA.initialize(process.env.REACT_APP_GA_ID, {
@@ -44,14 +34,10 @@ export const Init = (props) => {
     ReactGA.send({ hitType: "pageview", page: "/init" });
   }, [props]);
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <InitContext {...props} />
-    </QueryClientProvider>
-  );
+  return <InitContext {...props} />;
 };
 
-const InitContext = ({ chatInitConfig, token }) => {
+const InitContext = ({ chatInitConfig }) => {
   const {
     userkeycloakId,
     chatUrl,
@@ -60,7 +46,6 @@ const InitContext = ({ chatInitConfig, token }) => {
     openImmediately,
     pageSize,
     canSendNotification,
-    createPath,
   } = chatInitConfig;
 
   const productService = new ProductService(productChatPath);
@@ -205,7 +190,10 @@ const InitContext = ({ chatInitConfig, token }) => {
         (it) => getChatId(it) === currentChatId
       );
 
-      componentInfo.chatIds[index].unreads = 0;
+      if (index > -1) {
+        componentInfo.chatIds[index].unreads = 0;
+      }
+
       newCurrentChat.unreads = 0;
     }
 
@@ -290,18 +278,14 @@ const InitContext = ({ chatInitConfig, token }) => {
           )}
           {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (
             <SendNotification
-              chatApiUrl={chatApiUrl}
+              chatService={chatService}
+              productService={productService}
+              userkeycloakId={userkeycloakId}
               connectionKeys={componentInfo?.connectionKeys}
               destination={destination}
-              createPath={createPath}
-              productService={productService}
-              chatService={chatService}
               currentChat={currentChatSend}
-              reloadComponent={() => console.log("reloadComponent")}
-              setChat={setCurrentChat}
-              setView={setView}
-              token={token}
-              userkeycloakId={userkeycloakId}
+              setCurrentChat={setCurrentChat}
+              setView={handleSetView}
               userNamesById={componentInfo?.userNameById}
             />
           )}

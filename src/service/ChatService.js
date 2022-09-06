@@ -9,22 +9,23 @@ export class ChatService {
   }
 
   sendNotification(
-    chatApiUrl,
-    selectedConnectionKey,
+    userkeycloakId,
+    connectionKey,
     destination,
     phoneNumber,
-    selectedTemplate,
-    args,
-    userId
+    name,
+    templateId,
+    templateArgs
   ) {
     return defaultFetch(
-      `${this.url}/${selectedConnectionKey}/${destination}/notification/send`,
+      `${this.url}/${connectionKey}/${destination}/notification/send`,
       "POST",
       {
-        phoneNumber,
-        template: selectedTemplate,
-        args,
-        userId,
+        userId: userkeycloakId,
+        templateId: templateId,
+        name: name,
+        phoneNumber: phoneNumber,
+        args: templateArgs,
       }
     );
   }
@@ -55,18 +56,6 @@ export class ChatService {
     const { connectionKey, destination, chatId, archived } = currentChat;
     const uri = `${this.url}/${connectionKey}/${destination}/${chatId}/messages?page=${page}&size=100&archived=${archived}`;
     return defaultFetch(uri, "GET", {});
-  }
-
-  async findMessagesByCurrentUser(groupedChats, page = 0, rowsPerPage = 10) {
-    const promiseMap = Array.from(groupedChats.keys()).map((key) =>
-      defaultFetch(
-        `${this.url}/${key}/infos?page=${page}&size=${rowsPerPage}`,
-        "POST",
-        groupedChats.get(key)
-      )
-    );
-
-    return Promise.all(promiseMap);
   }
 
   async getChatInfo(connectionKey, destination, chatId) {

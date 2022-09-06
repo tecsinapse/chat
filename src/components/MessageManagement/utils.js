@@ -2,12 +2,12 @@ import React from "react";
 import jwt from "jwt-simple";
 import { format } from "../../utils/dates";
 import { Badge, Box, Chip, Tooltip, Typography } from "@material-ui/core";
-import { MessageSource } from "../../constants";
+import { MessageSource } from "../../enums";
 import RowActions from "@tecsinapse/table/build/Table/Rows/RowActions/RowActions";
 import { oldEncodeChatData } from "../../utils/oldEncodeChatData";
-import { MESSAGES_INFO } from "../../constants/MessagesInfo";
 import Icon from "@mdi/react";
 import { mdiInformation } from "@mdi/js";
+import { normalize } from "../utils";
 
 export const generateActions = (
   row,
@@ -41,10 +41,8 @@ export const generateActions = (
     actions.push({
       label: (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={{ marginRight: "4px" }}>
-            {MESSAGES_INFO.DISCARD_LABEL}
-          </span>
-          <Tooltip title={MESSAGES_INFO.DISCARD_TOOLTIP_TEXT}>
+          <span style={{ marginRight: "4px" }}>Arquivar Conversa</span>
+          <Tooltip title="O recurso arquivar conversa possibilita ocultar uma conversa para organizar melhor sua lista de conversas. As mensagens não são excluídas, sendo possível retomar o diálogo iniciando uma nova conversa de forma ativa ou aguardando um novo contato do cliente.">
             <Icon path={mdiInformation} size={0.8} />
           </Tooltip>
         </div>
@@ -186,17 +184,6 @@ export const encodeChatData = (chat, userkeycloakId) => {
   return jwt.encode({ data: JSON.stringify(chat) }, userkeycloakId, "HS256");
 };
 
-export const normalize = (value) => {
-  if (value) {
-    return value
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
-  } else {
-    return "";
-  }
-};
-
 export const split = (value, indexes, size) => {
   let currentIndex = 0;
 
@@ -246,11 +233,4 @@ export const highlight = (search, textToReplace) => {
     return replacer(search, textToReplace);
   }
   return textToReplace;
-};
-
-const truncate = (value, limit) => {
-  if (!value || value.length <= limit) {
-    return value;
-  }
-  return value.slice(0, limit) + "...";
 };

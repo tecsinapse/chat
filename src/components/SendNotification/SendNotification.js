@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, IconButton, Input, Select } from "@tecsinapse/ui-kit";
+import {
+  Button,
+  IconButton,
+  Input,
+  Select,
+  Snackbar,
+} from "@tecsinapse/ui-kit";
 import { Box, ButtonGroup, Grid, Tooltip, Typography } from "@material-ui/core";
 import Icon from "@mdi/react";
 import { mdiPlusBoxOutline } from "@mdi/js";
@@ -7,24 +13,18 @@ import ReactGA from "react-ga4";
 import { Loading } from "../../utils/Loading";
 import { useStyle } from "./styles";
 import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { getObjectToSetChat } from "../../utils/helpers";
-import { getConnectionKeyArgs, getName } from "./functions";
-import { MESSAGES_INFO } from "../../constants/MessagesInfo";
+import { normalize } from "../utils";
+import { ARGS_DESCRIPTIONS } from "../../constants/ARGS_DESCRIPTIONS";
 
 export const SendNotification = ({
-  chat,
-  chatApiUrl,
+  chatService,
+  productService,
+  userkeycloakId,
   connectionKeys,
   destination,
-  createPath,
-  productService,
-  chatService,
   currentChat,
-  reloadComponent,
-  setChat,
+  setCurrentChat,
   setView,
-  token,
-  userkeycloakId,
   userNamesById,
 }) => {
   const classes = useStyle();
@@ -33,22 +33,17 @@ export const SendNotification = ({
     currentChat ? currentChat.phone.replace(/[^0-9]/g, "") : ""
   );
 
-  const [selectedConnectionKey, setSelectedConnectionKey] = useState(null);
-  const [connectionKeyLabel, setConnectionKeyLabel] = useState(null);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  const [selectedConnectionKey, setSelectedConnectionKey] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+
+  const [templates, setTemplates] = useState([]);
   const [templateArgs, setTemplateArgs] = useState([]);
   const [previewText, setPreviewText] = useState(null);
   const [previewButtons, setPreviewButtons] = useState([]);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
-  const [templates, setTemplates] = useState([]);
-  const [customFields, setCustomFields] = useState([]);
-
-  const tooltipTitle = MESSAGES_INFO.MESSAGE_SUGESTION_TOOLTIP;
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const availableConnectionKeys = [
     {
@@ -106,15 +101,24 @@ export const SendNotification = ({
       return;
     }
 
+    const {
+      keys: templateArgsKeys,
+      descriptions: templateArgsDescriptions,
+    } = selectedTemplate;
+
+    const { args: connectionKeyArgs } = selectedConnectionKey;
+
     const templateArgs = [];
 
-    for (let i = 0; i < selectedTemplate.args; i++) {
-      if (selectedTemplate.argsKeys[i] === "1") {
+    for (let i = 0; i < templateArgsKeys.length; i++) {
+      const description = normalize(templateArgsDescriptions[i]);
+
+      if (ARGS_DESCRIPTIONS.NAME.includes(description)) {
         templateArgs.push(currentChat?.name || "");
-      } else if (selectedTemplate.argsKeys[i] === "2") {
+      } else if (ARGS_DESCRIPTIONS.DEALER.includes(description)) {
+        templateArgs.push(connectionKeyArgs["DealerName"] || "");
+      } else if (ARGS_DESCRIPTIONS.OWNER.includes(description)) {
         templateArgs.push(userNamesById[userkeycloakId] || "");
-      } else if (selectedTemplate.argsKeys[i] === "3") {
-        templateArgs.push(selectedConnectionKey?.args["DealerName"] || "");
       } else {
         templateArgs.push("");
       }
@@ -132,13 +136,14 @@ export const SendNotification = ({
 
     let {
       template: previewText,
-      buttonsDescription: previewButtons,
+      buttons: previewButtons,
+      keys: templateArgsKeys,
     } = selectedTemplate;
 
     for (let i = 0; i < templateArgs.length; i++) {
       if (templateArgs[i]) {
         previewText = previewText.replaceAll(
-          `{{${selectedTemplate.argsKeys[i]}}}`,
+          `{{${templateArgsKeys[i]}}}`,
           templateArgs[i]
         );
       }
@@ -163,67 +168,89 @@ export const SendNotification = ({
     setTemplateArgs(newTemplateArgs);
   };
 
-  const successSend = async (chatId) => {
-    const clientName = getName(chat, templateArgs, templates, selectedTemplate);
+  const handleSendNotification = () => {
+    setSubmitting(true);
 
-    setSuccess("Mensagem enviada");
-    setTimeout(() => setSuccess(""), 4000);
-    setError("");
-    setPhoneNumber("");
-    setTemplateArgs([]);
-    setSelectedTemplate("");
-    setPreviewText("");
+    const {
+      value: connectionKey,
+      args: connectionKeyArgs,
+    } = selectedConnectionKey;
 
-    const newComponentInfo = await reloadComponent();
+    const {
+      value: templateId,
+      keys: templateArgsKeys,
+      descriptions: templateArgsDescriptions,
+    } = selectedTemplate;
 
-    const objectToSetChat = await getObjectToSetChat(
-      chatService,
-      newComponentInfo,
-      selectedConnectionKey,
-      destination,
-      chatId,
-      clientName
-    );
+    let name = null;
 
-    setChat(objectToSetChat);
+    for (let i = 0; i < templateArgsKeys.length; i++) {
+      const description = normalize(templateArgsDescriptions[i]);
+      if (ARGS_DESCRIPTIONS.NAME.includes(description)) {
+        name = templateArgs[i];
+      }
+    }
 
-    setTimeout(() => setView(COMPONENT_LOCATION.CHAT_MESSAGES), 4000);
-  };
+    chatService
+      .sendNotification(
+        userkeycloakId,
+        connectionKey,
+        destination,
+        phoneNumber,
+        name,
+        templateId,
+        templateArgs
+      )
+      .then((chat) => {
+        const createChatArgs = {
+          ...connectionKeyArgs,
+          ClienteName: name,
+        };
 
-  const connectionKeyArgs = getConnectionKeyArgs(
-    connectionKeys,
-    connectionKeyLabel
-  );
+        productService
+          .createChat(connectionKey, phoneNumber, createChatArgs)
+          .then(() => {
+            ReactGA.event({
+              category: connectionKey,
+              label: templateId,
+              action: "Send Notification",
+            });
 
-  const propsToSend = {
-    chatApiUrl,
-    selectedConnectionKey,
-    destination,
-    phoneNumber,
-    selectedTemplate,
-    templates,
-    createPath,
-    productService,
-    chatService,
-    successSend,
-    token,
-    //setSending,
-    setError,
-    setSuccess,
-    args: templateArgs,
-    connectionKeyArgs,
-    customFields,
-    userId: userkeycloakId,
+            setCurrentChat(chat);
+            setView(COMPONENT_LOCATION.CHAT_MESSAGES);
+            setSubmitting(false);
+          })
+          .catch(() => {
+            setSubmitting(false);
+            setErrorMessage("Erro de comunicação com o Produto.");
+          });
+      })
+      .catch(() => {
+        setSubmitting(false);
+        setErrorMessage("Erro de comunicação com o Wingo Chat.");
+      });
   };
 
   const handleOpenMessageSugestion = () => {
+    const { value: connectionKey } = selectedConnectionKey;
+
     ReactGA.event({
       category: selectedConnectionKey,
       label: "CLICK_BTN_NOVO_MODELO_MSG",
       action: "Suggest Message Template",
     });
-    const messageSugestionUrl = `${process.env.REACT_APP_MESSAGE_SUGESTION_URL}?kcid=${userkeycloakId}&connectionkey=${selectedConnectionKey}&alignCenter=1&transparentBackground=1`;
-    window.open(`${messageSugestionUrl}`, "_blank");
+
+    const kcidParam = `kcid=${userkeycloakId}`;
+    const connectionKeyParam = `connectionKey=${connectionKey}`;
+    const customParam = `alignCenter=1&transparentBackground=1`;
+    const params = `${kcidParam}&${connectionKeyParam}&${customParam}`;
+    const url = `${process.env.REACT_APP_MESSAGE_SUGESTION_URL}?${params}`;
+
+    window.open(`${url}`, "_blank");
+  };
+
+  const handleCloseErrorMessage = () => {
+    setErrorMessage(null);
   };
 
   return (
@@ -237,7 +264,7 @@ export const SendNotification = ({
           <Grid spacing={1} direction="column" container>
             <Grid className={classes.connectionKeys} item>
               <Select
-                value={selectedConnectionKey?.label} // usar label
+                value={selectedConnectionKey?.label}
                 options={availableConnectionKeys}
                 onChange={handleChangeConnectionKey}
                 disabled={submitting}
@@ -266,7 +293,7 @@ export const SendNotification = ({
                 customIndicators={
                   selectedConnectionKey && (
                     <Tooltip
-                      title={tooltipTitle}
+                      title="Sugerir Modelo de Mensagem"
                       placement="bottom-start"
                       arrow
                     >
@@ -287,7 +314,7 @@ export const SendNotification = ({
               <Grid key={`template-arg-${index}`} item>
                 <Input
                   name={`args[${index}]`}
-                  label={selectedTemplate.argsDescription[index]}
+                  label={selectedTemplate.descriptions[index]}
                   value={templateArgs[index]}
                   onChange={handleChangeTemplateArg(index)}
                   disabled={submitting}
@@ -326,15 +353,17 @@ export const SendNotification = ({
                   templateArgs.filter((it) => it.length === 0).length > 0
                 }
                 submitting={submitting}
-                onClick={() => {
-                  setSubmitting(true);
-                  //send(propsToSend);
-                }}
+                onClick={handleSendNotification}
               >
                 Enviar Mensagem
               </Button>
             </Box>
           </Grid>
+          {errorMessage && (
+            <Snackbar variant="error" onClose={handleCloseErrorMessage} show>
+              {errorMessage}
+            </Snackbar>
+          )}
         </div>
       )}
     </div>
