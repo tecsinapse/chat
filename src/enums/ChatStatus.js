@@ -1,14 +1,14 @@
 import { Enum } from "enumify";
-import EnumUtils from "./utils";
+import { isEquals } from "./utils";
 
 class ChatStatus extends Enum {}
 
 ChatStatus.initEnum({ BLOCKED: "BLOCKED", OK: "OK" });
 
 ChatStatus.isBlocked = (chat) =>
-  EnumUtils.isEquals(ChatStatus.BLOCKED, chat?.status) || chat?.archived;
+  isEquals(ChatStatus.BLOCKED, chat?.status) || chat?.archived;
 
 ChatStatus.isOK = (chat) =>
-  EnumUtils.isEquals(ChatStatus.OK, chat?.status) && !chat?.archived;
+  isEquals(ChatStatus.OK, chat?.status) && !chat?.archived;
 
 export default ChatStatus;
