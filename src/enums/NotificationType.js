@@ -3,9 +3,19 @@ import { isEquals } from "./utils";
 
 class NotificationType extends Enum {}
 
-NotificationType.initEnum({ REFRESH_UI: "REFRESH_UI" });
+NotificationType.initEnum({
+  NEW_CHAT: "NEW_CHAT",
+  NEW_MESSAGE: "NEW_MESSAGE",
+  ARCHIVED_CHAT: "ARCHIVED_CHAT",
+});
 
-NotificationType.isRefreshUI = (test) =>
-  isEquals(NotificationType.REFRESH_UI, test);
+NotificationType.isNewChat = (notificationType) =>
+  isEquals(NotificationType.NEW_CHAT, notificationType);
+
+NotificationType.isNewMessage = (notificationType) =>
+  isEquals(NotificationType.NEW_MESSAGE, notificationType);
+
+NotificationType.isArchivedChat = (notificationType) =>
+  isEquals(NotificationType.ARCHIVED_CHAT, notificationType);
 
 export default NotificationType;

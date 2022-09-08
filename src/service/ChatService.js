@@ -8,26 +8,13 @@ export class ChatService {
     this.url = baseUrl;
   }
 
-  sendNotification(
-    userkeycloakId,
-    connectionKey,
-    destination,
-    phoneNumber,
-    name,
-    templateId,
-    templateArgs
-  ) {
-    return defaultFetch(
-      `${this.url}/${connectionKey}/${destination}/notification/send`,
-      "POST",
-      {
-        userId: userkeycloakId,
-        templateId: templateId,
-        name: name,
-        phoneNumber: phoneNumber,
-        args: templateArgs,
-      }
-    );
+  sendNotification(userkeycloakId, chat, templateId, templateArgs) {
+    return defaultFetch(`${this.url}/notification/send`, "POST", {
+      userId: userkeycloakId,
+      templateId: templateId,
+      chat: chat,
+      args: templateArgs,
+    });
   }
 
   deleteSessionChat(deletedChat) {

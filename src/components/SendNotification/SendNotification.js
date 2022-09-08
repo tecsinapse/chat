@@ -12,28 +12,29 @@ import { mdiPlusBoxOutline } from "@mdi/js";
 import ReactGA from "react-ga4";
 import { Loading } from "../Loading/Loading";
 import { useStyle } from "./styles";
-import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
 import { normalize } from "../utils";
 import { ARGS_DESCRIPTIONS } from "../../constants/ARGS_DESCRIPTIONS";
+import { countryPhoneNumber } from "./utils";
 
 export const SendNotification = ({
   chatService,
   productService,
   userkeycloakId,
   connectionKeys,
-  destination,
   currentChat,
   setCurrentChat,
+  loading,
+  setLoading,
   setView,
   userNamesById,
 }) => {
   const classes = useStyle();
 
   const [phoneNumber, setPhoneNumber] = useState(
-    currentChat ? currentChat.phone.replace(/[^0-9]/g, "") : ""
+    currentChat ? countryPhoneNumber(currentChat.phone) : ""
   );
 
-  const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const [selectedConnectionKey, setSelectedConnectionKey] = useState(null);
@@ -154,7 +155,7 @@ export const SendNotification = ({
   }, [templateArgs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleChangePhoneNumber = (event) => {
-    setPhoneNumber(event.target.value);
+    setPhoneNumber(event.target.value.replace(/[^\d]/g, ""));
   };
 
   const handleChangeTemplate = (value) => {
@@ -169,6 +170,7 @@ export const SendNotification = ({
   };
 
   const handleSendNotification = () => {
+    setLoading(true);
     setSubmitting(true);
 
     const {
@@ -191,43 +193,43 @@ export const SendNotification = ({
       }
     }
 
-    chatService
-      .sendNotification(
-        userkeycloakId,
-        connectionKey,
-        destination,
-        phoneNumber,
-        name,
-        templateId,
-        templateArgs
-      )
-      .then((chat) => {
-        const createChatArgs = {
-          ...connectionKeyArgs,
-          ClienteName: name,
-        };
+    const createChatArgs = {
+      ...connectionKeyArgs,
+      ClienteName: name,
+    };
 
-        productService
-          .createChat(connectionKey, phoneNumber, createChatArgs)
-          .then(() => {
+    productService
+      .createChat(connectionKey, phoneNumber, createChatArgs)
+      .then((incompleteChat) => {
+        chatService
+          .sendNotification(
+            userkeycloakId,
+            incompleteChat,
+            templateId,
+            templateArgs
+          )
+          .then((completeChat) => {
             ReactGA.event({
               category: connectionKey,
               label: templateId,
               action: "Send Notification",
             });
 
-            setCurrentChat(chat);
-            setView(COMPONENT_LOCATION.CHAT_MESSAGES);
+            setCurrentChat(completeChat);
+            setView(COMPONENT_VIEW.CHAT_MESSAGES);
             setSubmitting(false);
+            setLoading(false);
           })
           .catch(() => {
             setSubmitting(false);
-            setErrorMessage("Erro de comunicação com o Produto.");
+            setLoading(false);
+            setErrorMessage("Erro de comunicação com o Wingo Chat.");
           });
       })
       .catch(() => {
         setSubmitting(false);
-        setErrorMessage("Erro de comunicação com o Wingo Chat.");
+        setLoading(false);
+        setErrorMessage("Erro de comunicação com o Produto.");
       });
   };
 
@@ -349,7 +351,10 @@ export const SendNotification = ({
                 color="primary"
                 variant="contained"
                 disabled={
+                  !selectedConnectionKey ||
+                  !selectedTemplate ||
                   phoneNumber.length < 10 ||
+                  phoneNumber.length > 13 ||
                   templateArgs.filter((it) => it.length === 0).length > 0
                 }
                 submitting={submitting}

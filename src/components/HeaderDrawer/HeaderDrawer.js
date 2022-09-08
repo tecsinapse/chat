@@ -10,8 +10,8 @@ import {
 } from "@mdi/js";
 import { Button } from "@tecsinapse/ui-kit";
 import ReactGA from "react-ga4";
-import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { CDN_RESOURCES } from "../../constants/CDN_RESOURCES";
+import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
+import { RESOURCES } from "../../constants/RESOURCES";
 import { useStyle } from "./styles";
 import { disableNotificationSound, enableNotificationSound } from "../utils";
 
@@ -31,11 +31,11 @@ export const HeaderDrawer = ({
       label: "CLICK_BTN_DICAS",
       action: "View Chats Tips",
     });
-    window.open(CDN_RESOURCES.TIPS, "_blank");
+    window.open(RESOURCES.TIPS, "_blank");
   };
 
   const handleBackMessageManegement = () => {
-    setView(COMPONENT_LOCATION.MESSAGE_MANAGEMENT);
+    setView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
   };
 
   const handleChangeNotificationSound = () => {
@@ -57,7 +57,7 @@ export const HeaderDrawer = ({
       <Grid justify="space-between" container>
         <Grid item>
           <Grid container>
-            {view !== COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
+            {view !== COMPONENT_VIEW.MESSAGE_MANAGEMENT && (
               <Grid item className={classes.backIconContainer}>
                 <Icon
                   onClick={handleBackMessageManegement}
@@ -69,11 +69,11 @@ export const HeaderDrawer = ({
             )}
             <Grid item>
               <Typography variant="h5" color="textPrimary">
-                {view === COMPONENT_LOCATION.CHAT_MESSAGES &&
+                {view === COMPONENT_VIEW.CHAT_MESSAGES &&
                   "Mensagens do Chat"}
-                {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT &&
+                {view === COMPONENT_VIEW.MESSAGE_MANAGEMENT &&
                   "Gestão de Mensagens"}
-                {view === COMPONENT_LOCATION.SEND_NOTIFICATION &&
+                {view === COMPONENT_VIEW.SEND_NOTIFICATION &&
                   "Iniciar Nova Conversa"}
               </Typography>
             </Grid>
@@ -84,7 +84,7 @@ export const HeaderDrawer = ({
             <Grid item>
               <img
                 className={classes.wingoLogo}
-                src={CDN_RESOURCES.WINGO_CHAT_LOGO}
+                src={RESOURCES.WINGO_CHAT_LOGO}
                 alt="Wingo Chat"
               />
             </Grid>
@@ -96,7 +96,7 @@ export const HeaderDrawer = ({
                 size={0.8}
               />
             </Grid>
-            {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
+            {view === COMPONENT_VIEW.MESSAGE_MANAGEMENT && (
               <Grid item>
                 <Button
                   variant="contained"

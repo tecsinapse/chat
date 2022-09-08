@@ -1,38 +1,17 @@
 import jwt from "jwt-simple";
-import { CDN_RESOURCES } from "../constants/CDN_RESOURCES";
+import { RESOURCES } from "../constants/RESOURCES";
 import moment from "moment-timezone";
 
-export const notifyNewChat = (userkeycloakId) => {
-  if (!userkeycloakId) {
-    return;
-  }
-
-  const title = "Nova conversa";
-  const body = `Você tem uma nova conversa no Chat.`;
-  const icon = CDN_RESOURCES.NOTIFICATION_ICON;
-
+export const sendNotification = (userkeycloakId, title, message) => {
   if (Notification.permission === "granted") {
-    new Notification(title, { icon: icon, body: body });
+    new Notification(title, {
+      icon: RESOURCES.NOTIFICATION_ICON,
+      body: message,
+    });
   }
 
   playNotificationSound(userkeycloakId);
-};
-
-export const notifyNewMessage = (userkeycloakId, name) => {
-  if (!userkeycloakId || !name) {
-    return;
-  }
-
-  const title = "Nova mensagem";
-  const body = `Você tem uma nova mensagem de ${name} no Chat.`;
-  const icon = CDN_RESOURCES.NOTIFICATION_ICON;
-
-  if (Notification.permission === "granted") {
-    new Notification(title, { icon: icon, body: body });
-  }
-
-  playNotificationSound(userkeycloakId);
-};
+}
 
 export const handleLocalStorage = (userkeycloakId, setNotificationSound) => (
   storage
@@ -44,7 +23,7 @@ export const handleLocalStorage = (userkeycloakId, setNotificationSound) => (
 
 export const playNotificationSound = (userkeycloakId) => {
   if (isNotificationSoundEnabled(userkeycloakId)) {
-    const audio = new Audio(CDN_RESOURCES.NOTIFICATION_SOUND);
+    const audio = new Audio(RESOURCES.NOTIFICATION_SOUND);
     audio.addEventListener("canplaythrough", () => {
       audio.play();
     });

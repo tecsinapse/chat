@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
 
 export const useStyle = (view) =>
   makeStyles((theme) => ({
@@ -11,7 +11,7 @@ export const useStyle = (view) =>
       overflowX: "hidden",
       maxWidth: "80vw",
       minWidth:
-        view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT ? "80vw" : "40vw",
+        view === COMPONENT_VIEW.MESSAGE_MANAGEMENT ? "80vw" : "40vw",
       width: "unset",
       /* Limpando estilos do Bootstrap para os inputs */
       "& input": {

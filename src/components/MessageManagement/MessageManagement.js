@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Table } from "@tecsinapse/table";
 import {
   Button,
@@ -13,17 +13,16 @@ import {
   Typography,
 } from "@material-ui/core";
 import ReactGA from "react-ga4";
-import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
 import { Loading } from "../Loading/Loading";
 import { generateColumns } from "./utils";
-import { Input } from "@tecsinapse/ui-kit";
+import { Input, Snackbar } from "@tecsinapse/ui-kit";
 import Icon from "@mdi/react";
 import { mdiMagnify } from "@mdi/js";
 import { useStyle } from "./styles";
 
 export const MessageManagement = ({
   loading,
-  setLoading,
   onlyNotClients,
   setOnlyNotClients,
   onlyUnreads,
@@ -34,6 +33,7 @@ export const MessageManagement = ({
   setSelectedChat,
   setCurrentChat,
   componentInfo,
+  userNamesById,
   userkeycloakId,
   setView,
   page,
@@ -43,6 +43,9 @@ export const MessageManagement = ({
   chatService,
 }) => {
   const classes = useStyle();
+
+  const [deleting, setDeleting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const { chats, totalChats, extraInfoColumns } = componentInfo;
 
@@ -73,31 +76,47 @@ export const MessageManagement = ({
 
   const handleSelectCurrentChat = (chat) => {
     setCurrentChat(chat);
-    setView(COMPONENT_LOCATION.CHAT_MESSAGES);
+    setView(COMPONENT_VIEW.CHAT_MESSAGES);
   };
 
-  const handleDeleteChat = async () => {
-    try {
-      setLoading(true);
+  const handleDeleteChat = () => {
+    setDeleting(true);
 
-      await productService.deleteChat(selectedChat);
-      await chatService.deleteSessionChat(selectedChat);
+    productService
+      .deleteChat(selectedChat)
+      .then(() => {
+        chatService
+          .deleteSessionChat(selectedChat)
+          .then(() => {
+            const { connectionKey } = selectedChat;
 
-      const { connectionKey } = selectedChat;
+            ReactGA.event({
+              category: connectionKey,
+              action: "Discard Chat",
+            });
 
-      ReactGA.event({
-        category: connectionKey,
-        action: "Discard Chat",
+            setSelectedChat(null);
+            setDeleting(false);
+          })
+          .catch(() => {
+            setSelectedChat(null);
+            setDeleting(false);
+            setErrorMessage("Erro de comunicação com o Wingo Chat.");
+          });
+      })
+      .catch(() => {
+        setSelectedChat(null);
+        setDeleting(false);
+        setErrorMessage("Erro de comunicação com o Produto.");
       });
-    } catch (e) {
-      console.error("[DELETE_CHAT] Error when deleting", e.message);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleCloseDeleteChat = () => {
     setSelectedChat(null);
+  };
+
+  const handleCloseErrorMessage = () => {
+    setErrorMessage(null);
   };
 
   const handleFetchTableData = () =>
@@ -107,7 +126,7 @@ export const MessageManagement = ({
 
   return (
     <div className={classes.container}>
-      {loading ? (
+      {loading || deleting ? (
         <div className={classes.loadingContainer}>
           <Loading />
         </div>
@@ -117,6 +136,7 @@ export const MessageManagement = ({
             classes,
             extraInfoColumns,
             userkeycloakId,
+            userNamesById,
             handleSelectCurrentChat,
             handleSelectChat,
             globalSearch
@@ -179,9 +199,11 @@ export const MessageManagement = ({
       )}
       {selectedChat && (
         <Dialog open={selectedChat} onClose={handleCloseDeleteChat}>
-          <DialogTitle>Confirmação</DialogTitle>
+          <DialogTitle>Arquivar Conversa</DialogTitle>
           <DialogContent>
-            <DialogContentText>Arquivar Conversa</DialogContentText>
+            <DialogContentText>
+              Tem certeza que você deseja arquivar essa conversa?
+            </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button autoFocus onClick={handleCloseDeleteChat} color="primary">
@@ -192,6 +214,11 @@ export const MessageManagement = ({
             </Button>
           </DialogActions>
         </Dialog>
+      )}
+      {errorMessage && (
+        <Snackbar variant="error" onClose={handleCloseErrorMessage} show>
+          {errorMessage}
+        </Snackbar>
       )}
     </div>
   );

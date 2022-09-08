@@ -1,13 +1,9 @@
 export const countryPhoneNumber = (raw) => {
   if (raw !== null) {
-    let phoneNumber = raw.replace(/\W/g, "");
+    let phoneNumber = raw.replace(/[^\d]/g, "");
 
     if (!phoneNumber) {
       return null;
-    }
-
-    if (/\D/.test(phoneNumber)) {
-      phoneNumber = removePhoneCharacters(raw, phoneNumber);
     }
 
     if (!isPhoneNumberStartWithCountryCode(phoneNumber)) {
@@ -32,9 +28,4 @@ export const countryPhoneNumber = (raw) => {
 
 const isPhoneNumberStartWithCountryCode = (phoneNumber) => {
   return phoneNumber.startsWith("55") && phoneNumber.length >= 12;
-};
-
-const removePhoneCharacters = (raw, phoneNumber) => {
-  const index = raw.indexOf(/\D/.exec(phoneNumber));
-  return raw.substring(0, index).replace(/\W/g, "");
 };

@@ -1,11 +1,11 @@
-import { COMPONENT_LOCATION } from "../constants/COMPONENT_LOCATION";
+import { COMPONENT_VIEW } from "../constants/COMPONENT_VIEW";
 import { countryPhoneNumber } from "../components/SendNotification/utils";
 
 const onStartSendNotification = (view, setChatToSendNotification, setView) => {
-  if (COMPONENT_LOCATION.CHAT_MESSAGES !== view) {
+  if (COMPONENT_VIEW.CHAT_MESSAGES !== view) {
     setChatToSendNotification(null);
   }
-  setView(COMPONENT_LOCATION.SEND_NOTIFICATION);
+  setView(COMPONENT_VIEW.SEND_NOTIFICATION);
 };
 
 export const messageEventListener = async (
@@ -28,7 +28,7 @@ export const messageEventListener = async (
 
       prop.startChat = () =>
         onStartSendNotification(
-          COMPONENT_LOCATION.MESSAGE_MANAGEMENT,
+          COMPONENT_VIEW.MESSAGE_MANAGEMENT,
           setChatToSendNotification,
           setView
         );

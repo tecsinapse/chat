@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import { Divider as MuiDivider, Drawer } from "@material-ui/core";
-import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
+import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
 import { RenderChat } from "../RenderChat/RenderChat";
 import { InitWebSockets } from "../InitWebSockets/InitWebSockets";
 import { MessageManagement } from "../MessageManagement/MessageManagement";
@@ -17,8 +17,10 @@ import {
   getChatId,
   handleLocalStorage,
   isNotificationSoundEnabled,
+  sendNotification,
 } from "../utils";
 import { getDistinctConnectionKeys } from "./utils";
+import NotificationType from "../../enums/NotificationType";
 
 export const Init = (props) => {
   React.useLayoutEffect(() => {
@@ -51,7 +53,7 @@ const InitContext = ({ chatInitConfig }) => {
   const productService = new ProductService(productChatPath);
   const chatService = new ChatService(chatApiUrl);
 
-  const [view, setView] = useState(COMPONENT_LOCATION.MESSAGE_MANAGEMENT);
+  const [view, setView] = useState(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
   const [loading, setLoading] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
   const [componentInfo, setComponentInfo] = useState({});
@@ -115,10 +117,13 @@ const InitContext = ({ chatInitConfig }) => {
   }, [globalSearch, onlyNotClients, onlyUnreads, page]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (reload) {
+    // não executa o reload caso tenha carregamento pendente
+    if (reload && !loading) {
       loadComponentInfo().then(() => {
         setReload(false);
       });
+    } else if (reload) {
+      setReload(false);
     }
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -138,12 +143,12 @@ const InitContext = ({ chatInitConfig }) => {
 
   const handleSetView = (view) => {
     ReactGA.event({
-      category: COMPONENT_LOCATION[view],
+      category: COMPONENT_VIEW[view],
       action: "Navigate",
     });
 
     setView((oldView) => {
-      if (oldView === COMPONENT_LOCATION.CHAT_MESSAGES) {
+      if (oldView === COMPONENT_VIEW.CHAT_MESSAGES) {
         setReload(true);
       }
       return view;
@@ -162,7 +167,17 @@ const InitContext = ({ chatInitConfig }) => {
   };
 
   const handleWebSocketMessage = (webSocketMessage) => {
-    if (webSocketMessage && webSocketMessage.message) {
+    if (webSocketMessage && webSocketMessage.type) {
+      const { title, message, chatActive, type } = webSocketMessage;
+
+      // não notifica quando o chat está aberto por algum usuário
+      // não notifica arquivamento de conversas
+      if (!chatActive && !NotificationType.isArchivedChat(type)) {
+        sendNotification(userkeycloakId, title, message);
+      }
+
+      setReload(true);
+    } else if (webSocketMessage && webSocketMessage.message) {
       setReceivedMessage(webSocketMessage);
     }
   };
@@ -183,6 +198,7 @@ const InitContext = ({ chatInitConfig }) => {
       blocked: blocked,
     };
 
+    // só atualiza as mensagens não lidas caso o chat não esteja arquivado
     if (!archived && newCurrentChat.unreads > 0) {
       const currentChatId = getChatId(currentChat);
 
@@ -191,7 +207,12 @@ const InitContext = ({ chatInitConfig }) => {
       );
 
       if (index > -1) {
-        componentInfo.chatIds[index].unreads = 0;
+        const newComponentInfo = { ...componentInfo };
+        const totalUnreads = newComponentInfo.totalUnreads;
+        const chatUnreads = newComponentInfo.chatIds[index].unreads;
+        newComponentInfo.totalUnreads = totalUnreads - chatUnreads;
+        newComponentInfo.chatIds[index].unreads = 0;
+        setComponentInfo(newComponentInfo);
       }
 
       newCurrentChat.unreads = 0;
@@ -203,10 +224,10 @@ const InitContext = ({ chatInitConfig }) => {
   };
 
   const handleStartSendNotification = () => {
-    if (COMPONENT_LOCATION.CHAT_MESSAGES !== view) {
+    if (COMPONENT_VIEW.CHAT_MESSAGES !== view) {
       setCurrentChatSend(null);
     }
-    setView(COMPONENT_LOCATION.SEND_NOTIFICATION);
+    setView(COMPONENT_VIEW.SEND_NOTIFICATION);
   };
 
   // propaga a alteração do som da notificação para todos os componentes abertos
@@ -239,7 +260,7 @@ const InitContext = ({ chatInitConfig }) => {
             setView={handleSetView}
           />
           <MuiDivider variant="fullWidth" />
-          {view === COMPONENT_LOCATION.CHAT_MESSAGES && (
+          {view === COMPONENT_VIEW.CHAT_MESSAGES && (
             <RenderChat
               chatService={chatService}
               userkeycloakId={userkeycloakId}
@@ -253,10 +274,9 @@ const InitContext = ({ chatInitConfig }) => {
               webSocketRef={webSocketRef}
             />
           )}
-          {view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT && (
+          {view === COMPONENT_VIEW.MESSAGE_MANAGEMENT && (
             <MessageManagement
               loading={loading}
-              setLoading={setLoading}
               onlyNotClients={onlyNotClients}
               setOnlyNotClients={setOnlyNotClients}
               onlyUnreads={onlyUnreads}
@@ -268,6 +288,7 @@ const InitContext = ({ chatInitConfig }) => {
               setCurrentChat={setCurrentChat}
               componentInfo={componentInfo}
               userkeycloakId={userkeycloakId}
+              userNamesById={componentInfo?.userNameById}
               setView={handleSetView}
               page={page}
               setPage={setPage}
@@ -276,23 +297,23 @@ const InitContext = ({ chatInitConfig }) => {
               chatService={chatService}
             />
           )}
-          {view === COMPONENT_LOCATION.SEND_NOTIFICATION && (
+          {view === COMPONENT_VIEW.SEND_NOTIFICATION && (
             <SendNotification
               chatService={chatService}
               productService={productService}
               userkeycloakId={userkeycloakId}
               connectionKeys={componentInfo?.connectionKeys}
-              destination={destination}
               currentChat={currentChatSend}
               setCurrentChat={setCurrentChat}
+              loading={loading}
+              setLoading={setLoading}
               setView={handleSetView}
               userNamesById={componentInfo?.userNameById}
             />
           )}
           {canSendNotification &&
-            (view === COMPONENT_LOCATION.MESSAGE_MANAGEMENT ||
-              (view === COMPONENT_LOCATION.CHAT_MESSAGES &&
-                currentChat?.blocked)) && (
+            (view === COMPONENT_VIEW.MESSAGE_MANAGEMENT ||
+              (view === COMPONENT_VIEW.CHAT_MESSAGES && currentChat?.blocked)) && (
               <StartNewChatButton
                 handleStartSendNotification={handleStartSendNotification}
               />

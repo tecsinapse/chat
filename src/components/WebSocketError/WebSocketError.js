@@ -2,7 +2,7 @@ import React from "react";
 import { CircularProgress } from "@material-ui/core";
 import { useStyle } from "./styles";
 
-export const Loading = () => {
+export const WebSocketError = () => {
   const classes = useStyle();
 
   return (

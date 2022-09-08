@@ -57,6 +57,7 @@ export const generateColumns = (
   classes,
   extraInfoColumns,
   userkeycloakId,
+  userNamesById,
   handleSelectCurrentChat,
   handleSelectChat,
   globalSearch
@@ -87,12 +88,21 @@ export const generateColumns = (
         phone,
         lastMessage,
         lastMessageSource,
-        extraInfos,
+        lastMessageUserId,
         highlighted,
       }) => {
-        const lastSender = MessageSource.isClient(lastMessageSource)
-          ? name?.split(" ")[0]
-          : extraInfos?.responsavel?.split(" ")[0];
+        let lastSender = "Wingo";
+
+        if (MessageSource.isClient(lastMessageSource)) {
+          lastSender = name?.split(" ")[0];
+        } else if (
+          MessageSource.isProduct(lastMessageSource) &&
+          lastMessageUserId
+        ) {
+          if (userNamesById[lastMessageUserId]) {
+            lastSender = userNamesById[lastMessageUserId]?.split(" ")[0];
+          }
+        }
 
         return (
           <div style={{ minWidth: "400px", maxWidth: "520px" }}>
@@ -109,11 +119,7 @@ export const generateColumns = (
             )}
             <br />
             <Typography variant="caption">
-              <i>
-                {Boolean(lastSender)
-                  ? lastSender + ": " + lastMessage
-                  : lastMessage}
-              </i>
+              <i>{lastSender + ": " + lastMessage}</i>
             </Typography>
           </div>
         );
