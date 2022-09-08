@@ -21,6 +21,7 @@ import {
 } from "../utils";
 import { getDistinctConnectionKeys } from "./utils";
 import NotificationType from "../../enums/NotificationType";
+import { WebSocketError } from "../WebSocketError/WebSocketError";
 
 export const Init = (props) => {
   React.useLayoutEffect(() => {
@@ -71,6 +72,7 @@ const InitContext = ({ chatInitConfig }) => {
   const [connectionKeys, setConnectionKeys] = useState([]);
   const [destination, setDestination] = useState(null);
   const [webSocketRef, setWebSocketRef] = useState(null);
+  const [webSocketError, setWebsocketError] = useState(false);
 
   const [receivedMessage, setReceivedMessage] = useState();
 
@@ -84,6 +86,18 @@ const InitContext = ({ chatInitConfig }) => {
 
   const loadComponentInfo = async () => {
     setLoading(true);
+
+    // caso não consiga carregar o component info
+    // será setado os valores em branco
+    const emptyComponentInfo = {
+      totalChats: 0,
+      totalUnreads: 0,
+      connectionKeys: [],
+      chats: [],
+      chatIds: [],
+      extraInfoColumns: {},
+      userNamesById: {},
+    };
 
     productService
       .loadComponentInfo(
@@ -104,7 +118,15 @@ const InitContext = ({ chatInitConfig }) => {
             setComponentInfo(completeComponentInfo);
             setFirstLoad(false);
             setLoading(false);
+          })
+          .catch(() => {
+            setComponentInfo(emptyComponentInfo);
+            setLoading(false);
           });
+      })
+      .catch(() => {
+        setComponentInfo(emptyComponentInfo);
+        setLoading(false);
       });
   };
 
@@ -127,6 +149,14 @@ const InitContext = ({ chatInitConfig }) => {
     }
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (webSocketError) {
+      handleSetView(COMPONENT_VIEW.WEBSOCKET_ERROR);
+    } else if (view === COMPONENT_VIEW.WEBSOCKET_ERROR) {
+      handleSetView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
+    }
+  }, [webSocketError]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(
     () =>
       window.addEventListener("message", async (event) => {
@@ -148,7 +178,7 @@ const InitContext = ({ chatInitConfig }) => {
     });
 
     setView((oldView) => {
-      if (oldView === COMPONENT_VIEW.CHAT_MESSAGES) {
+      if (oldView === COMPONENT_VIEW.CHAT_MESSAGES && !webSocketError) {
         setReload(true);
       }
       return view;
@@ -164,6 +194,11 @@ const InitContext = ({ chatInitConfig }) => {
     });
 
     setWebSocketRef(webSocketRef);
+    setWebsocketError(false);
+  };
+
+  const handleWebSocketDisconnect = () => {
+    setWebsocketError(true);
   };
 
   const handleWebSocketMessage = (webSocketMessage) => {
@@ -260,6 +295,7 @@ const InitContext = ({ chatInitConfig }) => {
             setView={handleSetView}
           />
           <MuiDivider variant="fullWidth" />
+          {view === COMPONENT_VIEW.WEBSOCKET_ERROR && <WebSocketError />}
           {view === COMPONENT_VIEW.CHAT_MESSAGES && (
             <RenderChat
               chatService={chatService}
@@ -270,7 +306,7 @@ const InitContext = ({ chatInitConfig }) => {
               setDrawerOpen={setOpenDrawer}
               handleAfterLoadMessage={handleAfterLoadMessage}
               receivedMessage={receivedMessage}
-              userNamesById={componentInfo?.userNameById}
+              userNamesById={componentInfo?.userNamesById}
               webSocketRef={webSocketRef}
             />
           )}
@@ -288,7 +324,7 @@ const InitContext = ({ chatInitConfig }) => {
               setCurrentChat={setCurrentChat}
               componentInfo={componentInfo}
               userkeycloakId={userkeycloakId}
-              userNamesById={componentInfo?.userNameById}
+              userNamesById={componentInfo?.userNamesById}
               setView={handleSetView}
               page={page}
               setPage={setPage}
@@ -308,12 +344,13 @@ const InitContext = ({ chatInitConfig }) => {
               loading={loading}
               setLoading={setLoading}
               setView={handleSetView}
-              userNamesById={componentInfo?.userNameById}
+              userNamesById={componentInfo?.userNamesById}
             />
           )}
           {canSendNotification &&
             (view === COMPONENT_VIEW.MESSAGE_MANAGEMENT ||
-              (view === COMPONENT_VIEW.CHAT_MESSAGES && currentChat?.blocked)) && (
+              (view === COMPONENT_VIEW.CHAT_MESSAGES &&
+                currentChat?.blocked)) && (
               <StartNewChatButton
                 handleStartSendNotification={handleStartSendNotification}
               />
@@ -326,6 +363,7 @@ const InitContext = ({ chatInitConfig }) => {
           userkeycloakId={userkeycloakId}
           destination={destination}
           handleConnect={handleWebSocketConnect}
+          handleDisconnect={handleWebSocketDisconnect}
           handleMessage={handleWebSocketMessage}
         />
       )}

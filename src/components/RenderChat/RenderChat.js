@@ -14,6 +14,7 @@ import {
 } from "./utils";
 import { List, ListItem, ListItemText, Popover } from "@material-ui/core";
 import { encodeChatData } from "../utils";
+import { useStyle } from "./styles";
 
 export const RenderChat = ({
   chatService,
@@ -26,6 +27,8 @@ export const RenderChat = ({
   userNamesById,
   webSocketRef,
 }) => {
+  const classes = useStyle();
+
   const { connectionKey, destination, chatId, archived, actions } = currentChat;
 
   const [loading, setLoading] = useState(true);
@@ -305,7 +308,7 @@ export const RenderChat = ({
   const encodedData = encodeChatData(currentChat, userkeycloakId);
 
   return (
-    <div style={{ maxWidth: "40vW" }}>
+    <div className={classes.container}>
       <Chat
         messages={messages}
         onMessageSend={handleSendNewMessage}

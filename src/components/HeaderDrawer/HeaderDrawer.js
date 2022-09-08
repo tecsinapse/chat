@@ -57,24 +57,27 @@ export const HeaderDrawer = ({
       <Grid justify="space-between" container>
         <Grid item>
           <Grid container>
-            {view !== COMPONENT_VIEW.MESSAGE_MANAGEMENT && (
-              <Grid item className={classes.backIconContainer}>
-                <Icon
-                  onClick={handleBackMessageManegement}
-                  size={1.25}
-                  className={classes.backIcon}
-                  path={mdiArrowLeft}
-                />
-              </Grid>
-            )}
+            {view !== COMPONENT_VIEW.MESSAGE_MANAGEMENT &&
+              view !== COMPONENT_VIEW.WEBSOCKET_ERROR && (
+                <Grid item className={classes.backIconContainer}>
+                  <Icon
+                    onClick={handleBackMessageManegement}
+                    size={1.25}
+                    className={classes.backIcon}
+                    path={mdiArrowLeft}
+                  />
+                </Grid>
+              )}
             <Grid item>
               <Typography variant="h5" color="textPrimary">
                 {view === COMPONENT_VIEW.CHAT_MESSAGES &&
-                  "Mensagens do Chat"}
+                  "Mensagens da Conversa"}
                 {view === COMPONENT_VIEW.MESSAGE_MANAGEMENT &&
                   "Gestão de Mensagens"}
                 {view === COMPONENT_VIEW.SEND_NOTIFICATION &&
                   "Iniciar Nova Conversa"}
+                {view === COMPONENT_VIEW.WEBSOCKET_ERROR &&
+                  "Ops, tivemos um problema"}
               </Typography>
             </Grid>
           </Grid>

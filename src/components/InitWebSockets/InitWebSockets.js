@@ -14,6 +14,7 @@ export const InitWebSockets = ({
   userkeycloakId,
   destination,
   handleConnect,
+  handleDisconnect,
   handleMessage,
 }) => {
   const webSocketRef = useRef();
@@ -29,6 +30,7 @@ export const InitWebSockets = ({
 
   const onDisconnect = () => {
     console.log("WebSocket Disconnected");
+    handleDisconnect(webSocketRef);
   };
 
   const options = {
