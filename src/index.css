@@ -4,7 +4,7 @@ body {
   margin: 0;
 }
 
-#wingo-chat {
+#wingo-chat-component {
   margin: 0;
   font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
@@ -15,19 +15,25 @@ body {
   width: 100%;
 }
 
-#wingo-chat code {
+#wingo-chat-component code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
-#wingo-chat textarea {
+#wingo-chat-component textarea {
   border: 0 !important;
   box-shadow: none !important;
 }
 
-#wingo-chat input:-webkit-autofill,
-#wingo-chat input:-webkit-autofill:hover,
-#wingo-chat input:-webkit-autofill:focus,
-#wingo-chat input:-webkit-autofill:active {
+#wingo-chat-component input:-webkit-autofill,
+#wingo-chat-component input:-webkit-autofill:hover,
+#wingo-chat-component input:-webkit-autofill:focus,
+#wingo-chat-component input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+#wingo-chat-component .MuiInputBase-input {
+  font-size: 14px !important;
+  padding: 10px 16px !important;
+  height: 16px !important;
 }

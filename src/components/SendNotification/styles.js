@@ -14,13 +14,14 @@ export const useStyle = makeStyles((theme) => ({
   preview: {
     backgroundColor: "#ccc",
     display: "grid",
-    fontFamily: "monospace",
     margin: theme.spacing(1, 0),
     padding: theme.spacing(2),
     textAlign: "center",
     justifyContent: "center",
   },
   previewText: {
+    fontSize: "14px",
+    lineHeight: 1.5,
     textAlign: "center",
     display: "block",
     width: "31vW",
@@ -28,7 +29,6 @@ export const useStyle = makeStyles((theme) => ({
   previewButtons: {
     marginTop: theme.spacing(1),
     "& button": {
-      fontFamily: "monospace",
       letterSpacing: 0,
       textTransform: "none",
     },

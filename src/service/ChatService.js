@@ -5,7 +5,7 @@ import { momentNow } from "../components/utils";
 
 export class ChatService {
   constructor(baseUrl) {
-    this.url = baseUrl;
+    this.url = `${baseUrl}/api/chats`;
   }
 
   sendNotification(userkeycloakId, chat, templateId, templateArgs) {

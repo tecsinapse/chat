@@ -43,7 +43,6 @@ export const Init = (props) => {
 const InitContext = ({ chatInitConfig }) => {
   const {
     userkeycloakId,
-    chatUrl,
     chatApiUrl,
     productChatPath,
     openImmediately,
@@ -282,7 +281,7 @@ const InitContext = ({ chatInitConfig }) => {
         open={openDrawer}
         onClose={handleCloseDrawer}
         ModalProps={{
-          container: document.getElementById("wingo-chat"),
+          container: document.getElementById("wingo-chat-component"),
         }}
       >
         <div className={classes.drawerContainer}>
@@ -359,7 +358,7 @@ const InitContext = ({ chatInitConfig }) => {
       </Drawer>
       {!firstLoad && (
         <InitWebSockets
-          chatUrl={chatUrl}
+          chatApiUrl={chatApiUrl}
           userkeycloakId={userkeycloakId}
           destination={destination}
           handleConnect={handleWebSocketConnect}

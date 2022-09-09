@@ -7,27 +7,13 @@ import "react-app-polyfill/stable";
 import "./index.css";
 import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
 
-const standalone = process.env.REACT_APP_STANDALONE === "true";
-
 window.renderChatComponent = function renderChatComponent() {
   const defaultChatInitConfig = {
     userkeycloakId: "4a2979b6-e7db-4be1-bd73-e14aeab8006a",
-    chatUrl: `${process.env.REACT_APP_SERVER_URL}`,
-    chatApiUrl: `${process.env.REACT_APP_SERVER_URL}/api/chats`,
+    chatApiUrl: `${process.env.REACT_APP_SERVER_URL}`,
     productChatPath: "http://localhost:8080/rest/chat",
-    componentInfoPath: "http://localhost:8080/rest/chat/componentInfo",
-    deleteChatPath: "http://localhost:8080/rest/chat",
-    createPath: "http://localhost:8080/rest/chat",
     openImmediately: false,
-    clickOnUnreadOpenFirstAction: false,
-    showMessagesLabel: "Visualizar Mensagens",
-    navigateWhenCurrentChat: true,
-    onChatTitle: "Mensagens do Chat",
-    showDiscardOption: true,
-    onlyMessageManagement: false,
     canSendNotification: true,
-    standalone: false,
-    userPhoneNumber: "",
     pageSize: 10,
   };
 
@@ -38,8 +24,11 @@ window.renderChatComponent = function renderChatComponent() {
     chatInitConfig = { ...defaultChatInitConfig, ...window.CHAT_INIT_CONFIG };
   }
 
+  console.log("CHAT_INIT_CONFIG", window.CHAT_INIT_CONFIG);
+  console.log("chatInitConfig", chatInitConfig);
+
   const generateClassName = createGenerateClassName({
-    productionPrefix: "wingo-chat",
+    productionPrefix: "chat",
   });
 
   ReactDOM.render(
@@ -48,10 +37,10 @@ window.renderChatComponent = function renderChatComponent() {
         <Init chatInitConfig={chatInitConfig} />
       </ThemeProvider>
     </StylesProvider>,
-    document.getElementById("wingo-chat")
+    document.getElementById("wingo-chat-component")
   );
 };
 
-if (standalone) {
+if (process.env.REACT_APP_HOST === "development") {
   window.renderChatComponent();
 }

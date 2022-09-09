@@ -145,7 +145,7 @@ export const SendNotification = ({
       if (templateArgs[i]) {
         previewText = previewText.replaceAll(
           `{{${templateArgsKeys[i]}}}`,
-          templateArgs[i]
+          `<b>${templateArgs[i]}</b>`
         );
       }
     }
@@ -329,7 +329,12 @@ export const SendNotification = ({
               <Grid item>
                 <Typography variant="caption">Mensagem:</Typography>
                 <div className={classes.preview}>
-                  <div className={classes.previewText}>{previewText}</div>
+                  <Typography
+                    className={classes.previewText}
+                    dangerouslySetInnerHTML={{
+                      __html: previewText,
+                    }}
+                  />
                   {previewButtons && (
                     <ButtonGroup className={classes.previewButtons} fullWidth>
                       {previewButtons.map((button, index) => (

@@ -10,7 +10,7 @@ if (debug) {
 }
 
 export const InitWebSockets = ({
-  chatUrl,
+  chatApiUrl,
   userkeycloakId,
   destination,
   handleConnect,
@@ -46,7 +46,7 @@ export const InitWebSockets = ({
 
   return (
     <SockJsClient
-      url={`${chatUrl}/ws`}
+      url={`${chatApiUrl}/ws`}
       topics={[`/topic/main.${destination}.${userkeycloakId}`]}
       onMessage={onMessage}
       onConnect={onConnect}
