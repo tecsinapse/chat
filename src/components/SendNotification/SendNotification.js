@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  IconButton,
-  Input,
-  Select,
-  Snackbar,
-} from "@tecsinapse/ui-kit";
+import { Button, IconButton, Input, Select } from "@tecsinapse/ui-kit";
 import { Box, ButtonGroup, Grid, Tooltip, Typography } from "@material-ui/core";
 import Icon from "@mdi/react";
 import { mdiPlusBoxOutline } from "@mdi/js";
@@ -26,6 +20,7 @@ export const SendNotification = ({
   setCurrentChat,
   loading,
   setLoading,
+  setConnectionError,
   setView,
   userNamesById,
 }) => {
@@ -44,7 +39,6 @@ export const SendNotification = ({
   const [templateArgs, setTemplateArgs] = useState([]);
   const [previewText, setPreviewText] = useState(null);
   const [previewButtons, setPreviewButtons] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const availableConnectionKeys = [
     {
@@ -223,13 +217,13 @@ export const SendNotification = ({
           .catch(() => {
             setSubmitting(false);
             setLoading(false);
-            setErrorMessage("Erro de comunicação com o Wingo Chat.");
+            setConnectionError(true);
           });
       })
       .catch(() => {
         setSubmitting(false);
         setLoading(false);
-        setErrorMessage("Erro de comunicação com o Produto.");
+        setConnectionError(true);
       });
   };
 
@@ -249,10 +243,6 @@ export const SendNotification = ({
     const url = `${process.env.REACT_APP_MESSAGE_SUGESTION_URL}?${params}`;
 
     window.open(`${url}`, "_blank");
-  };
-
-  const handleCloseErrorMessage = () => {
-    setErrorMessage(null);
   };
 
   return (
@@ -369,11 +359,6 @@ export const SendNotification = ({
               </Button>
             </Box>
           </Grid>
-          {errorMessage && (
-            <Snackbar variant="error" onClose={handleCloseErrorMessage} show>
-              {errorMessage}
-            </Snackbar>
-          )}
         </div>
       )}
     </div>

@@ -65,7 +65,6 @@ const InitContext = ({ chatInitConfig }) => {
   const [globalSearch, setGlobalSearch] = useState("");
   const [page, setPage] = useState(0);
 
-  const [selectedChat, setSelectedChat] = useState(null);
   const [currentChatSend, setCurrentChatSend] = useState(null);
   const [currentChat, setCurrentChat] = useState(null);
 
@@ -180,7 +179,7 @@ const InitContext = ({ chatInitConfig }) => {
 
           if (json && json.tipo === "TEC-INIT-WINGO-CHAT") {
             chatInitConfig.params.clienteId = json.clienteId;
-            chatInitConfig.params.phoneNumber = json.userPhoneNumber;
+            chatInitConfig.params.phoneNumber = json.phoneNumber;
 
             setReload(true);
           }
@@ -305,7 +304,7 @@ const InitContext = ({ chatInitConfig }) => {
             );
           }}
         >
-          Teste Post Message
+          Teste Init Wingo Chat
         </Button>
       )}
       {!openDrawer && (
@@ -358,9 +357,8 @@ const InitContext = ({ chatInitConfig }) => {
               setOnlyUnreads={setOnlyUnreads}
               globalSearch={globalSearch}
               setGlobalSearch={setGlobalSearch}
-              selectedChat={selectedChat}
-              setSelectedChat={setSelectedChat}
               setCurrentChat={setCurrentChat}
+              setConnectionError={setConnectionError}
               componentInfo={componentInfo}
               userkeycloakId={userkeycloakId}
               userNamesById={componentInfo?.userNamesById}
@@ -382,6 +380,7 @@ const InitContext = ({ chatInitConfig }) => {
               setCurrentChat={setCurrentChat}
               loading={loading}
               setLoading={setLoading}
+              setConnectionError={setConnectionError}
               setView={handleSetView}
               userNamesById={componentInfo?.userNamesById}
             />

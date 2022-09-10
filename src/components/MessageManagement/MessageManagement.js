@@ -16,7 +16,7 @@ import ReactGA from "react-ga4";
 import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
 import { Loading } from "../Loading/Loading";
 import { generateColumns } from "./utils";
-import { Input, Snackbar } from "@tecsinapse/ui-kit";
+import { Input } from "@tecsinapse/ui-kit";
 import Icon from "@mdi/react";
 import { mdiMagnify } from "@mdi/js";
 import { useStyle } from "./styles";
@@ -29,9 +29,8 @@ export const MessageManagement = ({
   setOnlyUnreads,
   globalSearch,
   setGlobalSearch,
-  selectedChat,
-  setSelectedChat,
   setCurrentChat,
+  setConnectionError,
   componentInfo,
   userNamesById,
   userkeycloakId,
@@ -44,8 +43,8 @@ export const MessageManagement = ({
 }) => {
   const classes = useStyle();
 
+  const [selectedChat, setSelectedChat] = useState(null);
   const [deleting, setDeleting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const { chats, totalChats, extraInfoColumns } = componentInfo;
 
@@ -101,22 +100,18 @@ export const MessageManagement = ({
           .catch(() => {
             setSelectedChat(null);
             setDeleting(false);
-            setErrorMessage("Erro de comunicação com o Wingo Chat.");
+            setConnectionError(true);
           });
       })
       .catch(() => {
         setSelectedChat(null);
         setDeleting(false);
-        setErrorMessage("Erro de comunicação com o Produto.");
+        setConnectionError(true);
       });
   };
 
   const handleCloseDeleteChat = () => {
     setSelectedChat(null);
-  };
-
-  const handleCloseErrorMessage = () => {
-    setErrorMessage(null);
   };
 
   const handleFetchTableData = () =>
@@ -214,11 +209,6 @@ export const MessageManagement = ({
             </Button>
           </DialogActions>
         </Dialog>
-      )}
-      {errorMessage && (
-        <Snackbar variant="error" onClose={handleCloseErrorMessage} show>
-          {errorMessage}
-        </Snackbar>
       )}
     </div>
   );
