@@ -12,7 +12,6 @@ import { StartNewChatButton } from "../StartNewChatButton/StartNewChatButton";
 import { HeaderDrawer } from "../HeaderDrawer/HeaderDrawer";
 import { ProductService } from "../../service/ProductService";
 import { ChatService } from "../../service/ChatService";
-import { messageEventListener } from "../../utils/helpers";
 import {
   getChatId,
   handleLocalStorage,
@@ -21,7 +20,8 @@ import {
 } from "../utils";
 import { getDistinctConnectionKeys } from "./utils";
 import NotificationType from "../../enums/NotificationType";
-import { WebSocketError } from "../WebSocketError/WebSocketError";
+import { ConnectionError } from "../ConnectionError/ConnectionError";
+import { Button } from "@tecsinapse/ui-kit";
 
 export const Init = (props) => {
   React.useLayoutEffect(() => {
@@ -46,8 +46,9 @@ const InitContext = ({ chatInitConfig }) => {
     chatApiUrl,
     productChatPath,
     openImmediately,
-    pageSize,
     canSendNotification,
+    pageSize,
+    params,
   } = chatInitConfig;
 
   const productService = new ProductService(productChatPath);
@@ -71,7 +72,7 @@ const InitContext = ({ chatInitConfig }) => {
   const [connectionKeys, setConnectionKeys] = useState([]);
   const [destination, setDestination] = useState(null);
   const [webSocketRef, setWebSocketRef] = useState(null);
-  const [webSocketError, setWebsocketError] = useState(false);
+  const [connectionError, setConnectionError] = useState(false);
 
   const [receivedMessage, setReceivedMessage] = useState();
 
@@ -86,24 +87,13 @@ const InitContext = ({ chatInitConfig }) => {
   const loadComponentInfo = async () => {
     setLoading(true);
 
-    // caso não consiga carregar o component info
-    // será setado os valores em branco
-    const emptyComponentInfo = {
-      totalChats: 0,
-      totalUnreads: 0,
-      connectionKeys: [],
-      chats: [],
-      chatIds: [],
-      extraInfoColumns: {},
-      userNamesById: {},
-    };
-
     productService
       .loadComponentInfo(
         globalSearch,
         onlyNotClients,
         onlyUnreads,
         componentInfo?.chatIds,
+        params,
         page,
         pageSize
       )
@@ -111,20 +101,46 @@ const InitContext = ({ chatInitConfig }) => {
         chatService
           .completeComponentInfo(componentInfo)
           .then((completeComponentInfo) => {
-            const { connectionKeys, destination } = completeComponentInfo;
+            const {
+              connectionKeys,
+              destination,
+              currentChat,
+            } = completeComponentInfo;
+
             setDestination(destination);
             setConnectionKeys(getDistinctConnectionKeys(connectionKeys));
             setComponentInfo(completeComponentInfo);
+
+            // caso tenha um chat corrente no primeiro carregamento
+            // abre a tela de mensagens
+            if (firstLoad && currentChat && currentChat.chatId) {
+              setCurrentChat(currentChat);
+              handleSetView(COMPONENT_VIEW.CHAT_MESSAGES);
+            }
+
+            // caso tenha um chat corrente após primeiro carregamento
+            // abre a tela de mensagens ou envio de notificação
+            if (!firstLoad && !openDrawer && currentChat) {
+              if (!currentChat.chatId) {
+                setCurrentChatSend(currentChat);
+                handleSetView(COMPONENT_VIEW.SEND_NOTIFICATION);
+              } else {
+                setCurrentChat(currentChat);
+                handleSetView(COMPONENT_VIEW.CHAT_MESSAGES);
+              }
+              setOpenDrawer(true);
+            }
+
             setFirstLoad(false);
             setLoading(false);
           })
           .catch(() => {
-            setComponentInfo(emptyComponentInfo);
+            setConnectionError(true);
             setLoading(false);
           });
       })
       .catch(() => {
-        setComponentInfo(emptyComponentInfo);
+        setConnectionError(true);
         setLoading(false);
       });
   };
@@ -149,24 +165,30 @@ const InitContext = ({ chatInitConfig }) => {
   }, [reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (webSocketError) {
-      handleSetView(COMPONENT_VIEW.WEBSOCKET_ERROR);
-    } else if (view === COMPONENT_VIEW.WEBSOCKET_ERROR) {
+    if (connectionError) {
+      handleSetView(COMPONENT_VIEW.CONNECTION_ERROR);
+    } else if (view === COMPONENT_VIEW.CONNECTION_ERROR) {
       handleSetView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
     }
-  }, [webSocketError]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [connectionError]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(
-    () =>
-      window.addEventListener("message", async (event) => {
-        await messageEventListener(
-          event,
-          //propsToLoadComponent,
-          setCurrentChatSend,
-          setView,
-          setOpenDrawer
-        );
-      }),
+    () => {
+      window.addEventListener("message", (event) => {
+        try {
+          const json = JSON.parse(event.data);
+
+          if (json && json.tipo === "TEC-INIT-WINGO-CHAT") {
+            chatInitConfig.params.clienteId = json.clienteId;
+            chatInitConfig.params.phoneNumber = json.userPhoneNumber;
+
+            setReload(true);
+          }
+        } catch (e) {
+          // nothing
+        }
+      });
+    },
     [] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
@@ -177,7 +199,11 @@ const InitContext = ({ chatInitConfig }) => {
     });
 
     setView((oldView) => {
-      if (oldView === COMPONENT_VIEW.CHAT_MESSAGES && !webSocketError) {
+      if (
+        (oldView === COMPONENT_VIEW.CHAT_MESSAGES ||
+          oldView === COMPONENT_VIEW.CONNECTION_ERROR) &&
+        !connectionError
+      ) {
         setReload(true);
       }
       return view;
@@ -193,11 +219,11 @@ const InitContext = ({ chatInitConfig }) => {
     });
 
     setWebSocketRef(webSocketRef);
-    setWebsocketError(false);
+    setConnectionError(false);
   };
 
   const handleWebSocketDisconnect = () => {
-    setWebsocketError(true);
+    setConnectionError(true);
   };
 
   const handleWebSocketMessage = (webSocketMessage) => {
@@ -258,10 +284,7 @@ const InitContext = ({ chatInitConfig }) => {
   };
 
   const handleStartSendNotification = () => {
-    if (COMPONENT_VIEW.CHAT_MESSAGES !== view) {
-      setCurrentChatSend(null);
-    }
-    setView(COMPONENT_VIEW.SEND_NOTIFICATION);
+    handleSetView(COMPONENT_VIEW.SEND_NOTIFICATION);
   };
 
   // propaga a alteração do som da notificação para todos os componentes abertos
@@ -269,6 +292,22 @@ const InitContext = ({ chatInitConfig }) => {
 
   return (
     <div>
+      {process.env.REACT_APP_HOST === "development" && (
+        <Button
+          variant="contained"
+          onClick={() => {
+            window.postMessage(
+              JSON.stringify({
+                clienteId: 59996,
+                phoneNumber: "(67)98125-5445",
+                tipo: "TEC-INIT-WINGO-CHAT",
+              })
+            );
+          }}
+        >
+          Teste Post Message
+        </Button>
+      )}
       {!openDrawer && (
         <ChatButton
           firstLoad={firstLoad}
@@ -288,13 +327,14 @@ const InitContext = ({ chatInitConfig }) => {
           <HeaderDrawer
             userkeycloakId={userkeycloakId}
             setOpenDrawer={setOpenDrawer}
+            setCurrentChatSend={setCurrentChatSend}
             notificationSound={notificationSound}
             setNotificationSound={setNotificationSound}
             view={view}
             setView={handleSetView}
           />
           <MuiDivider variant="fullWidth" />
-          {view === COMPONENT_VIEW.WEBSOCKET_ERROR && <WebSocketError />}
+          {view === COMPONENT_VIEW.CONNECTION_ERROR && <ConnectionError />}
           {view === COMPONENT_VIEW.CHAT_MESSAGES && (
             <RenderChat
               chatService={chatService}

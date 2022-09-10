@@ -4,7 +4,7 @@ import { mdiConnection } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Typography } from "@material-ui/core";
 
-export const WebSocketError = () => {
+export const ConnectionError = () => {
   const classes = useStyle();
 
   return (

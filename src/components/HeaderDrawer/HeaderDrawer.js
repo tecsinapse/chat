@@ -18,6 +18,7 @@ import { disableNotificationSound, enableNotificationSound } from "../utils";
 export const HeaderDrawer = ({
   userkeycloakId,
   setOpenDrawer,
+  setCurrentChatSend,
   notificationSound,
   setNotificationSound,
   view,
@@ -36,6 +37,7 @@ export const HeaderDrawer = ({
 
   const handleBackMessageManegement = () => {
     setView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
+    setCurrentChatSend(null);
   };
 
   const handleChangeNotificationSound = () => {
@@ -58,7 +60,7 @@ export const HeaderDrawer = ({
         <Grid item>
           <Grid container>
             {view !== COMPONENT_VIEW.MESSAGE_MANAGEMENT &&
-              view !== COMPONENT_VIEW.WEBSOCKET_ERROR && (
+              view !== COMPONENT_VIEW.CONNECTION_ERROR && (
                 <Grid item className={classes.backIconContainer}>
                   <Icon
                     onClick={handleBackMessageManegement}
@@ -76,7 +78,7 @@ export const HeaderDrawer = ({
                   "Gestão de Mensagens"}
                 {view === COMPONENT_VIEW.SEND_NOTIFICATION &&
                   "Iniciar Nova Conversa"}
-                {view === COMPONENT_VIEW.WEBSOCKET_ERROR &&
+                {view === COMPONENT_VIEW.CONNECTION_ERROR &&
                   "Ops, tivemos um problema"}
               </Typography>
             </Grid>

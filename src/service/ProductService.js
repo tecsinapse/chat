@@ -10,6 +10,7 @@ export class ProductService {
     onlyNotClients,
     onlyUnreads,
     chatIds,
+    params,
     page,
     pageSize
   ) {
@@ -18,6 +19,7 @@ export class ProductService {
       onlyNotClients,
       onlyUnreads,
       unreadChatIds: onlyUnreads ? chatIds.filter((it) => it.unreads > 0) : [],
+      ...params,
       page,
       pageSize,
     });

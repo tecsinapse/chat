@@ -9,12 +9,14 @@ import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
 
 window.renderChatComponent = function renderChatComponent() {
   const defaultChatInitConfig = {
-    userkeycloakId: "4a2979b6-e7db-4be1-bd73-e14aeab8006a",
+    userkeycloakId: "dd573238-8e0a-4de5-a73b-0dfee75fd905",
     chatApiUrl: `${process.env.REACT_APP_SERVER_URL}`,
     productChatPath: "http://localhost:8080/rest/chat",
     openImmediately: false,
     canSendNotification: true,
     pageSize: 10,
+    params: {},
+    // params: { clienteId: 59996 },
   };
 
   let chatInitConfig = { ...defaultChatInitConfig };
@@ -23,9 +25,6 @@ window.renderChatComponent = function renderChatComponent() {
   if (window.CHAT_INIT_CONFIG) {
     chatInitConfig = { ...defaultChatInitConfig, ...window.CHAT_INIT_CONFIG };
   }
-
-  console.log("CHAT_INIT_CONFIG", window.CHAT_INIT_CONFIG);
-  console.log("chatInitConfig", chatInitConfig);
 
   const generateClassName = createGenerateClassName({
     productionPrefix: "chat",
