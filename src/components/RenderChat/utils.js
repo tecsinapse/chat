@@ -1,6 +1,6 @@
+import { DELIVERY_STATUS } from "@tecsinapse/chat";
 import MessageSource from "../../enums/MessageSource";
 import { formatDateTime, momentNow } from "../utils";
-import { DELIVERY_STATUS } from "@tecsinapse/chat";
 
 export const getChatMessageObject = (message, chatId, userNamesByIds = {}) => {
   const {
@@ -24,8 +24,8 @@ export const getChatMessageObject = (message, chatId, userNamesByIds = {}) => {
     at: formatDateTime(at),
     own: isOwner,
     id: messageId,
-    text: text,
-    authorName: authorName,
+    text,
+    authorName,
     statusDetails: formatMessageStatus(statusDetails),
     status: status.toLowerCase(),
     style: style.toUpperCase(),
@@ -56,7 +56,7 @@ export const getSendingMessage = (localId, authorName) => ({
   at: formatDateTime(momentNow()),
   authorName: authorName || "Você",
   id: localId,
-  localId: localId,
+  localId,
   own: true,
   status: DELIVERY_STATUS.SENDING.key,
 });
@@ -75,7 +75,7 @@ export const getSendingMedia = (file) => ({
 
 export const getSendingNewMessage = (localId, text, authorName) => ({
   ...getSendingMessage(localId, authorName),
-  text: text,
+  text,
 });
 
 export const getSendingNewAudio = (localId, file, authorName) => ({
@@ -86,7 +86,7 @@ export const getSendingNewAudio = (localId, file, authorName) => ({
 export const getSendingNewFile = (localId, title, file, authorName) => ({
   ...getSendingMessage(localId, authorName),
   ...getSendingMedia(file),
-  title: title,
+  title,
 });
 
 export const formatMessageStatus = (status) => {
@@ -101,25 +101,19 @@ export const formatMessageStatus = (status) => {
   }));
 };
 
-export const getChatTitle = (currentChat) => {
-  return currentChat?.name || "CLIENTE NÃO CADASTRADO";
-};
+export const getChatTitle = (currentChat) =>
+  currentChat?.name || "CLIENTE NÃO CADASTRADO";
 
-export const getChatSubTitle = (currentChat) => {
-  return currentChat?.phone || "";
-};
+export const getChatSubTitle = (currentChat) => currentChat?.phone || "";
 
-export const getTimeToExpireChat = (currentChat) => {
-  return (
-    (currentChat &&
-      !currentChat.archived &&
-      currentChat.minutesToBlock &&
-      `O envio de mensagem irá expirar em ${getRemainTime(
-        currentChat.minutesToBlock
-      )}.`) ||
-    undefined
-  );
-};
+export const getTimeToExpireChat = (currentChat) =>
+  (currentChat &&
+    !currentChat.archived &&
+    currentChat.minutesToBlock &&
+    `O envio de mensagem irá expirar em ${getRemainTime(
+      currentChat.minutesToBlock
+    )}.`) ||
+  undefined;
 
 export const getRemainTime = (time) => {
   const hours = Math.floor(time / 60);

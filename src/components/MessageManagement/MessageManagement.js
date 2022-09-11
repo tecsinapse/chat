@@ -13,12 +13,12 @@ import {
   Typography,
 } from "@material-ui/core";
 import ReactGA from "react-ga4";
-import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
-import { Loading } from "../Loading/Loading";
-import { generateColumns } from "./utils";
 import { Input } from "@tecsinapse/ui-kit";
 import Icon from "@mdi/react";
 import { mdiMagnify } from "@mdi/js";
+import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
+import { Loading } from "../Loading/Loading";
+import { generateColumns } from "./utils";
 import { useStyle } from "./styles";
 
 export const MessageManagement = ({
@@ -56,6 +56,7 @@ export const MessageManagement = ({
     setOnlyUnreads(!onlyUnreads);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceGlobalSearch = useCallback(
     debounce((value) => {
       setGlobalSearch(value);
@@ -115,7 +116,7 @@ export const MessageManagement = ({
   };
 
   const handleFetchTableData = () =>
-    new Promise(function (resolve) {
+    new Promise((resolve) => {
       resolve({ data: chats, totalCount: totalChats });
     });
 
@@ -137,7 +138,7 @@ export const MessageManagement = ({
             globalSearch
           )}
           data={handleFetchTableData}
-          rowId={({ chatId, connectionKey }) => chatId + "-" + connectionKey}
+          rowId={({ chatId, connectionKey }) => `${chatId}-${connectionKey}`}
           onRowClick={handleSelectCurrentChat}
           toolbarOptions={{
             title: (

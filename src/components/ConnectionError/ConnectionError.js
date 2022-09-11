@@ -1,8 +1,8 @@
 import React from "react";
-import { useStyle } from "./styles";
 import { mdiConnection } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Typography } from "@material-ui/core";
+import { useStyle } from "./styles";
 
 export const ConnectionError = () => {
   const classes = useStyle();

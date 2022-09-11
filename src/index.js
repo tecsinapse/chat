@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
 import { ThemeProvider } from "@tecsinapse/ui-kit";
 import { Init } from "./components/Init/Init";
 import "react-app-polyfill/ie9";
 import "react-app-polyfill/stable";
 import "./index.css";
-import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
 
 window.renderChatComponent = function renderChatComponent() {
   const defaultChatInitConfig = {

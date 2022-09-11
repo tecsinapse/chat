@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import { Divider as MuiDivider, Drawer } from "@material-ui/core";
+import { Button } from "@tecsinapse/ui-kit";
 import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
 import { RenderChat } from "../RenderChat/RenderChat";
 import { InitWebSockets } from "../InitWebSockets/InitWebSockets";
@@ -21,7 +22,6 @@ import {
 import { getDistinctConnectionKeys } from "./utils";
 import NotificationType from "../../enums/NotificationType";
 import { ConnectionError } from "../ConnectionError/ConnectionError";
-import { Button } from "@tecsinapse/ui-kit";
 
 export const Init = (props) => {
   React.useLayoutEffect(() => {
@@ -96,35 +96,35 @@ const InitContext = ({ chatInitConfig }) => {
         page,
         pageSize
       )
-      .then((componentInfo) => {
+      .then((incompleteChatInfo) => {
         chatService
-          .completeComponentInfo(componentInfo)
+          .completeComponentInfo(incompleteChatInfo)
           .then((completeComponentInfo) => {
             const {
-              connectionKeys,
-              destination,
-              currentChat,
+              connectionKeys: newConnectionKeys,
+              destination: newDestination,
+              currentChat: newCurrentChat,
             } = completeComponentInfo;
 
-            setDestination(destination);
-            setConnectionKeys(getDistinctConnectionKeys(connectionKeys));
+            setDestination(newDestination);
+            setConnectionKeys(getDistinctConnectionKeys(newConnectionKeys));
             setComponentInfo(completeComponentInfo);
 
             // caso tenha um chat corrente no primeiro carregamento
             // abre a tela de mensagens
-            if (firstLoad && currentChat && currentChat.chatId) {
-              setCurrentChat(currentChat);
+            if (firstLoad && newCurrentChat && newCurrentChat.chatId) {
+              setCurrentChat(newCurrentChat);
               handleSetView(COMPONENT_VIEW.CHAT_MESSAGES);
             }
 
             // caso tenha um chat corrente após primeiro carregamento
             // abre a tela de mensagens ou envio de notificação
-            if (!firstLoad && !openDrawer && currentChat) {
-              if (!currentChat.chatId) {
-                setCurrentChatSend(currentChat);
+            if (!firstLoad && !openDrawer && newCurrentChat) {
+              if (!newCurrentChat.chatId) {
+                setCurrentChatSend(newCurrentChat);
                 handleSetView(COMPONENT_VIEW.SEND_NOTIFICATION);
               } else {
-                setCurrentChat(currentChat);
+                setCurrentChat(newCurrentChat);
                 handleSetView(COMPONENT_VIEW.CHAT_MESSAGES);
               }
               setOpenDrawer(true);
@@ -178,7 +178,10 @@ const InitContext = ({ chatInitConfig }) => {
           const json = JSON.parse(event.data);
 
           if (json && json.tipo === "TEC-INIT-WINGO-CHAT") {
+            // eslint-disable-next-line no-param-reassign
             chatInitConfig.params.clienteId = json.clienteId;
+
+            // eslint-disable-next-line no-param-reassign
             chatInitConfig.params.phoneNumber = json.phoneNumber;
 
             setReload(true);
@@ -191,9 +194,9 @@ const InitContext = ({ chatInitConfig }) => {
     [] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
-  const handleSetView = (view) => {
+  const handleSetView = (newView) => {
     ReactGA.event({
-      category: COMPONENT_VIEW[view],
+      category: COMPONENT_VIEW[newView],
       action: "Navigate",
     });
 
@@ -205,19 +208,21 @@ const InitContext = ({ chatInitConfig }) => {
       ) {
         setReload(true);
       }
-      return view;
+
+      return newView;
     });
   };
 
-  const handleWebSocketConnect = (webSocketRef) => {
-    const mainSocket = webSocketRef.current;
+  const handleWebSocketConnect = (newWebSocketRef) => {
+    const mainSocket = newWebSocketRef.current;
 
     connectionKeys.forEach((connectionKey) => {
       const addUser = `/chat/addUser/main/${connectionKey}/${destination}`;
+
       mainSocket.sendMessage(addUser, userkeycloakId);
     });
 
-    setWebSocketRef(webSocketRef);
+    setWebSocketRef(newWebSocketRef);
     setConnectionError(false);
   };
 
@@ -253,8 +258,8 @@ const InitContext = ({ chatInitConfig }) => {
   ) => {
     const newCurrentChat = {
       ...currentChat,
-      minutesToBlock: minutesToBlock,
-      blocked: blocked,
+      minutesToBlock,
+      blocked,
     };
 
     // só atualiza as mensagens não lidas caso o chat não esteja arquivado
@@ -267,8 +272,9 @@ const InitContext = ({ chatInitConfig }) => {
 
       if (index > -1) {
         const newComponentInfo = { ...componentInfo };
-        const totalUnreads = newComponentInfo.totalUnreads;
+        const { totalUnreads } = newComponentInfo;
         const chatUnreads = newComponentInfo.chatIds[index].unreads;
+
         newComponentInfo.totalUnreads = totalUnreads - chatUnreads;
         newComponentInfo.chatIds[index].unreads = 0;
         setComponentInfo(newComponentInfo);

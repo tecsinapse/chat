@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactGA from "react-ga4";
 import uuidv1 from "uuid/v1";
 import { Chat, DELIVERY_STATUS } from "@tecsinapse/chat";
+import { List, ListItem, ListItemText, Popover } from "@material-ui/core";
 import {
   formatMessageStatus,
   getChatMessageObject,
@@ -12,7 +13,6 @@ import {
   getSendingNewMessage,
   getTimeToExpireChat,
 } from "./utils";
-import { List, ListItem, ListItemText, Popover } from "@material-ui/core";
 import { encodeChatData } from "../utils";
 import { useStyle } from "./styles";
 
@@ -48,21 +48,28 @@ export const RenderChat = ({
     chatService.loadMessages(currentChat, page).then((response) => {
       const {
         messages: { content, totalPages },
-        archived,
-        blocked,
-        minutesToBlock,
+        archived: newArchived,
+        blocked: newBlocked,
+        minutesToBlock: newMinutesToBlock,
       } = response;
 
-      setMessages((oldMessages) => {
-        return content
+      setMessages((oldMessages) =>
+        content
           .map((it) => getChatMessageObject(it, chatId, userNamesById))
           .reverse()
-          .concat(oldMessages);
-      });
+          .concat(oldMessages)
+      );
 
       setHasMoreMessages(totalPages > page + 1);
       setLoading(false);
-      handleAfterLoadMessage(archived, blocked, minutesToBlock, setBlocked);
+
+      handleAfterLoadMessage(
+        newArchived,
+        newBlocked,
+        newMinutesToBlock,
+        setBlocked
+      );
+
       setReadyToSubscribe(true);
 
       if (page === 0) {
@@ -137,9 +144,19 @@ export const RenderChat = ({
       return;
     }
 
-    const { message, minutesToBlock, blocked } = receivedMessage;
-    const newChatMessage = getChatMessageObject(message, chatId, userNamesById);
-    handleAfterLoadMessage(archived, blocked, minutesToBlock, setBlocked);
+    const {
+      message: newMessage,
+      minutesToBlock: newMinutesToBlock,
+      blocked: newBlocked,
+    } = receivedMessage;
+
+    const newChatMessage = getChatMessageObject(
+      newMessage,
+      chatId,
+      userNamesById
+    );
+
+    handleAfterLoadMessage(archived, newBlocked, newMinutesToBlock, setBlocked);
 
     ReactGA.event({
       category: connectionKey,
@@ -153,12 +170,16 @@ export const RenderChat = ({
 
       if (messageIndex === -1) {
         const newMessages = [...oldMessages];
+
         newMessages.push(newChatMessage);
+
         return newMessages;
       }
 
       const newMessages = [...oldMessages];
+
       newMessages[messageIndex] = newChatMessage;
+
       return newMessages;
     });
   }, [receivedMessage]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -171,10 +192,10 @@ export const RenderChat = ({
 
   const handleSendMessage = (text, localId) => {
     const chatMessage = {
-      localId: localId,
+      localId,
       userId: userkeycloakId,
       from: chatId,
-      text: text,
+      text,
     };
 
     chatService.sendMessage(
@@ -217,7 +238,9 @@ export const RenderChat = ({
       const newMessages = [...oldMessages];
       const authorName = userNamesById[userkeycloakId];
       const newMessage = getSendingNewMessage(localId, text, authorName);
+
       newMessages.push(newMessage);
+
       return newMessages;
     });
 
@@ -252,7 +275,9 @@ export const RenderChat = ({
         },
         authorName
       );
+
       newMessages.push(newMessage);
+
       return newMessages;
     });
 
@@ -280,7 +305,9 @@ export const RenderChat = ({
           files[uid],
           authorName
         );
+
         newMessages.push(newMessage);
+
         return newMessages;
       });
 

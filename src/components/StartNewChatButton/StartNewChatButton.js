@@ -2,8 +2,8 @@ import React from "react";
 import { FloatingButton } from "@tecsinapse/ui-kit";
 import Icon from "@mdi/react";
 import { mdiMessageText } from "@mdi/js";
-import { useStyle } from "./styles";
 import { Tooltip } from "@material-ui/core";
+import { useStyle } from "./styles";
 
 export const StartNewChatButton = ({ handleStartSendNotification }) => {
   const classes = useStyle();

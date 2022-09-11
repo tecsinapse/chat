@@ -26,6 +26,5 @@ export const countryPhoneNumber = (raw) => {
   return null;
 };
 
-const isPhoneNumberStartWithCountryCode = (phoneNumber) => {
-  return phoneNumber.startsWith("55") && phoneNumber.length >= 12;
-};
+const isPhoneNumberStartWithCountryCode = (phoneNumber) =>
+  phoneNumber.startsWith("55") && phoneNumber.length >= 12;

@@ -10,8 +10,7 @@ export const useStyle = (view) =>
       height: "100%",
       overflowX: "hidden",
       maxWidth: "80vw",
-      minWidth:
-        view === COMPONENT_VIEW.MESSAGE_MANAGEMENT ? "80vw" : "40vw",
+      minWidth: view === COMPONENT_VIEW.MESSAGE_MANAGEMENT ? "80vw" : "40vw",
       width: "unset",
       /* Limpando estilos do Bootstrap para os inputs */
       "& input": {

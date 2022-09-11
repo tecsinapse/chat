@@ -78,8 +78,8 @@ export const SendNotification = ({
       setSelectedConnectionKey(connectionKey);
       setLoading(true);
 
-      chatService.getAllTampletes(connectionKey.value).then((templates) => {
-        setTemplates(templates);
+      chatService.getAllTampletes(connectionKey.value).then((newTemplates) => {
+        setTemplates(newTemplates);
         setLoading(false);
       });
     } else {
@@ -93,6 +93,7 @@ export const SendNotification = ({
   useEffect(() => {
     if (!selectedTemplate) {
       setTemplateArgs([]);
+
       return;
     }
 
@@ -103,49 +104,51 @@ export const SendNotification = ({
 
     const { args: connectionKeyArgs } = selectedConnectionKey;
 
-    const templateArgs = [];
+    const newTemplateArgs = [];
 
     for (let i = 0; i < templateArgsKeys.length; i++) {
       const description = normalize(templateArgsDescriptions[i]);
 
       if (ARGS_DESCRIPTIONS.NAME.includes(description)) {
-        templateArgs.push(currentChat?.name || "");
+        newTemplateArgs.push(currentChat?.name || "");
       } else if (ARGS_DESCRIPTIONS.DEALER.includes(description)) {
-        templateArgs.push(connectionKeyArgs["DealerName"] || "");
+        newTemplateArgs.push(connectionKeyArgs.DealerName || "");
       } else if (ARGS_DESCRIPTIONS.OWNER.includes(description)) {
-        templateArgs.push(userNamesById[userkeycloakId] || "");
+        newTemplateArgs.push(userNamesById[userkeycloakId] || "");
       } else {
-        templateArgs.push("");
+        newTemplateArgs.push("");
       }
     }
 
-    setTemplateArgs(templateArgs);
+    setTemplateArgs(newTemplateArgs);
   }, [selectedTemplate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!selectedTemplate) {
       setPreviewText(null);
       setPreviewButtons([]);
+
       return;
     }
 
-    let {
-      template: previewText,
-      buttons: previewButtons,
-      keys: templateArgsKeys,
+    let { template: newPreviewText } = selectedTemplate;
+
+    const {
+      buttons: newPreviewButtons,
+      keys: newTemplateArgsKeys,
     } = selectedTemplate;
 
     for (let i = 0; i < templateArgs.length; i++) {
       if (templateArgs[i]) {
-        previewText = previewText.replaceAll(
-          `{{${templateArgsKeys[i]}}}`,
+        newPreviewText = newPreviewText.replaceAll(
+          `{{${newTemplateArgsKeys[i]}}}`,
           `<b>${templateArgs[i]}</b>`
         );
       }
     }
 
-    setPreviewButtons(previewButtons);
-    setPreviewText(previewText);
+    setPreviewButtons(newPreviewButtons);
+    setPreviewText(newPreviewText);
   }, [templateArgs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleChangePhoneNumber = (event) => {
@@ -154,11 +157,13 @@ export const SendNotification = ({
 
   const handleChangeTemplate = (value) => {
     const template = templates.find((it) => it.value === value);
+
     setSelectedTemplate(template);
   };
 
   const handleChangeTemplateArg = (index) => (event) => {
     const newTemplateArgs = [...templateArgs];
+
     newTemplateArgs[index] = event.target.value;
     setTemplateArgs(newTemplateArgs);
   };
@@ -182,6 +187,7 @@ export const SendNotification = ({
 
     for (let i = 0; i < templateArgsKeys.length; i++) {
       const description = normalize(templateArgsDescriptions[i]);
+
       if (ARGS_DESCRIPTIONS.NAME.includes(description)) {
         name = templateArgs[i];
       }
@@ -303,6 +309,7 @@ export const SendNotification = ({
               />
             </Grid>
             {templateArgs.map((arg, index) => (
+              // eslint-disable-next-line react/no-array-index-key
               <Grid key={`template-arg-${index}`} item>
                 <Input
                   name={`args[${index}]`}
@@ -328,11 +335,8 @@ export const SendNotification = ({
                   {previewButtons && (
                     <ButtonGroup className={classes.previewButtons} fullWidth>
                       {previewButtons.map((button, index) => (
-                        <Button
-                          key={`button-${index}`}
-                          disabled={true}
-                          size="small"
-                        >
+                        // eslint-disable-next-line react/no-array-index-key
+                        <Button key={`button-${index}`} disabled size="small">
                           {button}
                         </Button>
                       ))}

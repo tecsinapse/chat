@@ -1,9 +1,10 @@
 import jwt from "jwt-simple";
-import { RESOURCES } from "../constants/RESOURCES";
 import moment from "moment-timezone";
+import { RESOURCES } from "../constants/RESOURCES";
 
 export const sendNotification = (userkeycloakId, title, message) => {
   if (Notification.permission === "granted") {
+    // eslint-disable-next-line no-new
     new Notification(title, {
       icon: RESOURCES.NOTIFICATION_ICON,
       body: message,
@@ -11,7 +12,7 @@ export const sendNotification = (userkeycloakId, title, message) => {
   }
 
   playNotificationSound(userkeycloakId);
-}
+};
 
 export const handleLocalStorage = (userkeycloakId, setNotificationSound) => (
   storage
@@ -24,24 +25,26 @@ export const handleLocalStorage = (userkeycloakId, setNotificationSound) => (
 export const playNotificationSound = (userkeycloakId) => {
   if (isNotificationSoundEnabled(userkeycloakId)) {
     const audio = new Audio(RESOURCES.NOTIFICATION_SOUND);
+
     audio.addEventListener("canplaythrough", () => {
       audio.play();
     });
   }
 };
 
-export const getNotificationSoundStorageKey = (userkeycloakId) => {
-  return `tecsinapseChat.${userkeycloakId}.notificationSound`;
-};
+export const getNotificationSoundStorageKey = (userkeycloakId) =>
+  `tecsinapseChat.${userkeycloakId}.notificationSound`;
 
 export const enableNotificationSound = (userkeycloakId) => {
   const storageKey = getNotificationSoundStorageKey(userkeycloakId);
+
   localStorage.setItem(storageKey, "enabled");
   playNotificationSound(userkeycloakId);
 };
 
 export const disableNotificationSound = (userkeycloakId) => {
   const storageKey = getNotificationSoundStorageKey(userkeycloakId);
+
   localStorage.setItem(storageKey, "disabled");
 };
 
@@ -68,29 +71,23 @@ export const normalize = (value) => {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase();
-  } else {
-    return "";
   }
+
+  return "";
 };
 
-export const encodeChatData = (chat, userkeycloakId) => {
-  return jwt.encode({ data: JSON.stringify(chat) }, userkeycloakId, "HS256");
-};
+export const encodeChatData = (chat, userkeycloakId) =>
+  jwt.encode({ data: JSON.stringify(chat) }, userkeycloakId, "HS256");
 
-export const getChatId = (chat) => {
-  return `${chat.chatId}.${chat.connectionKey}`;
-};
+export const getChatId = (chat) => `${chat.chatId}.${chat.connectionKey}`;
 
-export const normalizeMoment = (value) => {
-  return value.tz("America/Sao_Paulo", true);
-};
+export const normalizeMoment = (value) => value.tz("America/Sao_Paulo", true);
 
-export const momentNow = () => {
-  return normalizeMoment(moment());
-};
+export const momentNow = () => normalizeMoment(moment());
 
 export const formatDateTime = (dateTime) => {
   const normalizedMoment = normalizeMoment(moment(dateTime));
+
   return normalizedMoment.isValid()
     ? normalizedMoment.format("DD/MM/YYYY HH:mm")
     : dateTime;

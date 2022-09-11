@@ -6,6 +6,7 @@ const debug = new URLSearchParams(window.location.search).has(
 );
 
 if (debug) {
+  // eslint-disable-next-line
   console.log("Debug Mode");
 }
 
@@ -24,11 +25,13 @@ export const InitWebSockets = ({
   };
 
   const onConnect = () => {
+    // eslint-disable-next-line
     console.log("WebSocket Connected");
     handleConnect(webSocketRef);
   };
 
   const onDisconnect = () => {
+    // eslint-disable-next-line
     console.log("WebSocket Disconnected");
     handleDisconnect(webSocketRef);
   };

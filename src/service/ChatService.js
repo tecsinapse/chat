@@ -11,8 +11,8 @@ export class ChatService {
   sendNotification(userkeycloakId, chat, templateId, templateArgs) {
     return defaultFetch(`${this.url}/notification/send`, "POST", {
       userId: userkeycloakId,
-      templateId: templateId,
-      chat: chat,
+      templateId,
+      chat,
       args: templateArgs,
     });
   }
@@ -31,6 +31,7 @@ export class ChatService {
 
   sendDataApi(currentChat, formData) {
     const { connectionKey, destination, chatId } = currentChat;
+
     return defaultFetch(
       `${this.url}/${connectionKey}/${destination}/${chatId}/upload`,
       "POST",
@@ -42,6 +43,7 @@ export class ChatService {
   loadMessages(currentChat, page) {
     const { connectionKey, destination, chatId, archived } = currentChat;
     const uri = `${this.url}/${connectionKey}/${destination}/${chatId}/messages?page=${page}&size=100&archived=${archived}`;
+
     return defaultFetch(uri, "GET", {});
   }
 
@@ -146,6 +148,7 @@ export class ChatService {
           if (e.status && e.status === 403 && e.errors === "Chat bloqueado") {
             handleBlockCurrentChat();
             handleChangeMessageStatus(localId, DELIVERY_STATUS.ERROR.key);
+
             return;
           }
 

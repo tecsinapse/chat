@@ -60,7 +60,6 @@
     "moment-timezone": "^0.5.33",
     "react-app-polyfill": "^1.0.6",
     "react-ga4": "^1.4.0",
-    "react-query": "^3.13.0",
     "react-stomp": "^5.0.0",
     "uuid": "^3.3.2"
   },

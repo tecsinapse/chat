@@ -34,11 +34,14 @@ export const generateActions = (
     });
   }
 
+  const style1 = { display: "flex", alignItems: "center" };
+  const style2 = { marginRight: "4px" };
+
   if (!row.archived) {
     actions.push({
       label: (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={{ marginRight: "4px" }}>Arquivar Conversa</span>
+        <div style={style1}>
+          <span style={style2}>Arquivar Conversa</span>
           <Tooltip title="O recurso arquivar conversa possibilita ocultar uma conversa para organizar melhor sua lista de conversas. As mensagens não são excluídas, sendo possível retomar o diálogo iniciando uma nova conversa de forma ativa ou aguardando um novo contato do cliente.">
             <Icon path={mdiInformation} size={0.8} />
           </Tooltip>
@@ -72,7 +75,7 @@ export const generateColumns = (
             <span>
               {highlight(globalSearch, formatDateTime(contactAt))}
               <br />
-              <Chip size="small" label={"Arquivada"} />
+              <Chip size="small" label="Arquivada" />
             </span>
           ) : (
             <span>{highlight(globalSearch, formatDateTime(contactAt))}</span>
@@ -104,14 +107,17 @@ export const generateColumns = (
           }
         }
 
+        const style1 = { minWidth: "400px", maxWidth: "520px" };
+        const style2 = { color: "#e6433f" };
+
         return (
-          <div style={{ minWidth: "400px", maxWidth: "520px" }}>
+          <div style={style1}>
             <Typography variant="caption">
               {highlight(globalSearch, phone)}
             </Typography>
             <br />
             {highlighted ? (
-              <span style={{ color: "#e6433f" }}>
+              <span style={style2}>
                 <b>{highlight(globalSearch, name)}</b>
               </span>
             ) : (
@@ -119,7 +125,7 @@ export const generateColumns = (
             )}
             <br />
             <Typography variant="caption">
-              <i>{lastSender + ": " + lastMessage}</i>
+              <i>{`${lastSender}: ${lastMessage}`}</i>
             </Typography>
           </div>
         );
@@ -209,20 +215,23 @@ export const replacer = (search, textToReplace) => {
     return textToReplace;
   }
 
+  // eslint-disable-next-line react/no-array-index-key
   const indexes = matchs.map((match) => match.index);
   const splited = split(textToReplace, indexes, search.length);
+  const style1 = { backgroundColor: "#ffb74d" };
 
-  return splited.map((m, idx) =>
-    normalize(m) === normalizedSearch ? (
+  return splited.map((text, index) =>
+    normalize(text) === normalizedSearch ? (
       <span
-        key={`highlight-${m}${idx}`}
-        id={`highlight-${m}`}
-        style={{ backgroundColor: "#ffb74d" }}
+        // eslint-disable-next-line react/no-array-index-key
+        key={`highlight-${text}${index}`}
+        id={`highlight-${text}`}
+        style={style1}
       >
-        {m}
+        {text}
       </span>
     ) : (
-      <>{m}</>
+      <>{text}</>
     )
   );
 };
@@ -231,5 +240,6 @@ export const highlight = (search, textToReplace) => {
   if (textToReplace && search) {
     return replacer(search, textToReplace);
   }
+
   return textToReplace;
 };
