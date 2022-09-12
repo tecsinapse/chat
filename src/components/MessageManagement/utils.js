@@ -73,12 +73,14 @@ export const generateColumns = (
         <>
           {archived ? (
             <span>
-              {highlight(globalSearch, formatDateTime(contactAt))}
+              {contactAt && highlight(globalSearch, formatDateTime(contactAt))}
               <br />
               <Chip size="small" label="Arquivada" />
             </span>
           ) : (
-            <span>{highlight(globalSearch, formatDateTime(contactAt))}</span>
+            <span>
+              {contactAt && highlight(globalSearch, formatDateTime(contactAt))}
+            </span>
           )}
         </>
       ),
