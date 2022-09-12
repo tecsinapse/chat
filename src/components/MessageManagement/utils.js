@@ -126,9 +126,11 @@ export const generateColumns = (
               <span>{highlight(globalSearch, name)}</span>
             )}
             <br />
-            <Typography variant="caption">
-              <i>{`${lastSender}: ${lastMessage}`}</i>
-            </Typography>
+            {lastMessage && (
+              <Typography variant="caption">
+                <i>{`${lastSender}: ${lastMessage}`}</i>
+              </Typography>
+            )}
           </div>
         );
       },
