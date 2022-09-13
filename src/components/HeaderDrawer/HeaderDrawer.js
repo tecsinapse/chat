@@ -78,8 +78,7 @@ export const HeaderDrawer = ({
                   "Gestão de Mensagens"}
                 {view === COMPONENT_VIEW.SEND_NOTIFICATION &&
                   "Iniciar Nova Conversa"}
-                {view === COMPONENT_VIEW.CONNECTION_ERROR &&
-                  "Ops, tivemos um problema"}
+                {view === COMPONENT_VIEW.CONNECTION_ERROR && "Conexão Perdida"}
               </Typography>
             </Grid>
           </Grid>
