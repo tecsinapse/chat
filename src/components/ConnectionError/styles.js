@@ -13,7 +13,12 @@ export const useStyle = makeStyles((theme) => ({
     color: theme.palette.secondary.light,
   },
   message: {
-    paddingLeft: theme.spacing(5),
-    paddingRight: theme.spacing(5),
+    marginLeft: theme.spacing(5),
+    marginRight: theme.spacing(5),
+  },
+  subMessage: {
+    fontSize: "12px",
+    marginLeft: theme.spacing(10),
+    marginRight: theme.spacing(10),
   },
 }));

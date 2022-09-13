@@ -10,12 +10,12 @@ export const ConnectionError = () => {
   return (
     <div className={classes.container}>
       <Icon className={classes.messageIcon} path={mdiConnection} size={2} />
-      <Typography className={classes.message} variant="body1">
+      <Typography className={classes.message}>
         A conexão com o Wingo Chat foi perdida.
         <br />
         Atualize a página ou aguarde alguns minutos.
       </Typography>
-      <Typography className={classes.message} variant="caption">
+      <Typography className={classes.subMessage}>
         Caso a mensagem persista, entre em contato através da nossa Central de
         Relacionamento HELPTEC.
       </Typography>
