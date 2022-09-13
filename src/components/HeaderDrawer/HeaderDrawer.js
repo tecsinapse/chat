@@ -72,8 +72,7 @@ export const HeaderDrawer = ({
               )}
             <Grid item>
               <Typography variant="h5" color="textPrimary">
-                {view === COMPONENT_VIEW.CHAT_MESSAGES &&
-                  "Mensagens da Conversa"}
+                {view === COMPONENT_VIEW.CHAT_MESSAGES && "Gestão de Mensagens"}
                 {view === COMPONENT_VIEW.MESSAGE_MANAGEMENT &&
                   "Gestão de Mensagens"}
                 {view === COMPONENT_VIEW.SEND_NOTIFICATION &&
