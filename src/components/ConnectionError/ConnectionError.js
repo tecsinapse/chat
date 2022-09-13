@@ -16,7 +16,8 @@ export const ConnectionError = () => {
         Atualize a página ou aguarde alguns minutos.
       </Typography>
       <Typography className={classes.message} variant="caption">
-        Caso a mensagem persista, entre em contato com o administrador.
+        Caso a mensagem persista, entre em contato através da nossa Central de
+        Relacionamento HELPTEC.
       </Typography>
     </div>
   );
