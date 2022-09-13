@@ -60,7 +60,7 @@ export const MessageManagement = ({
   const debounceGlobalSearch = useCallback(
     debounce((value) => {
       setGlobalSearch(value);
-    }, 800),
+    }, 1000),
     []
   );
 
@@ -188,7 +188,7 @@ export const MessageManagement = ({
           page={page}
           setPage={setPage}
           rowsPerPage={pageSize}
-          rowsPerPageOptions={[10]}
+          rowsPerPageOptions={[10, 20, 30]}
           hideSelectFilterLabel
           pagination
         />

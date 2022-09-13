@@ -14,7 +14,6 @@ window.renderChatComponent = function renderChatComponent() {
     productChatPath: "/rest/chat",
     openImmediately: false,
     canSendNotification: true,
-    pageSize: 10,
     params: {},
     // params: { clienteId: 59996 },
   };

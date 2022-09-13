@@ -47,7 +47,6 @@ const InitContext = ({ chatInitConfig }) => {
     productChatPath,
     openImmediately,
     canSendNotification,
-    pageSize,
     params,
   } = chatInitConfig;
 
@@ -64,6 +63,7 @@ const InitContext = ({ chatInitConfig }) => {
   const [onlyUnreads, setOnlyUnreads] = useState(false);
   const [globalSearch, setGlobalSearch] = useState("");
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10); // eslint-disable-line no-unused-vars
 
   const [currentChatSend, setCurrentChatSend] = useState(null);
   const [currentChat, setCurrentChat] = useState(null);
@@ -150,7 +150,17 @@ const InitContext = ({ chatInitConfig }) => {
         setOpenDrawer(true);
       }
     });
-  }, [globalSearch, onlyNotClients, onlyUnreads, page]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [onlyNotClients, onlyUnreads, page, pageSize]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // quando é setado um novo valor para o globalSearch
+  // deve retornar para a primeira página ou recarregar
+  useEffect(() => {
+    if (page !== 0) {
+      setPage(0);
+    } else {
+      setReload(true);
+    }
+  }, [globalSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // não executa o reload caso tenha carregamento pendente
