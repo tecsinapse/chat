@@ -1,331 +1,297 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  IconButton,
-  Input,
-  Select,
-  Snackbar,
-} from "@tecsinapse/ui-kit";
-import { Grid, Tooltip, Typography } from "@material-ui/core";
+import { Button, IconButton, Input, Select } from "@tecsinapse/ui-kit";
+import { Box, ButtonGroup, Grid, Tooltip, Typography } from "@material-ui/core";
 import Icon from "@mdi/react";
 import { mdiPlusBoxOutline } from "@mdi/js";
 import ReactGA from "react-ga4";
-import { Loading } from "../../utils/Loading";
+import { Loading } from "../Loading/Loading";
 import { useStyle } from "./styles";
-import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { emptyTemplate } from "./utils";
-import { getObjectToSetChat } from "../../utils/helpers";
-import useSendNotification from "../../hooks/useSendNotification";
-import { HeaderSendNotification } from "./HeaderSendNotification";
-import {
-  getCanSend,
-  getConnectionKeyArgs,
-  getName,
-  loadTemplates,
-  send,
-} from "./functions";
-import { MESSAGES_INFO } from "../../constants/MessagesInfo";
-
-/* eslint-disable react/no-array-index-key */
+import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
+import { normalize } from "../utils";
+import { ARGS_DESCRIPTIONS } from "../../constants/ARGS_DESCRIPTIONS";
+import { countryPhoneNumber } from "./utils";
 
 export const SendNotification = ({
-  chat,
-  chatApiUrl,
-  connectionKeys,
-  destination,
-  createPath,
-  productService,
   chatService,
-  info,
-  extraFields,
-  reloadComponent,
-  setChat,
+  productService,
+  userkeycloakId,
+  connectionKeys,
+  currentChat,
+  setCurrentChat,
+  loading,
+  setLoading,
+  setConnectionError,
   setView,
-  token,
-  componentInfo,
-  userId,
-  userPhoneNumber,
+  userNamesById,
 }) => {
   const classes = useStyle();
 
   const [phoneNumber, setPhoneNumber] = useState(
-    chat == null
-      ? userPhoneNumber.replace(/[^0-9]/g, "")
-      : chat.phone.replace(/[^0-9]/g, "")
+    currentChat ? countryPhoneNumber(currentChat.phone) : ""
   );
-  const [selectedConnectionKey, setSelectedConnectionKey] = useState("");
-  const [connectionKeyLabel, setConnectionKeyLabel] = useState("");
-  const [selectedTemplate, setSelectedTemplate] = useState("");
-  const [args, setArgs] = useState([]);
-  const [preview, setPreview] = useState("");
-  const [sending, setSending] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
-  const [templates, setTemplates] = useState([]);
-  const [availableTemplates, setAvailableTemplates] = useState([]);
-  const [customFields, setCustomFields] = useState([]);
-  const [auxInfo, setAuxInfo] = useState({
-    user: "",
-    company: "",
-    name: "",
-    phone: phoneNumber,
-  });
-  const tooltipTitle = MESSAGES_INFO.MESSAGE_SUGESTION_TOOLTIP;
 
-  useSendNotification(
-    chat,
-    phoneNumber,
-    extraFields,
-    info,
-    setCustomFields,
-    setAuxInfo
-  );
+  const [submitting, setSubmitting] = useState(false);
+
+  const [selectedConnectionKey, setSelectedConnectionKey] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+
+  const [templates, setTemplates] = useState([]);
+  const [templateArgs, setTemplateArgs] = useState([]);
+  const [previewText, setPreviewText] = useState(null);
+  const [previewButtons, setPreviewButtons] = useState([]);
 
   const availableConnectionKeys = [
     {
-      label: "Selecione",
-      value: "",
+      label: "Selecione...",
+      value: null,
     },
   ];
 
-  connectionKeys.forEach((connectionKey) =>
-    availableConnectionKeys.push({
-      label: connectionKey.label,
-      value: connectionKey.label,
-    })
-  );
+  connectionKeys &&
+    connectionKeys.forEach((it) =>
+      availableConnectionKeys.push({
+        label: it.label,
+        value: it.label,
+      })
+    );
 
-  const handleSelectConnectionKey = (value) => {
+  const availableTemplates = [
+    {
+      label: "Selecione...",
+      value: null,
+    },
+  ];
+
+  templates &&
+    templates.forEach((it) =>
+      availableTemplates.push({
+        label: it.name,
+        value: it.value,
+      })
+    );
+
+  const handleChangeConnectionKey = (value) => {
     const connectionKey = connectionKeys.find((it) => it.label === value);
 
     if (connectionKey) {
-      setConnectionKeyLabel(connectionKey.label);
-      setSelectedConnectionKey(connectionKey.value);
-    } else {
-      setConnectionKeyLabel("Selecione");
-      setSelectedConnectionKey("");
-      onSelectTemplate("");
-    }
-  };
+      setSelectedTemplate(null);
+      setSelectedConnectionKey(connectionKey);
+      setLoading(true);
 
-  const propsToLoadTamplates = {
-    setSelectedConnectionKey,
-    chatService,
-    setAvailableTemplates,
-    setTemplates,
+      chatService.getAllTampletes(connectionKey.value).then((newTemplates) => {
+        setTemplates(newTemplates);
+        setLoading(false);
+      });
+    } else {
+      setSelectedTemplate(null);
+      setTemplateArgs([]);
+      setSelectedConnectionKey(null);
+      setTemplates([]);
+    }
   };
 
   useEffect(() => {
-    if (selectedConnectionKey !== "") {
-      loadTemplates(selectedConnectionKey, propsToLoadTamplates);
+    if (!selectedTemplate) {
+      setTemplateArgs([]);
+
+      return;
     }
 
-    if (phoneNumber === "") {
-      setPhoneNumber(auxInfo.phone);
-    }
-  }, [selectedConnectionKey]); // eslint-disable-line react-hooks/exhaustive-deps
+    const {
+      keys: templateArgsKeys,
+      descriptions: templateArgsDescriptions,
+    } = selectedTemplate;
 
-  const updatePreview = (template, options) => {
-    const tpt =
-      templates.filter((t) => t.value === template)[0] || emptyTemplate;
-    let prev = tpt.template;
+    const { args: connectionKeyArgs } = selectedConnectionKey;
 
-    for (let i = 0; i < options.length; i++) {
-      if (options[i] !== "") {
-        prev = prev.replace(`{{${tpt.argsKeys[i]}}}`, options[i]);
+    const newTemplateArgs = [];
+
+    for (let i = 0; i < templateArgsKeys.length; i++) {
+      const description = normalize(templateArgsDescriptions[i]);
+
+      if (ARGS_DESCRIPTIONS.NAME.includes(description)) {
+        newTemplateArgs.push(currentChat?.name || "");
+      } else if (ARGS_DESCRIPTIONS.DEALER.includes(description)) {
+        newTemplateArgs.push(connectionKeyArgs.DealerName || "");
+      } else if (ARGS_DESCRIPTIONS.OWNER.includes(description)) {
+        newTemplateArgs.push(userNamesById[userkeycloakId] || "");
+      } else {
+        newTemplateArgs.push("");
       }
     }
-    setPreview(prev);
-  };
 
-  const onSelectTemplate = (template) => {
-    const selected =
-      templates.filter((t) => t.value === template)[0] || emptyTemplate;
-    const argsArray = [];
+    setTemplateArgs(newTemplateArgs);
+  }, [selectedTemplate]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    for (let i = 0; i < selected.args; i++) {
-      argsArray.push(auxInfo[selected.argsKeys[i]] || "");
+  useEffect(() => {
+    if (!selectedTemplate) {
+      setPreviewText(null);
+      setPreviewButtons([]);
+
+      return;
     }
-    setArgs(argsArray);
+
+    let { template: newPreviewText } = selectedTemplate;
+
+    const {
+      buttons: newPreviewButtons,
+      keys: newTemplateArgsKeys,
+    } = selectedTemplate;
+
+    for (let i = 0; i < templateArgs.length; i++) {
+      if (templateArgs[i]) {
+        newPreviewText = newPreviewText.replaceAll(
+          `{{${newTemplateArgsKeys[i]}}}`,
+          `<b>${templateArgs[i]}</b>`
+        );
+      }
+    }
+
+    setPreviewButtons(newPreviewButtons);
+    setPreviewText(newPreviewText);
+  }, [templateArgs]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleChangePhoneNumber = (event) => {
+    setPhoneNumber(event.target.value.replace(/[^\d]/g, ""));
+  };
+
+  const handleChangeTemplate = (value) => {
+    const template = templates.find((it) => it.value === value);
+
     setSelectedTemplate(template);
-    updatePreview(template, argsArray);
   };
 
-  const setArg = (index, arg) => {
-    const argsArray = [...args];
+  const handleChangeTemplateArg = (index) => (event) => {
+    const newTemplateArgs = [...templateArgs];
 
-    argsArray[index] = arg;
-    setArgs(argsArray);
-    updatePreview(selectedTemplate, argsArray);
+    newTemplateArgs[index] = event.target.value;
+    setTemplateArgs(newTemplateArgs);
   };
 
-  const setCustomField = (index, value) => {
-    const customFieldsArray = [...customFields];
-    const customField = customFieldsArray[index];
+  const handleSendNotification = () => {
+    setLoading(true);
+    setSubmitting(true);
 
-    customField.value = value;
-    customFieldsArray[index] = customField;
-    setCustomFields(customFieldsArray);
+    const {
+      value: connectionKey,
+      args: connectionKeyArgs,
+    } = selectedConnectionKey;
+
+    const {
+      value: templateId,
+      keys: templateArgsKeys,
+      descriptions: templateArgsDescriptions,
+    } = selectedTemplate;
+
+    let name = null;
+
+    for (let i = 0; i < templateArgsKeys.length; i++) {
+      const description = normalize(templateArgsDescriptions[i]);
+
+      if (ARGS_DESCRIPTIONS.NAME.includes(description)) {
+        name = templateArgs[i];
+      }
+    }
+
+    const createChatArgs = {
+      ...connectionKeyArgs,
+      ClienteName: name,
+    };
+
+    productService
+      .createChat(connectionKey, phoneNumber, createChatArgs)
+      .then((incompleteChat) => {
+        chatService
+          .sendNotification(
+            userkeycloakId,
+            incompleteChat,
+            templateId,
+            templateArgs
+          )
+          .then((completeChat) => {
+            ReactGA.event({
+              category: connectionKey,
+              label: templateId,
+              action: "Send Notification",
+            });
+
+            setCurrentChat(completeChat);
+            setView(COMPONENT_VIEW.CHAT_MESSAGES);
+            setSubmitting(false);
+            setLoading(false);
+          })
+          .catch(() => {
+            setSubmitting(false);
+            setLoading(false);
+            setConnectionError(true);
+          });
+      })
+      .catch(() => {
+        setSubmitting(false);
+        setLoading(false);
+        setConnectionError(true);
+      });
   };
-
-  const getArgDescription = (index) =>
-    (templates.filter((t) => t.value === selectedTemplate)[0] || emptyTemplate)
-      .argsDescription[index];
-
-  const canSend = getCanSend(phoneNumber, selectedTemplate, args);
-
-  const successSend = async (chatId) => {
-    const clientName = getName(chat, args, templates, selectedTemplate);
-
-    setSuccess("Mensagem enviada");
-    setTimeout(() => setSuccess(""), 4000);
-    setError("");
-    setPhoneNumber("");
-    setArgs([]);
-    setSelectedTemplate("");
-    setPreview("");
-
-    const newComponentInfo = await reloadComponent();
-
-    const objectToSetChat = await getObjectToSetChat(
-      chatService,
-      newComponentInfo,
-      selectedConnectionKey,
-      destination,
-      chatId,
-      clientName
-    );
-
-    setChat(objectToSetChat);
-    setSending(false);
-
-    setTimeout(() => setView(COMPONENT_LOCATION.CHAT), 4000);
-  };
-
-  const connectionKeyArgs = getConnectionKeyArgs(
-    connectionKeys,
-    connectionKeyLabel
-  );
-
-  const propsToSend = {
-    chatApiUrl,
-    selectedConnectionKey,
-    destination,
-    phoneNumber,
-    selectedTemplate,
-    templates,
-    createPath,
-    productService,
-    chatService,
-    successSend,
-    token,
-    setSending,
-    setError,
-    setSuccess,
-    args,
-    connectionKeyArgs,
-    customFields,
-    userId,
-  };
-
-  const selectGridZIndex = { zIndex: 9999999999 };
-  const inputGridZIndex = { zIndex: 1 };
-  const selectFieldZIndex = { zIndex: 999999999 };
-  const selectTemplateZIndex = { zIndex: 999999998, padding: "12px" };
-  const sendButtonDivAlign = { textAlign: "center" };
-  const url = `${process.env.REACT_APP_MESSAGE_SUGESTION_URL}?kcid=${userId}&connectionkey=${selectedConnectionKey}`;
-  const styleProps = "&alignCenter=1&transparentBackground=1";
 
   const handleOpenMessageSugestion = () => {
+    const { value: connectionKey } = selectedConnectionKey;
+
     ReactGA.event({
       category: selectedConnectionKey,
       label: "CLICK_BTN_NOVO_MODELO_MSG",
       action: "Suggest Message Template",
     });
-    window.open(`${url}${styleProps}`, "_blank");
+
+    const kcidParam = `kcid=${userkeycloakId}`;
+    const connectionKeyParam = `connectionKey=${connectionKey}`;
+    const customParam = `alignCenter=1&transparentBackground=1`;
+    const params = `${kcidParam}&${connectionKeyParam}&${customParam}`;
+    const url = `${process.env.REACT_APP_MESSAGE_SUGESTION_URL}?${params}`;
+
+    window.open(`${url}`, "_blank");
   };
 
   return (
-    <>
-      <div className={classes.root}>
-        <HeaderSendNotification />
-        <Grid container spacing={2} direction="column">
-          <Grid item style={selectGridZIndex}>
-            <Select
-              value={connectionKeyLabel}
-              options={availableConnectionKeys}
-              onChange={handleSelectConnectionKey}
-              label="Origem"
-              variant="auto"
-              fullWidth
-            />
-          </Grid>
-          <Grid item>
-            <Input
-              name="phoneNumber"
-              label="Número do Telefone"
-              fullWidth
-              value={phoneNumber}
-              disabled={templates.length === 0}
-              onBlur={() => {
-                if (phoneNumber.length < 10) {
-                  setPhoneNumber("");
-                }
-              }}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              variantDevice="auto"
-            />
-          </Grid>
-          {customFields.map((customField, index) => (
-            <React.Fragment key={`fragment-${index}`}>
-              {customField.type === "INPUT" && (
-                <Grid item key={`input-${index}`} style={inputGridZIndex}>
-                  <Input
-                    name={customField.key}
-                    label={customField.label}
-                    fullWidth
-                    value={customField.value}
-                    onChange={(e) => setCustomField(index, e.target.value)}
-                    variantDevice="auto"
-                  />
-                </Grid>
-              )}
-              {customField.type === "SELECT" && (
-                <Grid item key={`select-${index}`} style={selectFieldZIndex}>
-                  <Select
-                    value={customField.value}
-                    options={customField.availableValues.map((v) => ({
-                      label: v,
-                      value: v,
-                    }))}
-                    onChange={(value) => setCustomField(index, value)}
-                    label={customField.label}
-                    variant="auto"
-                    fullWidth
-                  />
-                </Grid>
-              )}
-            </React.Fragment>
-          ))}
-          <Grid
-            container
-            direction="row"
-            style={selectTemplateZIndex}
-            alignItems="center"
-            spacing={3}
-          >
-            <Grid item xs={12}>
+    <div className={classes.container}>
+      {loading ? (
+        <div className={classes.loadingContainer}>
+          <Loading />
+        </div>
+      ) : (
+        <div className={classes.sendContainer}>
+          <Grid spacing={1} direction="column" container>
+            <Grid className={classes.connectionKeys} item>
               <Select
-                value={selectedTemplate}
-                options={availableTemplates}
-                onChange={onSelectTemplate}
-                disabled={templates.length === 0 || !selectedConnectionKey}
-                label="Modelo da Mensagem"
+                value={selectedConnectionKey?.label}
+                options={availableConnectionKeys}
+                onChange={handleChangeConnectionKey}
+                disabled={submitting}
+                label="Origem"
                 variant="auto"
+                fullWidth
+              />
+            </Grid>
+            <Grid item>
+              <Input
+                name="phoneNumber"
+                label="Número do Telefone"
+                value={phoneNumber}
+                onChange={handleChangePhoneNumber}
+                disabled={submitting}
+                fullWidth
+              />
+            </Grid>
+            <Grid xs={12} className={classes.templates} item>
+              <Select
+                value={selectedTemplate?.value}
+                options={availableTemplates}
+                onChange={handleChangeTemplate}
+                disabled={!selectedConnectionKey || submitting}
+                label="Modelo da Mensagem"
                 customIndicators={
                   selectedConnectionKey && (
                     <Tooltip
-                      title={tooltipTitle}
+                      title="Sugerir Modelo de Mensagem"
                       placement="bottom-start"
                       arrow
                     >
@@ -342,57 +308,63 @@ export const SendNotification = ({
                 fullWidth
               />
             </Grid>
-          </Grid>
-          {args.map((arg, index) => (
-            <Grid item key={`key-${index}`}>
-              <Input
-                name={`args[${index}]`}
-                label={getArgDescription(index)}
-                fullWidth
-                value={args[index]}
-                onChange={(e) => setArg(index, e.target.value)}
-                variantDevice="auto"
-                maxLength={255}
-              />
-            </Grid>
-          ))}
-          {preview && (
-            <Grid item>
-              <Typography variant="caption">Mensagem:</Typography>
-              <div className={classes.preview}>
-                <span className={classes.previewText}>{preview}</span>
-              </div>
-            </Grid>
-          )}
-          <div style={sendButtonDivAlign}>
-            {sending ? (
-              <Loading />
-            ) : (
+            {templateArgs.map((arg, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Grid key={`template-arg-${index}`} item>
+                <Input
+                  name={`args[${index}]`}
+                  label={selectedTemplate.descriptions[index]}
+                  value={templateArgs[index]}
+                  onChange={handleChangeTemplateArg(index)}
+                  disabled={submitting}
+                  maxLength={255}
+                  fullWidth
+                />
+              </Grid>
+            ))}
+            {previewText && (
+              <Grid item>
+                <Typography variant="caption">Mensagem:</Typography>
+                <div className={classes.preview}>
+                  <Typography
+                    className={classes.previewText}
+                    dangerouslySetInnerHTML={{
+                      __html: previewText,
+                    }}
+                  />
+                  {previewButtons && (
+                    <ButtonGroup className={classes.previewButtons} fullWidth>
+                      {previewButtons.map((button, index) => (
+                        // eslint-disable-next-line react/no-array-index-key
+                        <Button key={`button-${index}`} disabled size="small">
+                          {button}
+                        </Button>
+                      ))}
+                    </ButtonGroup>
+                  )}
+                </div>
+              </Grid>
+            )}
+            <Box textAlign="center">
               <Button
                 color="primary"
                 variant="contained"
-                disabled={!canSend}
-                onClick={() => send(propsToSend)}
+                disabled={
+                  !selectedConnectionKey ||
+                  !selectedTemplate ||
+                  phoneNumber.length < 10 ||
+                  phoneNumber.length > 13 ||
+                  templateArgs.filter((it) => it.length === 0).length > 0
+                }
+                submitting={submitting}
+                onClick={handleSendNotification}
               >
-                ENVIAR
+                Enviar Mensagem
               </Button>
-            )}
-          </div>
-
-          {success !== "" && (
-            <Snackbar show variant="success" onClose={() => setSuccess("")}>
-              {success}
-            </Snackbar>
-          )}
-
-          {error !== "" && (
-            <Snackbar show variant="error" onClose={() => setError("")}>
-              {error}
-            </Snackbar>
-          )}
-        </Grid>
-      </div>
-    </>
+            </Box>
+          </Grid>
+        </div>
+      )}
+    </div>
   );
 };
-/* eslint-enable react/no-array-index-key */

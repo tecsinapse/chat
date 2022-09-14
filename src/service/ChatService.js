@@ -1,33 +1,20 @@
 import { DELIVERY_STATUS } from "@tecsinapse/chat";
 import ReactGA from "react-ga4";
-import { defaultFetch, fetchMessages } from "../utils/fetch";
-import * as dates from "../utils/dates";
-import { ChatStatus } from "../constants";
+import { defaultFetch } from "./utils";
+import { momentNow } from "../components/utils";
 
 export class ChatService {
   constructor(baseUrl) {
-    this.url = baseUrl;
+    this.url = `${baseUrl}/api/chats`;
   }
 
-  sendNotification(
-    chatApiUrl,
-    selectedConnectionKey,
-    destination,
-    phoneNumber,
-    selectedTemplate,
-    args,
-    userId
-  ) {
-    return defaultFetch(
-      `${this.url}/${selectedConnectionKey}/${destination}/notification/send`,
-      "POST",
-      {
-        phoneNumber,
-        template: selectedTemplate,
-        args,
-        userId,
-      }
-    );
+  sendNotification(userkeycloakId, chat, templateId, templateArgs) {
+    return defaultFetch(`${this.url}/notification/send`, "POST", {
+      userId: userkeycloakId,
+      templateId,
+      chat,
+      args: templateArgs,
+    });
   }
 
   deleteSessionChat(deletedChat) {
@@ -42,43 +29,44 @@ export class ChatService {
     return defaultFetch(`${this.url}/${connectionKey}/templates`, "GET", {});
   }
 
-  sendDataApi(initialInfo, currentChat, formData) {
+  sendDataApi(currentChat, formData) {
+    const { connectionKey, destination, chatId } = currentChat;
+
     return defaultFetch(
-      `${this.url}/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}/upload`,
+      `${this.url}/${connectionKey}/${destination}/${chatId}/upload`,
       "POST",
       {},
       formData
     );
   }
 
-  loadMessages(initialInfo, currentChat, page) {
-    return fetchMessages({
-      chatApiUrl: `${this.url}`,
-      connectionKey: initialInfo.connectionKey,
-      destination: initialInfo.destination,
-      chatId: currentChat.chatId,
-      archived: currentChat.archived,
-      page,
-      updateUnreadWhenOpen: currentChat.updateUnreadWhenOpen,
-    });
-  }
+  loadMessages(currentChat, page) {
+    const { connectionKey, destination, chatId, archived } = currentChat;
+    const uri = `${this.url}/${connectionKey}/${destination}/${chatId}/messages?page=${page}&size=100&archived=${archived}`;
 
-  async findMessagesByCurrentUser(groupedChats, page = 0, rowsPerPage = 10) {
-    const promiseMap = Array.from(groupedChats.keys()).map((key) =>
-      defaultFetch(
-        `${this.url}/${key}/infos?page=${page}&size=${rowsPerPage}`,
-        "POST",
-        groupedChats.get(key)
-      )
-    );
-
-    return Promise.all(promiseMap);
+    return defaultFetch(uri, "GET", {});
   }
 
   async getChatInfo(connectionKey, destination, chatId) {
     return defaultFetch(
       `${this.url}/${connectionKey}/${destination}/${chatId}/info`,
       "GET"
+    );
+  }
+
+  async getChatInfos(connectionKey, destination, chatIds) {
+    return defaultFetch(
+      `${this.url}/${connectionKey}/${destination}/infos`,
+      "POST",
+      chatIds
+    );
+  }
+
+  async completeComponentInfo(componentInfo) {
+    return defaultFetch(
+      `${this.url}/completeComponentInfo`,
+      "POST",
+      componentInfo
     );
   }
 
@@ -89,7 +77,7 @@ export class ChatService {
 
     const data = JSON.stringify(chatMessage);
     const { connectionKey, destination, chatId } = currentChat;
-    const at = dates.momentNow().toISOString();
+    const at = momentNow().toISOString();
     const payload = { at, data, error, userId: userkeycloakId };
 
     const execute = () => {
@@ -109,7 +97,7 @@ export class ChatService {
           attempt += 1;
 
           if (attempt >= maxAttemps) {
-            console.log(e);
+            console.error(e);
             ReactGA.event({
               category: "Max Attempts Reached",
               action: "Error Report",
@@ -126,15 +114,17 @@ export class ChatService {
   }
 
   sendMessage(
+    userkeycloakId,
     chatMessage,
-    setStatusMessage,
     currentChat,
     setCurrentChat,
-    userkeycloakId,
-    setBlocked
+    setBlocked,
+    handleChangeMessageStatus,
+    handleBlockCurrentChat
   ) {
     let attempt = 0;
-    const maxAttemps = 6;
+
+    const maxAttemps = 3;
     const timeout = 1000 * 5; // 5 segundos
 
     const { localId } = chatMessage;
@@ -153,15 +143,11 @@ export class ChatService {
           });
         })
         .catch((e) => {
-          console.log(e);
+          console.error(e);
 
           if (e.status && e.status === 403 && e.errors === "Chat bloqueado") {
-            setBlocked(currentChat, true);
-            setCurrentChat((current) => ({
-              ...current,
-              status: ChatStatus.BLOCKED,
-              minutesToBlock: 0,
-            }));
+            handleBlockCurrentChat();
+            handleChangeMessageStatus(localId, DELIVERY_STATUS.ERROR.key);
 
             return;
           }
@@ -169,7 +155,8 @@ export class ChatService {
           attempt += 1;
 
           if (attempt >= maxAttemps) {
-            setStatusMessage(localId, DELIVERY_STATUS.ERROR.key);
+            handleChangeMessageStatus(localId, DELIVERY_STATUS.ERROR.key);
+
             this.sendErrorReport(
               currentChat,
               userkeycloakId,
@@ -179,6 +166,7 @@ export class ChatService {
 
             return;
           }
+
           setTimeout(execute, timeout);
         });
     };

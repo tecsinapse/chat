@@ -5,19 +5,21 @@ import { mdiForum } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useStyle } from "./styles";
 
-export const ChatButton = ({
-  unreadTotal,
-  firstLoad,
-  setIsDrawerOpen,
-}) => {
+export const ChatButton = ({ firstLoad, setOpenDrawer, unreads }) => {
   const classes = useStyle();
+
+  const handleOpenDrawer = () => {
+    if (!firstLoad) {
+      setOpenDrawer(true);
+    }
+  };
 
   return (
     <div className={classes.fabContainer}>
-      <Tooltip title="Mostrar Painel do Chat" arrow placement="left">
+      <Tooltip title="Mostrar Painel do Chat" placement="left" arrow>
         <Badge
           color="error"
-          badgeContent={unreadTotal}
+          badgeContent={unreads}
           anchorOrigin={{
             vertical: "top",
             horizontal: "left",
@@ -27,11 +29,7 @@ export const ChatButton = ({
           }}
         >
           <FloatingButton
-            onClick={() => {
-              if (!firstLoad) {
-                setIsDrawerOpen(true);
-              }
-            }}
+            onClick={handleOpenDrawer}
             variant="extended"
             className={classes.fab}
           >

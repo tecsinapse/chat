@@ -1,28 +1,43 @@
-import { noAuthJsonFetch } from "../utils/fetch";
+import { noAuthJsonFetch } from "./utils";
 
 export class ProductService {
   constructor(urlBase) {
     this.url = urlBase;
   }
 
-  createChat(connectionKey, phoneNumber, args, token) {
+  loadComponentInfo(
+    globalSearch,
+    onlyNotClients,
+    onlyUnreads,
+    chatIds,
+    params,
+    page,
+    pageSize
+  ) {
+    return noAuthJsonFetch(`${this.url}/componentInfo`, "POST", {
+      globalSearch,
+      onlyNotClients,
+      onlyUnreads,
+      unreadChatIds: onlyUnreads ? chatIds.filter((it) => it.unreads > 0) : [],
+      ...params,
+      page,
+      pageSize,
+    });
+  }
+
+  createChat(connectionKey, phoneNumber, args) {
     return noAuthJsonFetch(
-      `${this.url}/${connectionKey}/${phoneNumber.replace(
-        /[^0-9]/g,
-        ""
-      )}/create`,
+      `${this.url}/${connectionKey}/${phoneNumber}/create`,
       "POST",
-      args,
-      token
+      args
     );
   }
 
-  deleteChat(deletedChat, token) {
+  deleteChat(chat) {
     return noAuthJsonFetch(
-      `${this.url}/${deletedChat.connectionKey}/${deletedChat.chatId}`,
+      `${this.url}/${chat.connectionKey}/${chat.chatId}`,
       "DELETE",
-      {},
-      token
+      {}
     );
   }
 }

@@ -1,269 +1,322 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Chat, DELIVERY_STATUS } from "@tecsinapse/chat";
-
+import ReactGA from "react-ga4";
 import uuidv1 from "uuid/v1";
+import { Chat, DELIVERY_STATUS } from "@tecsinapse/chat";
+import { List, ListItem, ListItemText, Popover } from "@material-ui/core";
 import {
-  buildChatMessageObject,
-  buildSendingMessage,
-  setStatusMessageFunc,
-} from "../../utils/message";
-import { ChatOptions } from "./ChatOptions/ChatOptions";
-import { onSelectedChatMaker } from "../../utils/helpers";
-import { COMPONENT_LOCATION } from "../../constants/COMPONENT_LOCATION";
-import { ChatStatus } from "../../constants";
-import {
-  emptyChat,
-  uploadOptions,
-  getSubTitle,
-  getTimeToExpire,
-  getTitle,
-  auxSetMessage,
-  runBlockedAndPropagateStatus,
-  runSendData,
-  runHandleNewExternalMessage,
-  runHandleNewUserFiles,
-} from "./functions";
+  formatMessageStatus,
+  getChatMessageObject,
+  getChatSubTitle,
+  getChatTitle,
+  getSendingNewAudio,
+  getSendingNewFile,
+  getSendingNewMessage,
+  getTimeToExpireChat,
+} from "./utils";
+import { encodeChatData } from "../utils";
+import { useStyle } from "./styles";
 
-const RenderChatUnmemoized = ({
-  chatApiUrl,
-  initialInfo,
-  userkeycloakId,
-  onReadAllMessagesOfChat,
-  navigateWhenCurrentChat,
-  onChatStatusChanged,
-  userNamesById,
-  mobile,
-  setView,
-  customActions,
-  setDrawerOpen,
+export const RenderChat = ({
   chatService,
-  clientRef,
+  userkeycloakId,
+  currentChat,
+  setCurrentChat,
+  setDrawerOpen,
+  handleAfterLoadMessage,
   receivedMessage,
+  userNamesById,
+  webSocketRef,
 }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [readyToSubscribe, setReadyToSubscribe] = useState(false);
-  const [currentChat, setCurrentChat] = useState(initialInfo);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const classes = useStyle();
 
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const { connectionKey, destination, chatId, archived, actions } = currentChat;
+
+  const [loading, setLoading] = useState(true);
+  const [readyToSubscribe, setReadyToSubscribe] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const [page, setPage] = useState(0);
+  const [blocked, setBlocked] = useState(true);
+  const [hasMoreMessage, setHasMoreMessages] = useState(false);
   const [messages, setMessages] = useState([]);
 
   const messagesEndRef = useRef(null);
 
-  const setStatusMessage = setStatusMessageFunc(setMessages);
-
-  const isBlocked = ChatStatus.isBlocked(currentChat);
-  const enabled = !currentChat.disabled || ChatStatus.isOK(currentChat);
-
-  const setBlockedAndPropagateStatus = (chat, blockedStatus) => {
-    runBlockedAndPropagateStatus(
-      chat,
-      blockedStatus,
-      setCurrentChat,
-      onChatStatusChanged
-    );
-  };
-
-  const propsToSendData = {
-    chatApiUrl,
-    initialInfo,
-    setBlockedAndPropagateStatus,
-    setStatusMessage,
-    userkeycloakId,
-    currentChat,
-    chatService,
-  };
-
-  const propsOnSelectChatMake = {
-    initialInfo,
-    setReadyToSubscribe,
-    setIsLoading,
-    setCurrentChat,
-    setMessages,
-    setBlocked: setBlockedAndPropagateStatus,
-    chatService,
-    messagesEndRef,
-    onReadAllMessagesOfChat,
-    userNamesById,
-  };
-
-  const onSelectedChat = onSelectedChatMaker(propsOnSelectChatMake);
-
   useEffect(() => {
-    if (initialInfo.chats.length === 1) {
-      onSelectedChat(initialInfo.chats[0]);
-    }
-    // eslint-disable-next-line
-  }, []);
+    setLoading(true);
 
-  // handle new external message
-  useEffect(() => {
-    if (receivedMessage != null) {
-      runHandleNewExternalMessage(
-        receivedMessage,
-        currentChat,
-        messages,
-        userNamesById,
-        setMessages,
-        setStatusMessage
+    chatService.loadMessages(currentChat, page).then((response) => {
+      const {
+        messages: { content, totalPages },
+        archived: newArchived,
+        blocked: newBlocked,
+        minutesToBlock: newMinutesToBlock,
+      } = response;
+
+      setMessages((oldMessages) =>
+        content
+          .map((it) => getChatMessageObject(it, chatId, userNamesById))
+          .reverse()
+          .concat(oldMessages)
       );
-    }
-    // eslint-disable-next-line
-  }, [receivedMessage]);
 
-  // inscreve a conversa nos tópicos no chat server
+      setHasMoreMessages(totalPages > page + 1);
+      setLoading(false);
+
+      handleAfterLoadMessage(
+        newArchived,
+        newBlocked,
+        newMinutesToBlock,
+        setBlocked
+      );
+
+      setReadyToSubscribe(true);
+
+      if (page === 0) {
+        setTimeout(() => {
+          if (messagesEndRef?.current) {
+            messagesEndRef.current.scrollIntoView({
+              block: "end",
+              behavior: "smooth",
+            });
+          }
+        }, 700);
+      }
+    });
+  }, [page]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleBlockCurrentChat = () => {
+    setBlocked(true);
+    setCurrentChat((oldCurrentChat) => ({
+      ...oldCurrentChat,
+      minutesToBlock: 0,
+      blocked: true,
+    }));
+  };
+
+  const handleChangeMessageStatus = (localId, status, details) => {
+    setMessages((oldMessages) => {
+      const newMessages = [...oldMessages];
+
+      const messageIndex = newMessages.findIndex(
+        (m) => m.localId === localId || m.id === localId
+      );
+
+      if (messageIndex > -1) {
+        newMessages[messageIndex].status = status.toLowerCase();
+        newMessages[messageIndex].statusDetails = formatMessageStatus(details);
+      }
+
+      return newMessages;
+    });
+  };
+
   useEffect(() => {
-    if (!currentChat.chatId || isLoading) {
+    if (!readyToSubscribe) {
       return () => {};
     }
 
-    const clientSocket = clientRef.current;
-    const topic = `/topic/${initialInfo.connectionKey}.${initialInfo.destination}.${currentChat.chatId}`;
-    const addUser = `/chat/addUser/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`;
-
-    const joinMessage = {
-      from: currentChat.chatId,
-      type: "JOIN",
-    };
+    const clientSocket = webSocketRef.current;
+    const topic = `/topic/${connectionKey}.${destination}.${chatId}`;
+    const addUser = `/chat/addUser/room/${connectionKey}/${destination}/${chatId}`;
 
     try {
       clientSocket._subscribe(topic);
-      clientSocket.sendMessage(addUser, JSON.stringify(joinMessage));
+      clientSocket.sendMessage(addUser);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
 
     return () => {
-      const removeUser = `/chat/removeUser/room/${initialInfo.connectionKey}/${initialInfo.destination}/${currentChat.chatId}`;
-
-      const leaveMessage = {
-        from: currentChat.chatId,
-        type: "LEAVE",
-      };
+      const removeUser = `/chat/removeUser/room/${connectionKey}/${destination}/${chatId}`;
 
       try {
-        clientSocket.sendMessage(removeUser, JSON.stringify(leaveMessage));
+        clientSocket.sendMessage(removeUser);
         clientSocket._unsubscribe(topic);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     };
-    // eslint-disable-next-line
-  }, [readyToSubscribe]);
+  }, [readyToSubscribe]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleNewUserMessage = (newMessage, localId) => {
+  useEffect(() => {
+    if (!receivedMessage || loading) {
+      return;
+    }
+
+    const {
+      message: newMessage,
+      minutesToBlock: newMinutesToBlock,
+      blocked: newBlocked,
+    } = receivedMessage;
+
+    const newChatMessage = getChatMessageObject(
+      newMessage,
+      chatId,
+      userNamesById
+    );
+
+    handleAfterLoadMessage(archived, newBlocked, newMinutesToBlock, setBlocked);
+
+    ReactGA.event({
+      category: connectionKey,
+      action: "Received Message",
+    });
+
+    setMessages((oldMessages) => {
+      const messageIndex = oldMessages.findIndex(
+        (it) => it.id === newChatMessage.id
+      );
+
+      if (messageIndex === -1) {
+        const newMessages = [...oldMessages];
+
+        newMessages.push(newChatMessage);
+
+        return newMessages;
+      }
+
+      const newMessages = [...oldMessages];
+
+      newMessages[messageIndex] = newChatMessage;
+
+      return newMessages;
+    });
+  }, [receivedMessage]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const loadMore = () => {
+    if (!loading && hasMoreMessage) {
+      setPage(page + 1);
+    }
+  };
+
+  const handleSendMessage = (text, localId) => {
     const chatMessage = {
-      from: currentChat.chatId,
-      type: "CHAT",
-      text: newMessage,
       localId,
       userId: userkeycloakId,
+      from: chatId,
+      text,
     };
 
     chatService.sendMessage(
+      userkeycloakId,
       chatMessage,
-      setStatusMessage,
       currentChat,
       setCurrentChat,
-      userkeycloakId,
-      setBlockedAndPropagateStatus
+      setBlocked,
+      handleChangeMessageStatus,
+      handleBlockCurrentChat
     );
   };
 
-  const handleNewUserFiles = (title, files) =>
-    runHandleNewUserFiles(
-      title,
-      files,
-      setMessages,
-      onMessageSend,
-      propsToSendData
-    );
+  const handleSendData = (localId, title, file) => {
+    const formData = new FormData();
 
-  const sendData = (localId, title, file) => {
-    runSendData(localId, title, file, propsToSendData);
-  };
+    formData.append("file", file);
+    formData.append("localId", localId);
 
-  const loadMore = async () => {
-    if (isLoading || !hasMore) {
-      return;
+    if (title) {
+      formData.append("title", title);
     }
-    setIsLoading(true);
-    const response = await chatService.loadMessages(
-      initialInfo,
-      currentChat,
-      page
-    );
+    formData.append("userId", userkeycloakId);
 
-    const { content, last } = response;
-    const loadedMessages = content
-      .map((externalMessage) =>
-        buildChatMessageObject(
-          externalMessage,
-          currentChat.chatId,
-          userNamesById
-        )
-      )
-      .reverse();
-
-    setMessages(loadedMessages.concat(messages));
-    setIsLoading(false);
-    setHasMore(!last);
-    setPage(page + 1);
+    chatService
+      .sendDataApi(currentChat, formData)
+      .then(() => {})
+      .catch((err) => {
+        if (err.status === 403) {
+          handleBlockCurrentChat();
+        }
+        handleChangeMessageStatus(localId, DELIVERY_STATUS.ERROR.key);
+      });
   };
 
-  const onBackToChatList = () => {
-    setMessages([]);
-    setCurrentChat(emptyChat);
-    setBlockedAndPropagateStatus(null, false);
-    setPage(1);
-    setHasMore(true);
-  };
-
-  const onMessageSend = (text) => {
+  const handleSendNewMessage = (text) => {
     const localId = uuidv1();
 
-    setMessages((prevMessages) => {
-      const copyPrevMessages = [...prevMessages];
+    setMessages((oldMessages) => {
+      const newMessages = [...oldMessages];
+      const authorName = userNamesById[userkeycloakId];
+      const newMessage = getSendingNewMessage(localId, text, authorName);
 
-      copyPrevMessages.push(buildSendingMessage(localId, text));
+      newMessages.push(newMessage);
 
-      return copyPrevMessages;
+      return newMessages;
     });
-    // send to user and waits for response
-    handleNewUserMessage(text, localId);
+
+    handleSendMessage(text, localId);
   };
 
-  const title = getTitle(currentChat, initialInfo);
-  const subTitle = getSubTitle(currentChat);
-  const timeToExpire = getTimeToExpire(currentChat);
+  const handleResendNewMessage = (localId) => {
+    handleChangeMessageStatus(localId, DELIVERY_STATUS.SENDING.key);
 
-  const actions = customActions || currentChat.actions;
-  const hasActions =
-    currentChat && actions && actions.length > 0 && navigateWhenCurrentChat;
-
-  const onAudio = (blob) => {
-    const localId = uuidv1();
-
-    setMessages((prevMessages) => auxSetMessage(prevMessages, localId, blob));
-
-    // send to user and waits for response
-    sendData(localId, undefined, blob.blob);
-  };
-
-  const onMessageResend = (localId) => {
-    // Change message status
-    setStatusMessage(localId, DELIVERY_STATUS.SENDING.key);
-
-    // Resend to backend
     const message = messages.find((m) => m.localId === localId);
 
     if (message && message.medias && message.medias.length > 0) {
-      message.medias.forEach((media) =>
-        sendData(localId, message.title, media.data)
-      );
+      message.medias.forEach((media) => {
+        handleSendData(localId, message.title, media.data);
+      });
     } else if (message && message.text) {
-      handleNewUserMessage(message.text, localId);
+      handleSendMessage(message.text, localId);
+    }
+  };
+
+  const handleSendNewAudio = (blob) => {
+    const localId = uuidv1();
+
+    setMessages((oldMessages) => {
+      const newMessages = [...oldMessages];
+      const authorName = userNamesById[userkeycloakId];
+      const newMessage = getSendingNewAudio(
+        localId,
+        {
+          mediaType: "audio",
+          data: blob.blobURL,
+        },
+        authorName
+      );
+
+      newMessages.push(newMessage);
+
+      return newMessages;
+    });
+
+    handleSendData(localId, undefined, blob.blob);
+  };
+
+  const handleSendNewFile = (title, files) => {
+    // não suporta título para type application ou mais de uma mídia
+    const titleAsMessage =
+      Object.keys(files).length > 1 ||
+      (files[Object.keys(files)[0]] !== undefined &&
+        files[Object.keys(files)[0]].mediaType.startsWith("application"));
+
+    const fileTitle = titleAsMessage ? undefined : title;
+
+    Object.keys(files).forEach((uid) => {
+      const localId = uuidv1();
+
+      setMessages((oldMessages) => {
+        const newMessages = [...oldMessages];
+        const authorName = userNamesById[userkeycloakId];
+        const newMessage = getSendingNewFile(
+          localId,
+          fileTitle,
+          files[uid],
+          authorName
+        );
+
+        newMessages.push(newMessage);
+
+        return newMessages;
+      });
+
+      handleSendData(localId, title, files[uid].file);
+    });
+
+    // envia o título como uma mensagem única quando necessário
+    if (titleAsMessage && title) {
+      handleSendNewMessage(title);
     }
   };
 
@@ -271,59 +324,103 @@ const RenderChatUnmemoized = ({
     setAnchorEl(event.currentTarget);
   };
 
-  const handleView = (view) => setView(view);
+  const handleCloseActions = () => {
+    setAnchorEl(null);
+  };
+
+  const handleBackToChatList = () => {
+    // não faz nada
+  };
+
+  const encodedData = encodeChatData(currentChat, userkeycloakId);
 
   return (
-    <div style={{ maxWidth: mobile ? "auto" : "40vW" }}>
+    <div className={classes.container}>
       <Chat
         messages={messages}
-        onMessageSend={onMessageSend}
+        onMessageSend={handleSendNewMessage}
         messagesEndRef={messagesEndRef}
-        disabled={isLoading || !enabled}
+        disabled={loading}
         isMaximizedOnly
-        onAudio={onAudio}
-        title={title}
-        subtitle={subTitle}
-        onMediaSend={handleNewUserFiles}
-        isLoading={isLoading}
+        onAudio={handleSendNewAudio}
+        title={getChatTitle(currentChat)}
+        subtitle={getChatSubTitle(currentChat)}
+        onMediaSend={handleSendNewFile}
+        isLoading={loading}
         loadMore={loadMore}
-        onMessageResend={onMessageResend}
-        isBlocked={isBlocked}
+        onMessageResend={handleResendNewMessage}
+        isBlocked={blocked}
         blockedMessage="Para conversar com esse cliente clique em Iniciar Conversa"
-        onBackToChatList={onBackToChatList}
-        onSelectedChat={onSelectedChat}
-        disabledSend={isLoading}
+        onBackToChatList={handleBackToChatList}
+        disabledSend={loading}
         roundedCorners={false}
-        containerHeight={`calc(100vh - ${isBlocked ? "224px" : "132px"})`}
+        containerHeight={`calc(100vh - ${blocked ? "164px" : "82px"})`}
         customHeader={{
           headerLabel: "Cliente:",
           headerBackground: "#f7f7f7",
           headerText: "#000",
         }}
         chatOptions={{
-          show: hasActions,
+          show: currentChat && actions && actions.length > 0,
           handleFunc: handleOpenActions,
           color: "#000",
         }}
-        warningMessage={timeToExpire}
-        uploadOptions={uploadOptions}
-        backAction={
-          mobile
-            ? () => handleView(COMPONENT_LOCATION.MESSAGE_MANAGEMENT)
-            : undefined
-        }
+        warningMessage={getTimeToExpireChat(currentChat)}
+        uploadOptions={{
+          maxFilesPerMessage: 10,
+          maximumFileLimitMessage: (limit) =>
+            `Apenas ${limit} arquivos podem ser carregados por mensagem.`,
+          maximumFileNumberMessage:
+            "Excedeu o número máximo de arquivos permitidos.",
+          filenameFailedMessage: (name) =>
+            `Não foi possível carregar o arquivo ${name}. `,
+          filetypeNotSupportedMessage: "O arquivo selecionado não é suportado.",
+          sizeLimitErrorMessage: (size) =>
+            `Arquivo deve ter tamanho menor que ${size / 1024} KB.`,
+          undefinedErrorMessage: "Erro interno, contate o administrador.",
+        }}
       />
 
-      <ChatOptions
+      <Popover
+        open={Boolean(anchorEl)}
         anchorEl={anchorEl}
-        setAnchorEl={setAnchorEl}
-        options={actions}
-        data={currentChat}
-        userkeycloakId={userkeycloakId}
-        setDrawerOpen={setDrawerOpen}
-      />
+        onClose={handleCloseActions}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <List>
+          {actions &&
+            actions.map((item) => {
+              const handleClick = () => {
+                if (item.action) {
+                  setDrawerOpen(false);
+                  item.action(currentChat, encodedData);
+                } else {
+                  window.open(`${item.path}?data=${encodedData}`, "_self");
+                }
+              };
+
+              return (
+                <ListItem
+                  key={item.label}
+                  component="a"
+                  onClick={handleClick}
+                  button
+                >
+                  <ListItemText
+                    primary={item.action ? item.label(currentChat) : item.label}
+                  />
+                </ListItem>
+              );
+            })}
+        </List>
+      </Popover>
     </div>
   );
 };
-
-export const RenderChat = React.memo(RenderChatUnmemoized);

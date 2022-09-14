@@ -1,34 +1,21 @@
-import "react-app-polyfill/ie9";
-import "react-app-polyfill/stable";
-
 import React from "react";
 import ReactDOM from "react-dom";
-import { ThemeProvider } from "@tecsinapse/ui-kit";
 import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
-
+import { ThemeProvider } from "@tecsinapse/ui-kit";
 import { Init } from "./components/Init/Init";
+import "react-app-polyfill/ie9";
+import "react-app-polyfill/stable";
 import "./index.css";
-
-const standalone = process.env.REACT_APP_STANDALONE === "true";
 
 window.renderChatComponent = function renderChatComponent() {
   const defaultChatInitConfig = {
-    userkeycloakId: "f92c5d90-73b2-11ec-81db-abe03bce8cb8",
+    userkeycloakId: "",
     chatApiUrl: `${process.env.REACT_APP_SERVER_URL}`,
-    params: {},
-    getInitialStatePath: "/rest/chat/componentInfo",
-    deleteChatPath: "/rest/chat",
-    createPath: "/rest/chat",
+    productChatPath: "/rest/chat",
     openImmediately: false,
-    clickOnUnreadOpenFirstAction: false,
-    showMessagesLabel: "Visualizar Mensagens",
-    navigateWhenCurrentChat: true,
-    onChatTitle: "Mensagens do Chat",
-    showDiscardOption: true,
-    onlyMessageManagement: false,
     canSendNotification: true,
-    standalone,
-    userPhoneNumber: "",
+    params: {},
+    // params: { clienteId: 59996 },
   };
 
   let chatInitConfig = { ...defaultChatInitConfig };
@@ -48,10 +35,10 @@ window.renderChatComponent = function renderChatComponent() {
         <Init chatInitConfig={chatInitConfig} />
       </ThemeProvider>
     </StylesProvider>,
-    document.getElementById("chat-component-div")
+    document.getElementById("wingo-chat-component")
   );
 };
 
-if (standalone) {
+if (process.env.REACT_APP_HOST === "development") {
   window.renderChatComponent();
 }

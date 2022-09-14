@@ -1,6 +1,6 @@
 {
   "name": "@tecsinapse/chat-component",
-  "version": "1.6.6",
+  "version": "2.0.0",
   "license": "MIT",
   "main": "build/index.js",
   "module": "build/index.js",
@@ -51,8 +51,8 @@
     "@material-ui/styles": "^4.11.1",
     "@mdi/js": "^5.9.55",
     "@mdi/react": "^1.4.0",
-    "@tecsinapse/chat": "^3.2.6",
-    "@tecsinapse/table": "^3.7.2",
+    "@tecsinapse/chat": "^3.2.7",
+    "@tecsinapse/table": "^4.0.2",
     "@tecsinapse/ui-kit": "^5.6.3",
     "enumify": "^1.0.4",
     "jwt-simple": "^0.5.6",
@@ -60,7 +60,6 @@
     "moment-timezone": "^0.5.33",
     "react-app-polyfill": "^1.0.6",
     "react-ga4": "^1.4.0",
-    "react-query": "^3.13.0",
     "react-stomp": "^5.0.0",
     "uuid": "^3.3.2"
   },

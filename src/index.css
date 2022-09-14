@@ -1,31 +1,43 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
 body {
   margin: 0;
 }
 
-.Chat {
+#wingo-chat-component {
   margin: 0;
-  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI" , "Oxygen",
-  "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-  sans-serif;
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   width: 100%;
 }
 
-.Chat code {
+#wingo-chat-component code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-  monospace;
+    monospace;
 }
 
-.Chat textarea {
+#wingo-chat-component textarea {
   border: 0 !important;
   box-shadow: none !important;
 }
 
-#logo-wingo {
-  height: 1.5rem;
-  margin-top: 0.5rem;
+#wingo-chat-component input:-webkit-autofill,
+#wingo-chat-component input:-webkit-autofill:hover,
+#wingo-chat-component input:-webkit-autofill:focus,
+#wingo-chat-component input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+#wingo-chat-component .MuiInputBase-input {
+  font-size: 14px !important;
+  padding: 10px 16px !important;
+  height: 16px !important;
+}
+
+#wingo-chat-component > h1, h2, h3, h4, h5, h6 {
+  padding: 0 !important;
 }

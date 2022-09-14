@@ -1,136 +1,216 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Table } from "@tecsinapse/table";
 import {
   Button,
+  debounce,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControlLabel,
+  Switch,
+  Typography,
 } from "@material-ui/core";
-import { useQueryClient } from "react-query";
 import ReactGA from "react-ga4";
+import { Input } from "@tecsinapse/ui-kit";
+import Icon from "@mdi/react";
+import { mdiMagnify } from "@mdi/js";
+import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
+import { Loading } from "../Loading/Loading";
+import { generateColumns } from "./utils";
 import { useStyle } from "./styles";
-import { TableHeader } from "./TableHeader";
-import { customActionsMobile, generateColumns } from "./tableUtils";
-import { dataFetcher, getOptions } from "./functions";
-import { MESSAGES_INFO } from "../../constants/MessagesInfo";
 
 export const MessageManagement = ({
+  loading,
+  onlyNotClients,
+  setOnlyNotClients,
+  onlyUnreads,
+  setOnlyUnreads,
+  globalSearch,
+  setGlobalSearch,
+  setCurrentChat,
+  setConnectionError,
   componentInfo,
-  onSelectChat,
-  onDeleteChat,
+  userNamesById,
   userkeycloakId,
-  showMessagesLabel,
-  showDiscardOption,
-  headerClass,
-  mobile,
-  customActions,
-  setDrawerOpen,
+  setView,
+  page,
+  setPage,
+  pageSize,
+  productService,
   chatService,
 }) => {
   const classes = useStyle();
-  const queryClient = useQueryClient();
-  const { extraInfoColumns } = componentInfo;
 
-  const [showOnlyNotClients, setShowOnlyNotClients] = useState(false);
-  const [deletingChat, setDeletingChat] = useState({});
-  const [globalSearch, setGlobalSearch] = useState("");
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
-  const deleteChat = () => {
-    onDeleteChat(deletingChat).then(() => {
-      setDeletingChat({});
-      ReactGA.event({
-        category: deletingChat.connectionKey,
-        action: "Discard Chat",
-      });
-    });
+  const { chats, totalChats, extraInfoColumns } = componentInfo;
+
+  const handleChangeOnlyNotClients = () => {
+    setOnlyNotClients(!onlyNotClients);
   };
 
-  const generateActionsMobile = (data) =>
-    customActionsMobile(
-      data,
-      onSelectChat,
-      showMessagesLabel,
-      customActions,
-      userkeycloakId,
-      setDrawerOpen,
-      showDiscardOption,
-      setDeletingChat
-    );
+  const handleChangeOnlyUnreads = () => {
+    setOnlyUnreads(!onlyUnreads);
+  };
 
-  const columns = generateColumns(
-    extraInfoColumns,
-    mobile,
-    showMessagesLabel,
-    showDiscardOption,
-    userkeycloakId,
-    onSelectChat,
-    setDeletingChat,
-    classes,
-    globalSearch
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceGlobalSearch = useCallback(
+    debounce((value) => {
+      setGlobalSearch(value);
+    }, 1000),
+    []
   );
 
-  const exportOptions = !mobile ? getOptions(extraInfoColumns) : {};
-
-  const handleSwitchClients = () => setShowOnlyNotClients(!showOnlyNotClients);
-
-  const toolbarOptions = {
-    title: (
-      <TableHeader
-        showNotClient={showOnlyNotClients}
-        switchToOnlyNotClients={handleSwitchClients}
-        headerClass={headerClass}
-        globalSearch={globalSearch}
-        setGlobalSearch={setGlobalSearch}
-        mobile={mobile}
-      />
-    ),
+  const handleChangeGlobalSearch = (event) => {
+    if (event.target.value !== globalSearch) {
+      debounceGlobalSearch(event.target.value);
+    }
   };
 
-  const fetcherProps = {
-    queryClient,
-    componentInfo,
-    chatService,
-    showOnlyNotClients,
-    globalSearch,
+  const handleSelectChat = (chat) => {
+    setSelectedChat(chat);
   };
+
+  const handleSelectCurrentChat = (chat) => {
+    setCurrentChat(chat);
+    setView(COMPONENT_VIEW.CHAT_MESSAGES);
+  };
+
+  const handleDeleteChat = () => {
+    setDeleting(true);
+
+    productService
+      .deleteChat(selectedChat)
+      .then(() => {
+        chatService
+          .deleteSessionChat(selectedChat)
+          .then(() => {
+            const { connectionKey } = selectedChat;
+
+            ReactGA.event({
+              category: connectionKey,
+              action: "Discard Chat",
+            });
+
+            setSelectedChat(null);
+            setDeleting(false);
+          })
+          .catch(() => {
+            setSelectedChat(null);
+            setDeleting(false);
+            setConnectionError(true);
+          });
+      })
+      .catch(() => {
+        setSelectedChat(null);
+        setDeleting(false);
+        setConnectionError(true);
+      });
+  };
+
+  const handleCloseDeleteChat = () => {
+    setSelectedChat(null);
+  };
+
+  const handleFetchTableData = () =>
+    new Promise((resolve) => {
+      resolve({ data: chats, totalCount: totalChats });
+    });
 
   return (
-    <>
-      <Table
-        onDrawerClose={() => {}}
-        classes={{ rootMobile: classes.rootMobile }}
-        columns={columns}
-        data={dataFetcher(fetcherProps)}
-        rowId={(row) => row.chatId + "-" + row.connectionKey}
-        customActionsMobile={generateActionsMobile}
-        pagination
-        onRowClick={(row) => !mobile && onSelectChat(row)}
-        exportOptions={exportOptions}
-        toolbarOptions={toolbarOptions}
-        rowsPerPage={10}
-        rowsPerPageOptions={[5, 10, 20, 30, 50, 100]}
-        hideSelectFilterLabel
-      />
-      <Dialog
-        open={deletingChat && Object.keys(deletingChat).length > 0}
-        onClose={() => setDeletingChat({})}
-        aria-labelledby="dialog-title"
-      >
-        <DialogTitle id="dialog-title">Confirmação</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{MESSAGES_INFO.DISCARD_LABEL}?</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={() => setDeletingChat({})} color="primary">
-            Não
-          </Button>
-          <Button onClick={deleteChat} color="primary" autoFocus>
-            Sim
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+    <div className={classes.container}>
+      {loading || deleting ? (
+        <div className={classes.loadingContainer}>
+          <Loading />
+        </div>
+      ) : (
+        <Table
+          columns={generateColumns(
+            classes,
+            extraInfoColumns,
+            userkeycloakId,
+            userNamesById,
+            handleSelectCurrentChat,
+            handleSelectChat,
+            globalSearch
+          )}
+          data={handleFetchTableData}
+          rowId={({ chatId, connectionKey }) => `${chatId}-${connectionKey}`}
+          onRowClick={handleSelectCurrentChat}
+          toolbarOptions={{
+            title: (
+              <>
+                <div className={classes.toolbarContainer}>
+                  <FormControlLabel
+                    label="Exibir apenas clientes não cadastrados no sistema"
+                    control={<Switch size="small" />}
+                    onChange={handleChangeOnlyNotClients}
+                    checked={onlyNotClients}
+                    classes={{
+                      root: classes.toolbarSwitch,
+                      label: classes.toolbarSwitchLabel,
+                    }}
+                  />
+                  <FormControlLabel
+                    label="Exibir apenas conversas com mensagens não lidas"
+                    control={<Switch size="small" />}
+                    onChange={handleChangeOnlyUnreads}
+                    checked={onlyUnreads}
+                    classes={{
+                      root: classes.toolbarSwitch,
+                      label: classes.toolbarSwitchLabel,
+                    }}
+                  />
+                  <Typography
+                    variant="caption"
+                    className={classes.toolbarAppVersion}
+                  >
+                    Versão: {process.env.REACT_APP_VERSION}
+                  </Typography>
+                  <br />
+                </div>
+                <Input
+                  placeholder="Pesquise por dados em qualquer campo"
+                  name="globalSearch"
+                  defaultValue={globalSearch}
+                  startAdornment={
+                    <Icon path={mdiMagnify} size={1} color="#c6c6c6" />
+                  }
+                  onChange={handleChangeGlobalSearch}
+                  fullWidth
+                />
+              </>
+            ),
+          }}
+          page={page}
+          setPage={setPage}
+          rowsPerPage={pageSize}
+          rowsPerPageOptions={[10, 20, 30]}
+          hideSelectFilterLabel
+          pagination
+        />
+      )}
+      {selectedChat && (
+        <Dialog open={selectedChat} onClose={handleCloseDeleteChat}>
+          <DialogTitle>Arquivar Conversa</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Tem certeza que você deseja arquivar essa conversa?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleCloseDeleteChat} color="primary">
+              Não
+            </Button>
+            <Button onClick={handleDeleteChat} color="primary" autoFocus>
+              Sim
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+    </div>
   );
 };
