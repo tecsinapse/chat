@@ -6,6 +6,7 @@ export const ARGS_DESCRIPTIONS = {
     "pessoa",
     "nome pessoa",
     "nome da pessoa",
+    "parametro cliente",
   ],
 
   OWNER: [
@@ -18,6 +19,9 @@ export const ARGS_DESCRIPTIONS = {
     "vendedor",
     "nome vendedor",
     "nome do vendedor",
+    "parametro consultor",
+    "parametro vendedor",
+    "parametro responsavel",
   ],
 
   DEALER: [
@@ -27,5 +31,7 @@ export const ARGS_DESCRIPTIONS = {
     "dealer",
     "nome dealer",
     "nome do dealer",
+    "parametro loja",
+    "parametro dealer",
   ],
 };
