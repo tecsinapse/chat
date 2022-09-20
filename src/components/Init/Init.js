@@ -211,11 +211,7 @@ const InitContext = ({ chatInitConfig }) => {
     });
 
     setView((oldView) => {
-      if (
-        (oldView === COMPONENT_VIEW.CHAT_MESSAGES ||
-          oldView === COMPONENT_VIEW.CONNECTION_ERROR) &&
-        !connectionError
-      ) {
+      if (oldView === COMPONENT_VIEW.CHAT_MESSAGES && !connectionError) {
         setReload(true);
       }
 
