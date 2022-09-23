@@ -4,7 +4,7 @@ import { Divider as MuiDivider, Drawer } from "@material-ui/core";
 import { Button } from "@tecsinapse/ui-kit";
 import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
 import { RenderChat } from "../RenderChat/RenderChat";
-import { InitWebSockets } from "../InitWebSockets/InitWebSockets";
+import InitWebSockets from "../InitWebSockets/InitWebSockets";
 import { MessageManagement } from "../MessageManagement/MessageManagement";
 import { ChatButton } from "../ChatButton/ChatButton";
 import { SendNotification } from "../SendNotification/SendNotification";
@@ -47,6 +47,8 @@ const InitContext = ({ chatInitConfig }) => {
     productChatPath,
     openImmediately,
     canSendNotification,
+    executeFirstAction,
+    showBackButton,
     params,
   } = chatInitConfig;
 
@@ -110,13 +112,6 @@ const InitContext = ({ chatInitConfig }) => {
             setConnectionKeys(getDistinctConnectionKeys(newConnectionKeys));
             setComponentInfo(completeComponentInfo);
 
-            // caso tenha um chat corrente no primeiro carregamento
-            // abre a tela de mensagens
-            if (firstLoad && newCurrentChat && newCurrentChat.chatId) {
-              setCurrentChat(newCurrentChat);
-              handleSetView(COMPONENT_VIEW.CHAT_MESSAGES);
-            }
-
             // caso tenha um chat corrente após primeiro carregamento
             // abre a tela de mensagens ou envio de notificação
             if (!firstLoad && !openDrawer && newCurrentChat) {
@@ -146,9 +141,7 @@ const InitContext = ({ chatInitConfig }) => {
 
   useEffect(() => {
     loadComponentInfo().then(() => {
-      if (openImmediately) {
-        setOpenDrawer(true);
-      }
+      // do nothing
     });
   }, [onlyNotClients, onlyUnreads, page, pageSize]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -180,6 +173,23 @@ const InitContext = ({ chatInitConfig }) => {
       handleSetView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
     }
   }, [connectionError]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const { currentChat: componentInfoCurrentChat } = componentInfo;
+
+    if (
+      webSocketRef &&
+      componentInfoCurrentChat &&
+      componentInfoCurrentChat.chatId
+    ) {
+      setCurrentChat(componentInfoCurrentChat);
+      handleSetView(COMPONENT_VIEW.CHAT_MESSAGES);
+    }
+
+    if (webSocketRef && openImmediately) {
+      setOpenDrawer(true);
+    }
+  }, [webSocketRef]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(
     () => {
@@ -343,6 +353,7 @@ const InitContext = ({ chatInitConfig }) => {
             setNotificationSound={setNotificationSound}
             view={view}
             setView={handleSetView}
+            showBackButton={showBackButton}
           />
           <MuiDivider variant="fullWidth" />
           {view === COMPONENT_VIEW.CONNECTION_ERROR && <ConnectionError />}
@@ -378,6 +389,7 @@ const InitContext = ({ chatInitConfig }) => {
               page={page}
               setPage={setPage}
               pageSize={pageSize}
+              executeFirstAction={executeFirstAction}
               productService={productService}
               chatService={chatService}
             />

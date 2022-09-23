@@ -23,6 +23,7 @@ export const HeaderDrawer = ({
   setNotificationSound,
   view,
   setView,
+  showBackButton,
 }) => {
   const classes = useStyle();
 
@@ -36,7 +37,11 @@ export const HeaderDrawer = ({
   };
 
   const handleBackMessageManegement = () => {
-    setView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
+    if (showBackButton) {
+      setView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
+    } else {
+      setView(COMPONENT_VIEW.CHAT_MESSAGES);
+    }
     setCurrentChatSend(null);
   };
 
@@ -54,22 +59,40 @@ export const HeaderDrawer = ({
     setOpenDrawer(false);
   };
 
+  const checkShowBackButton = () => {
+    // não tem para onde voltar
+    if (view === COMPONENT_VIEW.MESSAGE_MANAGEMENT) {
+      return false;
+    }
+
+    // não deixar voltar enquanto tem problema de conexão
+    if (view === COMPONENT_VIEW.CONNECTION_ERROR) {
+      return false;
+    }
+
+    // sempre deixa voltar a partir da tela de envio de template
+    if (view === COMPONENT_VIEW.SEND_NOTIFICATION) {
+      return true;
+    }
+
+    return showBackButton;
+  };
+
   return (
     <div className={classes.headerContainer}>
       <Grid justify="space-between" container>
         <Grid item>
           <Grid container>
-            {view !== COMPONENT_VIEW.MESSAGE_MANAGEMENT &&
-              view !== COMPONENT_VIEW.CONNECTION_ERROR && (
-                <Grid item className={classes.backIconContainer}>
-                  <Icon
-                    onClick={handleBackMessageManegement}
-                    size={1.25}
-                    className={classes.backIcon}
-                    path={mdiArrowLeft}
-                  />
-                </Grid>
-              )}
+            {checkShowBackButton() && (
+              <Grid item className={classes.backIconContainer}>
+                <Icon
+                  onClick={handleBackMessageManegement}
+                  size={1.25}
+                  className={classes.backIcon}
+                  path={mdiArrowLeft}
+                />
+              </Grid>
+            )}
             <Grid item>
               <Typography variant="h5" color="textPrimary">
                 {view === COMPONENT_VIEW.CHAT_MESSAGES && "Gestão de Mensagens"}

@@ -10,16 +10,19 @@ export const generateActions = (
   row,
   userkeycloakId,
   handleSelectCurrentChat,
-  handleSelectChat
+  handleSelectChat,
+  executeFirstAction
 ) => {
-  const actions = [
-    {
+  const actions = [];
+
+  if (!executeFirstAction) {
+    actions.push({
       label: "Visualizar Mensagens",
       onClick: (rowData) => {
         handleSelectCurrentChat(rowData);
       },
-    },
-  ];
+    });
+  }
 
   if (row.actions && row.actions.length > 0) {
     row.actions.forEach((actionLink) => {
@@ -63,7 +66,8 @@ export const generateColumns = (
   userNamesById,
   handleSelectCurrentChat,
   handleSelectChat,
-  globalSearch
+  globalSearch,
+  executeFirstAction
 ) => {
   const columns = [
     {
@@ -179,7 +183,8 @@ export const generateColumns = (
               row,
               userkeycloakId,
               handleSelectCurrentChat,
-              handleSelectChat
+              handleSelectChat,
+              executeFirstAction
             )}
             row={row}
             verticalActions

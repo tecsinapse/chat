@@ -41,8 +41,15 @@ export class ChatService {
   }
 
   loadMessages(currentChat, page) {
-    const { connectionKey, destination, chatId, archived } = currentChat;
-    const uri = `${this.url}/${connectionKey}/${destination}/${chatId}/messages?page=${page}&size=100&archived=${archived}`;
+    const {
+      connectionKey,
+      destination,
+      chatId,
+      updateUnreads,
+      archived,
+    } = currentChat;
+
+    const uri = `${this.url}/${connectionKey}/${destination}/${chatId}/messages?page=${page}&size=100&updateUnreads=${updateUnreads}&archived=${archived}`;
 
     return defaultFetch(uri, "GET", {});
   }

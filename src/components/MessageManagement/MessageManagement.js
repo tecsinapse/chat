@@ -20,6 +20,7 @@ import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
 import { Loading } from "../Loading/Loading";
 import { generateColumns } from "./utils";
 import { useStyle } from "./styles";
+import { encodeChatData } from "../utils";
 
 export const MessageManagement = ({
   loading,
@@ -38,12 +39,14 @@ export const MessageManagement = ({
   page,
   setPage,
   pageSize,
+  executeFirstAction,
   productService,
   chatService,
 }) => {
   const classes = useStyle();
 
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [chatToDelete, setChatToDelete] = useState(null);
+  const [chatToExecFirstAction, setChatToExecFirstAction] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
   const { chats, totalChats, extraInfoColumns } = componentInfo;
@@ -70,49 +73,66 @@ export const MessageManagement = ({
     }
   };
 
-  const handleSelectChat = (chat) => {
-    setSelectedChat(chat);
+  const handleSelectChatToDelete = (chat) => {
+    setChatToDelete(chat);
   };
 
-  const handleSelectCurrentChat = (chat) => {
-    setCurrentChat(chat);
-    setView(COMPONENT_VIEW.CHAT_MESSAGES);
+  const handleSelectCurrentChat = (firstAction) => (chat) => {
+    if (firstAction && executeFirstAction) {
+      setChatToExecFirstAction(chat);
+    } else {
+      setCurrentChat(chat);
+      setView(COMPONENT_VIEW.CHAT_MESSAGES);
+    }
   };
 
   const handleDeleteChat = () => {
     setDeleting(true);
 
     productService
-      .deleteChat(selectedChat)
+      .deleteChat(chatToDelete)
       .then(() => {
         chatService
-          .deleteSessionChat(selectedChat)
+          .deleteSessionChat(chatToDelete)
           .then(() => {
-            const { connectionKey } = selectedChat;
+            const { connectionKey } = chatToDelete;
 
             ReactGA.event({
               category: connectionKey,
               action: "Discard Chat",
             });
 
-            setSelectedChat(null);
+            setChatToDelete(null);
             setDeleting(false);
           })
           .catch(() => {
-            setSelectedChat(null);
+            setChatToDelete(null);
             setDeleting(false);
             setConnectionError(true);
           });
       })
       .catch(() => {
-        setSelectedChat(null);
+        setChatToDelete(null);
         setDeleting(false);
         setConnectionError(true);
       });
   };
 
   const handleCloseDeleteChat = () => {
-    setSelectedChat(null);
+    setChatToDelete(null);
+  };
+
+  const handleExecuteFirstAction = () => {
+    const encodedData = encodeChatData(chatToExecFirstAction, userkeycloakId);
+
+    window.open(
+      `${chatToExecFirstAction.actions[0].path}?data=${encodedData}`,
+      "_self"
+    );
+  };
+
+  const handleCloseExecuteFirstAction = () => {
+    setChatToExecFirstAction(null);
   };
 
   const handleFetchTableData = () =>
@@ -133,13 +153,14 @@ export const MessageManagement = ({
             extraInfoColumns,
             userkeycloakId,
             userNamesById,
-            handleSelectCurrentChat,
-            handleSelectChat,
-            globalSearch
+            handleSelectCurrentChat(false),
+            handleSelectChatToDelete,
+            globalSearch,
+            executeFirstAction
           )}
           data={handleFetchTableData}
           rowId={({ chatId, connectionKey }) => `${chatId}-${connectionKey}`}
-          onRowClick={handleSelectCurrentChat}
+          onRowClick={handleSelectCurrentChat(true)}
           toolbarOptions={{
             title: (
               <>
@@ -193,8 +214,8 @@ export const MessageManagement = ({
           pagination
         />
       )}
-      {selectedChat && (
-        <Dialog open={selectedChat} onClose={handleCloseDeleteChat}>
+      {chatToDelete && (
+        <Dialog open={chatToDelete} onClose={handleCloseDeleteChat}>
           <DialogTitle>Arquivar Conversa</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -208,6 +229,31 @@ export const MessageManagement = ({
             <Button onClick={handleDeleteChat} color="primary" autoFocus>
               Sim
             </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+      {executeFirstAction && chatToExecFirstAction?.actions[0] && (
+        <Dialog
+          open={chatToExecFirstAction}
+          onClose={handleCloseExecuteFirstAction}
+          aria-labelledby="dialog-title"
+        >
+          <DialogTitle id="dialog-title">Confirmação</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Voce será direcionado e pode perder a ação que está executando no
+              momento. Deseja continuar?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              autoFocus
+              onClick={handleCloseExecuteFirstAction}
+              color="primary"
+            >
+              Não
+            </Button>
+            <Button onClick={handleExecuteFirstAction}>Sim</Button>
           </DialogActions>
         </Dialog>
       )}

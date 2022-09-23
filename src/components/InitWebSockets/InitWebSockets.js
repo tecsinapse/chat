@@ -10,7 +10,7 @@ if (debug) {
   console.log("Debug Mode");
 }
 
-export const InitWebSockets = ({
+const InitWebSockets = ({
   chatApiUrl,
   userkeycloakId,
   destination,
@@ -60,3 +60,19 @@ export const InitWebSockets = ({
     />
   );
 };
+
+export default React.memo(InitWebSockets, (oldProps, newProps) => {
+  const {
+    userkeycloakId: oldUserkeycloakId,
+    destination: oldDestination,
+  } = oldProps;
+
+  const {
+    userkeycloakId: newUserkeycloakId,
+    destination: newDestination,
+  } = newProps;
+
+  return (
+    oldUserkeycloakId === newUserkeycloakId && oldDestination === newDestination
+  );
+});
