@@ -175,14 +175,10 @@ const InitContext = ({ chatInitConfig }) => {
   }, [connectionError]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    const { currentChat: componentInfoCurrentChat } = componentInfo;
+    const { currentChat: newCurrentChat } = componentInfo;
 
-    if (
-      webSocketRef &&
-      componentInfoCurrentChat &&
-      componentInfoCurrentChat.chatId
-    ) {
-      setCurrentChat(componentInfoCurrentChat);
+    if (webSocketRef && newCurrentChat && newCurrentChat.chatId) {
+      setCurrentChat(newCurrentChat);
       handleSetView(COMPONENT_VIEW.CHAT_MESSAGES);
     }
 
