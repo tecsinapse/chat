@@ -37,11 +37,7 @@ export const HeaderDrawer = ({
   };
 
   const handleBackMessageManegement = () => {
-    if (showBackButton) {
-      setView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
-    } else {
-      setView(COMPONENT_VIEW.CHAT_MESSAGES);
-    }
+    setView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
     setCurrentChatSend(null);
   };
 
