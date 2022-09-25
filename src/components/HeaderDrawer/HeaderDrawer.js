@@ -66,11 +66,6 @@ export const HeaderDrawer = ({
       return false;
     }
 
-    // sempre deixa voltar a partir da tela de envio de template
-    if (view === COMPONENT_VIEW.SEND_NOTIFICATION) {
-      return true;
-    }
-
     return showBackButton;
   };
 
