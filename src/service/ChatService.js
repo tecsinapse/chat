@@ -54,21 +54,6 @@ export class ChatService {
     return defaultFetch(uri, "GET", {});
   }
 
-  async getChatInfo(connectionKey, destination, chatId) {
-    return defaultFetch(
-      `${this.url}/${connectionKey}/${destination}/${chatId}/info`,
-      "GET"
-    );
-  }
-
-  async getChatInfos(connectionKey, destination, chatIds) {
-    return defaultFetch(
-      `${this.url}/${connectionKey}/${destination}/infos`,
-      "POST",
-      chatIds
-    );
-  }
-
   async completeComponentInfo(componentInfo) {
     return defaultFetch(
       `${this.url}/completeComponentInfo`,
