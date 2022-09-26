@@ -26,6 +26,7 @@ export const RenderChat = ({
   receivedMessage,
   userNamesById,
   webSocketRef,
+  canSendNotification,
 }) => {
   const classes = useStyle();
 
@@ -349,12 +350,14 @@ export const RenderChat = ({
         isLoading={loading}
         loadMore={loadMore}
         onMessageResend={handleResendNewMessage}
-        isBlocked={blocked}
+        isBlocked={blocked || !canSendNotification}
         blockedMessage="Para conversar com esse cliente clique em Iniciar Conversa"
         onBackToChatList={handleBackToChatList}
         disabledSend={loading}
         roundedCorners={false}
-        containerHeight={`calc(100vh - ${blocked ? "164px" : "82px"})`}
+        containerHeight={`calc(100vh - ${
+          blocked || !canSendNotification ? "164px" : "82px"
+        })`}
         customHeader={{
           headerLabel: "Cliente:",
           headerBackground: "#f7f7f7",

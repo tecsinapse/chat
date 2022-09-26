@@ -365,6 +365,7 @@ const InitContext = ({ chatInitConfig }) => {
               receivedMessage={receivedMessage}
               userNamesById={componentInfo?.userNamesById}
               webSocketRef={webSocketRef}
+              canSendNotification={canSendNotification}
             />
           )}
           {view === COMPONENT_VIEW.MESSAGE_MANAGEMENT && (
