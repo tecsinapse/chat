@@ -113,6 +113,32 @@ export const RenderChat = ({
   };
 
   useEffect(() => {
+    if (blocked === true) {
+      setCurrentChat((oldCurrentChat) => ({
+        ...oldCurrentChat,
+        blocked: true,
+      }));
+    }
+  }, [blocked]);
+
+  useEffect(() => {
+    if (currentChat.minutesToBlock === 0) {
+      setBlocked(true);
+
+      return () => {};
+    }
+
+    const timer = setTimeout(() => {
+      setCurrentChat((oldCurrentChat) => ({
+        ...oldCurrentChat,
+        minutesToBlock: oldCurrentChat.minutesToBlock - 1,
+      }));
+    }, 60000);
+
+    return () => clearTimeout(timer);
+  }, [currentChat]);
+
+  useEffect(() => {
     if (!readyToSubscribe) {
       return () => {};
     }
