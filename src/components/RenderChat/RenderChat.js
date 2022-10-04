@@ -119,7 +119,7 @@ export const RenderChat = ({
         blocked: true,
       }));
     }
-  }, [blocked]);
+  }, [blocked, setCurrentChat]);
 
   useEffect(() => {
     if (currentChat.minutesToBlock === 0) {
@@ -136,7 +136,7 @@ export const RenderChat = ({
     }, 60000);
 
     return () => clearTimeout(timer);
-  }, [currentChat]);
+  }, [currentChat, setCurrentChat]);
 
   useEffect(() => {
     if (!readyToSubscribe) {
