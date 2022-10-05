@@ -21,6 +21,7 @@ export const RenderChat = ({
   userkeycloakId,
   currentChat,
   setCurrentChat,
+  setCurrentChatSend,
   setDrawerOpen,
   handleAfterLoadMessage,
   receivedMessage,
@@ -30,14 +31,21 @@ export const RenderChat = ({
 }) => {
   const classes = useStyle();
 
-  const { connectionKey, destination, chatId, archived, actions } = currentChat;
+  const {
+    connectionKey,
+    destination,
+    chatId,
+    archived,
+    actions,
+    minutesToBlock,
+    blocked,
+  } = currentChat;
 
   const [loading, setLoading] = useState(true);
   const [readyToSubscribe, setReadyToSubscribe] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const [page, setPage] = useState(0);
-  const [blocked, setBlocked] = useState(true);
   const [hasMoreMessage, setHasMoreMessages] = useState(false);
   const [messages, setMessages] = useState([]);
 
@@ -64,12 +72,7 @@ export const RenderChat = ({
       setHasMoreMessages(totalPages > page + 1);
       setLoading(false);
 
-      handleAfterLoadMessage(
-        newArchived,
-        newBlocked,
-        newMinutesToBlock,
-        setBlocked
-      );
+      handleAfterLoadMessage(newArchived, newBlocked, newMinutesToBlock);
 
       setReadyToSubscribe(true);
 
@@ -87,12 +90,13 @@ export const RenderChat = ({
   }, [page]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBlockCurrentChat = () => {
-    setBlocked(true);
     setCurrentChat((oldCurrentChat) => ({
       ...oldCurrentChat,
       minutesToBlock: 0,
       blocked: true,
     }));
+
+    setCurrentChatSend(currentChat);
   };
 
   const handleChangeMessageStatus = (localId, status, details) => {
@@ -113,30 +117,30 @@ export const RenderChat = ({
   };
 
   useEffect(() => {
-    if (blocked === true) {
+    if (minutesToBlock === 0 && !blocked) {
       setCurrentChat((oldCurrentChat) => ({
         ...oldCurrentChat,
         blocked: true,
       }));
-    }
-  }, [blocked, setCurrentChat]);
 
-  useEffect(() => {
-    if (currentChat.minutesToBlock === 0) {
-      setBlocked(true);
+      setCurrentChatSend(currentChat);
 
       return () => {};
     }
 
-    const timer = setTimeout(() => {
-      setCurrentChat((oldCurrentChat) => ({
-        ...oldCurrentChat,
-        minutesToBlock: oldCurrentChat.minutesToBlock - 1,
-      }));
-    }, 60000);
+    if (!blocked) {
+      const timer = setTimeout(() => {
+        setCurrentChat((oldCurrentChat) => ({
+          ...oldCurrentChat,
+          minutesToBlock: minutesToBlock - 1,
+        }));
+      }, 1000);
 
-    return () => clearTimeout(timer);
-  }, [currentChat, setCurrentChat]);
+      return () => clearTimeout(timer);
+    }
+
+    return () => {};
+  }, [currentChat]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!readyToSubscribe) {
@@ -183,7 +187,7 @@ export const RenderChat = ({
       userNamesById
     );
 
-    handleAfterLoadMessage(archived, newBlocked, newMinutesToBlock, setBlocked);
+    handleAfterLoadMessage(archived, newBlocked, newMinutesToBlock);
 
     ReactGA.event({
       category: connectionKey,
@@ -230,7 +234,6 @@ export const RenderChat = ({
       chatMessage,
       currentChat,
       setCurrentChat,
-      setBlocked,
       handleChangeMessageStatus,
       handleBlockCurrentChat
     );
@@ -360,6 +363,8 @@ export const RenderChat = ({
   };
 
   const encodedData = encodeChatData(currentChat, userkeycloakId);
+
+  console.log("minutesToBlock", currentChat.minutesToBlock);
 
   return (
     <div className={classes.container}>

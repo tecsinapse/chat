@@ -262,12 +262,7 @@ const InitContext = ({ chatInitConfig }) => {
     setOpenDrawer(false);
   };
 
-  const handleAfterLoadMessage = (
-    archived,
-    blocked,
-    minutesToBlock,
-    setBlocked
-  ) => {
+  const handleAfterLoadMessage = (archived, blocked, minutesToBlock) => {
     const newCurrentChat = {
       ...currentChat,
       minutesToBlock,
@@ -295,7 +290,6 @@ const InitContext = ({ chatInitConfig }) => {
       newCurrentChat.unreads = 0;
     }
 
-    setBlocked(blocked);
     setCurrentChatSend(blocked ? newCurrentChat : null);
     setCurrentChat(newCurrentChat);
   };
@@ -359,6 +353,7 @@ const InitContext = ({ chatInitConfig }) => {
               userkeycloakId={userkeycloakId}
               currentChat={currentChat}
               setCurrentChat={setCurrentChat}
+              setCurrentChatSend={setCurrentChatSend}
               setReload={setReload}
               setDrawerOpen={setOpenDrawer}
               handleAfterLoadMessage={handleAfterLoadMessage}
