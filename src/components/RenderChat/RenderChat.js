@@ -134,7 +134,7 @@ export const RenderChat = ({
           ...oldCurrentChat,
           minutesToBlock: minutesToBlock - 1,
         }));
-      }, 1000);
+      }, 60000);
 
       return () => clearTimeout(timer);
     }
