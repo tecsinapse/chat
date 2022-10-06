@@ -364,8 +364,6 @@ export const RenderChat = ({
 
   const encodedData = encodeChatData(currentChat, userkeycloakId);
 
-  console.log("minutesToBlock", currentChat.minutesToBlock);
-
   return (
     <div className={classes.container}>
       <Chat
