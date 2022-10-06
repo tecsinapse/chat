@@ -110,7 +110,6 @@ export class ChatService {
     chatMessage,
     currentChat,
     setCurrentChat,
-    setBlocked,
     handleChangeMessageStatus,
     handleBlockCurrentChat
   ) {
