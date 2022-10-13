@@ -215,7 +215,7 @@ export const SendNotification = ({
               action: "Send Notification",
             });
 
-            setCurrentChat(completeChat);
+            setCurrentChat({ ...completeChat, updateUnreads: true });
             setView(COMPONENT_VIEW.CHAT_MESSAGES);
             setSubmitting(false);
             setLoading(false);
