@@ -16,8 +16,8 @@ window.renderChatComponent = function renderChatComponent() {
     canSendNotification: true,
     executeFirstAction: false,
     showBackButton: true,
+    showMessageManagementBanner: true,
     params: {},
-    showBannerGestaoDeMensagens: true,
     // params: { clienteId: 59996 },
   };
 

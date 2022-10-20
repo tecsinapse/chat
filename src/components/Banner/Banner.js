@@ -1,40 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useStyle } from "./styles";
 
-export const Banner = ({ props }) => {
-  const [urlTallyForm, setUrlTallyForm] = useState(props?.tallyFormUrl);
-
+export const Banner = ({ imgUrl, formUrl, formParams }) => {
   const classes = useStyle();
 
-  useEffect(() => {
-    const script = document.createElement("script");
+  const completeFormUrl = () => {
+    // eslint-disable-next-line no-shadow
+    let completeFormUrl = formUrl;
 
-    script.src = "https://tally.so/widgets/embed.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!props || !props.tallyParams) {
-      return;
+    if (!formParams) {
+      return completeFormUrl;
     }
 
-    Object.keys(props.tallyParams).forEach(function getKey(key) {
-      setUrlTallyForm(
-        (oldUrlTallyForm) =>
-          `${oldUrlTallyForm}&${key}=${props.tallyParams[key]}`
-      );
+    Object.keys(formParams).forEach((key) => {
+      completeFormUrl += `&${key}=${formParams[key]}`;
     });
-  }, [props, setUrlTallyForm]);
+
+    return completeFormUrl;
+  };
 
   return (
     <div>
-      <a href={urlTallyForm}>
-        <img alt="" className={classes.banner} src={props?.imgUrl} />
+      <a href={completeFormUrl()}>
+        <img alt="" className={classes.banner} src={imgUrl} />
       </a>
     </div>
   );

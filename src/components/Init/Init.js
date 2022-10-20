@@ -51,6 +51,7 @@ const InitContext = ({ chatInitConfig }) => {
     canSendNotification,
     executeFirstAction,
     showBackButton,
+    showMessageManagementBanner,
     params,
   } = chatInitConfig;
 
@@ -212,6 +213,18 @@ const InitContext = ({ chatInitConfig }) => {
     [] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
+  useEffect(() => {
+    if (showMessageManagementBanner) {
+      const script = document.createElement("script");
+      const element = document.getElementById("wingo-chat-component");
+
+      script.src = RESOURCES.TALLY_EMBED_SCRIPT_SRC;
+      script.async = true;
+
+      element.append(script);
+    }
+  }, [showMessageManagementBanner]);
+
   const handleSetView = (newView) => {
     ReactGA.event({
       category: COMPONENT_VIEW[newView],
@@ -348,15 +361,12 @@ const InitContext = ({ chatInitConfig }) => {
             showBackButton={showBackButton}
           />
           {view === COMPONENT_VIEW.MESSAGE_MANAGEMENT &&
-            chatInitConfig.showBannerGestaoDeMensagens && (
+            showMessageManagementBanner && (
               <Banner
-                props={{
-                  imgUrl: RESOURCES.BANNER_GESTAO_DE_MENSAGENS,
-                  tallyFormUrl:
-                    "https://tally.so#tally-open=nPdKk0&tally-width=667&tally-hide-title=1&tally-overlay=1&tally-emoji-text=👋&tally-emoji-animation=wave",
-                  tallyParams: {
-                    kcid: userkeycloakId,
-                  },
+                imgUrl={RESOURCES.MESSAGE_MANAGEMENT_BANNER}
+                formUrl="https://tally.so#tally-open=nPdKk0&tally-width=667&tally-hide-title=1&tally-overlay=1&tally-emoji-text=👋&tally-emoji-animation=wave"
+                formParams={{
+                  kcid: userkeycloakId,
                 }}
               />
             )}
