@@ -22,6 +22,8 @@ import {
 import { getDistinctConnectionKeys } from "./utils";
 import NotificationType from "../../enums/NotificationType";
 import { ConnectionError } from "../ConnectionError/ConnectionError";
+import { Banner } from "../Banner/Banner";
+import { RESOURCES } from "../../constants/RESOURCES";
 
 export const Init = (props) => {
   React.useLayoutEffect(() => {
@@ -345,6 +347,19 @@ const InitContext = ({ chatInitConfig }) => {
             setView={handleSetView}
             showBackButton={showBackButton}
           />
+          {view === COMPONENT_VIEW.MESSAGE_MANAGEMENT &&
+            chatInitConfig.showBannerGestaoDeMensagens && (
+              <Banner
+                props={{
+                  imgUrl: RESOURCES.BANNER_GESTAO_DE_MENSAGENS,
+                  tallyFormUrl:
+                    "https://tally.so#tally-open=nPdKk0&tally-width=667&tally-hide-title=1&tally-overlay=1&tally-emoji-text=👋&tally-emoji-animation=wave",
+                  tallyParams: {
+                    kcid: userkeycloakId,
+                  },
+                }}
+              />
+            )}
           <MuiDivider variant="fullWidth" />
           {view === COMPONENT_VIEW.CONNECTION_ERROR && <ConnectionError />}
           {view === COMPONENT_VIEW.CHAT_MESSAGES && (
