@@ -5,15 +5,14 @@ export const Banner = ({ imgUrl, formUrl, formParams }) => {
   const classes = useStyle();
 
   const completeFormUrl = () => {
-    // eslint-disable-next-line no-shadow
-    let completeFormUrl = formUrl;
+    let urlWithParams = formUrl;
 
     if (!formParams) {
-      return completeFormUrl;
+      return urlWithParams;
     }
 
     Object.keys(formParams).forEach((key) => {
-      completeFormUrl += `&${key}=${formParams[key]}`;
+      urlWithParams += `&${key}=${formParams[key]}`;
     });
 
     return completeFormUrl;
