@@ -22,6 +22,8 @@ import {
 import { getDistinctConnectionKeys } from "./utils";
 import NotificationType from "../../enums/NotificationType";
 import { ConnectionError } from "../ConnectionError/ConnectionError";
+import { Banner } from "../Banner/Banner";
+import { RESOURCES } from "../../constants/RESOURCES";
 
 export const Init = (props) => {
   React.useLayoutEffect(() => {
@@ -49,6 +51,7 @@ const InitContext = ({ chatInitConfig }) => {
     canSendNotification,
     executeFirstAction,
     showBackButton,
+    showMessageManagementBanner,
     params,
   } = chatInitConfig;
 
@@ -210,6 +213,18 @@ const InitContext = ({ chatInitConfig }) => {
     [] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
+  useEffect(() => {
+    if (showMessageManagementBanner) {
+      const script = document.createElement("script");
+      const element = document.getElementById("wingo-chat-component");
+
+      script.src = RESOURCES.TALLY_EMBED_SCRIPT_SRC;
+      script.async = true;
+
+      element.append(script);
+    }
+  }, [showMessageManagementBanner]);
+
   const handleSetView = (newView) => {
     ReactGA.event({
       category: COMPONENT_VIEW[newView],
@@ -345,6 +360,16 @@ const InitContext = ({ chatInitConfig }) => {
             setView={handleSetView}
             showBackButton={showBackButton}
           />
+          {view === COMPONENT_VIEW.MESSAGE_MANAGEMENT &&
+            showMessageManagementBanner && (
+              <Banner
+                imgUrl={RESOURCES.MESSAGE_MANAGEMENT_BANNER}
+                formUrl="https://tally.so#tally-open=nPdKk0&tally-width=667&tally-hide-title=1&tally-overlay=1&tally-emoji-text=👋&tally-emoji-animation=wave"
+                formParams={{
+                  kcid: userkeycloakId,
+                }}
+              />
+            )}
           <MuiDivider variant="fullWidth" />
           {view === COMPONENT_VIEW.CONNECTION_ERROR && <ConnectionError />}
           {view === COMPONENT_VIEW.CHAT_MESSAGES && (
