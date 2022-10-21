@@ -15,7 +15,7 @@ export const Banner = ({ imgUrl, formUrl, formParams }) => {
       urlWithParams += `&${key}=${formParams[key]}`;
     });
 
-    return completeFormUrl;
+    return urlWithParams;
   };
 
   return (
