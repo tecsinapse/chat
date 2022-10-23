@@ -39,7 +39,7 @@ export const SendNotification = ({
   const [templateArgs, setTemplateArgs] = useState([]);
   const [previewText, setPreviewText] = useState(null);
   const [previewButtons, setPreviewButtons] = useState([]);
-
+  const [isBlockedOrigin, setIsBlockedOrigin] = useState(false);
   const availableConnectionKeys = [
     {
       label: "Selecione...",
@@ -89,6 +89,15 @@ export const SendNotification = ({
       setTemplates([]);
     }
   };
+
+  function shouldBlockOrigin() {
+    if (!isBlockedOrigin && availableConnectionKeys.length === 2) {
+      handleChangeConnectionKey(availableConnectionKeys[1]?.label);
+      setIsBlockedOrigin(true);
+    }
+  }
+
+  shouldBlockOrigin();
 
   useEffect(() => {
     if (!selectedTemplate) {
@@ -265,7 +274,7 @@ export const SendNotification = ({
                 value={selectedConnectionKey?.label}
                 options={availableConnectionKeys}
                 onChange={handleChangeConnectionKey}
-                disabled={submitting}
+                disabled={submitting || isBlockedOrigin}
                 label="Origem"
                 variant="auto"
                 fullWidth
