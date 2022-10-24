@@ -12,7 +12,6 @@ import {
   Switch,
   Typography,
 } from "@material-ui/core";
-import ReactGA from "react-ga4";
 import { Input } from "@tecsinapse/ui-kit";
 import Icon from "@mdi/react";
 import { mdiMagnify } from "@mdi/js";
@@ -21,6 +20,7 @@ import { Loading } from "../Loading/Loading";
 import { generateColumns } from "./utils";
 import { useStyle } from "./styles";
 import { encodeChatData } from "../utils";
+import { DeleteChat } from "../DeleteChat/DeleteChat";
 
 export const MessageManagement = ({
   loading,
@@ -75,6 +75,7 @@ export const MessageManagement = ({
 
   const handleSelectChatToDelete = (chat) => {
     setChatToDelete(chat);
+    setDeleting(true);
   };
 
   const handleSelectCurrentChat = (firstAction) => (chat) => {
@@ -84,42 +85,6 @@ export const MessageManagement = ({
       setCurrentChat(chat);
       setView(COMPONENT_VIEW.CHAT_MESSAGES);
     }
-  };
-
-  const handleDeleteChat = () => {
-    setDeleting(true);
-
-    productService
-      .deleteChat(chatToDelete)
-      .then(() => {
-        chatService
-          .deleteSessionChat(chatToDelete)
-          .then(() => {
-            const { connectionKey } = chatToDelete;
-
-            ReactGA.event({
-              category: connectionKey,
-              action: "Discard Chat",
-            });
-
-            setChatToDelete(null);
-            setDeleting(false);
-          })
-          .catch(() => {
-            setChatToDelete(null);
-            setDeleting(false);
-            setConnectionError(true);
-          });
-      })
-      .catch(() => {
-        setChatToDelete(null);
-        setDeleting(false);
-        setConnectionError(true);
-      });
-  };
-
-  const handleCloseDeleteChat = () => {
-    setChatToDelete(null);
   };
 
   const handleExecuteFirstAction = () => {
@@ -214,23 +179,17 @@ export const MessageManagement = ({
           pagination
         />
       )}
-      {chatToDelete && (
-        <Dialog open={chatToDelete} onClose={handleCloseDeleteChat}>
-          <DialogTitle>Arquivar Conversa</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Tem certeza que você deseja arquivar essa conversa?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button autoFocus onClick={handleCloseDeleteChat} color="primary">
-              Não
-            </Button>
-            <Button onClick={handleDeleteChat} color="primary" autoFocus>
-              Sim
-            </Button>
-          </DialogActions>
-        </Dialog>
+      {deleting && (
+        <DeleteChat
+          setChatToDelete={setChatToDelete}
+          setDeleting={setDeleting}
+          chatToDelete={chatToDelete}
+          teste={deleting}
+          productService={productService}
+          chatService={chatService}
+          setView={setView}
+          setConnectionError={setConnectionError}
+        />
       )}
       {executeFirstAction && chatToExecFirstAction?.actions[0] && (
         <Dialog
