@@ -24,6 +24,7 @@ import {
 import { encodeChatData } from "../utils";
 import { useStyle } from "./styles";
 import { DeleteChat } from "../DeleteChat/DeleteChat";
+import { ANALYTICS_EVENTS } from "../../constants/ANALYTICS_EVENTS";
 
 export const RenderChat = ({
   chatService,
@@ -487,6 +488,8 @@ export const RenderChat = ({
               chatService={chatService}
               setView={setView}
               setDeleting={setDeleting}
+              userkeycloakId={userkeycloakId}
+              eventName={ANALYTICS_EVENTS.DISCART_CHAT}
             />
           )}
         </List>

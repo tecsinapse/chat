@@ -21,6 +21,7 @@ import { generateColumns } from "./utils";
 import { useStyle } from "./styles";
 import { encodeChatData } from "../utils";
 import { DeleteChat } from "../DeleteChat/DeleteChat";
+import { ANALYTICS_EVENTS } from "../../constants/ANALYTICS_EVENTS";
 
 export const MessageManagement = ({
   loading,
@@ -189,6 +190,8 @@ export const MessageManagement = ({
           chatService={chatService}
           setView={setView}
           setConnectionError={setConnectionError}
+          eventName={ANALYTICS_EVENTS.DISCART_CHAT_MESSAGE_MANAGEMENT}
+          userkeycloakId={userkeycloakId}
         />
       )}
       {executeFirstAction && chatToExecFirstAction?.actions[0] && (

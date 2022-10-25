@@ -387,7 +387,7 @@ const InitContext = ({ chatInitConfig }) => {
               webSocketRef={webSocketRef}
               canSendNotification={canSendNotification}
               productService={productService}
-              setView={setView}
+              setView={handleSetView}
             />
           )}
           {view === COMPONENT_VIEW.MESSAGE_MANAGEMENT && (

@@ -18,6 +18,8 @@ export const DeleteChat = ({
   setConnectionError,
   setView,
   setDeleting,
+  userkeycloakId,
+  eventName,
 }) => {
   const handleDeleteChat = () => {
     productService
@@ -28,37 +30,58 @@ export const DeleteChat = ({
           .then(() => {
             const { connectionKey } = chatToDelete;
 
-            ReactGA.event({
-              category: connectionKey,
-              action: "Discard Chat",
-            });
-
-            if (setChatToDelete) {
-              setChatToDelete(null);
+            if (eventName) {
+              ReactGA.event({
+                category: connectionKey,
+                action: eventName,
+                keycloakUser: userkeycloakId,
+                chatVersion: process.env.REACT_APP_VERSION,
+              });
             }
-            setDeleting(false);
-            setView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
+            returnToMessageManagement();
           })
           .catch(() => {
-            if (setChatToDelete) {
-              setChatToDelete(null);
-            }
-            setDeleting(false);
-            setConnectionError(true);
+            errorDeletingChat();
           });
       })
       .catch(() => {
-        setChatToDelete(null);
-        setDeleting(false);
-        setConnectionError(true);
+        errorDeletingChat();
       });
+  };
+
+  const errorDeletingChat = () => {
+    if (setChatToDelete) {
+      setChatToDelete(null);
+    }
+
+    if (setDeleting) {
+      setDeleting(false);
+    }
+
+    if (setConnectionError) {
+      setConnectionError(true);
+    }
+  };
+
+  const returnToMessageManagement = () => {
+    if (setChatToDelete) {
+      setChatToDelete(null);
+    }
+
+    if (setDeleting) {
+      setDeleting(false);
+    }
+    setView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
   };
 
   const handleCloseDeleteChat = () => {
     if (setChatToDelete) {
       setChatToDelete(null);
     }
-    setDeleting(false);
+
+    if (setDeleting) {
+      setDeleting(false);
+    }
   };
 
   return (
