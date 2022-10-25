@@ -22,6 +22,7 @@ export const ARGS_DESCRIPTIONS = {
     "parametro consultor",
     "parametro vendedor",
     "parametro responsavel",
+    "seu nome",
   ],
 
   DEALER: [
