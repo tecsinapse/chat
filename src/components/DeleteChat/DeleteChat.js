@@ -19,7 +19,7 @@ export const DeleteChat = ({
   setView,
   setDeleting,
   userkeycloakId,
-  eventName,
+  analyticsEventName,
 }) => {
   const handleDeleteChat = () => {
     productService
@@ -30,10 +30,10 @@ export const DeleteChat = ({
           .then(() => {
             const { connectionKey } = chatToDelete;
 
-            if (eventName) {
+            if (analyticsEventName) {
               ReactGA.event({
                 category: connectionKey,
-                action: eventName,
+                action: analyticsEventName,
                 keycloakUser: userkeycloakId,
                 chatVersion: process.env.REACT_APP_VERSION,
               });

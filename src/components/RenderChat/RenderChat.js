@@ -489,7 +489,7 @@ export const RenderChat = ({
               setView={setView}
               setDeleting={setDeleting}
               userkeycloakId={userkeycloakId}
-              eventName={ANALYTICS_EVENTS.DISCART_CHAT}
+              analyticsEventName={ANALYTICS_EVENTS.DISCART_CHAT_RENDER_CHAT}
             />
           )}
         </List>

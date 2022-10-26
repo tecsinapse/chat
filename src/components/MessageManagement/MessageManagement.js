@@ -185,12 +185,11 @@ export const MessageManagement = ({
           setChatToDelete={setChatToDelete}
           setDeleting={setDeleting}
           chatToDelete={chatToDelete}
-          teste={deleting}
           productService={productService}
           chatService={chatService}
           setView={setView}
           setConnectionError={setConnectionError}
-          eventName={ANALYTICS_EVENTS.DISCART_CHAT_MESSAGE_MANAGEMENT}
+          analyticsEventName={ANALYTICS_EVENTS.DISCART_CHAT_MESSAGE_MANAGEMENT}
           userkeycloakId={userkeycloakId}
         />
       )}
