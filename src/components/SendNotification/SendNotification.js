@@ -251,6 +251,13 @@ export const SendNotification = ({
     window.open(`${url}`, "_blank");
   };
 
+  const style = {
+    indicatorsContainer: (base) => ({
+      ...base,
+      flexDirection: "row-reverse",
+    }),
+  };
+
   return (
     <div className={classes.container}>
       {loading ? (
@@ -283,6 +290,7 @@ export const SendNotification = ({
             </Grid>
             <Grid xs={12} className={classes.templates} item>
               <Select
+                styles={style}
                 value={selectedTemplate?.value}
                 options={availableTemplates}
                 onChange={handleChangeTemplate}
