@@ -258,6 +258,12 @@ export const SendNotification = ({
     }),
   };
 
+  const suggestMessageTemplateButtonStyle = (background) => ({
+    height: "36px",
+    background,
+    borderRadius: "0px 4px 4px 0px",
+  });
+
   return (
     <div className={classes.container}>
       {loading ? (
@@ -290,6 +296,7 @@ export const SendNotification = ({
             </Grid>
             <Grid xs={12} className={classes.templates} item>
               <Select
+                id="message-template"
                 styles={style}
                 value={selectedTemplate?.value}
                 options={availableTemplates}
@@ -297,21 +304,27 @@ export const SendNotification = ({
                 disabled={!selectedConnectionKey || submitting}
                 label="Modelo da Mensagem"
                 customIndicators={
-                  selectedConnectionKey && (
-                    <Tooltip
-                      title="Sugerir Modelo de Mensagem"
-                      placement="bottom-start"
-                      arrow
+                  <Tooltip
+                    title="Sugerir Modelo de Mensagem"
+                    placement="bottom-start"
+                    arrow
+                  >
+                    <IconButton
+                      disabled={!selectedConnectionKey}
+                      onClick={handleOpenMessageSugestion}
+                      style={
+                        !selectedConnectionKey
+                          ? suggestMessageTemplateButtonStyle("#CCCCCC")
+                          : suggestMessageTemplateButtonStyle("#272727")
+                      }
                     >
-                      <IconButton onClick={handleOpenMessageSugestion}>
-                        <Icon
-                          path={mdiPlusBoxOutline}
-                          size={0.8}
-                          color="#646464"
-                        />
-                      </IconButton>
-                    </Tooltip>
-                  )
+                      <Icon
+                        path={mdiPlusBoxOutline}
+                        size={0.8}
+                        color="#ffffff"
+                      />
+                    </IconButton>
+                  </Tooltip>
                 }
                 fullWidth
               />
