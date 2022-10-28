@@ -108,7 +108,7 @@ export const MessageManagement = ({
 
   return (
     <div className={classes.container}>
-      {loading || deleting ? (
+      {loading ? (
         <div className={classes.loadingContainer}>
           <Loading />
         </div>
