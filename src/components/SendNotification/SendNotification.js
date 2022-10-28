@@ -258,12 +258,6 @@ export const SendNotification = ({
     }),
   };
 
-  const suggestMessageTemplateButtonStyle = (background) => ({
-    height: "36px",
-    background,
-    borderRadius: "0px 4px 4px 0px",
-  });
-
   return (
     <div className={classes.container}>
       {loading ? (
@@ -310,12 +304,11 @@ export const SendNotification = ({
                     arrow
                   >
                     <IconButton
-                      disabled={!selectedConnectionKey}
                       onClick={handleOpenMessageSugestion}
-                      style={
-                        !selectedConnectionKey
-                          ? suggestMessageTemplateButtonStyle("#CCCCCC")
-                          : suggestMessageTemplateButtonStyle("#272727")
+                      className={
+                        selectedConnectionKey
+                          ? classes.newTemplateButtonEnable
+                          : classes.newTemplateButtonDisable
                       }
                     >
                       <Icon
