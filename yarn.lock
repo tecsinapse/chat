@@ -1818,24 +1818,6 @@
     text-mask-addons "^3.8.0"
     text-mask-core "^5.1.2"
 
-"@tecsinapse/ui-kit@^5.6.4":
-  version "5.6.4"
-  resolved "http://192.168.0.84:8081/repository/npm-all/@tecsinapse/ui-kit/-/ui-kit-5.6.4.tgz#bc0b105704e905f41f39c61b99d82f25b0610a44"
-  integrity sha512-ItIIltSSubpmVolgDL/hArLdsbQ8plAg5trCJeczd+TI/o5NPXsZFVWexWoKo8TK+OZJgbKd40VNbslyLTsQhw==
-  dependencies:
-    "@material-ui/core" "^4.11.1"
-    "@material-ui/icons" "^4.11.1"
-    "@material-ui/styles" "^4.11.1"
-    "@mdi/js" "^5.9.55"
-    "@mdi/react" "^1.4.0"
-    "@tecsinapse/es-utils" "^6.0.10"
-    material-ui-search-bar "1.0.0"
-    react-select "^3.2.0"
-    react-sizeme "^3.0.1"
-    react-text-mask "^5.4.3"
-    text-mask-addons "^3.8.0"
-    text-mask-core "^5.1.2"
-
 "@tecsinapse/uploader@^2.6.5":
   version "2.6.5"
   resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-2.6.5.tgz#094044629898c05038852e79cc48c58b79e5d031"
