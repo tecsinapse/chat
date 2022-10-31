@@ -1818,6 +1818,24 @@
     text-mask-addons "^3.8.0"
     text-mask-core "^5.1.2"
 
+"@tecsinapse/ui-kit@^5.6.4":
+  version "5.6.4"
+  resolved "http://192.168.0.84:8081/repository/npm-all/@tecsinapse/ui-kit/-/ui-kit-5.6.4.tgz#bc0b105704e905f41f39c61b99d82f25b0610a44"
+  integrity sha512-ItIIltSSubpmVolgDL/hArLdsbQ8plAg5trCJeczd+TI/o5NPXsZFVWexWoKo8TK+OZJgbKd40VNbslyLTsQhw==
+  dependencies:
+    "@material-ui/core" "^4.11.1"
+    "@material-ui/icons" "^4.11.1"
+    "@material-ui/styles" "^4.11.1"
+    "@mdi/js" "^5.9.55"
+    "@mdi/react" "^1.4.0"
+    "@tecsinapse/es-utils" "^6.0.10"
+    material-ui-search-bar "1.0.0"
+    react-select "^3.2.0"
+    react-sizeme "^3.0.1"
+    react-text-mask "^5.4.3"
+    text-mask-addons "^3.8.0"
+    text-mask-core "^5.1.2"
+
 "@tecsinapse/uploader@^2.6.5":
   version "2.6.5"
   resolved "https://registry.yarnpkg.com/@tecsinapse/uploader/-/uploader-2.6.5.tgz#094044629898c05038852e79cc48c58b79e5d031"
@@ -5814,7 +5832,7 @@ gensync@^1.0.0-beta.1, gensync@^1.0.0-beta.2:
 
 get-caller-file@^2.0.1:
   version "2.0.5"
-  resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-2.0.5.tgz#4f94412a82db32f36e3b0b9741f8a97feb031f7e"
+  resolved "http://192.168.0.84:8081/repository/npm-all/get-caller-file/-/get-caller-file-2.0.5.tgz#4f94412a82db32f36e3b0b9741f8a97feb031f7e"
   integrity sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==
 
 get-intrinsic@^1.0.2, get-intrinsic@^1.1.0, get-intrinsic@^1.1.1:
@@ -6131,7 +6149,7 @@ hoist-non-react-statics@^2.3.1:
 
 hoist-non-react-statics@^3.3.2:
   version "3.3.2"
-  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
+  resolved "http://192.168.0.84:8081/repository/npm-all/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
   dependencies:
     react-is "^16.7.0"

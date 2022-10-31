@@ -93,7 +93,11 @@ export const SendNotification = ({
     if (availableConnectionKeys.length === 2 && !selectedConnectionKey) {
       handleChangeConnectionKey(availableConnectionKeys[1]?.label);
     }
-  }, []);
+  }, [
+    availableConnectionKeys,
+    handleChangeConnectionKey,
+    selectedConnectionKey,
+  ]);
 
   useEffect(() => {
     if (!selectedTemplate) {
