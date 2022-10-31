@@ -251,6 +251,13 @@ export const SendNotification = ({
     window.open(`${url}`, "_blank");
   };
 
+  const style = {
+    indicatorsContainer: (base) => ({
+      ...base,
+      flexDirection: "row-reverse",
+    }),
+  };
+
   return (
     <div className={classes.container}>
       {loading ? (
@@ -283,27 +290,34 @@ export const SendNotification = ({
             </Grid>
             <Grid xs={12} className={classes.templates} item>
               <Select
+                id="message-template"
+                styles={style}
                 value={selectedTemplate?.value}
                 options={availableTemplates}
                 onChange={handleChangeTemplate}
                 disabled={!selectedConnectionKey || submitting}
                 label="Modelo da Mensagem"
                 customIndicators={
-                  selectedConnectionKey && (
-                    <Tooltip
-                      title="Sugerir Modelo de Mensagem"
-                      placement="bottom-start"
-                      arrow
+                  <Tooltip
+                    title="Sugerir Modelo de Mensagem"
+                    placement="bottom-start"
+                    arrow
+                  >
+                    <IconButton
+                      onClick={handleOpenMessageSugestion}
+                      className={
+                        selectedConnectionKey
+                          ? classes.newTemplateButtonEnable
+                          : classes.newTemplateButtonDisable
+                      }
                     >
-                      <IconButton onClick={handleOpenMessageSugestion}>
-                        <Icon
-                          path={mdiPlusBoxOutline}
-                          size={0.8}
-                          color="#646464"
-                        />
-                      </IconButton>
-                    </Tooltip>
-                  )
+                      <Icon
+                        path={mdiPlusBoxOutline}
+                        size={0.8}
+                        color="#ffffff"
+                      />
+                    </IconButton>
+                  </Tooltip>
                 }
                 fullWidth
               />
