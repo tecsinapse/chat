@@ -95,7 +95,6 @@ export const SendNotification = ({
     }
   }, [
     availableConnectionKeys,
-    handleChangeConnectionKey,
     selectedConnectionKey,
   ]);
 
