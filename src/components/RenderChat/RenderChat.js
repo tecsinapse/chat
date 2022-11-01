@@ -2,7 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactGA from "react-ga4";
 import uuidv1 from "uuid/v1";
 import { Chat, DELIVERY_STATUS } from "@tecsinapse/chat";
-import { List, ListItem, ListItemText, Popover } from "@material-ui/core";
+import { mdiInformation } from "@mdi/js";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Popover,
+  Tooltip,
+} from "@material-ui/core";
+import Icon from "@mdi/react";
 import {
   formatMessageStatus,
   getChatMessageObject,
@@ -15,6 +23,8 @@ import {
 } from "./utils";
 import { encodeChatData } from "../utils";
 import { useStyle } from "./styles";
+import { DeleteChat } from "../DeleteChat/DeleteChat";
+import { ANALYTICS_EVENTS } from "../../constants/ANALYTICS_EVENTS";
 
 export const RenderChat = ({
   chatService,
@@ -28,6 +38,8 @@ export const RenderChat = ({
   userNamesById,
   webSocketRef,
   canSendNotification,
+  productService,
+  setView,
 }) => {
   const classes = useStyle();
 
@@ -48,6 +60,7 @@ export const RenderChat = ({
   const [page, setPage] = useState(0);
   const [hasMoreMessage, setHasMoreMessages] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [deleting, setDeleting] = useState(false);
 
   const messagesEndRef = useRef(null);
 
@@ -362,7 +375,12 @@ export const RenderChat = ({
     // não faz nada
   };
 
+  const deleteChat = () => {
+    setDeleting(true);
+  };
+
   const encodedData = encodeChatData(currentChat, userkeycloakId);
+  const style1 = { display: "flex", alignItems: "center" };
 
   return (
     <div className={classes.container}>
@@ -451,6 +469,29 @@ export const RenderChat = ({
                 </ListItem>
               );
             })}
+          {!currentChat.archived && (
+            <ListItem button onClick={deleteChat}>
+              <ListItemText>
+                <div style={style1}>
+                  <span>Arquivar Conversa</span>
+                  <Tooltip title="O recurso arquivar conversa possibilita ocultar uma conversa para organizar melhor sua lista de conversas. As mensagens não são excluídas, sendo possível retomar o diálogo iniciando uma nova conversa de forma ativa ou aguardando um novo contato do cliente.">
+                    <Icon path={mdiInformation} size={0.8} />
+                  </Tooltip>
+                </div>
+              </ListItemText>
+            </ListItem>
+          )}
+          {deleting && (
+            <DeleteChat
+              chatToDelete={currentChat}
+              productService={productService}
+              chatService={chatService}
+              setView={setView}
+              setDeleting={setDeleting}
+              userkeycloakId={userkeycloakId}
+              analyticsEventName={ANALYTICS_EVENTS.DISCART_CHAT_RENDER_CHAT}
+            />
+          )}
         </List>
       </Popover>
     </div>

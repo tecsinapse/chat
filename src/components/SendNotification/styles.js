@@ -44,5 +44,21 @@ export const useStyle = makeStyles((theme) => ({
   },
   templates: {
     zIndex: 999998,
+    "& #message-template  .MuiInputBase-input": {
+      padding: "10px 0 10px 16px !important",
+    },
+  },
+  newTemplateButtonEnable: {
+    backgroundColor: "#272727",
+    "&:hover": {
+      backgroundColor: theme.palette.primary.dark,
+    },
+    height: "36px",
+    borderRadius: "0px 4px 4px 0px",
+  },
+  newTemplateButtonDisable: {
+    backgroundColor: "#cccccc",
+    height: "36px",
+    borderRadius: "0px 4px 4px 0px",
   },
 }));
