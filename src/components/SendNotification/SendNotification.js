@@ -92,11 +92,8 @@ export const SendNotification = ({
   useEffect(() => {
     if (availableConnectionKeys.length === 2 && !selectedConnectionKey) {
       handleChangeConnectionKey(availableConnectionKeys[1]?.label);
-    }
-  }, [
-    availableConnectionKeys,
-    selectedConnectionKey,
-  ]);
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableConnectionKeys, selectedConnectionKey]);
 
   useEffect(() => {
     if (!selectedTemplate) {
