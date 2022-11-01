@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, IconButton, Input, Select } from "@tecsinapse/ui-kit";
-import { Box, ButtonGroup, Grid, Tooltip, Typography } from "@material-ui/core";
+import {
+  Button,
+  IconButton,
+  Input,
+  MessagePreview,
+  Select,
+} from "@tecsinapse/ui-kit";
+import { Box, Grid, Tooltip } from "@material-ui/core";
 import Icon from "@mdi/react";
 import { mdiPlusBoxOutline } from "@mdi/js";
 import ReactGA from "react-ga4";
@@ -9,7 +15,12 @@ import { useStyle } from "./styles";
 import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
 import { normalize } from "../utils";
 import { ARGS_DESCRIPTIONS } from "../../constants/ARGS_DESCRIPTIONS";
-import { countryPhoneNumber } from "./utils";
+import {
+  countryPhoneNumber,
+  formatTemplate,
+  generateButtons,
+  generatePreviewText,
+} from "./utils";
 
 export const SendNotification = ({
   chatService,
@@ -108,15 +119,20 @@ export const SendNotification = ({
 
     for (let i = 0; i < templateArgsKeys.length; i++) {
       const description = normalize(templateArgsDescriptions[i]);
+      const key = templateArgsKeys[i];
+      let value = "";
 
       if (ARGS_DESCRIPTIONS.NAME.includes(description)) {
-        newTemplateArgs.push(currentChat?.name || "");
+        value = currentChat?.name || "";
+        newTemplateArgs.push({ key, value });
       } else if (ARGS_DESCRIPTIONS.DEALER.includes(description)) {
-        newTemplateArgs.push(connectionKeyArgs.DealerName || "");
+        value = connectionKeyArgs.DealerName || "";
+        newTemplateArgs.push({ key, value });
       } else if (ARGS_DESCRIPTIONS.OWNER.includes(description)) {
-        newTemplateArgs.push(userNamesById[userkeycloakId] || "");
+        value = userNamesById[userkeycloakId] || "";
+        newTemplateArgs.push({ key, value });
       } else {
-        newTemplateArgs.push("");
+        newTemplateArgs.push({ key, value });
       }
     }
 
@@ -131,25 +147,26 @@ export const SendNotification = ({
       return;
     }
 
-    let { template: newPreviewText } = selectedTemplate;
+    const { descriptions, keys, template, buttons } = selectedTemplate;
 
-    const {
-      buttons: newPreviewButtons,
-      keys: newTemplateArgsKeys,
-    } = selectedTemplate;
+    let newPreviewText = formatTemplate(template);
 
-    for (let i = 0; i < templateArgs.length; i++) {
-      if (templateArgs[i]) {
-        newPreviewText = newPreviewText.replaceAll(
-          `{{${newTemplateArgsKeys[i]}}}`,
-          `<b>${templateArgs[i]}</b>`
-        );
-      }
-    }
+    const templateProps = {
+      template: newPreviewText,
+      descriptions,
+      keys,
+      args: templateArgs,
+    };
+
+    newPreviewText = generatePreviewText(templateProps);
+    setPreviewText(newPreviewText);
+
+    const newPreviewButtons = generateButtons(buttons);
 
     setPreviewButtons(newPreviewButtons);
-    setPreviewText(newPreviewText);
   }, [templateArgs]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const argsValues = templateArgs.map((it) => it.value);
 
   const handleChangePhoneNumber = (event) => {
     setPhoneNumber(event.target.value.replace(/[^\d]/g, ""));
@@ -164,7 +181,7 @@ export const SendNotification = ({
   const handleChangeTemplateArg = (index) => (event) => {
     const newTemplateArgs = [...templateArgs];
 
-    newTemplateArgs[index] = event.target.value;
+    newTemplateArgs[index].value = event.target.value;
     setTemplateArgs(newTemplateArgs);
   };
 
@@ -189,7 +206,7 @@ export const SendNotification = ({
       const description = normalize(templateArgsDescriptions[i]);
 
       if (ARGS_DESCRIPTIONS.NAME.includes(description)) {
-        name = templateArgs[i];
+        name = argsValues[i];
       }
     }
 
@@ -206,7 +223,7 @@ export const SendNotification = ({
             userkeycloakId,
             incompleteChat,
             templateId,
-            templateArgs
+            argsValues
           )
           .then((completeChat) => {
             ReactGA.event({
@@ -322,13 +339,13 @@ export const SendNotification = ({
                 fullWidth
               />
             </Grid>
-            {templateArgs.map((arg, index) => (
+            {argsValues.map((arg, index) => (
               // eslint-disable-next-line react/no-array-index-key
               <Grid key={`template-arg-${index}`} item>
                 <Input
                   name={`args[${index}]`}
                   label={selectedTemplate.descriptions[index]}
-                  value={templateArgs[index]}
+                  value={argsValues[index]}
                   onChange={handleChangeTemplateArg(index)}
                   disabled={submitting}
                   maxLength={255}
@@ -338,24 +355,13 @@ export const SendNotification = ({
             ))}
             {previewText && (
               <Grid item>
-                <Typography variant="caption">Mensagem:</Typography>
                 <div className={classes.preview}>
-                  <Typography
-                    className={classes.previewText}
-                    dangerouslySetInnerHTML={{
-                      __html: previewText,
-                    }}
-                  />
-                  {previewButtons && (
-                    <ButtonGroup className={classes.previewButtons} fullWidth>
-                      {previewButtons.map((button, index) => (
-                        // eslint-disable-next-line react/no-array-index-key
-                        <Button key={`button-${index}`} disabled size="small">
-                          {button}
-                        </Button>
-                      ))}
-                    </ButtonGroup>
-                  )}
+                  <Grid item>
+                    <MessagePreview
+                      unformattedText={previewText}
+                      buttons={previewButtons}
+                    />
+                  </Grid>
                 </div>
               </Grid>
             )}
@@ -368,7 +374,7 @@ export const SendNotification = ({
                   !selectedTemplate ||
                   phoneNumber.length < 10 ||
                   phoneNumber.length > 13 ||
-                  templateArgs.filter((it) => it.length === 0).length > 0
+                  argsValues.filter((it) => it.length === 0).length > 0
                 }
                 submitting={submitting}
                 onClick={handleSendNotification}
