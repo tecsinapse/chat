@@ -49,7 +49,6 @@ export const SendNotification = ({
   const [templateArgs, setTemplateArgs] = useState([]);
   const [previewText, setPreviewText] = useState(null);
   const [previewButtons, setPreviewButtons] = useState([]);
-
   const availableConnectionKeys = [
     {
       label: "Selecione...",
@@ -99,6 +98,12 @@ export const SendNotification = ({
       setTemplates([]);
     }
   };
+
+  useEffect(() => {
+    if (availableConnectionKeys.length === 2 && !selectedConnectionKey) {
+      handleChangeConnectionKey(availableConnectionKeys[1]?.label);
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableConnectionKeys, selectedConnectionKey]);
 
   useEffect(() => {
     if (!selectedTemplate) {
@@ -276,7 +281,7 @@ export const SendNotification = ({
                 value={selectedConnectionKey?.label}
                 options={availableConnectionKeys}
                 onChange={handleChangeConnectionKey}
-                disabled={submitting}
+                disabled={submitting || availableConnectionKeys.length === 2}
                 label="Origem"
                 variant="auto"
                 fullWidth
