@@ -29,31 +29,31 @@ export const countryPhoneNumber = (raw) => {
 const isPhoneNumberStartWithCountryCode = (phoneNumber) =>
   phoneNumber.startsWith("55") && phoneNumber.length >= 12;
 
-export const formatTemplate = (str) => {
+const formatTemplate = (str) => {
   if (!str) {
     return str;
   }
 
   return str.replace(/{{(\w+)}}/g, (match, value) =>
-    value !== "undefined" ? `[${value}]` : `[match]`
+    !value ? `[${match}]` : `[${value}]`
   );
 };
 
-const templateArgs = (keys, descriptions) =>
+const fieldDescriptions = (keys, descriptions) =>
   keys.map((key, index) => ({
     key,
     description: descriptions[index],
   }));
 
-export const generatePreviewText = (props) => {
-  const { template, descriptions, keys, args } = props;
-  const templateValues = templateArgs(keys, descriptions);
+export const generatePreviewText = (selectedTemplate, templateArgs) => {
+  const { template, descriptions, keys } = selectedTemplate;
+  const templateFields = fieldDescriptions(keys, descriptions);
 
-  return template.replace(/\[(\w+)]/g, (match, value) => {
-    const templateValue = templateValues.find((it) => it.key === value);
-    const arg = args.find((it) => it.key === value);
+  return formatTemplate(template).replace(/\[(\w+)]/g, (match, value) => {
+    const templateValue = templateFields.find((it) => it.key === value);
+    const arg = templateArgs.find((it) => it.key === value);
 
-    if (arg && arg.value !== "") {
+    if (arg?.value !== "") {
       return arg.value;
     }
 

@@ -17,7 +17,6 @@ import { normalize } from "../utils";
 import { ARGS_DESCRIPTIONS } from "../../constants/ARGS_DESCRIPTIONS";
 import {
   countryPhoneNumber,
-  formatTemplate,
   generateButtons,
   generatePreviewText,
 } from "./utils";
@@ -147,23 +146,11 @@ export const SendNotification = ({
       return;
     }
 
-    const { descriptions, keys, template, buttons } = selectedTemplate;
-
-    let newPreviewText = formatTemplate(template);
-
-    const templateProps = {
-      template: newPreviewText,
-      descriptions,
-      keys,
-      args: templateArgs,
-    };
-
-    newPreviewText = generatePreviewText(templateProps);
-    setPreviewText(newPreviewText);
-
-    const newPreviewButtons = generateButtons(buttons);
+    const newPreviewButtons = generateButtons(selectedTemplate.buttons);
+    const newPreviewText = generatePreviewText(selectedTemplate, templateArgs);
 
     setPreviewButtons(newPreviewButtons);
+    setPreviewText(newPreviewText);
   }, [templateArgs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const argsValues = templateArgs.map((it) => it.value);
