@@ -1,6 +1,6 @@
 {
   "name": "@tecsinapse/chat-component",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "license": "MIT",
   "main": "build/index.js",
   "module": "build/index.js",
@@ -53,7 +53,7 @@
     "@mdi/react": "^1.4.0",
     "@tecsinapse/chat": "^3.2.7",
     "@tecsinapse/table": "^4.0.2",
-    "@tecsinapse/ui-kit": "^5.6.4",
+    "@tecsinapse/ui-kit": "5.6.5",
     "enumify": "^1.0.4",
     "jwt-simple": "^0.5.6",
     "moment": "^2.27.0",
