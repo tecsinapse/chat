@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Button, IconButton, Input, Select } from "@tecsinapse/ui-kit";
-import { Box, ButtonGroup, Grid, Tooltip, Typography } from "@material-ui/core";
+import React, {useEffect, useState} from "react";
+import {Button, IconButton, Input, Select} from "@tecsinapse/ui-kit";
+import {Box, ButtonGroup, Grid, Tooltip, Typography} from "@material-ui/core";
 import Icon from "@mdi/react";
-import { mdiPlusBoxOutline } from "@mdi/js";
+import {mdiPlusBoxOutline} from "@mdi/js";
 import ReactGA from "react-ga4";
-import { Loading } from "../Loading/Loading";
-import { useStyle } from "./styles";
-import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
-import { normalize } from "../utils";
-import { ARGS_DESCRIPTIONS } from "../../constants/ARGS_DESCRIPTIONS";
-import { countryPhoneNumber } from "./utils";
+import {Loading} from "../Loading/Loading";
+import {useStyle} from "./styles";
+import {COMPONENT_VIEW} from "../../constants/COMPONENT_VIEW";
+import {normalize} from "../utils";
+import {ARGS_DESCRIPTIONS} from "../../constants/ARGS_DESCRIPTIONS";
+import {countryPhoneNumber} from "./utils";
 
 export const SendNotification = ({
   chatService,
@@ -155,7 +155,7 @@ export const SendNotification = ({
   const handleChangeTemplate = (value) => {
     let gaLabel = undefined;
     templates.find(it => {
-      const found = it.options.find(option =>{
+      return it.options.find(option => {
         const found = option.value === value;
         if (found)
           setSelectedTemplate(option);
@@ -172,8 +172,7 @@ export const SendNotification = ({
             action: gaLabel,
           });
         return found;
-      })
-      return found;
+      });
     });
   };
 
