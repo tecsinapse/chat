@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from "react";
-import {Button, IconButton, Input, Select} from "@tecsinapse/ui-kit";
-import {Box, ButtonGroup, Grid, Tooltip, Typography} from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { Button, IconButton, Input, Select } from "@tecsinapse/ui-kit";
+import { Box, ButtonGroup, Grid, Tooltip, Typography } from "@material-ui/core";
 import Icon from "@mdi/react";
-import {mdiPlusBoxOutline} from "@mdi/js";
+import { mdiPlusBoxOutline } from "@mdi/js";
 import ReactGA from "react-ga4";
-import {Loading} from "../Loading/Loading";
-import {useStyle} from "./styles";
-import {COMPONENT_VIEW} from "../../constants/COMPONENT_VIEW";
-import {normalize} from "../utils";
-import {ARGS_DESCRIPTIONS} from "../../constants/ARGS_DESCRIPTIONS";
-import {countryPhoneNumber} from "./utils";
+import { Loading } from "../Loading/Loading";
+import { useStyle } from "./styles";
+import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
+import { normalize } from "../utils";
+import { ARGS_DESCRIPTIONS } from "../../constants/ARGS_DESCRIPTIONS";
+import { countryPhoneNumber } from "./utils";
 
 export const SendNotification = ({
   chatService,
@@ -39,11 +39,13 @@ export const SendNotification = ({
   const [templateArgs, setTemplateArgs] = useState([]);
   const [previewText, setPreviewText] = useState(null);
   const [previewButtons, setPreviewButtons] = useState([]);
+  const MOST_USED = "Mais usadas nos últimos 45 dias";
+  const TEMPLATE_LIST = "Lista de modelos";
   const availableConnectionKeys = [
     {
       label: "Selecione...",
       value: null,
-    }
+    },
   ];
 
   connectionKeys &&
@@ -56,10 +58,7 @@ export const SendNotification = ({
 
   const availableTemplates = [];
 
-  templates &&
-    templates.forEach((it) =>
-      availableTemplates.push(it)
-    );
+  templates && templates.forEach((it) => availableTemplates.push(it));
 
   const handleChangeConnectionKey = (value) => {
     const connectionKey = connectionKeys.find((it) => it.label === value);
@@ -69,10 +68,12 @@ export const SendNotification = ({
       setSelectedConnectionKey(connectionKey);
       setLoading(true);
 
-      chatService.getTemplatesByUser(connectionKey.value, userkeycloakId).then((newTemplates) => {
-        setTemplates(newTemplates);
-        setLoading(false);
-      });
+      chatService
+        .getTemplatesByUser(connectionKey.value, userkeycloakId)
+        .then((newTemplates) => {
+          setTemplates(newTemplates);
+          setLoading(false);
+        });
     } else {
       setSelectedTemplate(null);
       setTemplateArgs([]);
@@ -153,27 +154,33 @@ export const SendNotification = ({
   };
 
   const handleChangeTemplate = (value) => {
-    let gaLabel = undefined;
-    templates.find(it => {
-      return it.options.find(option => {
+    let gaLabel;
+
+    templates.find((it) =>
+      it.options.find((option) => {
         const found = option.value === value;
-        if (found)
+
+        if (found) {
           setSelectedTemplate(option);
+        }
 
-        if (found && it.label === MOST_USED)
-          gaLabel = 'CLICK_TOP_2_MODELO_MSG';
-        else if (found && it.label === TEMPLATE_LIST)
-          gaLabel = 'CLICK_FORA_TOP_2_MODELO_MSG';
+        if (found && it.label === MOST_USED) {
+          gaLabel = "CLICK_TOP_2_MODELO_MSG";
+        } else if (found && it.label === TEMPLATE_LIST) {
+          gaLabel = "CLICK_FORA_TOP_2_MODELO_MSG";
+        }
 
-        if (found && gaLabel)
+        if (found && gaLabel) {
           ReactGA.event({
             category: selectedConnectionKey,
-            label: 'CLICK TOP 2',
+            label: "CLICK TOP 2",
             action: gaLabel,
           });
+        }
+
         return found;
-      });
-    });
+      })
+    );
   };
 
   const handleChangeTemplateArg = (index) => (event) => {

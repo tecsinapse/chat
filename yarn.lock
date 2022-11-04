@@ -1818,10 +1818,10 @@
     text-mask-addons "^3.8.0"
     text-mask-core "^5.1.2"
 
-"@tecsinapse/ui-kit@^5.6.4":
-  version "5.6.5"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.6.5.tgz#b400f48dd40fd76cefd2d7d3f545f0732e0f07b6"
-  integrity sha512-wYilQNGbuvPeBYLdtWuSqgrl9i2js7IV/AACRsgdxObqxWg1dqTn8vwBTNsagy/jUKq5XLsNgxsPApvZvjgwOA==
+"@tecsinapse/ui-kit@^5.6.5":
+  version "5.6.6"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.6.6.tgz#90eb4d67e34e2de620b7e92f08bee70971730198"
+  integrity sha512-2ETR5Cf57ab8+yly40befOr+LYAUNCQAKsmL5J12USCqRamE8FUY0Dnh6Qi0ougXTWMVHllJF+GHnpwQ8vW5cw==
   dependencies:
     "@material-ui/core" "^4.11.1"
     "@material-ui/icons" "^4.11.1"
