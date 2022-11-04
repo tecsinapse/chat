@@ -29,6 +29,9 @@ export class ChatService {
     return defaultFetch(`${this.url}/${connectionKey}/templates`, "GET", {});
   }
 
+  getTemplatesByUser(connectionKey, userId) {
+    return defaultFetch(`${this.url}/${connectionKey}/templates/${userId}`, "GET", {});
+  }
   sendDataApi(currentChat, formData) {
     const { connectionKey, destination, chatId } = currentChat;
 

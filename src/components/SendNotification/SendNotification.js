@@ -43,7 +43,7 @@ export const SendNotification = ({
     {
       label: "Selecione...",
       value: null,
-    },
+    }
   ];
 
   connectionKeys &&
@@ -54,19 +54,11 @@ export const SendNotification = ({
       })
     );
 
-  const availableTemplates = [
-    {
-      label: "Selecione...",
-      value: null,
-    },
-  ];
+  const availableTemplates = [];
 
   templates &&
     templates.forEach((it) =>
-      availableTemplates.push({
-        label: it.name,
-        value: it.value,
-      })
+      availableTemplates.push(it)
     );
 
   const handleChangeConnectionKey = (value) => {
@@ -77,7 +69,7 @@ export const SendNotification = ({
       setSelectedConnectionKey(connectionKey);
       setLoading(true);
 
-      chatService.getAllTampletes(connectionKey.value).then((newTemplates) => {
+      chatService.getTemplatesByUser(connectionKey.value, userkeycloakId).then((newTemplates) => {
         setTemplates(newTemplates);
         setLoading(false);
       });
@@ -161,9 +153,28 @@ export const SendNotification = ({
   };
 
   const handleChangeTemplate = (value) => {
-    const template = templates.find((it) => it.value === value);
+    let gaLabel = undefined;
+    templates.find(it => {
+      const found = it.options.find(option =>{
+        const found = option.value === value;
+        if (found)
+          setSelectedTemplate(option);
 
-    setSelectedTemplate(template);
+        if (found && it.label === MOST_USED)
+          gaLabel = 'CLICK_TOP_2_MODELO_MSG';
+        else if (found && it.label === TEMPLATE_LIST)
+          gaLabel = 'CLICK_FORA_TOP_2_MODELO_MSG';
+
+        if (found && gaLabel)
+          ReactGA.event({
+            category: selectedConnectionKey,
+            label: 'CLICK TOP 2',
+            action: gaLabel,
+          });
+        return found;
+      })
+      return found;
+    });
   };
 
   const handleChangeTemplateArg = (index) => (event) => {
