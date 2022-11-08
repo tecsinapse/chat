@@ -336,7 +336,7 @@ export const SendNotification = ({
               <Grid key={`template-arg-${index}`} item>
                 <Input
                   name={`args[${index}]`}
-                  label={selectedTemplate.descriptions[index]}
+                  label={selectedTemplate?.descriptions[index]}
                   value={argsValues[index]}
                   onChange={handleChangeTemplateArg(index)}
                   disabled={submitting}
