@@ -58,14 +58,11 @@ const InitContext = ({ chatInitConfig }) => {
   const productService = new ProductService(productChatPath);
   const chatService = new ChatService(chatApiUrl);
 
-  const [view, setView] = useState(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
+  const [view, setView] = useState(COMPONENT_VIEW.COMPONENT_INIT);
   const [loading, setLoading] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
   const [componentInfo, setComponentInfo] = useState({});
   const [reload, setReload] = useState(false);
-  const [metrica, setMetrica] = useState(0);
-
-  const [sendTime, setSendTime] = useState(false);
 
   const [onlyNotClients, setOnlyNotClients] = useState(false);
   const [onlyUnreads, setOnlyUnreads] = useState(false);
@@ -319,40 +316,6 @@ const InitContext = ({ chatInitConfig }) => {
   // propaga a alteração do som da notificação para todos os componentes abertos
   window.onstorage = handleLocalStorage(userkeycloakId, setNotificationSound);
 
-  const logTimes = (id, phase, actualTime, baseTime, startTime, commitTime) => {
-    if (phase === "mount" && metrica > 0) {
-      console.log(metrica);
-      setMetrica(0);
-    }
-
-    if (phase === "mount" && metrica === 0) {
-      setMetrica(Date.now());
-    } else if (metrica > 0) {
-      setMetrica((oldMetrica) => Date.now() - oldMetrica);
-    }
-
-    /* if (!sendTime) {
-                  setSendTime(true);
-                  metrica;
-                } else if (phase === "mount" && sendTime) {
-                  console.log("-----Tempo total-----");
-                  console.log(totalTime);
-                  console.log("-----Tempo total-----");
-                  totalTime = 0;
-                } else {
-                  totalTime += actualTime;
-                }
-
-                console.log(`${id}'s ${phase} phase:`);
-                console.log(`Actual time: ${actualTime}`);
-                console.log(`Base time: ${baseTime}`);
-                console.log(`Start time: ${startTime}`);
-                console.log(`Commit time: ${commitTime}`);
-                console.log(`Total time: ${totalTime}`);
-                console.log(`timestamp: ${Date.now()}`); */
-    console.log("--------------------------------------------");
-  };
-
   return (
     <div>
       {process.env.REACT_APP_HOST === "development" && (
@@ -373,8 +336,11 @@ const InitContext = ({ chatInitConfig }) => {
       )}
       {!openDrawer && (
         <ChatButton
+          userkeycloakId={userkeycloakId}
           firstLoad={firstLoad}
           setOpenDrawer={setOpenDrawer}
+          view={view}
+          setView={handleSetView}
           unreads={componentInfo?.totalUnreads}
         />
       )}
@@ -410,24 +376,23 @@ const InitContext = ({ chatInitConfig }) => {
           <MuiDivider variant="fullWidth" />
           {view === COMPONENT_VIEW.CONNECTION_ERROR && <ConnectionError />}
           {view === COMPONENT_VIEW.CHAT_MESSAGES && (
-            <React.Profiler id="Chat" onRender={logTimes}>
-              <RenderChat
-                chatService={chatService}
-                userkeycloakId={userkeycloakId}
-                currentChat={currentChat}
-                setCurrentChat={setCurrentChat}
-                setCurrentChatSend={setCurrentChatSend}
-                setReload={setReload}
-                setDrawerOpen={setOpenDrawer}
-                handleAfterLoadMessage={handleAfterLoadMessage}
-                receivedMessage={receivedMessage}
-                userNamesById={componentInfo?.userNamesById}
-                webSocketRef={webSocketRef}
-                canSendNotification={canSendNotification}
-                productService={productService}
-                setView={handleSetView}
-              />
-            </React.Profiler>
+            <RenderChat
+              chatService={chatService}
+              userkeycloakId={userkeycloakId}
+              currentChat={currentChat}
+              setCurrentChat={setCurrentChat}
+              setCurrentChatSend={setCurrentChatSend}
+              setReload={setReload}
+              setDrawerOpen={setOpenDrawer}
+              handleAfterLoadMessage={handleAfterLoadMessage}
+              receivedMessage={receivedMessage}
+              userNamesById={componentInfo?.userNamesById}
+              webSocketRef={webSocketRef}
+              canSendNotification={canSendNotification}
+              productService={productService}
+              view={view}
+              setView={handleSetView}
+            />
           )}
           {view === COMPONENT_VIEW.MESSAGE_MANAGEMENT && (
             <MessageManagement
@@ -443,6 +408,7 @@ const InitContext = ({ chatInitConfig }) => {
               componentInfo={componentInfo}
               userkeycloakId={userkeycloakId}
               userNamesById={componentInfo?.userNamesById}
+              view={view}
               setView={handleSetView}
               page={page}
               setPage={setPage}
@@ -463,6 +429,7 @@ const InitContext = ({ chatInitConfig }) => {
               loading={loading}
               setLoading={setLoading}
               setConnectionError={setConnectionError}
+              view={view}
               setView={handleSetView}
               userNamesById={componentInfo?.userNamesById}
             />

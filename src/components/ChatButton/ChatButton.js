@@ -4,12 +4,24 @@ import React from "react";
 import { mdiForum } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useStyle } from "./styles";
+import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
+import { LoadMetric } from "../LoadMetric/LoadMetric";
 
-export const ChatButton = ({ firstLoad, setOpenDrawer, unreads }) => {
+export const ChatButton = ({
+  userkeycloakId,
+  firstLoad,
+  setOpenDrawer,
+  view,
+  setView,
+  unreads,
+}) => {
   const classes = useStyle();
 
   const handleOpenDrawer = () => {
     if (!firstLoad) {
+      if (view === COMPONENT_VIEW.COMPONENT_INIT) {
+        setView(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
+      }
       setOpenDrawer(true);
     }
   };
@@ -34,7 +46,9 @@ export const ChatButton = ({ firstLoad, setOpenDrawer, unreads }) => {
             className={classes.fab}
           >
             {firstLoad ? (
-              <CircularProgress size={20} className={classes.fabProgress} />
+              <LoadMetric metricId={view} userkeyloakId={userkeycloakId}>
+                <CircularProgress size={20} className={classes.fabProgress} />
+              </LoadMetric>
             ) : (
               <Icon path={mdiForum} size={1} color="#7b4e00" />
             )}

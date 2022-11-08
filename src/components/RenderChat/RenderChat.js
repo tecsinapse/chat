@@ -25,6 +25,7 @@ import { encodeChatData } from "../utils";
 import { useStyle } from "./styles";
 import { DeleteChat } from "../DeleteChat/DeleteChat";
 import { ANALYTICS_EVENTS } from "../../constants/ANALYTICS_EVENTS";
+import { LoadMetric } from "../LoadMetric/LoadMetric";
 
 export const RenderChat = ({
   chatService,
@@ -39,6 +40,7 @@ export const RenderChat = ({
   webSocketRef,
   canSendNotification,
   productService,
+  view,
   setView,
 }) => {
   const classes = useStyle();
@@ -384,6 +386,8 @@ export const RenderChat = ({
 
   return (
     <div className={classes.container}>
+      {loading && <LoadMetric metricId={view} userkeyloakId={userkeycloakId} />}
+
       <Chat
         messages={messages}
         onMessageSend={handleSendNewMessage}
