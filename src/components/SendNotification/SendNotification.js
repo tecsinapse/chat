@@ -252,7 +252,7 @@ export const SendNotification = ({
     });
 
     const kcidParam = `kcid=${userkeycloakId}`;
-    const connectionKeyParam = `connectionKey=${connectionKey}`;
+    const connectionKeyParam = `connectionkey=${connectionKey}`;
     const customParam = `alignCenter=1&transparentBackground=1`;
     const params = `${kcidParam}&${connectionKeyParam}&${customParam}`;
     const url = `${process.env.REACT_APP_MESSAGE_SUGESTION_URL}?${params}`;
