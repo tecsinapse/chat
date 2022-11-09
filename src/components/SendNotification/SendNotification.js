@@ -42,8 +42,8 @@ export const SendNotification = ({
   );
   const [submitting, setSubmitting] = useState(false);
   const [selectedConnectionKey, setSelectedConnectionKey] = useState(null);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [templates, setTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [templateArgs, setTemplateArgs] = useState([]);
   const [previewText, setPreviewText] = useState(null);
   const [previewButtons, setPreviewButtons] = useState([]);
@@ -308,39 +308,41 @@ export const SendNotification = ({
               />
             </Grid>
             <Grid xs={12} className={classes.templates} item>
-              <Select
-                id="message-template"
-                styles={style}
-                value={selectedTemplate?.value}
-                options={templates}
-                onChange={handleChangeTemplate}
-                disabled={!selectedConnectionKey || submitting}
-                selectPromptMessage={selectedTemplate?.label}
-                label="Modelo da Mensagem"
-                customIndicators={
-                  <Tooltip
-                    title="Sugerir Modelo de Mensagem"
-                    placement="bottom-start"
-                    arrow
-                  >
-                    <IconButton
-                      onClick={handleOpenMessageSugestion}
-                      className={
-                        selectedConnectionKey
-                          ? classes.newTemplateButtonEnable
-                          : classes.newTemplateButtonDisable
-                      }
-                    >
-                      <Icon
-                        path={mdiPlusBoxOutline}
-                        size={0.8}
-                        color="#ffffff"
-                      />
-                    </IconButton>
-                  </Tooltip>
-                }
-                fullWidth
-              />
+              <Tooltip title={"Selecione um modelo da mensagem"} placement={"top"}>
+                <Select
+                    id="message-template"
+                    styles={style}
+                    value={selectedTemplate?.value}
+                    options={templates}
+                    onChange={handleChangeTemplate}
+                    disabled={!selectedConnectionKey || submitting}
+                    selectPromptMessage={selectedTemplate?.label}
+                    label="Modelo da Mensagem"
+                    customIndicators={
+                      <Tooltip
+                          title="Sugerir Modelo de Mensagem"
+                          placement="bottom-start"
+                          arrow
+                      >
+                        <IconButton
+                            onClick={handleOpenMessageSugestion}
+                            className={
+                              selectedConnectionKey
+                                  ? classes.newTemplateButtonEnable
+                                  : classes.newTemplateButtonDisable
+                            }
+                        >
+                          <Icon
+                              path={mdiPlusBoxOutline}
+                              size={0.8}
+                              color="#ffffff"
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    }
+                    fullWidth
+                />
+              </Tooltip>
             </Grid>
             {argsValues.map((
               arg,
