@@ -20,6 +20,7 @@ import {
   generateButtons,
   generatePreviewText,
 } from "./utils";
+import { ANALYTICS_EVENTS } from "../../constants/ANALYTICS_EVENTS";
 
 export const SendNotification = ({
   chatService,
@@ -39,18 +40,14 @@ export const SendNotification = ({
   const [phoneNumber, setPhoneNumber] = useState(
     currentChat ? countryPhoneNumber(currentChat.phone) : ""
   );
-
   const [submitting, setSubmitting] = useState(false);
-
   const [selectedConnectionKey, setSelectedConnectionKey] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
-
   const [templates, setTemplates] = useState([]);
   const [templateArgs, setTemplateArgs] = useState([]);
   const [previewText, setPreviewText] = useState(null);
   const [previewButtons, setPreviewButtons] = useState([]);
-  const MOST_USED = "Mais usadas nos últimos 45 dias";
-  const TEMPLATE_LIST = "Lista de modelos";
+
   const availableConnectionKeys = [
     {
       label: "Selecione...",
@@ -65,10 +62,6 @@ export const SendNotification = ({
         value: it.label,
       })
     );
-
-  const availableTemplates = [];
-
-  templates && templates.forEach((it) => availableTemplates.push(it));
 
   const handleChangeConnectionKey = (value) => {
     const connectionKey = connectionKeys.find((it) => it.label === value);
@@ -168,9 +161,9 @@ export const SendNotification = ({
           setSelectedTemplate(option);
         }
 
-        if (found && it.label === MOST_USED) {
+        if (found && it.label === ANALYTICS_EVENTS.MOST_USED) {
           gaLabel = "CLICK_TOP_2_MODELO_MSG";
-        } else if (found && it.label === TEMPLATE_LIST) {
+        } else if (found && it.label === ANALYTICS_EVENTS.TEMPLATE_LIST) {
           gaLabel = "CLICK_FORA_TOP_2_MODELO_MSG";
         }
 
@@ -319,9 +312,10 @@ export const SendNotification = ({
                 id="message-template"
                 styles={style}
                 value={selectedTemplate?.value}
-                options={availableTemplates}
+                options={templates}
                 onChange={handleChangeTemplate}
                 disabled={!selectedConnectionKey || submitting}
+                selectPromptMessage={selectedTemplate?.label}
                 label="Modelo da Mensagem"
                 customIndicators={
                   <Tooltip
@@ -348,8 +342,10 @@ export const SendNotification = ({
                 fullWidth
               />
             </Grid>
-            {argsValues.map((arg, index) => (
-              // eslint-disable-next-line react/no-array-index-key
+            {argsValues.map((
+              arg,
+              index // eslint-disable-next-line react/no-array-index-key
+            ) => (
               <Grid key={`template-arg-${index}`} item>
                 <Input
                   name={`args[${index}]`}
