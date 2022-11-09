@@ -308,41 +308,39 @@ export const SendNotification = ({
               />
             </Grid>
             <Grid xs={12} className={classes.templates} item>
-              <Tooltip title={"Selecione um modelo da mensagem"} placement={"top"}>
-                <Select
-                    id="message-template"
-                    styles={style}
-                    value={selectedTemplate?.value}
-                    options={templates}
-                    onChange={handleChangeTemplate}
-                    disabled={!selectedConnectionKey || submitting}
-                    selectPromptMessage={selectedTemplate?.label}
-                    label="Modelo da Mensagem"
-                    customIndicators={
-                      <Tooltip
-                          title="Sugerir Modelo de Mensagem"
-                          placement="bottom-start"
-                          arrow
+              <Select
+                  id="message-template"
+                  styles={style}
+                  value={selectedTemplate?.value}
+                  options={templates}
+                  onChange={handleChangeTemplate}
+                  disabled={!selectedConnectionKey || submitting}
+                  selectPromptMessage={selectedTemplate?.label}
+                  label="Selecione modelo da mensagem"
+                  customIndicators={
+                    <Tooltip
+                        title="Sugerir Modelo de Mensagem"
+                        placement="bottom-start"
+                        arrow
+                    >
+                      <IconButton
+                          onClick={handleOpenMessageSugestion}
+                          className={
+                            selectedConnectionKey
+                                ? classes.newTemplateButtonEnable
+                                : classes.newTemplateButtonDisable
+                          }
                       >
-                        <IconButton
-                            onClick={handleOpenMessageSugestion}
-                            className={
-                              selectedConnectionKey
-                                  ? classes.newTemplateButtonEnable
-                                  : classes.newTemplateButtonDisable
-                            }
-                        >
-                          <Icon
-                              path={mdiPlusBoxOutline}
-                              size={0.8}
-                              color="#ffffff"
-                          />
-                        </IconButton>
-                      </Tooltip>
-                    }
-                    fullWidth
-                />
-              </Tooltip>
+                        <Icon
+                            path={mdiPlusBoxOutline}
+                            size={0.8}
+                            color="#ffffff"
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  }
+                  fullWidth
+              />
             </Grid>
             {argsValues.map((
               arg,
