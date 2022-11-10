@@ -20,7 +20,7 @@ export const LoadMetric = ({
 
       chatService.sendComponentMetric(metric);
     },
-    [initialValue, metricId, userkeyloakId]
+    [initialValue, metricId, userkeyloakId] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   return <>{children}</>;
