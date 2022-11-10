@@ -267,6 +267,12 @@ export const SendNotification = ({
     }),
   };
 
+  const templateMedia = () => {
+    const media = templateArgs.find((it) => it.key === "imageUrl");
+
+    return media?.value || undefined;
+  };
+
   return (
     <div className={classes.container}>
       {loading ? (
@@ -352,6 +358,9 @@ export const SendNotification = ({
                     <MessagePreview
                       unformattedText={previewText}
                       buttons={previewButtons}
+                      media={templateMedia()}
+                      footer={selectedTemplate.footer}
+                      header={selectedTemplate.header}
                     />
                   </Grid>
                 </div>
