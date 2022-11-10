@@ -386,7 +386,13 @@ export const RenderChat = ({
 
   return (
     <div className={classes.container}>
-      {loading && <LoadMetric metricId={view} userkeyloakId={userkeycloakId} />}
+      {loading && (
+        <LoadMetric
+          metricId={view}
+          userkeyloakId={userkeycloakId}
+          chatService={chatService}
+        />
+      )}
 
       <Chat
         messages={messages}

@@ -14,6 +14,7 @@ export const ChatButton = ({
   view,
   setView,
   unreads,
+  chatService,
 }) => {
   const classes = useStyle();
 
@@ -46,7 +47,11 @@ export const ChatButton = ({
             className={classes.fab}
           >
             {firstLoad ? (
-              <LoadMetric metricId={view} userkeyloakId={userkeycloakId}>
+              <LoadMetric
+                metricId={view}
+                userkeyloakId={userkeycloakId}
+                chatService={chatService}
+              >
                 <CircularProgress size={20} className={classes.fabProgress} />
               </LoadMetric>
             ) : (

@@ -274,7 +274,11 @@ export const SendNotification = ({
     <div className={classes.container}>
       {loading ? (
         <div className={classes.loadingContainer}>
-          <LoadMetric metricId={view} userkeyloakId={userkeycloakId}>
+          <LoadMetric
+            metricId={view}
+            userkeyloakId={userkeycloakId}
+            chatService={chatService}
+          >
             <Loading />
           </LoadMetric>
         </div>

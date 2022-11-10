@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
 
-export const LoadMetric = ({ metricId, userkeyloakId, children }) => {
+export const LoadMetric = ({
+  metricId,
+  userkeyloakId,
+  children,
+  chatService,
+}) => {
   const [initialValue] = useState(Date.now());
 
   useEffect(
     () => () => {
       const finalValue = Date.now() - initialValue;
+      const metric = {
+        at: initialValue,
+        userId: userkeyloakId,
+        viewName: metricId,
+        totalTime: finalValue,
+      };
 
-      console.log("inicio da carga = ", new Date(initialValue));
-      console.log("usuário logado = ", userkeyloakId);
-      console.log("id da métrica = ", metricId);
-      console.log("tempo da carga = ", finalValue);
-      console.log("---------------");
+      chatService.sendComponentMetric(metric);
     },
     [initialValue, metricId, userkeyloakId]
   );

@@ -342,6 +342,7 @@ const InitContext = ({ chatInitConfig }) => {
           view={view}
           setView={handleSetView}
           unreads={componentInfo?.totalUnreads}
+          chatService={chatService}
         />
       )}
       <Drawer
