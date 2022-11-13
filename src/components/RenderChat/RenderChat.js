@@ -162,20 +162,15 @@ export const RenderChat = ({
 
     const clientSocket = webSocketRef.current;
     const topic = `/topic/${connectionKey}.${destination}.${chatId}`;
-    const addUser = `/chat/addUser/room/${connectionKey}/${destination}/${chatId}`;
 
     try {
       clientSocket._subscribe(topic);
-      clientSocket.sendMessage(addUser);
     } catch (e) {
       console.error(e);
     }
 
     return () => {
-      const removeUser = `/chat/removeUser/room/${connectionKey}/${destination}/${chatId}`;
-
       try {
-        clientSocket.sendMessage(removeUser);
         clientSocket._unsubscribe(topic);
       } catch (e) {
         console.error(e);

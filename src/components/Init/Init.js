@@ -19,7 +19,6 @@ import {
   isNotificationSoundEnabled,
   sendNotification,
 } from "../utils";
-import { getDistinctConnectionKeys } from "./utils";
 import NotificationType from "../../enums/NotificationType";
 import { ConnectionError } from "../ConnectionError/ConnectionError";
 import { Banner } from "../Banner/Banner";
@@ -73,7 +72,6 @@ const InitContext = ({ chatInitConfig }) => {
   const [currentChatSend, setCurrentChatSend] = useState(null);
   const [currentChat, setCurrentChat] = useState(null);
 
-  const [connectionKeys, setConnectionKeys] = useState([]);
   const [destination, setDestination] = useState(null);
   const [webSocketRef, setWebSocketRef] = useState(null);
   const [connectionError, setConnectionError] = useState(false);
@@ -106,13 +104,11 @@ const InitContext = ({ chatInitConfig }) => {
           .completeComponentInfo(incompleteChatInfo)
           .then((completeComponentInfo) => {
             const {
-              connectionKeys: newConnectionKeys,
               destination: newDestination,
               currentChat: newCurrentChat,
             } = completeComponentInfo;
 
             setDestination(newDestination);
-            setConnectionKeys(getDistinctConnectionKeys(newConnectionKeys));
             setComponentInfo(completeComponentInfo);
 
             // caso tenha um chat corrente após primeiro carregamento
@@ -241,14 +237,6 @@ const InitContext = ({ chatInitConfig }) => {
   };
 
   const handleWebSocketConnect = (newWebSocketRef) => {
-    const mainSocket = newWebSocketRef.current;
-
-    connectionKeys.forEach((connectionKey) => {
-      const addUser = `/chat/addUser/main/${connectionKey}/${destination}`;
-
-      mainSocket.sendMessage(addUser, userkeycloakId);
-    });
-
     setWebSocketRef(newWebSocketRef);
     setConnectionError(false);
   };
