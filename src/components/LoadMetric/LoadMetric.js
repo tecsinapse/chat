@@ -12,13 +12,14 @@ export const LoadMetric = ({
     () => () => {
       const finalValue = Date.now() - initialValue;
       const metric = {
-        at: initialValue,
         userId: userkeyloakId,
         viewName: metricId,
         totalTime: finalValue,
       };
 
-      chatService.sendComponentMetric(metric);
+      chatService.sendComponentMetric(metric).catch((error) => {
+        console.error(error);
+      });
     },
     [initialValue, metricId, userkeyloakId] // eslint-disable-line react-hooks/exhaustive-deps
   );
