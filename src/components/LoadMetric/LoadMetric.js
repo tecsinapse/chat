@@ -13,7 +13,7 @@ export const LoadMetric = ({
       const finalValue = Date.now() - initialValue;
       const metric = {
         userId: userkeyloakId,
-        viewName: metricId,
+        metricId,
         totalTime: finalValue,
       };
 
