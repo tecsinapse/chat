@@ -151,33 +151,22 @@ export const SendNotification = ({
   };
 
   const handleChangeTemplate = (value) => {
-    let gaLabel;
+    console.log(value);
+    for (const group of templates) {
+      for (const option of group.options) {
+        if (option.value === value) {
+          setSelectedTemplate(value);
 
-    templates.find((it) =>
-      it.options.find((option) => {
-        const found = option.value === value;
-
-        if (found) {
-          setSelectedTemplate(option);
-        }
-
-        if (found && it.label === ANALYTICS_EVENTS.MOST_USED) {
-          gaLabel = "CLICK_TOP_2_MODELO_MSG";
-        } else if (found && it.label === ANALYTICS_EVENTS.TEMPLATE_LIST) {
-          gaLabel = "CLICK_FORA_TOP_2_MODELO_MSG";
-        }
-
-        if (found && gaLabel) {
           ReactGA.event({
             category: selectedConnectionKey,
             label: "CLICK TOP 2",
-            action: gaLabel,
+            action: group.label === ANALYTICS_EVENTS.MOST_USED ? "CLICK_TOP_2_MODELO_MSG" : "CLICK_FORA_TOP_2_MODELO_MSG"
           });
-        }
 
-        return found;
-      })
-    );
+          break;
+        }
+      }
+    }
   };
 
   const handleChangeTemplateArg = (index) => (event) => {
