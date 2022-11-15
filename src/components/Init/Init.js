@@ -4,7 +4,7 @@ import { Divider as MuiDivider, Drawer } from "@material-ui/core";
 import { Button } from "@tecsinapse/ui-kit";
 import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
 import { RenderChat } from "../RenderChat/RenderChat";
-import InitWebSockets from "../InitWebSockets/InitWebSockets";
+import { InitWebSockets } from "../InitWebSockets/InitWebSockets";
 import { MessageManagement } from "../MessageManagement/MessageManagement";
 import { ChatButton } from "../ChatButton/ChatButton";
 import { SendNotification } from "../SendNotification/SendNotification";
@@ -229,6 +229,7 @@ const InitContext = ({ chatInitConfig }) => {
 
     setView((oldView) => {
       if (oldView === COMPONENT_VIEW.CHAT_MESSAGES && !connectionError) {
+        setCurrentChat(null);
         setReload(true);
       }
 
@@ -247,7 +248,9 @@ const InitContext = ({ chatInitConfig }) => {
 
   const handleWebSocketMessage = (webSocketMessage) => {
     if (webSocketMessage && webSocketMessage.type) {
-      const { title, message, chatActive, type } = webSocketMessage;
+      const { chatId, title, message, type } = webSocketMessage;
+
+      const chatActive = currentChat?.chatId === chatId;
 
       // não notifica quando o chat está aberto por algum usuário
       // não notifica arquivamento de conversas
@@ -431,6 +434,7 @@ const InitContext = ({ chatInitConfig }) => {
           chatApiUrl={chatApiUrl}
           userkeycloakId={userkeycloakId}
           destination={destination}
+          currentChat={currentChat}
           handleConnect={handleWebSocketConnect}
           handleDisconnect={handleWebSocketDisconnect}
           handleMessage={handleWebSocketMessage}

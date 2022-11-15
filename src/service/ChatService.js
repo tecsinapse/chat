@@ -25,6 +25,14 @@ export class ChatService {
     );
   }
 
+  updateMessageStatusToRead(messageId) {
+    return defaultFetch(
+      `${this.url}/${messageId}/update/status/read`,
+      "POST",
+      {}
+    );
+  }
+
   getAllTampletes(connectionKey) {
     return defaultFetch(`${this.url}/${connectionKey}/templates`, "GET", {});
   }

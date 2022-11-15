@@ -10,10 +10,11 @@ if (debug) {
   console.log("Debug Mode");
 }
 
-const InitWebSockets = ({
+export const InitWebSockets = ({
   chatApiUrl,
   userkeycloakId,
   destination,
+  currentChat,
   handleConnect,
   handleDisconnect,
   handleMessage,
@@ -36,43 +37,33 @@ const InitWebSockets = ({
     handleDisconnect(webSocketRef);
   };
 
-  const options = {
-    transports: [
-      "websocket",
-      "xhr-polling",
-      "iframe-xhr-polling",
-      "xhr-streaming",
-      "iframe-htmlfile",
-      "iframe-eventsource",
-    ],
-  };
+  const topics = [`/topic/main.${destination}.${userkeycloakId}`];
+
+  if (currentChat) {
+    const { connectionKey, chatId } = currentChat;
+
+    topics.push(`/topic/${connectionKey}.${destination}.${chatId}`);
+  }
 
   return (
     <SockJsClient
       url={`${chatApiUrl}/ws`}
-      topics={[`/topic/main.${destination}.${userkeycloakId}`]}
+      topics={topics}
       onMessage={onMessage}
       onConnect={onConnect}
       onDisconnect={onDisconnect}
       ref={webSocketRef}
-      options={options}
+      options={{
+        transports: [
+          "websocket",
+          "xhr-polling",
+          "iframe-xhr-polling",
+          "xhr-streaming",
+          "iframe-htmlfile",
+          "iframe-eventsource",
+        ],
+      }}
       debug={debug}
     />
   );
 };
-
-export default React.memo(InitWebSockets, (oldProps, newProps) => {
-  const {
-    userkeycloakId: oldUserkeycloakId,
-    destination: oldDestination,
-  } = oldProps;
-
-  const {
-    userkeycloakId: newUserkeycloakId,
-    destination: newDestination,
-  } = newProps;
-
-  return (
-    oldUserkeycloakId === newUserkeycloakId && oldDestination === newDestination
-  );
-});

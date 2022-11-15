@@ -36,7 +36,6 @@ export const RenderChat = ({
   handleAfterLoadMessage,
   receivedMessage,
   userNamesById,
-  webSocketRef,
   canSendNotification,
   productService,
   setView,
@@ -45,7 +44,6 @@ export const RenderChat = ({
 
   const {
     connectionKey,
-    destination,
     chatId,
     archived,
     actions,
@@ -54,7 +52,6 @@ export const RenderChat = ({
   } = currentChat;
 
   const [loading, setLoading] = useState(true);
-  const [readyToSubscribe, setReadyToSubscribe] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -86,8 +83,6 @@ export const RenderChat = ({
       setLoading(false);
 
       handleAfterLoadMessage(newArchived, newBlocked, newMinutesToBlock);
-
-      setReadyToSubscribe(true);
 
       if (page === 0) {
         setTimeout(() => {
@@ -156,32 +151,15 @@ export const RenderChat = ({
   }, [currentChat]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (!readyToSubscribe) {
-      return () => {};
-    }
-
-    const clientSocket = webSocketRef.current;
-    const topic = `/topic/${connectionKey}.${destination}.${chatId}`;
-
-    try {
-      clientSocket._subscribe(topic);
-    } catch (e) {
-      console.error(e);
-    }
-
-    return () => {
-      try {
-        clientSocket._unsubscribe(topic);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-  }, [readyToSubscribe]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
     if (!receivedMessage || loading) {
       return;
     }
+
+    chatService
+      .updateMessageStatusToRead(receivedMessage.message?.messageId)
+      .catch((error) => {
+        console.error(error);
+      });
 
     const {
       message: newMessage,
@@ -366,10 +344,6 @@ export const RenderChat = ({
     setAnchorEl(null);
   };
 
-  const handleBackToChatList = () => {
-    // não faz nada
-  };
-
   const deleteChat = () => {
     setDeleting(true);
   };
@@ -394,7 +368,6 @@ export const RenderChat = ({
         onMessageResend={handleResendNewMessage}
         isBlocked={blocked || !canSendNotification}
         blockedMessage="Para conversar com esse cliente clique em Iniciar Conversa"
-        onBackToChatList={handleBackToChatList}
         disabledSend={loading}
         roundedCorners={false}
         containerHeight={`calc(100vh - ${
