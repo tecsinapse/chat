@@ -71,11 +71,60 @@ export const SendNotification = ({
       setSelectedConnectionKey(connectionKey);
       setLoading(true);
 
+      // chatService
+      //   .getTemplatesByUser(connectionKey.value, userkeycloakId)
+      //   .then((newTemplates) => {
+      //     setTemplates(newTemplates);
+      //     setLoading(false);
+      //   });
+
       chatService
-        .getTemplatesByUser(connectionKey.value, userkeycloakId)
-        .then((newTemplates) => {
-          setTemplates(newTemplates);
-          setLoading(false);
+        .getAllTemplates(connectionKey.value, userkeycloakId)
+        .then((allTemplates) => {
+          chatService
+            .getUserTemplatesCount(connectionKey.value, userkeycloakId)
+            .then((templatesCount) => {
+              const allTemplatesCount = allTemplates.map((template) => ({
+                ...template,
+                count:
+                  templatesCount.find((it) => it.templateId === template.value)
+                    ?.count || 0,
+              }));
+
+              const noTemplateGroup = {
+                label: "Selecione...",
+                options: [],
+              };
+
+              const mostUsedTemplatesGroup = {
+                label: "Mais usadas nos últimos 45 dias",
+                options: allTemplatesCount
+                  .sort((a, b) => b.count - a.count)
+                  .slice(0, 2)
+                  .map((it) => ({
+                    label: it.name,
+                    event: ANALYTICS_EVENTS.TEMPLATE_MOST_USED,
+                    value: { label: it.name, ...it },
+                  })),
+              };
+
+              const templatesGroup = {
+                label: "Lista de modelos",
+                options: allTemplates.map((it) => ({
+                  label: it.name,
+                  event: ANALYTICS_EVENTS.TEMPLATE_LIST,
+                  value: { label: it.name, ...it },
+                })),
+              };
+
+              setTemplates([
+                noTemplateGroup,
+                mostUsedTemplatesGroup,
+                templatesGroup,
+              ]);
+
+              setLoading(false);
+            });
         });
     } else {
       setSelectedTemplate(null);
@@ -158,8 +207,8 @@ export const SendNotification = ({
 
           ReactGA.event({
             category: selectedConnectionKey,
-            label: "CLICK TOP 2",
-            action: group.label === ANALYTICS_EVENTS.MOST_USED ? "CLICK_TOP_2_MODELO_MSG" : "CLICK_FORA_TOP_2_MODELO_MSG"
+            label: option.event,
+            action: "Template Select",
           });
 
           break;
