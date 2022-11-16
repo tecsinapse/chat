@@ -151,7 +151,6 @@ export const SendNotification = ({
   };
 
   const handleChangeTemplate = (value) => {
-    console.log(value);
     for (const group of templates) {
       for (const option of group.options) {
         if (option.value === value) {
