@@ -20,6 +20,7 @@ import {
   generateButtons,
   generatePreviewText,
 } from "./utils";
+import { LoadMetric } from "../LoadMetric/LoadMetric";
 import { ANALYTICS_EVENTS } from "../../constants/ANALYTICS_EVENTS";
 
 export const SendNotification = ({
@@ -32,6 +33,7 @@ export const SendNotification = ({
   loading,
   setLoading,
   setConnectionError,
+  view,
   setView,
   userNamesById,
 }) => {
@@ -40,6 +42,7 @@ export const SendNotification = ({
   const [phoneNumber, setPhoneNumber] = useState(
     currentChat ? countryPhoneNumber(currentChat.phone) : ""
   );
+
   const [submitting, setSubmitting] = useState(false);
   const [selectedConnectionKey, setSelectedConnectionKey] = useState(null);
   const [templates, setTemplates] = useState([]);
@@ -280,7 +283,7 @@ export const SendNotification = ({
     });
 
     const kcidParam = `kcid=${userkeycloakId}`;
-    const connectionKeyParam = `connectionKey=${connectionKey}`;
+    const connectionKeyParam = `connectionkey=${connectionKey}`;
     const customParam = `alignCenter=1&transparentBackground=1`;
     const params = `${kcidParam}&${connectionKeyParam}&${customParam}`;
     const url = `${process.env.REACT_APP_MESSAGE_SUGESTION_URL}?${params}`;
@@ -299,7 +302,13 @@ export const SendNotification = ({
     <div className={classes.container}>
       {loading ? (
         <div className={classes.loadingContainer}>
-          <Loading />
+          <LoadMetric
+            metricId={view}
+            userkeyloakId={userkeycloakId}
+            chatService={chatService}
+          >
+            <Loading />
+          </LoadMetric>
         </div>
       ) : (
         <div className={classes.sendContainer}>
@@ -360,14 +369,12 @@ export const SendNotification = ({
                 fullWidth
               />
             </Grid>
-            {argsValues.map((
-              arg,
-              index // eslint-disable-next-line react/no-array-index-key
-            ) => (
+            {argsValues.map((arg, index) => (
+              // eslint-disable-next-line react/no-array-index-key
               <Grid key={`template-arg-${index}`} item>
                 <Input
                   name={`args[${index}]`}
-                  label={selectedTemplate.descriptions[index]}
+                  label={selectedTemplate?.descriptions[index]}
                   value={argsValues[index]}
                   onChange={handleChangeTemplateArg(index)}
                   disabled={submitting}

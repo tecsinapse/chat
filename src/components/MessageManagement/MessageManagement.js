@@ -22,6 +22,7 @@ import { useStyle } from "./styles";
 import { encodeChatData } from "../utils";
 import { DeleteChat } from "../DeleteChat/DeleteChat";
 import { ANALYTICS_EVENTS } from "../../constants/ANALYTICS_EVENTS";
+import { LoadMetric } from "../LoadMetric/LoadMetric";
 
 export const MessageManagement = ({
   loading,
@@ -36,6 +37,7 @@ export const MessageManagement = ({
   componentInfo,
   userNamesById,
   userkeycloakId,
+  view,
   setView,
   page,
   setPage,
@@ -110,7 +112,13 @@ export const MessageManagement = ({
     <div className={classes.container}>
       {loading ? (
         <div className={classes.loadingContainer}>
-          <Loading />
+          <LoadMetric
+            metricId={view}
+            userkeyloakId={userkeycloakId}
+            chatService={chatService}
+          >
+            <Loading />
+          </LoadMetric>
         </div>
       ) : (
         <Table
