@@ -164,4 +164,10 @@ export class ChatService {
 
     execute();
   }
+
+  sendComponentMetric(componentMetric) {
+    const uri = `${this.url}/componentLoadMetric`;
+
+    return defaultFetch(uri, "POST", componentMetric);
+  }
 }
