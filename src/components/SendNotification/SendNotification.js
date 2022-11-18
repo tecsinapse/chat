@@ -191,8 +191,8 @@ export const SendNotification = ({
 
           ReactGA.event({
             category: selectedConnectionKey,
-            label: option.event,
-            action: "Template Select",
+            label: "CLICK TOP 2",
+            action: option.event,
           });
 
           break;
