@@ -218,7 +218,7 @@ export const SendNotification = ({
     } = selectedConnectionKey;
 
     const {
-      value: templateId,
+      templateId,
       keys: templateArgsKeys,
       descriptions: templateArgsDescriptions,
     } = selectedTemplate;
