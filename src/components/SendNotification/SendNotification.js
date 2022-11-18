@@ -71,60 +71,41 @@ export const SendNotification = ({
       setSelectedConnectionKey(connectionKey);
       setLoading(true);
 
-      // chatService
-      //   .getTemplatesByUser(connectionKey.value, userkeycloakId)
-      //   .then((newTemplates) => {
-      //     setTemplates(newTemplates);
-      //     setLoading(false);
-      //   });
-
       chatService
-        .getAllTemplates(connectionKey.value, userkeycloakId)
+        .getAllTemplatesByUser(connectionKey.value, userkeycloakId)
         .then((allTemplates) => {
-          chatService
-            .getUserTemplatesCount(connectionKey.value, userkeycloakId)
-            .then((templatesCount) => {
-              const allTemplatesCount = allTemplates.map((template) => ({
-                ...template,
-                count:
-                  templatesCount.find((it) => it.templateId === template.value)
-                    ?.count || 0,
-              }));
+          const noTemplateGroup = {
+            label: "Selecione...",
+            options: [],
+          };
 
-              const noTemplateGroup = {
-                label: "Selecione...",
-                options: [],
-              };
+          const mostUsedTemplatesGroup = {
+            label: "Mais usadas nos últimos 45 dias",
+            options: allTemplates
+              .filter((it) => it.mostUsed)
+              .map((it) => ({
+                label: it.name,
+                event: ANALYTICS_EVENTS.TEMPLATE_MOST_USED,
+                value: { label: it.name, ...it },
+              })),
+          };
 
-              const mostUsedTemplatesGroup = {
-                label: "Mais usadas nos últimos 45 dias",
-                options: allTemplatesCount
-                  .sort((a, b) => b.count - a.count)
-                  .slice(0, 2)
-                  .map((it) => ({
-                    label: it.name,
-                    event: ANALYTICS_EVENTS.TEMPLATE_MOST_USED,
-                    value: { label: it.name, ...it },
-                  })),
-              };
+          const templatesGroup = {
+            label: "Lista de modelos",
+            options: allTemplates.map((it) => ({
+              label: it.name,
+              event: ANALYTICS_EVENTS.TEMPLATE_LIST,
+              value: { label: it.name, ...it },
+            })),
+          };
 
-              const templatesGroup = {
-                label: "Lista de modelos",
-                options: allTemplates.map((it) => ({
-                  label: it.name,
-                  event: ANALYTICS_EVENTS.TEMPLATE_LIST,
-                  value: { label: it.name, ...it },
-                })),
-              };
+          setTemplates([
+            noTemplateGroup,
+            mostUsedTemplatesGroup,
+            templatesGroup,
+          ]);
 
-              setTemplates([
-                noTemplateGroup,
-                mostUsedTemplatesGroup,
-                templatesGroup,
-              ]);
-
-              setLoading(false);
-            });
+          setLoading(false);
         });
     } else {
       setSelectedTemplate(null);
@@ -346,37 +327,37 @@ export const SendNotification = ({
             </Grid>
             <Grid xs={12} className={classes.templates} item>
               <Select
-                  id="message-template"
-                  styles={style}
-                  value={selectedTemplate?.value}
-                  options={templates}
-                  onChange={handleChangeTemplate}
-                  disabled={!selectedConnectionKey || submitting}
-                  selectPromptMessage={selectedTemplate?.label}
-                  label="Selecione modelo da mensagem"
-                  customIndicators={
-                    <Tooltip
-                        title="Sugerir Modelo de Mensagem"
-                        placement="bottom-start"
-                        arrow
+                id="message-template"
+                styles={style}
+                value={selectedTemplate?.templateId}
+                options={templates}
+                onChange={handleChangeTemplate}
+                disabled={!selectedConnectionKey || submitting}
+                selectPromptMessage={selectedTemplate?.label}
+                label="Selecione modelo da mensagem"
+                customIndicators={
+                  <Tooltip
+                    title="Sugerir Modelo de Mensagem"
+                    placement="bottom-start"
+                    arrow
+                  >
+                    <IconButton
+                      onClick={handleOpenMessageSugestion}
+                      className={
+                        selectedConnectionKey
+                          ? classes.newTemplateButtonEnable
+                          : classes.newTemplateButtonDisable
+                      }
                     >
-                      <IconButton
-                          onClick={handleOpenMessageSugestion}
-                          className={
-                            selectedConnectionKey
-                                ? classes.newTemplateButtonEnable
-                                : classes.newTemplateButtonDisable
-                          }
-                      >
-                        <Icon
-                            path={mdiPlusBoxOutline}
-                            size={0.8}
-                            color="#ffffff"
-                        />
-                      </IconButton>
-                    </Tooltip>
-                  }
-                  fullWidth
+                      <Icon
+                        path={mdiPlusBoxOutline}
+                        size={0.8}
+                        color="#ffffff"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                }
+                fullWidth
               />
             </Grid>
             {argsValues.map((

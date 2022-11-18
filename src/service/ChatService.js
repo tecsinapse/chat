@@ -29,15 +29,7 @@ export class ChatService {
     return defaultFetch(`${this.url}/${connectionKey}/templates`, "GET", {});
   }
 
-  getUserTemplatesCount(connectionKey, userId) {
-    return defaultFetch(
-        `${this.url}/${connectionKey}/templates/count/${userId}`,
-        "GET",
-        {}
-    );
-  }
-
-  getTemplatesByUser(connectionKey, userId) {
+  getAllTemplatesByUser(connectionKey, userId) {
     return defaultFetch(
       `${this.url}/${connectionKey}/templates/${userId}`,
       "GET",
