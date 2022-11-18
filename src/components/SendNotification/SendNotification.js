@@ -218,7 +218,7 @@ export const SendNotification = ({
     } = selectedConnectionKey;
 
     const {
-      templateId,
+      value: templateId,
       keys: templateArgsKeys,
       descriptions: templateArgsDescriptions,
     } = selectedTemplate;
@@ -338,7 +338,7 @@ export const SendNotification = ({
               <Select
                 id="message-template"
                 styles={style}
-                value={selectedTemplate?.templateId}
+                value={selectedTemplate?.value}
                 options={templates}
                 onChange={handleChangeTemplate}
                 disabled={!selectedConnectionKey || submitting}
