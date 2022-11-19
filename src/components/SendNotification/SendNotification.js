@@ -20,6 +20,7 @@ import {
   generateButtons,
   generatePreviewText,
 } from "./utils";
+import { LoadMetric } from "../LoadMetric/LoadMetric";
 
 export const SendNotification = ({
   chatService,
@@ -31,6 +32,7 @@ export const SendNotification = ({
   loading,
   setLoading,
   setConnectionError,
+  view,
   setView,
   userNamesById,
 }) => {
@@ -49,6 +51,7 @@ export const SendNotification = ({
   const [templateArgs, setTemplateArgs] = useState([]);
   const [previewText, setPreviewText] = useState(null);
   const [previewButtons, setPreviewButtons] = useState([]);
+
   const availableConnectionKeys = [
     {
       label: "Selecione...",
@@ -271,7 +274,13 @@ export const SendNotification = ({
     <div className={classes.container}>
       {loading ? (
         <div className={classes.loadingContainer}>
-          <Loading />
+          <LoadMetric
+            metricId={view}
+            userkeyloakId={userkeycloakId}
+            chatService={chatService}
+          >
+            <Loading />
+          </LoadMetric>
         </div>
       ) : (
         <div className={classes.sendContainer}>
