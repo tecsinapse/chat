@@ -197,7 +197,9 @@ export const RenderChat = ({
 
       const newMessages = [...oldMessages];
 
-      newMessages[messageIndex] = newChatMessage;
+      // atualiza apenas o status da mensagem existente
+      newMessages[messageIndex].status = newChatMessage.status;
+      newMessages[messageIndex].statusDetails = newChatMessage.statusDetails;
 
       return newMessages;
     });

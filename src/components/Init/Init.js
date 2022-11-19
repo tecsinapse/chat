@@ -4,7 +4,7 @@ import { Divider as MuiDivider, Drawer } from "@material-ui/core";
 import { Button } from "@tecsinapse/ui-kit";
 import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
 import { RenderChat } from "../RenderChat/RenderChat";
-import { InitWebSockets } from "../InitWebSockets/InitWebSockets";
+import { WebSocket } from "../WebSocket/WebSocket";
 import { MessageManagement } from "../MessageManagement/MessageManagement";
 import { ChatButton } from "../ChatButton/ChatButton";
 import { SendNotification } from "../SendNotification/SendNotification";
@@ -73,7 +73,7 @@ const InitContext = ({ chatInitConfig }) => {
   const [currentChat, setCurrentChat] = useState(null);
 
   const [destination, setDestination] = useState(null);
-  const [webSocketRef, setWebSocketRef] = useState(null);
+  const [webSocketConnected, setWebSocketConnected] = useState(null);
   const [connectionError, setConnectionError] = useState(false);
 
   const [receivedMessage, setReceivedMessage] = useState();
@@ -176,15 +176,15 @@ const InitContext = ({ chatInitConfig }) => {
   useEffect(() => {
     const { currentChat: newCurrentChat } = componentInfo;
 
-    if (webSocketRef && newCurrentChat && newCurrentChat.chatId) {
+    if (webSocketConnected && newCurrentChat && newCurrentChat.chatId) {
       setCurrentChat(newCurrentChat);
       handleSetView(COMPONENT_VIEW.CHAT_MESSAGES);
     }
 
-    if (webSocketRef && openImmediately) {
+    if (webSocketConnected && openImmediately) {
       setOpenDrawer(true);
     }
-  }, [webSocketRef]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [webSocketConnected]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(
     () => {
@@ -237,12 +237,17 @@ const InitContext = ({ chatInitConfig }) => {
     });
   };
 
-  const handleWebSocketConnect = (newWebSocketRef) => {
-    setWebSocketRef(newWebSocketRef);
+  const handleWebSocketConnect = () => {
+    // eslint-disable-next-line
+    console.log("WebSocket Connected");
+    setWebSocketConnected(true);
     setConnectionError(false);
   };
 
   const handleWebSocketDisconnect = () => {
+    // eslint-disable-next-line
+    console.log("WebSocket Disconnected");
+    setWebSocketConnected(false);
     setConnectionError(true);
   };
 
@@ -379,7 +384,6 @@ const InitContext = ({ chatInitConfig }) => {
               handleAfterLoadMessage={handleAfterLoadMessage}
               receivedMessage={receivedMessage}
               userNamesById={componentInfo?.userNamesById}
-              webSocketRef={webSocketRef}
               canSendNotification={canSendNotification}
               productService={productService}
               view={view}
@@ -437,7 +441,7 @@ const InitContext = ({ chatInitConfig }) => {
         </div>
       </Drawer>
       {!firstLoad && (
-        <InitWebSockets
+        <WebSocket
           chatApiUrl={chatApiUrl}
           userkeycloakId={userkeycloakId}
           destination={destination}
