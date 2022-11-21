@@ -46,6 +46,7 @@ const InitContext = ({ chatInitConfig }) => {
     userkeycloakId,
     chatApiUrl,
     productChatPath,
+    websocketToken,
     openImmediately,
     canSendNotification,
     executeFirstAction,
@@ -444,6 +445,7 @@ const InitContext = ({ chatInitConfig }) => {
         <WebSocket
           chatApiUrl={chatApiUrl}
           userkeycloakId={userkeycloakId}
+          websocketToken={websocketToken}
           destination={destination}
           currentChat={currentChat}
           handleConnect={handleWebSocketConnect}

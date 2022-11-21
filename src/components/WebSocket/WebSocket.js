@@ -4,6 +4,7 @@ import SockJsClient from "react-stomp";
 export const WebSocket = ({
   chatApiUrl,
   userkeycloakId,
+  websocketToken,
   destination,
   currentChat,
   handleConnect,
@@ -20,7 +21,7 @@ export const WebSocket = ({
 
   return (
     <SockJsClient
-      url={`${chatApiUrl}/ws`}
+      url={`${chatApiUrl}/${websocketToken}/ws`}
       topics={topics}
       onMessage={handleMessage}
       onConnect={handleConnect}
@@ -35,7 +36,7 @@ export const WebSocket = ({
           "iframe-eventsource",
         ],
       }}
-      debug={false}
+      debug
     />
   );
 };
