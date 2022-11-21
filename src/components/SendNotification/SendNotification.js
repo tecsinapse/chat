@@ -271,7 +271,8 @@ export const SendNotification = ({
   };
 
   const templateMedia = () => {
-    const media = templateArgs.find((it) => it.key === "imageUrl");
+    const templateMediaArgs = ["documentUrl", "imageUrl", "videoUrl"];
+    const media = templateArgs.find((it) => templateMediaArgs.includes(it.key));
 
     return media?.value || undefined;
   };
