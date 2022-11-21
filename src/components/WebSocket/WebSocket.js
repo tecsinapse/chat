@@ -36,7 +36,7 @@ export const WebSocket = ({
           "iframe-eventsource",
         ],
       }}
-      debug
+      debug={false}
     />
   );
 };
