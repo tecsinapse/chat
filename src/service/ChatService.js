@@ -25,16 +25,24 @@ export class ChatService {
     );
   }
 
+  getAllTemplates(connectionKey) {
+    return defaultFetch(`${this.url}/${connectionKey}/templates`, "GET", {});
+  }
+
+  getAllTemplatesByUser(connectionKey, userId) {
+    return defaultFetch(
+      `${this.url}/${connectionKey}/templates/${userId}`,
+      "GET",
+      {}
+    );
+  }
+
   updateMessageStatusToRead(messageId) {
     return defaultFetch(
       `${this.url}/${messageId}/update/status/read`,
       "POST",
       {}
     );
-  }
-
-  getAllTampletes(connectionKey) {
-    return defaultFetch(`${this.url}/${connectionKey}/templates`, "GET", {});
   }
 
   sendDataApi(currentChat, formData) {

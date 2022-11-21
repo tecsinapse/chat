@@ -1800,10 +1800,10 @@
     "@tecsinapse/ui-kit" "^5.6.3"
     react-virtualized "^9.22.3"
 
-"@tecsinapse/ui-kit@5.6.5":
-  version "5.6.5"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.6.5.tgz#b400f48dd40fd76cefd2d7d3f545f0732e0f07b6"
-  integrity sha512-wYilQNGbuvPeBYLdtWuSqgrl9i2js7IV/AACRsgdxObqxWg1dqTn8vwBTNsagy/jUKq5XLsNgxsPApvZvjgwOA==
+"@tecsinapse/ui-kit@5.6.7":
+  version "5.6.7"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.6.7.tgz#8e06e04655213b52fe3e102145226920fdb5c3b0"
+  integrity sha512-mbyqOGQuPQigog1BGWZhtm/JZ6uA1pfKfLyLsV7QlKEFHmaT3rRaQK/4GXDYC/H1xcP+LlCcU6Oo5I/HYeMqag==
   dependencies:
     "@material-ui/core" "^4.11.1"
     "@material-ui/icons" "^4.11.1"
