@@ -25,8 +25,16 @@ export class ChatService {
     );
   }
 
-  getAllTampletes(connectionKey) {
+  getAllTemplates(connectionKey) {
     return defaultFetch(`${this.url}/${connectionKey}/templates`, "GET", {});
+  }
+
+  getAllTemplatesByUser(connectionKey, userId) {
+    return defaultFetch(
+      `${this.url}/${connectionKey}/templates/${userId}`,
+      "GET",
+      {}
+    );
   }
 
   sendDataApi(currentChat, formData) {
