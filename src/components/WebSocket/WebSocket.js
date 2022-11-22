@@ -10,7 +10,11 @@ export const WebSocket = ({
   handleDisconnect,
   handleMessage,
 }) => {
-  const topics = [`/topic/main.${destination}.${userkeycloakId}`];
+  const topics = [];
+
+  if (userkeycloakId && destination) {
+    topics.push(`/topic/main.${destination}.${userkeycloakId}`);
+  }
 
   if (currentChat) {
     const { connectionKey, chatId } = currentChat;
