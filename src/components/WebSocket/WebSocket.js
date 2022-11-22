@@ -4,7 +4,6 @@ import SockJsClient from "react-stomp";
 export const WebSocket = ({
   chatApiUrl,
   userkeycloakId,
-  websocketToken,
   destination,
   currentChat,
   handleConnect,
@@ -21,7 +20,7 @@ export const WebSocket = ({
 
   return (
     <SockJsClient
-      url={`${chatApiUrl}/${websocketToken}/ws`}
+      url={`${chatApiUrl}/ws`}
       topics={topics}
       onMessage={handleMessage}
       onConnect={handleConnect}
