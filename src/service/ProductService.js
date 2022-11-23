@@ -33,9 +33,9 @@ export class ProductService {
     );
   }
 
-  deleteChat(chat) {
+  deleteChat(connectionKey, chatId) {
     return noAuthJsonFetch(
-      `${this.url}/${chat.connectionKey}/${chat.chatId}`,
+      `${this.url}/${connectionKey}/${chatId}`,
       "DELETE",
       {}
     );
