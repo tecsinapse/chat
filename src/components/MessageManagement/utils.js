@@ -290,14 +290,14 @@ export const replacerPhone = (search, phoneToReplace) => {
 
 export const highlightDDD = (search, phone, phoneDDD, index) => {
   if (index === 0) {
-    return <>({aplicarHighlight(phoneDDD)})</>;
+    return <>({applyHighlight(phoneDDD)})</>;
   }
 
   if (index === 1) {
     return (
       <>
         ({phoneDDD.substring(0, 1)}
-        {aplicarHighlight(search.substring(0, 1))})
+        {applyHighlight(search.substring(0, 1))})
       </>
     );
   }
@@ -312,15 +312,18 @@ export const highlightPhoneWithoutDDD = (
   // eslint-disable-next-line consistent-return
 ) => {
   const index = phoneWithoutDDD.indexOf(search);
+  const firstHalfLength = Math.round(phoneWithoutDDD.length / 2);
 
   if (phoneWithoutDDD.match(search) && search !== "") {
     if (index <= 4) {
-      if (index + search.length > 5) {
+      if (index + search.length > firstHalfLength) {
         return (
           <>
             {phoneWithoutDDD.substring(0, index)}
-            {aplicarHighlight(search.substring(0, 5 - index))}-
-            {aplicarHighlight(search.substring(5 - index, search.length))}
+            {applyHighlight(search.substring(0, firstHalfLength - index))}-
+            {applyHighlight(
+              search.substring(firstHalfLength - index, search.length)
+            )}
             {phoneWithoutDDD.substring(
               index + search.length,
               phoneWithoutDDD.length
@@ -332,9 +335,9 @@ export const highlightPhoneWithoutDDD = (
       return (
         <>
           {phoneWithoutDDD.substring(0, index)}
-          {aplicarHighlight(search)}
-          {phoneWithoutDDD.substring(index + search.length, 5)}-
-          {phoneWithoutDDD.substring(5, phoneWithoutDDD.length)}
+          {applyHighlight(search)}
+          {phoneWithoutDDD.substring(index + search.length, firstHalfLength)}-
+          {phoneWithoutDDD.substring(firstHalfLength, phoneWithoutDDD.length)}
         </>
       );
     }
@@ -342,9 +345,9 @@ export const highlightPhoneWithoutDDD = (
     if (phoneWithoutDDD.indexOf(search) > 4) {
       return (
         <>
-          {phoneWithoutDDD.substring(0, 5)}-
-          {phoneWithoutDDD.substring(5, index)}
-          {aplicarHighlight(search)}
+          {phoneWithoutDDD.substring(0, firstHalfLength)}-
+          {phoneWithoutDDD.substring(firstHalfLength, index)}
+          {applyHighlight(search)}
           {phoneWithoutDDD.substring(index + search.length)}
         </>
       );
@@ -354,7 +357,7 @@ export const highlightPhoneWithoutDDD = (
   }
 };
 
-export const aplicarHighlight = (text) => {
+export const applyHighlight = (text) => {
   const style1 = { backgroundColor: "#ffb74d" };
 
   return (
