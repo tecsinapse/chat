@@ -77,14 +77,12 @@ export const generateColumns = (
         <>
           {archived ? (
             <span>
-              {contactAt && highlight(globalSearch, formatDateTime(contactAt))}
+              {formatDateTime(contactAt)}
               <br />
               <Chip size="small" label="Arquivada" />
             </span>
           ) : (
-            <span>
-              {contactAt && highlight(globalSearch, formatDateTime(contactAt))}
-            </span>
+            <span>{formatDateTime(contactAt)}</span>
           )}
         </>
       ),
@@ -119,7 +117,7 @@ export const generateColumns = (
         return (
           <div style={style1}>
             <Typography variant="caption">
-              {highlight(globalSearch, phone)}
+              {highlightPhone(globalSearch, phone)}
             </Typography>
             <br />
             {highlighted ? (
@@ -251,4 +249,122 @@ export const highlight = (search, textToReplace) => {
   }
 
   return textToReplace;
+};
+
+export const highlightPhone = (search, textToReplace) => {
+  if (textToReplace && search) {
+    return replacerPhone(search, textToReplace);
+  }
+
+  return textToReplace;
+};
+
+export const replacerPhone = (search, phoneToReplace) => {
+  const normalizedSearch = normalize(search).replace(/\s+/g, "");
+  const normalizedPhoneToReplace = normalize(phoneToReplace).replace(/\D/g, "");
+
+  const phoneWithoutDDD = normalizedPhoneToReplace.substring(
+    2,
+    normalizedPhoneToReplace.length
+  );
+  const phoneDDD = normalizedPhoneToReplace.substring(0, 2);
+  const indexMatchDDD = normalizedPhoneToReplace.indexOf(normalizedSearch);
+
+  return (
+    <>
+      {highlightDDD(
+        normalizedSearch,
+        normalizedPhoneToReplace,
+        phoneDDD,
+        indexMatchDDD
+      )}
+      {highlightPhoneWithoutDDD(
+        normalizedSearch.substring(2 - indexMatchDDD, normalizedSearch.length),
+        phoneWithoutDDD,
+        phoneToReplace,
+        indexMatchDDD
+      )}
+    </>
+  );
+};
+
+export const highlightDDD = (search, phone, phoneDDD, index) => {
+  if (index === 0) {
+    return <>({aplicarHighlight(phoneDDD)})</>;
+  }
+
+  if (index === 1) {
+    return (
+      <>
+        ({phoneDDD.substring(0, 1)}
+        {aplicarHighlight(search.substring(0, 1))})
+      </>
+    );
+  }
+
+  return `(${phoneDDD})`;
+};
+
+export const highlightPhoneWithoutDDD = (
+  search,
+  phoneWithoutDDD,
+  phoneToReplace
+  // eslint-disable-next-line consistent-return
+) => {
+  const index = phoneWithoutDDD.indexOf(search);
+
+  if (phoneWithoutDDD.match(search) && search !== "") {
+    if (index <= 4) {
+      if (index + search.length > 5) {
+        return (
+          <>
+            {phoneWithoutDDD.substring(0, index)}
+            {aplicarHighlight(search.substring(0, 5 - index))}-
+            {aplicarHighlight(search.substring(5 - index, search.length))}
+            {phoneWithoutDDD.substring(
+              index + search.length,
+              phoneWithoutDDD.length
+            )}
+          </>
+        );
+      }
+
+      return (
+        <>
+          {phoneWithoutDDD.substring(0, index)}
+          {aplicarHighlight(search)}
+          {phoneWithoutDDD.substring(index + search.length, 5)}-
+          {phoneWithoutDDD.substring(5, phoneWithoutDDD.length)}
+        </>
+      );
+    }
+
+    if (phoneWithoutDDD.indexOf(search) > 4) {
+      return (
+        <>
+          {phoneWithoutDDD.substring(0, 5)}-
+          {phoneWithoutDDD.substring(5, index)}
+          {aplicarHighlight(search)}
+          {phoneWithoutDDD.substring(index + search.length)}
+        </>
+      );
+    }
+  } else {
+    return <>{phoneToReplace.substring(4, phoneToReplace.length)}</>;
+  }
+};
+
+export const aplicarHighlight = (text) => {
+  const style1 = { backgroundColor: "#ffb74d" };
+
+  return (
+    <span
+      // eslint-disable-next-line react/no-array-index-key
+      key={`highlight-${text}`}
+      id={`highlight-${text}`}
+      style={style1}
+    >
+      {text}
+    </span>
+  );
 };
