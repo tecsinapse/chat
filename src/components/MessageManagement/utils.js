@@ -361,12 +361,7 @@ export const applyHighlight = (text) => {
   const style1 = { backgroundColor: "#ffb74d" };
 
   return (
-    <span
-      // eslint-disable-next-line react/no-array-index-key
-      key={`highlight-${text}`}
-      id={`highlight-${text}`}
-      style={style1}
-    >
+    <span key={`highlight-${text}`} id={`highlight-${text}`} style={style1}>
       {text}
     </span>
   );
