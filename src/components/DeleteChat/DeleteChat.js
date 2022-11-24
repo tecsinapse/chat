@@ -22,14 +22,14 @@ export const DeleteChat = ({
   analyticsEventName,
 }) => {
   const handleDeleteChat = () => {
+    const { connectionKey, chatId } = chatToDelete;
+
     productService
-      .deleteChat(chatToDelete)
+      .deleteChat(connectionKey, chatId)
       .then(() => {
         chatService
-          .deleteSessionChat(chatToDelete)
+          .deleteSessionChat(connectionKey, chatId, userkeycloakId)
           .then(() => {
-            const { connectionKey } = chatToDelete;
-
             if (analyticsEventName) {
               ReactGA.event({
                 category: connectionKey,

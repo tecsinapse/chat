@@ -17,9 +17,9 @@ export class ChatService {
     });
   }
 
-  deleteSessionChat(deletedChat) {
+  deleteSessionChat(connectionKey, chatId, userkeycloakId) {
     return defaultFetch(
-      `${this.url}/${deletedChat.connectionKey}/${deletedChat.chatId}/sessions/finish`,
+      `${this.url}/${connectionKey}/${chatId}/${userkeycloakId}/sessions/finish`,
       "DELETE",
       {}
     );
