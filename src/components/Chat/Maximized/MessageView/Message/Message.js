@@ -14,7 +14,10 @@ import clsx from 'clsx';
 import Icon from '@mdi/react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
-import { IconButton as IconButtonMaterial } from '@tecsinapse/ui-kit';
+import {
+  IconButton as IconButtonMaterial,
+  MessagePreviewUtils,
+} from '@tecsinapse/ui-kit';
 
 import { DeliveryStatus } from './DeliveryStatus/DeliveryStatus';
 
@@ -113,7 +116,12 @@ export const Message = ({
           >
             {message.text && !isInfoStyle && (
               <MessageText>
-                <Typography variant="body1">{message.text}</Typography>
+                <Typography
+                  variant="body1"
+                  dangerouslySetInnerHTML={{
+                    __html: MessagePreviewUtils.normalizeInHtml(message.text),
+                  }}
+                />
               </MessageText>
             )}
             {message.title && (
