@@ -1,3 +1,9 @@
+## <small>3.2.8 (2022-11-28)</small>
+
+* [#182725] Tornar a visualização das mensagens de uma conversa algo mais próximo daquilo que o client ([4bdd92a](https://github.com/tecsinapse/chat/commit/4bdd92a)), closes [#182725](https://github.com/tecsinapse/chat/issues/182725)
+
+
+
 ## <small>3.2.7 (2022-09-04)</small>
 
 * [#180265] - Simplificar uso dos estados, paginar resultados e melhorar uso do websocket no component ([9a01430](https://github.com/tecsinapse/chat/commit/9a01430)), closes [#180265](https://github.com/tecsinapse/chat/issues/180265)
