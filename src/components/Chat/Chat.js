@@ -40,6 +40,8 @@ export const Chat = ({
   uploadOptions,
   backAction,
   composerBlockedMessage,
+  setMicDanied,
+  setMicWaitResponse,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
@@ -91,6 +93,8 @@ export const Chat = ({
                 uploadOptions={uploadOptions}
                 backAction={backAction}
                 composerBlockedMessage={composerBlockedMessage}
+                setMicDanied={setMicDanied}
+                setMicWaitResponse={setMicWaitResponse}
               />
             </FixedWrapper.Maximized>
 
