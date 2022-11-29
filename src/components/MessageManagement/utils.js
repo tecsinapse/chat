@@ -77,14 +77,12 @@ export const generateColumns = (
         <>
           {archived ? (
             <span>
-              {contactAt && highlight(globalSearch, formatDateTime(contactAt))}
+              {formatDateTime(contactAt)}
               <br />
               <Chip size="small" label="Arquivada" />
             </span>
           ) : (
-            <span>
-              {contactAt && highlight(globalSearch, formatDateTime(contactAt))}
-            </span>
+            <span>{formatDateTime(contactAt)}</span>
           )}
         </>
       ),
@@ -119,7 +117,7 @@ export const generateColumns = (
         return (
           <div style={style1}>
             <Typography variant="caption">
-              {highlight(globalSearch, phone)}
+              {highlightPhone(globalSearch, phone)}
             </Typography>
             <br />
             {highlighted ? (
@@ -251,4 +249,120 @@ export const highlight = (search, textToReplace) => {
   }
 
   return textToReplace;
+};
+
+export const highlightPhone = (search, textToReplace) => {
+  if (textToReplace && search) {
+    return replacerPhone(search, textToReplace);
+  }
+
+  return textToReplace;
+};
+
+export const replacerPhone = (search, phoneToReplace) => {
+  const normalizedSearch = normalize(search).replace(/\s+/g, "");
+  const normalizedPhoneToReplace = normalize(phoneToReplace).replace(/\D/g, "");
+
+  const phoneWithoutDDD = normalizedPhoneToReplace.substring(
+    2,
+    normalizedPhoneToReplace.length
+  );
+  const phoneDDD = normalizedPhoneToReplace.substring(0, 2);
+  const indexMatchDDD = normalizedPhoneToReplace.indexOf(normalizedSearch);
+
+  return (
+    <>
+      {highlightDDD(
+        normalizedSearch,
+        normalizedPhoneToReplace,
+        phoneDDD,
+        indexMatchDDD
+      )}
+      {highlightPhoneWithoutDDD(
+        normalizedSearch.substring(2 - indexMatchDDD, normalizedSearch.length),
+        phoneWithoutDDD,
+        phoneToReplace,
+        indexMatchDDD
+      )}
+    </>
+  );
+};
+
+export const highlightDDD = (search, phone, phoneDDD, index) => {
+  if (index === 0) {
+    return <>({applyHighlight(phoneDDD)})</>;
+  }
+
+  if (index === 1) {
+    return (
+      <>
+        ({phoneDDD.substring(0, 1)}
+        {applyHighlight(search.substring(0, 1))})
+      </>
+    );
+  }
+
+  return `(${phoneDDD})`;
+};
+
+export const highlightPhoneWithoutDDD = (
+  search,
+  phoneWithoutDDD,
+  phoneToReplace
+  // eslint-disable-next-line consistent-return
+) => {
+  const index = phoneWithoutDDD.indexOf(search);
+  const firstHalfLength = Math.round(phoneWithoutDDD.length / 2);
+
+  if (phoneWithoutDDD.match(search) && search !== "") {
+    if (index <= 4) {
+      if (index + search.length > firstHalfLength) {
+        return (
+          <>
+            {phoneWithoutDDD.substring(0, index)}
+            {applyHighlight(search.substring(0, firstHalfLength - index))}-
+            {applyHighlight(
+              search.substring(firstHalfLength - index, search.length)
+            )}
+            {phoneWithoutDDD.substring(
+              index + search.length,
+              phoneWithoutDDD.length
+            )}
+          </>
+        );
+      }
+
+      return (
+        <>
+          {phoneWithoutDDD.substring(0, index)}
+          {applyHighlight(search)}
+          {phoneWithoutDDD.substring(index + search.length, firstHalfLength)}-
+          {phoneWithoutDDD.substring(firstHalfLength, phoneWithoutDDD.length)}
+        </>
+      );
+    }
+
+    if (phoneWithoutDDD.indexOf(search) > 4) {
+      return (
+        <>
+          {phoneWithoutDDD.substring(0, firstHalfLength)}-
+          {phoneWithoutDDD.substring(firstHalfLength, index)}
+          {applyHighlight(search)}
+          {phoneWithoutDDD.substring(index + search.length)}
+        </>
+      );
+    }
+  } else {
+    return <>{phoneToReplace.substring(4, phoneToReplace.length)}</>;
+  }
+};
+
+export const applyHighlight = (text) => {
+  const style1 = { backgroundColor: "#ffb74d" };
+
+  return (
+    <span key={`highlight-${text}`} id={`highlight-${text}`} style={style1}>
+      {text}
+    </span>
+  );
 };
