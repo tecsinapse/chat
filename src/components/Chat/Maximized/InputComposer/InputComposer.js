@@ -6,7 +6,14 @@ import {
   TextComposer,
   TextInput,
 } from '@livechat/ui-kit';
-import { Typography } from '@material-ui/core';
+import {
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@material-ui/core';
 import {
   mdiFilmstripBoxMultiple,
   mdiImage,
@@ -16,9 +23,11 @@ import {
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import { defaultGreyLight2 } from '@tecsinapse/ui-kit/build/utils/colors';
+import { Button } from '@tecsinapse/ui-kit';
 import { MicRecorder } from './MicRecorder/MicRecorder';
 import { CustomUploader, onAccept } from './CustomUploader/CustomUploader';
 import { PreviewList } from './PreviewList/PreviewList';
+import { microphoneByBrowser } from '../../../utils';
 
 const ENTER_KEYCODE = 13;
 const wasEnterPressed = function wasEnterPressed(event) {
@@ -43,6 +52,8 @@ export const InputComposer = ({
 }) => {
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
+  const [micDanied, setMicDanied] = useState(false);
+  const [micWaitResponse, setMicWaitResponse] = useState(false);
   const [files, setFiles] = useState({});
 
   const isThereAudioSupport = onAudio !== undefined;
@@ -122,14 +133,80 @@ export const InputComposer = ({
   const style = { maxHeight: 37, maxWidth: 35 };
   const style1 = { maxHeight: 26, maxWidth: 24 };
   const size = 1.143;
-  const onClick = () => setRecording(true);
+  const onClick = () => {
+    navigator.permissions.query({ name: 'microphone' }).then(r => {
+      if (r.state !== 'granted') {
+        if (r.state !== 'denied') {
+          setMicWaitResponse(true);
+        }
+        navigator.mediaDevices
+          .getUserMedia({ audio: true })
+          .then(() => {
+            setMicWaitResponse(false);
+            setRecording(true);
+          })
+          .catch(e => {
+            if (e) {
+              setMicWaitResponse(false);
+              setMicDanied(true);
+            }
+          });
+      } else {
+        setRecording(true);
+      }
+    });
+  };
   const onClick1 = () => imageUpRef.current.open();
   const iconSize = 0.75;
   const onClick2 = () => videoUpRef.current.open();
   const onClick3 = () => appUpRef.current.open();
 
+  const closeMicrophoneModal = () => {
+    setMicDanied(false);
+    setMicWaitResponse(false);
+  };
+
+  const getTextModalMicPermission = () => {
+    if (micDanied) {
+      return (
+        <DialogContentText>
+          O Wingo Chat precisa ter acesso ao microfone do seu computador para
+          que você possa gravar mensagens de voz. Para permitir o acesso, clique
+          em
+          <img alt="" width="25px" src={microphoneByBrowser()} /> na barra de
+          endereços e selecione a opção &quot;Sempre permitir que{' '}
+          {window.location.href} acesse seu microfone&quot;.
+        </DialogContentText>
+      );
+    }
+
+    return (
+      <DialogContentText>
+        Para gravar uma mensagem de voz clique em &quot;Permitir&quot;, logo
+        acima, para dar ao Wingo Chat acessso ao microfone do seu computador
+      </DialogContentText>
+    );
+  };
+
   return (
     <>
+      {(micWaitResponse || micDanied) && (
+        <Dialog open>
+          <DialogTitle>Permitir microfone</DialogTitle>
+          <DialogContent>{getTextModalMicPermission()}</DialogContent>
+          <DialogActions>
+            <Button
+              color="primary"
+              variant="contained"
+              autoFocus
+              onClick={closeMicrophoneModal}
+            >
+              Fechar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+
       <PreviewList files={files} setFiles={setFiles} />
       <>
         {isBlocked && composerBlockedMessage && (
