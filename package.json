@@ -53,7 +53,7 @@
     "@mdi/react": "^1.4.0",
     "@tecsinapse/chat": "3.2.8",
     "@tecsinapse/table": "^4.0.2",
-    "@tecsinapse/ui-kit": "5.6.9",
+    "@tecsinapse/ui-kit": "^5.6.12",
     "enumify": "^1.0.4",
     "jwt-simple": "^0.5.6",
     "moment": "^2.27.0",
