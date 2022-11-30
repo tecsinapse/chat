@@ -1,3 +1,10 @@
+## <small>3.2.9 (2022-11-30)</small>
+
+* [#182998] Avisar usuário quando o microfone não estiver autorizado pelo navegador ([649d5dc](https://github.com/tecsinapse/chat/commit/649d5dc)), closes [#182998](https://github.com/tecsinapse/chat/issues/182998)
+* [#182998] Avisar usuário quando o microfone não estiver autorizado pelo navegador ([27d4786](https://github.com/tecsinapse/chat/commit/27d4786)), closes [#182998](https://github.com/tecsinapse/chat/issues/182998)
+
+
+
 ## <small>3.2.8 (2022-11-28)</small>
 
 * [#182725] Tornar a visualização das mensagens de uma conversa algo mais próximo daquilo que o client ([4bdd92a](https://github.com/tecsinapse/chat/commit/4bdd92a)), closes [#182725](https://github.com/tecsinapse/chat/issues/182725)
