@@ -1800,10 +1800,10 @@
     "@tecsinapse/ui-kit" "^5.6.3"
     react-virtualized "^9.22.3"
 
-"@tecsinapse/ui-kit@5.6.9":
-  version "5.6.9"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.6.9.tgz#16de06ae8ea752c5b6027b8c4cfcd4a6f4456c6c"
-  integrity sha512-3Uy9NgLLBxw4JOVBfIHiOzhpfkXzlN1npLpNYQ1C0pXWnMEMy9oTVye6QyluMGgJazvP1MTBv3l3rhTdTQWvVA==
+"@tecsinapse/ui-kit@^5.6.10":
+  version "5.6.10"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.6.10.tgz#d8a6c650976f2e7d9fcca17e3010985eda32630e"
+  integrity sha512-RluFkGLvTBwqw7BIAu1auy6XeCgEDvWQR9lqBHARFa/sfSu40DaagsvWF+1OVVpwTevfdR4aTNwrIfCYbof9KA==
   dependencies:
     "@material-ui/core" "^4.11.1"
     "@material-ui/icons" "^4.11.1"
@@ -1818,10 +1818,10 @@
     text-mask-addons "^3.8.0"
     text-mask-core "^5.1.2"
 
-"@tecsinapse/ui-kit@^5.6.10":
-  version "5.6.10"
-  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.6.10.tgz#d8a6c650976f2e7d9fcca17e3010985eda32630e"
-  integrity sha512-RluFkGLvTBwqw7BIAu1auy6XeCgEDvWQR9lqBHARFa/sfSu40DaagsvWF+1OVVpwTevfdR4aTNwrIfCYbof9KA==
+"@tecsinapse/ui-kit@^5.6.12":
+  version "5.6.12"
+  resolved "https://registry.yarnpkg.com/@tecsinapse/ui-kit/-/ui-kit-5.6.12.tgz#94fa9a8cd20ee20cc249d3722b4a990c6dc46a2b"
+  integrity sha512-YHJKw/QtB7r0E+B7VPtEl9qNAcoph576tWisw/c5SMIoV9FPgUNb6B8LyzJbVH8tYMb/P/Q3BYgtLJtWjU2xCw==
   dependencies:
     "@material-ui/core" "^4.11.1"
     "@material-ui/icons" "^4.11.1"
