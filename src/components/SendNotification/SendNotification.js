@@ -20,6 +20,8 @@ import {
   generateButtons,
   generatePreviewText,
 } from "./utils";
+import { LoadMetric } from "../LoadMetric/LoadMetric";
+import { ANALYTICS_EVENTS } from "../../constants/ANALYTICS_EVENTS";
 
 export const SendNotification = ({
   chatService,
@@ -31,6 +33,7 @@ export const SendNotification = ({
   loading,
   setLoading,
   setConnectionError,
+  view,
   setView,
   userNamesById,
 }) => {
@@ -41,11 +44,9 @@ export const SendNotification = ({
   );
 
   const [submitting, setSubmitting] = useState(false);
-
   const [selectedConnectionKey, setSelectedConnectionKey] = useState(null);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-
   const [templates, setTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [templateArgs, setTemplateArgs] = useState([]);
   const [previewText, setPreviewText] = useState(null);
   const [previewButtons, setPreviewButtons] = useState([]);
@@ -65,21 +66,6 @@ export const SendNotification = ({
       })
     );
 
-  const availableTemplates = [
-    {
-      label: "Selecione...",
-      value: null,
-    },
-  ];
-
-  templates &&
-    templates.forEach((it) =>
-      availableTemplates.push({
-        label: it.name,
-        value: it.value,
-      })
-    );
-
   const handleChangeConnectionKey = (value) => {
     const connectionKey = connectionKeys.find((it) => it.label === value);
 
@@ -88,10 +74,42 @@ export const SendNotification = ({
       setSelectedConnectionKey(connectionKey);
       setLoading(true);
 
-      chatService.getAllTampletes(connectionKey.value).then((newTemplates) => {
-        setTemplates(newTemplates);
-        setLoading(false);
-      });
+      chatService
+        .getAllTemplatesByUser(connectionKey.value, userkeycloakId)
+        .then((allTemplates) => {
+          const noTemplateGroup = {
+            label: "Selecione...",
+            options: [],
+          };
+
+          const mostUsedTemplatesGroup = {
+            label: "Mais usadas nos últimos 45 dias",
+            options: allTemplates
+              .filter((it) => it.mostUsed)
+              .map((it) => ({
+                label: it.name,
+                event: ANALYTICS_EVENTS.TEMPLATE_MOST_USED,
+                value: { label: it.name, ...it },
+              })),
+          };
+
+          const templatesGroup = {
+            label: "Lista de modelos",
+            options: allTemplates.map((it) => ({
+              label: it.name,
+              event: ANALYTICS_EVENTS.TEMPLATE_LIST,
+              value: { label: it.name, ...it },
+            })),
+          };
+
+          setTemplates([
+            noTemplateGroup,
+            mostUsedTemplatesGroup,
+            templatesGroup,
+          ]);
+
+          setLoading(false);
+        });
     } else {
       setSelectedTemplate(null);
       setTemplateArgs([]);
@@ -99,6 +117,12 @@ export const SendNotification = ({
       setTemplates([]);
     }
   };
+
+  useEffect(() => {
+    if (availableConnectionKeys.length === 2 && !selectedConnectionKey) {
+      handleChangeConnectionKey(availableConnectionKeys[1]?.label);
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableConnectionKeys, selectedConnectionKey]);
 
   useEffect(() => {
     if (!selectedTemplate) {
@@ -160,9 +184,21 @@ export const SendNotification = ({
   };
 
   const handleChangeTemplate = (value) => {
-    const template = templates.find((it) => it.value === value);
+    for (const group of templates) {
+      for (const option of group.options) {
+        if (option.value === value) {
+          setSelectedTemplate(value);
 
-    setSelectedTemplate(template);
+          ReactGA.event({
+            category: selectedConnectionKey,
+            label: "CLICK TOP 2",
+            action: option.event,
+          });
+
+          break;
+        }
+      }
+    }
   };
 
   const handleChangeTemplateArg = (index) => (event) => {
@@ -247,7 +283,7 @@ export const SendNotification = ({
     });
 
     const kcidParam = `kcid=${userkeycloakId}`;
-    const connectionKeyParam = `connectionKey=${connectionKey}`;
+    const connectionKeyParam = `connectionkey=${connectionKey}`;
     const customParam = `alignCenter=1&transparentBackground=1`;
     const params = `${kcidParam}&${connectionKeyParam}&${customParam}`;
     const url = `${process.env.REACT_APP_MESSAGE_SUGESTION_URL}?${params}`;
@@ -262,11 +298,24 @@ export const SendNotification = ({
     }),
   };
 
+  const templateMedia = () => {
+    const templateMediaArgs = ["documentUrl", "imageUrl", "videoUrl"];
+    const media = templateArgs.find((it) => templateMediaArgs.includes(it.key));
+
+    return media?.value || undefined;
+  };
+
   return (
     <div className={classes.container}>
       {loading ? (
         <div className={classes.loadingContainer}>
-          <Loading />
+          <LoadMetric
+            metricId={view}
+            userkeyloakId={userkeycloakId}
+            chatService={chatService}
+          >
+            <Loading />
+          </LoadMetric>
         </div>
       ) : (
         <div className={classes.sendContainer}>
@@ -276,7 +325,7 @@ export const SendNotification = ({
                 value={selectedConnectionKey?.label}
                 options={availableConnectionKeys}
                 onChange={handleChangeConnectionKey}
-                disabled={submitting}
+                disabled={submitting || availableConnectionKeys.length === 2}
                 label="Origem"
                 variant="auto"
                 fullWidth
@@ -297,10 +346,11 @@ export const SendNotification = ({
                 id="message-template"
                 styles={style}
                 value={selectedTemplate?.value}
-                options={availableTemplates}
+                options={templates}
                 onChange={handleChangeTemplate}
                 disabled={!selectedConnectionKey || submitting}
-                label="Modelo da Mensagem"
+                selectPromptMessage={selectedTemplate?.label}
+                label="Selecione modelo da mensagem"
                 customIndicators={
                   <Tooltip
                     title="Sugerir Modelo de Mensagem"
@@ -331,7 +381,7 @@ export const SendNotification = ({
               <Grid key={`template-arg-${index}`} item>
                 <Input
                   name={`args[${index}]`}
-                  label={selectedTemplate.descriptions[index]}
+                  label={selectedTemplate?.descriptions[index]}
                   value={argsValues[index]}
                   onChange={handleChangeTemplateArg(index)}
                   disabled={submitting}
@@ -347,6 +397,9 @@ export const SendNotification = ({
                     <MessagePreview
                       unformattedText={previewText}
                       buttons={previewButtons}
+                      media={templateMedia()}
+                      footer={selectedTemplate.footer}
+                      header={selectedTemplate.header}
                     />
                   </Grid>
                 </div>

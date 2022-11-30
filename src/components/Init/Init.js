@@ -58,7 +58,7 @@ const InitContext = ({ chatInitConfig }) => {
   const productService = new ProductService(productChatPath);
   const chatService = new ChatService(chatApiUrl);
 
-  const [view, setView] = useState(COMPONENT_VIEW.MESSAGE_MANAGEMENT);
+  const [view, setView] = useState(COMPONENT_VIEW.COMPONENT_INIT);
   const [loading, setLoading] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
   const [componentInfo, setComponentInfo] = useState({});
@@ -336,9 +336,13 @@ const InitContext = ({ chatInitConfig }) => {
       )}
       {!openDrawer && (
         <ChatButton
+          userkeycloakId={userkeycloakId}
           firstLoad={firstLoad}
           setOpenDrawer={setOpenDrawer}
+          view={view}
+          setView={handleSetView}
           unreads={componentInfo?.totalUnreads}
+          chatService={chatService}
         />
       )}
       <Drawer
@@ -387,6 +391,7 @@ const InitContext = ({ chatInitConfig }) => {
               webSocketRef={webSocketRef}
               canSendNotification={canSendNotification}
               productService={productService}
+              view={view}
               setView={handleSetView}
             />
           )}
@@ -404,6 +409,7 @@ const InitContext = ({ chatInitConfig }) => {
               componentInfo={componentInfo}
               userkeycloakId={userkeycloakId}
               userNamesById={componentInfo?.userNamesById}
+              view={view}
               setView={handleSetView}
               page={page}
               setPage={setPage}
@@ -424,6 +430,7 @@ const InitContext = ({ chatInitConfig }) => {
               loading={loading}
               setLoading={setLoading}
               setConnectionError={setConnectionError}
+              view={view}
               setView={handleSetView}
               userNamesById={componentInfo?.userNamesById}
             />
