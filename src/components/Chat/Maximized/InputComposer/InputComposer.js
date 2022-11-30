@@ -182,7 +182,7 @@ export const InputComposer = ({
 
     return (
       <DialogContentText>
-        Para gravar uma mensagem de voz cliquem em &quot;Permitir&quot;, logo
+        Para gravar uma mensagem de voz clique em &quot;Permitir&quot;, logo
         acima, para dar ao Wingo Chat acessso ao microfone do seu computador
       </DialogContentText>
     );
