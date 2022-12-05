@@ -18,6 +18,7 @@ export const WebSocket = ({
 
   if (currentChat) {
     const { connectionKey, chatId } = currentChat;
+
     topics.push(`/topic/${connectionKey}.${destination}.${chatId}`);
   }
 

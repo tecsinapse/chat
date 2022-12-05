@@ -22,6 +22,8 @@ import {
 } from "./utils";
 import { LoadMetric } from "../LoadMetric/LoadMetric";
 import { ANALYTICS_EVENTS } from "../../constants/ANALYTICS_EVENTS";
+import { MEDIA_TYPES } from "../../constants/MEDIA_TYPES";
+import { MediaUploader } from "../MediaUploader/MediaUploader";
 
 export const SendNotification = ({
   chatService,
@@ -50,6 +52,7 @@ export const SendNotification = ({
   const [templateArgs, setTemplateArgs] = useState([]);
   const [previewText, setPreviewText] = useState(null);
   const [previewButtons, setPreviewButtons] = useState([]);
+  const [currentMedia, setCurrentMedia] = useState(null);
 
   const availableConnectionKeys = [
     {
@@ -291,6 +294,22 @@ export const SendNotification = ({
     window.open(`${url}`, "_blank");
   };
 
+  const handleUploadMedia = (index) => (newMedia) => {
+    const newTemplateArgs = [...templateArgs];
+
+    newTemplateArgs[index].value = newMedia.url;
+    setTemplateArgs(newTemplateArgs);
+    setCurrentMedia(newMedia);
+  };
+
+  const handleDeleteMedia = (index) => () => {
+    const newTemplateArgs = [...templateArgs];
+
+    newTemplateArgs[index].value = "";
+    setTemplateArgs(newTemplateArgs);
+    setCurrentMedia(null);
+  };
+
   const style = {
     indicatorsContainer: (base) => ({
       ...base,
@@ -376,20 +395,43 @@ export const SendNotification = ({
                 fullWidth
               />
             </Grid>
-            {argsValues.map((arg, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Grid key={`template-arg-${index}`} item>
-                <Input
-                  name={`args[${index}]`}
-                  label={selectedTemplate?.descriptions[index]}
-                  value={argsValues[index]}
-                  onChange={handleChangeTemplateArg(index)}
-                  disabled={submitting}
-                  maxLength={255}
-                  fullWidth
-                />
-              </Grid>
-            ))}
+            {argsValues.map((arg, index) => {
+              const mediaTypeKey = Object.keys(MEDIA_TYPES).find(
+                (it) =>
+                  MEDIA_TYPES[it].templateArgKey ===
+                  selectedTemplate?.keys[index]
+              );
+
+              if (mediaTypeKey) {
+                return (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Grid key={`template-arg-${index}`} item>
+                    <MediaUploader
+                      connectionKey={selectedConnectionKey.value}
+                      mediaType={MEDIA_TYPES[mediaTypeKey]}
+                      currentMedia={currentMedia}
+                      handleUpload={handleUploadMedia(index)}
+                      handleDelete={handleDeleteMedia(index)}
+                    />
+                  </Grid>
+                );
+              }
+
+              return (
+                // eslint-disable-next-line react/no-array-index-key
+                <Grid key={`template-arg-${index}`} item>
+                  <Input
+                    name={`args[${index}]`}
+                    label={selectedTemplate?.descriptions[index]}
+                    value={argsValues[index]}
+                    onChange={handleChangeTemplateArg(index)}
+                    disabled={submitting}
+                    maxLength={255}
+                    fullWidth
+                  />
+                </Grid>
+              );
+            })}
             {previewText && (
               <Grid item>
                 <div className={classes.preview}>

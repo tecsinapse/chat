@@ -93,3 +93,11 @@ export const formatDateTime = (dateTime) => {
     ? normalizedMoment.format("DD/MM/YYYY HH:mm")
     : dateTime;
 };
+
+export const downloadByLink = (link) => {
+  const a = document.createElement("a");
+
+  a.href = link;
+  a.target = "_blank";
+  a.click();
+};

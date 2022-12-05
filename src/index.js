@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import axios from "axios";
 import { createGenerateClassName, StylesProvider } from "@material-ui/styles";
 import { ThemeProvider } from "@tecsinapse/ui-kit";
 import { Init } from "./components/Init/Init";
@@ -31,6 +32,8 @@ window.renderChatComponent = function renderChatComponent() {
   const generateClassName = createGenerateClassName({
     productionPrefix: "chat",
   });
+
+  axios.defaults.baseURL = chatInitConfig.chatApiUrl;
 
   ReactDOM.render(
     <StylesProvider generateClassName={generateClassName}>

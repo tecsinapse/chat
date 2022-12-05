@@ -45,7 +45,7 @@ export class ChatService {
     );
   }
 
-  sendDataApi(currentChat, formData) {
+  sendUpload(currentChat, formData) {
     const { connectionKey, destination, chatId } = currentChat;
 
     return defaultFetch(
