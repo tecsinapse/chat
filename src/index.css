@@ -41,3 +41,17 @@ body {
 #wingo-chat-component > h1, h2, h3, h4, h5, h6 {
   padding: 0 !important;
 }
+
+#wingo-chat-component .lc-13e3qow code {
+  color: #000000DE;
+  background-color: #FFFFFF00;
+  border: none;
+  white-space: unset;
+}
+
+#wingo-chat-component .lc-1csqyub code {
+  color: #ffffff;
+  background-color: #FFFFFF00;
+  border: none;
+  white-space: unset;
+}
