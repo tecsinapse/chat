@@ -1,3 +1,9 @@
+## <small>3.2.10 (2022-12-05)</small>
+
+* [#182998] Avisar usuário quando o microfone não estiver autorizado pelo navegador ([2e68071](https://github.com/tecsinapse/chat/commit/2e68071)), closes [#182998](https://github.com/tecsinapse/chat/issues/182998)
+
+
+
 ## <small>3.2.9 (2022-11-30)</small>
 
 * [#182998] Avisar usuário quando o microfone não estiver autorizado pelo navegador ([649d5dc](https://github.com/tecsinapse/chat/commit/649d5dc)), closes [#182998](https://github.com/tecsinapse/chat/issues/182998)
