@@ -27,7 +27,7 @@ const browserName = () => {
 };
 
 export const microphoneByBrowser = () => {
-  if (browserName() !== 'edge') {
+  if (browserName() === 'chrome') {
     return RESOURCES.CHROME_MIC_ICON;
   }
 

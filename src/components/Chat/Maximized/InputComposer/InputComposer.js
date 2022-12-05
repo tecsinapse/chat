@@ -134,27 +134,18 @@ export const InputComposer = ({
   const style1 = { maxHeight: 26, maxWidth: 24 };
   const size = 1.143;
   const onClick = () => {
-    navigator.permissions.query({ name: 'microphone' }).then(r => {
-      if (r.state !== 'granted') {
-        if (r.state !== 'denied') {
-          setMicWaitResponse(true);
-        }
-        navigator.mediaDevices
-          .getUserMedia({ audio: true })
-          .then(() => {
-            setMicWaitResponse(false);
-            setRecording(true);
-          })
-          .catch(e => {
-            if (e) {
-              setMicWaitResponse(false);
-              setMicDanied(true);
-            }
-          });
-      } else {
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(() => {
+        setMicWaitResponse(false);
         setRecording(true);
-      }
-    });
+      })
+      .catch(e => {
+        if (e) {
+          setMicDanied(true);
+        }
+      })
+      .finally(setMicWaitResponse(true));
   };
   const onClick1 = () => imageUpRef.current.open();
   const iconSize = 0.75;
