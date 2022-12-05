@@ -168,9 +168,11 @@ export const MessageManagement = ({
                   <br />
                 </div>
                 <Input
-                  placeholder="Pesquise por dados em qualquer campo"
+                  placeholder="Pesquise pelo nome do cliente, telefone, responsável ou empresa"
                   name="globalSearch"
                   defaultValue={globalSearch}
+                  focused
+                  autoFocus
                   startAdornment={
                     <Icon path={mdiMagnify} size={1} color="#c6c6c6" />
                   }
