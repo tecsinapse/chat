@@ -26,6 +26,7 @@ import { useStyle } from "./styles";
 import { DeleteChat } from "../DeleteChat/DeleteChat";
 import { ANALYTICS_EVENTS } from "../../constants/ANALYTICS_EVENTS";
 import { LoadMetric } from "../LoadMetric/LoadMetric";
+import MessageSource from "../../enums/MessageSource";
 
 export const RenderChat = ({
   chatService,
@@ -157,11 +158,13 @@ export const RenderChat = ({
       return;
     }
 
-    chatService
-      .updateMessageStatusToRead(receivedMessage.message?.messageId)
-      .catch((error) => {
-        console.error(error);
-      });
+    if (MessageSource.isClient(receivedMessage.message?.source)) {
+      chatService
+        .updateMessageStatusToRead(receivedMessage.message?.messageId)
+        .catch((error) => {
+          console.error(error);
+        });
+    }
 
     const {
       message: newMessage,
