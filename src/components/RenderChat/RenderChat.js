@@ -241,7 +241,7 @@ export const RenderChat = ({
     formData.append("userId", userkeycloakId);
 
     chatService
-      .sendDataApi(currentChat, formData)
+      .sendUpload(currentChat, formData)
       .then(() => {})
       .catch((err) => {
         if (err.status === 403) {
