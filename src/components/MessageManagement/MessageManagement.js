@@ -168,7 +168,7 @@ export const MessageManagement = ({
                   <br />
                 </div>
                 <Input
-                  placeholder="Pesquise pelo nome do cliente, telefone, responsável ou Dealer"
+                  placeholder="Pesquise pelo nome do cliente, telefone, responsável ou empresa"
                   name="globalSearch"
                   defaultValue={globalSearch}
                   focused
