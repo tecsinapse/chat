@@ -409,13 +409,13 @@ export const RenderChat = ({
         isLoading={loading}
         loadMore={loadMore}
         onMessageResend={handleResendNewMessage}
-        isBlocked={blocked || !canSendNotification}
+        isBlocked={blocked || archived || !canSendNotification}
         blockedMessage="Para conversar com esse cliente clique em Iniciar Conversa"
         onBackToChatList={handleBackToChatList}
         disabledSend={loading}
         roundedCorners={false}
         containerHeight={`calc(100vh - ${
-          blocked || !canSendNotification ? "164px" : "82px"
+          blocked || archived || !canSendNotification ? "164px" : "82px"
         })`}
         customHeader={{
           headerLabel: "Cliente:",

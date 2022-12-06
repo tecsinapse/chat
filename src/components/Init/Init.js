@@ -438,7 +438,7 @@ const InitContext = ({ chatInitConfig }) => {
           {canSendNotification &&
             (view === COMPONENT_VIEW.MESSAGE_MANAGEMENT ||
               (view === COMPONENT_VIEW.CHAT_MESSAGES &&
-                currentChat?.blocked)) && (
+                (currentChat?.blocked || currentChat?.archived))) && (
               <StartNewChatButton
                 handleStartSendNotification={handleStartSendNotification}
               />
