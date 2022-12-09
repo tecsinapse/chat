@@ -9,9 +9,9 @@ import "./index.css";
 
 window.renderChatComponent = function renderChatComponent() {
   const defaultChatInitConfig = {
-    userkeycloakId: "1be9f846-afdc-4ec2-9bfe-1443c63c1eb5",
+    userkeycloakId: "",
     chatApiUrl: `${process.env.REACT_APP_SERVER_URL}`,
-    productChatPath: "http://localhost:9080/rest/chat",
+    productChatPath: "/rest/chat",
     openImmediately: false,
     canSendNotification: true,
     executeFirstAction: false,
