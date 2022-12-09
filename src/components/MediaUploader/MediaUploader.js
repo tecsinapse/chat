@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import {
   Button,
@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  Typography,
 } from "@material-ui/core";
 import { PreviewList, Uploader } from "@tecsinapse/uploader";
 import Icon from "@mdi/react";
@@ -27,51 +28,56 @@ const FileUploader = ({
   acceptedFormats,
   dialogContent,
   silent,
-}) => (
-  <>
-    <Uploader
-      ref={uploaderRef}
-      onAccept={onAccept}
-      onReject={onReject}
-      value={files}
-      filesLimit={filesLimit}
-      acceptedFormat={acceptedFormats}
-      silent={silent}
-      maxFileSize={maxFileSize}
-      messages={{
-        title: "Arraste seu(s) arquivo(s) aqui",
-        buttonLabel: "Upload de arquivos",
-        subtitle: "ou clique no botão",
-        filetypeNotSupportedMessage: `Tipo de arquivo não suportado.`,
-        maximumFileLimitMessage: (limit) =>
-          `O número de arquivos permitidos é ${limit}`,
-        maximumFileNumberMessage: "Número de arquivos excedido",
-        filenameFailedMessage: () => `Tipo de arquivo não suportado.`,
-        sizeLimitErrorMessage: (size) => `Limite de tamanho: ${size}.`,
-      }}
-    />
-    <Dialog
-      onClose={() => setOpen(false)}
-      open={open}
-      aria-labelledby="simple-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">Enviando arquivos</DialogTitle>
-      <DialogContent>
-        <PreviewList
-          value={files}
-          onDelete={onDelete}
-          messages={{
-            fileErroedMessage: (fileName) =>
-              `Erro ao enviar o arquivo ${fileName}. Verifique o formato e tente novamente`,
-            fileUploadedSucessfullyMessage: (fileName) =>
-              `${fileName} recebido com sucesso`,
-          }}
-        />
-        <div>{dialogContent}</div>
-      </DialogContent>
-    </Dialog>
-  </>
-);
+}) => {
+  const joinedAcceptedFormats = acceptedFormats.join(" ou ");
+
+  return (
+    <>
+      <Uploader
+        ref={uploaderRef}
+        onAccept={onAccept}
+        onReject={onReject}
+        value={files}
+        filesLimit={filesLimit}
+        acceptedFormat={acceptedFormats}
+        silent={silent}
+        maxFileSize={maxFileSize}
+        messages={{
+          title: "Arraste seu(s) arquivo(s) aqui",
+          buttonLabel: "Upload de arquivos",
+          subtitle: "ou clique no botão",
+          filetypeNotSupportedMessage: `O anexo deve estar no formato ${joinedAcceptedFormats} `,
+          maximumFileLimitMessage: (limit) =>
+            `O número de arquivos permitidos é ${limit}`,
+          maximumFileNumberMessage: "Número de arquivos excedido",
+          filenameFailedMessage: (fileName) =>
+            `Não foi possível anexar o arquivo ${fileName}`,
+          sizeLimitErrorMessage: (size) => `e com tamanho máximo de ${size}`,
+        }}
+      />
+      <Dialog
+        onClose={() => setOpen(false)}
+        open={open}
+        aria-labelledby="simple-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Enviando arquivos</DialogTitle>
+        <DialogContent>
+          <PreviewList
+            value={files}
+            onDelete={onDelete}
+            messages={{
+              fileErroedMessage: (fileName) =>
+                `Erro ao enviar o arquivo ${fileName}. Verifique o formato e tente novamente`,
+              fileUploadedSucessfullyMessage: (fileName) =>
+                `${fileName} recebido com sucesso`,
+            }}
+          />
+          <div>{dialogContent}</div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
 
 const SingleFileUploader = ({
   connectionKey,
@@ -79,6 +85,7 @@ const SingleFileUploader = ({
   acceptedFormats,
   maxFileSize,
   handleUpload,
+  handleError,
 }) => {
   const [file, setFile] = useState({});
   const [cancelToken, setCancelToken] = useState(null);
@@ -95,7 +102,10 @@ const SingleFileUploader = ({
     setTimeout(() => upload(fileObj), 1000);
   };
 
-  const handleReject = () => {
+  const handleReject = (rejectedFiles) => {
+    if (rejectedFiles[0]?.error) {
+      handleError(rejectedFiles[0]?.error);
+    }
     setOpen(false);
   };
 
@@ -169,6 +179,12 @@ export const MediaUploader = ({
   const uploaderRef = useRef();
   const anchorRef = useRef();
 
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    setErrorMessage(null);
+  }, [mediaType]);
+
   const handleOpen = () => {
     uploaderRef.current.open();
   };
@@ -177,8 +193,20 @@ export const MediaUploader = ({
     downloadByLink(link);
   };
 
+  const handleError = (error) => {
+    setErrorMessage(error);
+  };
+
+  const internalHandleUpload = (newMedia) => {
+    setErrorMessage(null);
+
+    if (handleUpload) {
+      handleUpload(newMedia);
+    }
+  };
+
   return (
-    <Grid direction="column" container>
+    <Grid spacing={1} direction="column" container>
       {!currentMedia && mediaType && (
         <Grid item xs={12}>
           <ButtonGroup variant="contained" color="primary" ref={anchorRef}>
@@ -195,7 +223,8 @@ export const MediaUploader = ({
           uploaderRef={uploaderRef}
           acceptedFormats={mediaType.acceptedFormats}
           maxFileSize={mediaType.maxFileSize}
-          handleUpload={handleUpload}
+          handleUpload={internalHandleUpload}
+          handleError={handleError}
         />
       )}
       {currentMedia && (
@@ -206,6 +235,13 @@ export const MediaUploader = ({
             onDelete={handleDelete}
             onClick={handleDownload(currentMedia.url)}
           />
+        </Grid>
+      )}
+      {errorMessage && (
+        <Grid item xs={12}>
+          <Typography variant="caption" color="error">
+            {errorMessage}
+          </Typography>
         </Grid>
       )}
     </Grid>
