@@ -1,7 +1,7 @@
 import { Badge, CircularProgress, Tooltip } from "@material-ui/core";
 import { FloatingButton } from "@tecsinapse/ui-kit";
 import React from "react";
-import { mdiForum } from "@mdi/js";
+import { mdiSquareEditOutline } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useStyle } from "./styles";
 import { COMPONENT_VIEW } from "../../constants/COMPONENT_VIEW";
@@ -55,7 +55,7 @@ export const ChatButton = ({
                 <CircularProgress size={20} className={classes.fabProgress} />
               </LoadMetric>
             ) : (
-              <Icon path={mdiForum} size={1} color="#7b4e00" />
+              <Icon path={mdiSquareEditOutline} size={1} color="#7b4e00" />
             )}
           </FloatingButton>
         </Badge>
