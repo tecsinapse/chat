@@ -163,6 +163,7 @@ export const SendNotification = ({
     }
 
     setTemplateArgs(newTemplateArgs);
+    setCurrentMedia(null);
   }, [selectedTemplate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
