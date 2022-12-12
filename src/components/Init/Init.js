@@ -73,7 +73,7 @@ const InitContext = ({ chatInitConfig }) => {
   const [currentChat, setCurrentChat] = useState(null);
 
   const [destination, setDestination] = useState(null);
-  const [webSocketConnected, setWebSocketConnected] = useState(null);
+  const [webSocketConnected, setWebSocketConnected] = useState(false);
   const [connectionError, setConnectionError] = useState(false);
 
   const [receivedMessage, setReceivedMessage] = useState();
