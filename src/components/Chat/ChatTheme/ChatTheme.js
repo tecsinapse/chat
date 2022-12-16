@@ -54,7 +54,9 @@ const getTheme = (
       horizontalAlign: 'right',
       Bubble: {
         css: {
-          backgroundColor: defaultGreyDark, // it is not materialized!
+          backgroundColor: '#c8f4ac',
+          color: defaultBlack,
+          // it is not materialized!
           boxShadow: `${materialTheme.spacing(
             0,
             1 / 6,
