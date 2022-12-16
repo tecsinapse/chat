@@ -14,8 +14,17 @@ export const useStyle = makeStyles((theme) => ({
   preview: {
     display: "grid",
     margin: theme.spacing(1, 0),
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     justifyContent: "center",
+  },
+  previewText: {
+    fontSize: "14px",
+    lineHeight: 1.5,
+    textAlign: "left",
+    display: "block",
+    width: "31vW",
+    color: "#a4a2a2",
+    paddingTop: theme.spacing(1),
   },
   connectionKeys: {
     zIndex: 999999,

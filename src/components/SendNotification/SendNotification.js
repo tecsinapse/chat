@@ -6,7 +6,7 @@ import {
   MessagePreview,
   Select,
 } from "@tecsinapse/ui-kit";
-import { Box, Grid, Tooltip } from "@material-ui/core";
+import { Box, Grid, Tooltip, Typography } from "@material-ui/core";
 import Icon from "@mdi/react";
 import { mdiPlusBoxOutline } from "@mdi/js";
 import ReactGA from "react-ga4";
@@ -435,6 +435,9 @@ export const SendNotification = ({
             })}
             {previewText && (
               <Grid item>
+                <Typography className={classes.previewText}>
+                  Pré-visualização da mensagem:
+                </Typography>
                 <div className={classes.preview}>
                   <Grid item>
                     <MessagePreview
