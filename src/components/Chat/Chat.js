@@ -27,6 +27,9 @@ export const Chat = ({
   onMessageResend,
   isBlocked,
   blockedMessage,
+  composerBlockedMessageTitle,
+  composerBlockedMessage,
+  composerStyle,
   roundedCorners,
   disabledSend = false,
   chatList,
@@ -39,7 +42,6 @@ export const Chat = ({
   warningMessage,
   uploadOptions,
   backAction,
-  composerBlockedMessage,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
@@ -77,6 +79,9 @@ export const Chat = ({
                 onMessageResend={onMessageResend}
                 isBlocked={isBlocked}
                 blockedMessage={blockedMessage}
+                composerBlockedMessageTitle={composerBlockedMessageTitle}
+                composerBlockedMessage={composerBlockedMessage}
+                composerStyle={composerStyle}
                 chatList={chatList}
                 onBackToChatList={onBackToChatList}
                 location={location}
@@ -90,7 +95,6 @@ export const Chat = ({
                 warningMessage={warningMessage}
                 uploadOptions={uploadOptions}
                 backAction={backAction}
-                composerBlockedMessage={composerBlockedMessage}
               />
             </FixedWrapper.Maximized>
 
@@ -121,7 +125,9 @@ Chat.defaultProps = {
   onMessageResend: undefined,
   isBlocked: undefined,
   blockedMessage: 'The chat is blocked',
+  composerBlockedMessageTitle: undefined,
   composerBlockedMessage: undefined,
+  composerStyle: undefined,
   chatList: undefined,
   onBackToChatList: undefined,
   onSelectedChat: undefined,
@@ -222,7 +228,10 @@ Chat.propTypes = {
   isBlocked: PropTypes.bool,
   /** Message displayed when chat is blocked */
   blockedMessage: PropTypes.node,
+  composerBlockedMessageTitle: PropTypes.string,
   composerBlockedMessage: PropTypes.string,
+  /** Style for Input Composer */
+  composerStyle: PropTypes.object,
   /** Callback called after the ChatList view is rendered */
   onBackToChatList: PropTypes.func,
   /** ChatList with recipients */

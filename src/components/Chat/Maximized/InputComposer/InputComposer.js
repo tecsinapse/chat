@@ -7,22 +7,26 @@ import {
   TextInput,
 } from '@livechat/ui-kit';
 import {
-  Typography,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Typography,
 } from '@material-ui/core';
 import {
   mdiFilmstripBoxMultiple,
   mdiImage,
+  mdiInformation,
   mdiMicrophone,
   mdiPaperclip,
   mdiSend,
 } from '@mdi/js';
 import Icon from '@mdi/react';
-import { defaultGreyLight2 } from '@tecsinapse/ui-kit/build/utils/colors';
+import {
+  defaultGreyLight2,
+  defaultOrange,
+} from '@tecsinapse/ui-kit/build/utils/colors';
 import { Button } from '@tecsinapse/ui-kit';
 import { MicRecorder } from './MicRecorder/MicRecorder';
 import { CustomUploader, onAccept } from './CustomUploader/CustomUploader';
@@ -44,7 +48,9 @@ export const InputComposer = ({
   onMediaSend,
   maxFileUploadSize,
   isBlocked,
-  composerBlockedMessage,
+  blockedMessageTitle,
+  blockedMessage,
+  style,
   disabledSend,
   droppedFiles,
   setDroppedFiles,
@@ -111,7 +117,6 @@ export const InputComposer = ({
     }
   };
 
-  const blockedMessageSpacing = { letterSpacing: '-0.1px' };
   const onKeyDown = e => {
     if (!writing && wasOnlyEnterPressed(e) && Object.keys(files).length > 0) {
       onMediaSend('', files);
@@ -130,8 +135,9 @@ export const InputComposer = ({
   };
   const onChange = e => setWriting(e.currentTarget.value !== '');
   const inputRef1 = ref => setInputRef(ref);
-  const style = { maxHeight: 37, maxWidth: 35 };
-  const style1 = { maxHeight: 26, maxWidth: 24 };
+  const style1 = { maxHeight: 37, maxWidth: 35 };
+  const style2 = { maxHeight: 26, maxWidth: 24 };
+  const style3 = { lineHeight: 1.2, letterSpacing: 0 };
   const size = 1.143;
   const onClick = () => {
     navigator.mediaDevices
@@ -200,21 +206,30 @@ export const InputComposer = ({
 
       <PreviewList files={files} setFiles={setFiles} />
       <>
-        {isBlocked && composerBlockedMessage && (
+        {isBlocked && blockedMessage && (
           <TextComposer
             onSend={onSend}
             onKeyDown={onKeyDown}
             onChange={onChange}
             inputRef={inputRef1}
             active={!disabledSend}
+            style={style}
           >
+            {blockedMessageTitle && (
+              <Row>
+                <Icon path={mdiInformation} size={0.85} color={defaultOrange} />
+                <Typography variant="subtitle2" color="secondary">
+                  {blockedMessageTitle}
+                </Typography>
+              </Row>
+            )}
             <Row align="center" justifyContent="space-around">
               <Typography
-                variant="body2"
+                variant="caption"
                 color="textSecondary"
-                style={blockedMessageSpacing}
+                style={style3}
               >
-                {composerBlockedMessage}
+                {blockedMessage}
               </Typography>
             </Row>
           </TextComposer>
@@ -227,6 +242,7 @@ export const InputComposer = ({
             onChange={onChange}
             inputRef={inputRef1}
             active={!disabledSend && !isBlocked}
+            style={style}
           >
             <Row align="center">
               {!recording && (
@@ -254,13 +270,13 @@ export const InputComposer = ({
                     onMediaSend('', files);
                     setFiles({});
                   }}
-                  style={style}
+                  style={style1}
                 >
                   <Icon
                     path={mdiSend}
                     size={size}
                     color="#427fe1"
-                    style={style1}
+                    style={style2}
                   />
                 </IconButton>
               )}

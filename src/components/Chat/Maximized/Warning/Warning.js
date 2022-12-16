@@ -11,11 +11,11 @@ const useStyle = makeStyles(({ spacing }) => ({
   rootDiv: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: spacing(5 / 12, 1, 5 / 12, 1.5),
+    padding: spacing(0, 1, 0, 1),
     alignItems: 'center',
   },
   rootDivDense: {
-    padding: spacing(1 / 12, 1, 1 / 12, 1.5),
+    padding: spacing(0, 1, 0, 1),
   },
   errorColor: {
     backgroundColor: '#f44336',
