@@ -188,13 +188,15 @@ export const SendNotification = ({
   };
 
   const handleChangeTemplate = (value) => {
+    const { value: connectionKey } = selectedConnectionKey;
+
     for (const group of templates) {
       for (const option of group.options) {
         if (option.value === value) {
           setSelectedTemplate(value);
 
           ReactGA.event({
-            category: selectedConnectionKey,
+            category: connectionKey,
             label: "CLICK TOP 2",
             action: option.event,
           });
@@ -281,7 +283,7 @@ export const SendNotification = ({
     const { value: connectionKey } = selectedConnectionKey;
 
     ReactGA.event({
-      category: selectedConnectionKey,
+      category: connectionKey,
       label: "CLICK_BTN_NOVO_MODELO_MSG",
       action: "Suggest Message Template",
     });
