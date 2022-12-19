@@ -1,3 +1,9 @@
+## <small>3.2.11 (2022-12-19)</small>
+
+* [#183803] Alterar cor de fundo das msgs enviadas pelo usr para algo mais parecido com o usado por pa ([79be085](https://github.com/tecsinapse/chat/commit/79be085)), closes [#183803](https://github.com/tecsinapse/chat/issues/183803)
+
+
+
 ## <small>3.2.10 (2022-12-05)</small>
 
 * [#182998] Avisar usuário quando o microfone não estiver autorizado pelo navegador ([2e68071](https://github.com/tecsinapse/chat/commit/2e68071)), closes [#182998](https://github.com/tecsinapse/chat/issues/182998)
