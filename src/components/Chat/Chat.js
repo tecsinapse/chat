@@ -40,6 +40,7 @@ export const Chat = ({
   uploadOptions,
   backAction,
   composerBlockedMessage,
+  reactGAWrapper,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
@@ -91,6 +92,7 @@ export const Chat = ({
                 uploadOptions={uploadOptions}
                 backAction={backAction}
                 composerBlockedMessage={composerBlockedMessage}
+                reactGAWrapper={reactGAWrapper}
               />
             </FixedWrapper.Maximized>
 
@@ -151,6 +153,7 @@ Chat.defaultProps = {
     undefinedErrorMessage: 'Erro interno',
   },
   backAction: undefined,
+  reactGAWrapper: undefined,
 };
 
 Chat.propTypes = {
@@ -235,8 +238,7 @@ Chat.propTypes = {
       type: PropTypes.oneOf([
         'WHATSAPP',
         'TELEGRAM',
-        'SKYPE',
-        // TODO: Add other channels
+        'SKYPE', // TODO: Add other channels
       ]),
       chatId: PropTypes.string,
     })
@@ -275,6 +277,10 @@ Chat.propTypes = {
   }),
   /** Overrides and give access to custom backwards action on chat view. ATTENTION WHEN USING WITH CHATLIST */
   backAction: PropTypes.func,
+  reactGAWrapper: PropTypes.shape({
+  connectionKey: PropTypes.string.isRequired,
+  reactGA: PropTypes.object.isRequired
+}).isRequired,
 };
 
 export default Chat;
