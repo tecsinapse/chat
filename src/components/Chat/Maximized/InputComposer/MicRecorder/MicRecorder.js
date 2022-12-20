@@ -39,7 +39,9 @@ export const MicRecorder = ({
   flexGrow,
   waveWidth,
   waveHeight,
+  reactWrapper,
 }) => {
+  const { reactGA, connectionKey } = reactWrapper;
   const [recording, setRecording] = useState(true);
   const [opacity, setOpacity] = useState(1);
   const accepted = useRef(false);
@@ -47,6 +49,19 @@ export const MicRecorder = ({
   const classes = useStyle();
 
   const stopRecording = acceptedClicked => {
+    if (!acceptedClicked) {
+      reactGA.event({
+        category: connectionKey,
+        label: 'CHAT USO DO MICROFONE',
+        action: 'CLICK_CANCELAR_AUDIO',
+      });
+    } else {
+      reactGA.event({
+        category: connectionKey,
+        label: 'CHAT USO DO MICROFONE',
+        action: 'CLICK_ENVIAR_AUDIO',
+      });
+    }
     accepted.current = acceptedClicked;
     setRecording(false);
   };

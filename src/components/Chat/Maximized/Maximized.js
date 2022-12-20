@@ -44,6 +44,7 @@ const Maximized = ({
   uploadOptions,
   backAction,
   composerBlockedMessage,
+  reactWrapper,
 }) => {
   const classes = useStyle();
   const theme = useTheme();
@@ -138,6 +139,7 @@ const Maximized = ({
           droppedFiles={droppedFiles}
           setDroppedFiles={setDroppedFiles}
           uploadOptions={uploadOptions}
+          reactWrapper={reactWrapper}
         />
       )}
     </div>
