@@ -51,11 +51,13 @@ export const InputComposer = ({
   droppedFiles,
   setDroppedFiles,
   uploadOptions,
+  reactGAWrapper,
 }) => {
   const classes = useStyle();
+  const { reactGA, connectionKey } = reactGAWrapper;
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
-  const [micDanied, setMicDanied] = useState(false);
+  const [micDenied, setMicDenied] = useState(false);
   const [micWaitResponse, setMicWaitResponse] = useState(false);
   const [files, setFiles] = useState({});
 
@@ -137,6 +139,12 @@ export const InputComposer = ({
   const style3 = { lineHeight: 1.2, letterSpacing: 0 };
   const size = 1.143;
   const onClick = () => {
+    reactGA.event({
+      category: connectionKey,
+      label: 'CHAT USO DO MICROFONE',
+      action: 'CLICK_GRAVAR_AUDIO',
+    });
+
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then(() => {
@@ -145,7 +153,7 @@ export const InputComposer = ({
       })
       .catch(e => {
         if (e) {
-          setMicDanied(true);
+          setMicDenied(true);
         }
       })
       .finally(setMicWaitResponse(true));
@@ -156,12 +164,26 @@ export const InputComposer = ({
   const onClick3 = () => appUpRef.current.open();
 
   const closeMicrophoneModal = () => {
-    setMicDanied(false);
+    if (micDenied) {
+      reactGA.event({
+        category: connectionKey,
+        label: 'CHAT USO DO MICROFONE',
+        action: 'CLICK_FECHAR_MICROFONE_BLOQUEADO',
+      });
+    } else {
+      reactGA.event({
+        category: connectionKey,
+        label: 'CHAT USO DO MICROFONE',
+        action: 'CLICK_FECHAR_PERMITIR_MICROFONE',
+      });
+    }
+
+    setMicDenied(false);
     setMicWaitResponse(false);
   };
 
   const getTextModalMicPermission = () => {
-    if (micDanied) {
+    if (micDenied) {
       return (
         <DialogContentText>
           O Wingo Chat precisa ter acesso ao microfone do seu computador para
@@ -201,7 +223,7 @@ export const InputComposer = ({
         </TextComposer>
       )}
 
-      {(micWaitResponse || micDanied) && (
+      {(micWaitResponse || micDenied) && (
         <Dialog open>
           <DialogTitle>Permitir microfone</DialogTitle>
           <DialogContent>{getTextModalMicPermission()}</DialogContent>
@@ -284,7 +306,12 @@ export const InputComposer = ({
                   </IconButton>
                 )}
 
-              {recording && <MicRecorder onStopRecording={onStopRecording} />}
+              {recording && (
+                <MicRecorder
+                  onStopRecording={onStopRecording}
+                  reactGAWrapper={reactGAWrapper}
+                />
+              )}
             </Row>
 
             {!recording && (

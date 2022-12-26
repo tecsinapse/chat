@@ -41,6 +41,7 @@
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-inline-react-svg": "^1.0.1",
+    "bumped": "^0.14.2",
     "core-js": "2.5.7",
     "eslint-config-react-app": "^5.0.2",
     "eslint-plugin-mdx": "^1.7.0",
