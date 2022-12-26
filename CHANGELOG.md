@@ -1,3 +1,9 @@
+## <small>3.2.12 (2022-12-26)</small>
+
+* [#183698] Incluir Eventos do GA nos itens associados ao uso do microfone ([c4e4d9f](https://github.com/tecsinapse/chat/commit/c4e4d9f)), closes [#183698](https://github.com/tecsinapse/chat/issues/183698)
+
+
+
 ## <small>3.2.11 (2022-12-19)</small>
 
 * [#183803] Alterar cor de fundo das msgs enviadas pelo usr para algo mais parecido com o usado por pa ([79be085](https://github.com/tecsinapse/chat/commit/79be085)), closes [#183803](https://github.com/tecsinapse/chat/issues/183803)
