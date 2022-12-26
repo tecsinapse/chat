@@ -26,8 +26,6 @@ const MessageView = ({
   };
 
   useEffect(() => {
-    console.log(messages);
-
     if (isBlocked && blockedMessageTitle && addBlockMessageInfo) {
       const tempMessage = {
         at: messages?.at(messages.length - 1)?.at,

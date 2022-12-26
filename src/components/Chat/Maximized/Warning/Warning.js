@@ -70,8 +70,6 @@ export const Warning = ({
   errorMessage,
   warningMessage,
   infoMessage,
-  blockedMessage,
-  isBlocked,
   isShowIcon = true,
   isClosable = true,
   isDense = false,
@@ -80,12 +78,11 @@ export const Warning = ({
 
   useEffect(() => {
     setShowWarning(
-      isBlocked ||
-        isStringNotBlank(errorMessage) ||
+      isStringNotBlank(errorMessage) ||
         isStringNotBlank(warningMessage) ||
         isStringNotBlank(infoMessage)
     );
-  }, [isBlocked, infoMessage, warningMessage, errorMessage]);
+  }, [infoMessage, warningMessage, errorMessage]);
 
   const isError = isStringNotBlank(errorMessage);
   const isWarning = isStringNotBlank(warningMessage);
@@ -96,9 +93,8 @@ export const Warning = ({
   const error = isError && errorMessage;
   const warning = isWarning && warningMessage;
   const info = isInfo && infoMessage;
-  const blocked = isBlocked && blockedMessage;
 
-  const warningText = error || warning || info || blocked;
+  const warningText = error || warning || info;
   const isHtmlMessage = hasHTML(warningText);
 
   if (!showWarning) {
@@ -111,7 +107,6 @@ export const Warning = ({
         [classes.errorColor]: isError,
         [classes.warningColor]: isWarning,
         [classes.infoColor]: isInfo,
-        [classes.blockedColor]: isBlocked,
         [classes.rootDivDense]: isDense,
       })}
     >
