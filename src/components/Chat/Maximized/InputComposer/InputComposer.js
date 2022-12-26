@@ -51,7 +51,9 @@ export const InputComposer = ({
   uploadOptions,
   reactGAWrapper,
 }) => {
-  const { reactGA, connectionKey } = reactGAWrapper;
+  const reactGA = reactGAWrapper?.reactGAWrapper;
+  const connectionKey = reactGAWrapper?.connectionKey;
+
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
   const [micDenied, setMicDenied] = useState(false);
