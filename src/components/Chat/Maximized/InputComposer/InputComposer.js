@@ -17,21 +17,18 @@ import {
 import {
   mdiFilmstripBoxMultiple,
   mdiImage,
-  mdiInformation,
   mdiMicrophone,
   mdiPaperclip,
   mdiSend,
 } from '@mdi/js';
 import Icon from '@mdi/react';
-import {
-  defaultGreyLight2,
-  defaultOrange,
-} from '@tecsinapse/ui-kit/build/utils/colors';
+import { defaultGreyLight2 } from '@tecsinapse/ui-kit/build/utils/colors';
 import { Button } from '@tecsinapse/ui-kit';
 import { MicRecorder } from './MicRecorder/MicRecorder';
 import { CustomUploader, onAccept } from './CustomUploader/CustomUploader';
 import { PreviewList } from './PreviewList/PreviewList';
 import { microphoneByBrowser } from '../../../utils';
+import { useStyle } from './InputComposerStyle';
 
 const ENTER_KEYCODE = 13;
 const wasEnterPressed = function wasEnterPressed(event) {
@@ -48,7 +45,6 @@ export const InputComposer = ({
   onMediaSend,
   maxFileUploadSize,
   isBlocked,
-  blockedMessageTitle,
   blockedMessage,
   style,
   disabledSend,
@@ -56,6 +52,7 @@ export const InputComposer = ({
   setDroppedFiles,
   uploadOptions,
 }) => {
+  const classes = useStyle();
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
   const [micDanied, setMicDanied] = useState(false);
@@ -187,6 +184,23 @@ export const InputComposer = ({
 
   return (
     <>
+      {isBlocked && blockedMessage && (
+        <TextComposer
+          onSend={onSend}
+          onKeyDown={onKeyDown}
+          onChange={onChange}
+          inputRef={inputRef1}
+          active={!disabledSend}
+          style={style}
+        >
+          <div className={classes.blockedMessage}>
+            <Typography variant="caption" color="textSecondary" style={style3}>
+              {blockedMessage}
+            </Typography>
+          </div>
+        </TextComposer>
+      )}
+
       {(micWaitResponse || micDanied) && (
         <Dialog open>
           <DialogTitle>Permitir microfone</DialogTitle>
@@ -206,35 +220,6 @@ export const InputComposer = ({
 
       <PreviewList files={files} setFiles={setFiles} />
       <>
-        {isBlocked && blockedMessage && (
-          <TextComposer
-            onSend={onSend}
-            onKeyDown={onKeyDown}
-            onChange={onChange}
-            inputRef={inputRef1}
-            active={!disabledSend}
-            style={style}
-          >
-            {blockedMessageTitle && (
-              <Row>
-                <Icon path={mdiInformation} size={0.85} color={defaultOrange} />
-                <Typography variant="subtitle2" color="secondary">
-                  {blockedMessageTitle}
-                </Typography>
-              </Row>
-            )}
-            <Row align="center" justifyContent="space-around">
-              <Typography
-                variant="caption"
-                color="textSecondary"
-                style={style3}
-              >
-                {blockedMessage}
-              </Typography>
-            </Row>
-          </TextComposer>
-        )}
-
         {!isBlocked && (
           <TextComposer
             onSend={onSend}

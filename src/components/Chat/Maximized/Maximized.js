@@ -50,6 +50,7 @@ const Maximized = ({
   const classes = useStyle();
   const theme = useTheme();
   const [droppedFiles, setDroppedFiles] = useState(null);
+  const [addBlockMessageInfo, setAddBlockMessageInfo] = useState(true);
 
   const onBackward =
     backAction ||
@@ -114,6 +115,11 @@ const Maximized = ({
               classes={classes}
               theme={theme}
               isLoading={isLoading}
+              isBlocked={isBlocked}
+              blockedMessageTitle={composerBlockedMessageTitle}
+              blockedMessage={composerBlockedMessage}
+              addBlockMessageInfo={addBlockMessageInfo}
+              setAddBlockMessageInfo={setAddBlockMessageInfo}
             />
           </div>
         )}
