@@ -44,7 +44,7 @@ const Maximized = ({
   uploadOptions,
   backAction,
   composerBlockedMessage,
-  reactGAWrapper,
+  onSendReactGAEvent,
 }) => {
   const classes = useStyle();
   const theme = useTheme();
@@ -139,7 +139,7 @@ const Maximized = ({
           droppedFiles={droppedFiles}
           setDroppedFiles={setDroppedFiles}
           uploadOptions={uploadOptions}
-          reactGAWrapper={reactGAWrapper}
+          onSendReactGAEvent={onSendReactGAEvent}
         />
       )}
     </div>

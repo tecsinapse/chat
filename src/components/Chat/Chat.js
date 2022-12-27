@@ -40,7 +40,7 @@ export const Chat = ({
   uploadOptions,
   backAction,
   composerBlockedMessage,
-  reactGAWrapper,
+  onSendReactGAEvent,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
@@ -92,7 +92,7 @@ export const Chat = ({
                 uploadOptions={uploadOptions}
                 backAction={backAction}
                 composerBlockedMessage={composerBlockedMessage}
-                reactGAWrapper={reactGAWrapper}
+                onSendReactGAEvent={onSendReactGAEvent}
               />
             </FixedWrapper.Maximized>
 
@@ -153,7 +153,7 @@ Chat.defaultProps = {
     undefinedErrorMessage: 'Erro interno',
   },
   backAction: undefined,
-  reactGAWrapper: undefined,
+  onSendReactGAEvent: undefined,
 };
 
 Chat.propTypes = {
@@ -277,10 +277,7 @@ Chat.propTypes = {
   }),
   /** Overrides and give access to custom backwards action on chat view. ATTENTION WHEN USING WITH CHATLIST */
   backAction: PropTypes.func,
-  reactGAWrapper: PropTypes.shape({
-  connectionKey: PropTypes.string.isRequired,
-  reactGA: PropTypes.object.isRequired
-}).isRequired,
+  onSendReactGAEvent: PropTypes.func,
 };
 
 export default Chat;

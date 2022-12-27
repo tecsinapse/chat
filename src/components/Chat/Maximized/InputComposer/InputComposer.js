@@ -1,33 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  IconButton,
-  Row,
-  SendButton,
-  TextComposer,
-  TextInput,
-} from '@livechat/ui-kit';
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Typography,
-} from '@material-ui/core';
-import {
-  mdiFilmstripBoxMultiple,
-  mdiImage,
-  mdiMicrophone,
-  mdiPaperclip,
-  mdiSend,
-} from '@mdi/js';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {IconButton, Row, SendButton, TextComposer, TextInput,} from '@livechat/ui-kit';
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography,} from '@material-ui/core';
+import {mdiFilmstripBoxMultiple, mdiImage, mdiMicrophone, mdiPaperclip, mdiSend,} from '@mdi/js';
 import Icon from '@mdi/react';
-import { defaultGreyLight2 } from '@tecsinapse/ui-kit/build/utils/colors';
-import { Button } from '@tecsinapse/ui-kit';
-import { MicRecorder } from './MicRecorder/MicRecorder';
-import { CustomUploader, onAccept } from './CustomUploader/CustomUploader';
-import { PreviewList } from './PreviewList/PreviewList';
-import { microphoneByBrowser } from '../../../utils';
+import {defaultGreyLight2} from '@tecsinapse/ui-kit/build/utils/colors';
+import {Button} from '@tecsinapse/ui-kit';
+import {MicRecorder} from './MicRecorder/MicRecorder';
+import {CustomUploader, onAccept} from './CustomUploader/CustomUploader';
+import {PreviewList} from './PreviewList/PreviewList';
+import {microphoneByBrowser} from '../../../utils';
 
 const ENTER_KEYCODE = 13;
 const wasEnterPressed = function wasEnterPressed(event) {
@@ -39,21 +20,18 @@ const wasOnlyEnterPressed = function wasOnlyEnterPressed(event) {
 };
 
 export const InputComposer = ({
-  onMessageSend,
-  onAudio,
-  onMediaSend,
-  maxFileUploadSize,
-  isBlocked,
-  composerBlockedMessage,
-  disabledSend,
-  droppedFiles,
-  setDroppedFiles,
-  uploadOptions,
-  reactGAWrapper,
-}) => {
-  const reactGA = reactGAWrapper?.reactGAWrapper;
-  const connectionKey = reactGAWrapper?.connectionKey;
-
+                                onMessageSend,
+                                onAudio,
+                                onMediaSend,
+                                maxFileUploadSize,
+                                isBlocked,
+                                composerBlockedMessage,
+                                disabledSend,
+                                droppedFiles,
+                                setDroppedFiles,
+                                uploadOptions,
+                                onSendReactGAEvent,
+                              }) => {
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
   const [micDenied, setMicDenied] = useState(false);
@@ -68,7 +46,7 @@ export const InputComposer = ({
 
   const transformImages = useCallback(
     data => {
-      onAccept({ setFiles, files })(
+      onAccept({setFiles, files})(
         (Array.from(data.items) || [])
           .filter(
             item =>
@@ -115,7 +93,7 @@ export const InputComposer = ({
     }
   };
 
-  const blockedMessageSpacing = { letterSpacing: '-0.1px' };
+  const blockedMessageSpacing = {letterSpacing: '-0.1px'};
   const onKeyDown = e => {
     if (!writing && wasOnlyEnterPressed(e) && Object.keys(files).length > 0) {
       onMediaSend('', files);
@@ -134,18 +112,17 @@ export const InputComposer = ({
   };
   const onChange = e => setWriting(e.currentTarget.value !== '');
   const inputRef1 = ref => setInputRef(ref);
-  const style = { maxHeight: 37, maxWidth: 35 };
-  const style1 = { maxHeight: 26, maxWidth: 24 };
+  const style = {maxHeight: 37, maxWidth: 35};
+  const style1 = {maxHeight: 26, maxWidth: 24};
   const size = 1.143;
   const onClick = () => {
-    reactGA.event({
-      category: connectionKey,
+    onSendReactGAEvent({
       label: 'CHAT USO DO MICROFONE',
-      action: 'CLICK_GRAVAR_AUDIO',
+      action: 'CLICK_GRAVAR_AUDIO'
     });
 
     navigator.mediaDevices
-      .getUserMedia({ audio: true })
+      .getUserMedia({audio: true})
       .then(() => {
         setMicWaitResponse(false);
         setRecording(true);
@@ -164,16 +141,14 @@ export const InputComposer = ({
 
   const closeMicrophoneModal = () => {
     if (micDenied) {
-      reactGA.event({
-        category: connectionKey,
+      onSendReactGAEvent({
         label: 'CHAT USO DO MICROFONE',
-        action: 'CLICK_FECHAR_MICROFONE_BLOQUEADO',
+        action: 'CLICK_FECHAR_MICROFONE_BLOQUEADO'
       });
     } else {
-      reactGA.event({
-        category: connectionKey,
+      onSendReactGAEvent({
         label: 'CHAT USO DO MICROFONE',
-        action: 'CLICK_FECHAR_PERMITIR_MICROFONE',
+        action: 'CLICK_FECHAR_PERMITIR_MICROFONE'
       });
     }
 
@@ -188,7 +163,7 @@ export const InputComposer = ({
           O Wingo Chat precisa ter acesso ao microfone do seu computador para
           que você possa gravar mensagens de voz. Para permitir o acesso, clique
           em
-          <img alt="" width="25px" src={microphoneByBrowser()} /> na barra de
+          <img alt="" width="25px" src={microphoneByBrowser()}/> na barra de
           endereços e selecione a opção &quot;Sempre permitir que{' '}
           {window.location.href} acesse seu microfone&quot;.
         </DialogContentText>
@@ -222,7 +197,7 @@ export const InputComposer = ({
         </Dialog>
       )}
 
-      <PreviewList files={files} setFiles={setFiles} />
+      <PreviewList files={files} setFiles={setFiles}/>
       <>
         {isBlocked && composerBlockedMessage && (
           <TextComposer
@@ -254,7 +229,7 @@ export const InputComposer = ({
           >
             <Row align="center">
               {!recording && (
-                <TextInput fill="true" placeholder="Digite uma mensagem" />
+                <TextInput fill="true" placeholder="Digite uma mensagem"/>
               )}
 
               {/*
@@ -267,7 +242,7 @@ export const InputComposer = ({
                   handler on our <Icon /> (using controlled component passing 'value ' to TextComposer)
                 */}
               {(writing || !isThereAudioSupport) && (
-                <SendButton fill="true" disabled={disabledSend} />
+                <SendButton fill="true" disabled={disabledSend}/>
               )}
               {!writing && !recording && Object.keys(files).length > 0 && (
                 <IconButton
@@ -290,27 +265,27 @@ export const InputComposer = ({
               )}
 
               {!writing &&
-                isThereAudioSupport &&
-                Object.keys(files).length <= 0 &&
-                !recording && (
-                  <IconButton
-                    fill="true"
-                    key="mic"
-                    onClick={onClick}
-                    disabled={disabledSend}
-                  >
-                    <Icon
-                      path={mdiMicrophone}
-                      size={1}
-                      color={defaultGreyLight2}
-                    />
-                  </IconButton>
-                )}
+              isThereAudioSupport &&
+              Object.keys(files).length <= 0 &&
+              !recording && (
+                <IconButton
+                  fill="true"
+                  key="mic"
+                  onClick={onClick}
+                  disabled={disabledSend}
+                >
+                  <Icon
+                    path={mdiMicrophone}
+                    size={1}
+                    color={defaultGreyLight2}
+                  />
+                </IconButton>
+              )}
 
               {recording && (
                 <MicRecorder
                   onStopRecording={onStopRecording}
-                  reactGAWrapper={reactGAWrapper}
+                  onSendReactGAEvent={onSendReactGAEvent}
                 />
               )}
             </Row>
