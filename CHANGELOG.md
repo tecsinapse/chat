@@ -1,3 +1,20 @@
+## <small>3.2.14 (2022-12-27)</small>
+
+* [#183698] Incluir Eventos do GA nos itens associados ao uso do microfone ([5f64792](https://github.com/tecsinapse/chat/commit/5f64792)), closes [#183698](https://github.com/tecsinapse/chat/issues/183698)
+* [#183698] Incluir Eventos do GA nos itens associados ao uso do microfone ([4b3dc70](https://github.com/tecsinapse/chat/commit/4b3dc70)), closes [#183698](https://github.com/tecsinapse/chat/issues/183698)
+* [#183698] Incluir Eventos do GA nos itens associados ao uso do microfone ([b15794f](https://github.com/tecsinapse/chat/commit/b15794f)), closes [#183698](https://github.com/tecsinapse/chat/issues/183698)
+* [#183698] Incluir Eventos do GA nos itens associados ao uso do microfone ([52d61a5](https://github.com/tecsinapse/chat/commit/52d61a5)), closes [#183698](https://github.com/tecsinapse/chat/issues/183698)
+* [#183698] Incluir Eventos do GA nos itens associados ao uso do microfone ([c4e4d9f](https://github.com/tecsinapse/chat/commit/c4e4d9f)), closes [#183698](https://github.com/tecsinapse/chat/issues/183698)
+* [#183698] Incluir Eventos do GA nos itens associados ao uso do microfone ([4171b45](https://github.com/tecsinapse/chat/commit/4171b45)), closes [#183698](https://github.com/tecsinapse/chat/issues/183698)
+* [#183781] Deixar mais claro para usr o motivo do uso de um modelo de mensagem ([645d806](https://github.com/tecsinapse/chat/commit/645d806)), closes [#183781](https://github.com/tecsinapse/chat/issues/183781)
+* [#183781] Deixar mais claro para usr o motivo do uso de um modelo de mensagem ([dd0ef5f](https://github.com/tecsinapse/chat/commit/dd0ef5f)), closes [#183781](https://github.com/tecsinapse/chat/issues/183781)
+* [#no-us] - ajust chat version ([a06cc4f](https://github.com/tecsinapse/chat/commit/a06cc4f))
+* [#no-us] - ajust chat version ([1d93101](https://github.com/tecsinapse/chat/commit/1d93101))
+* [NO_US] atualização versão do chat ([49b4b4c](https://github.com/tecsinapse/chat/commit/49b4b4c))
+* Release 3.12.13 ([271bb8f](https://github.com/tecsinapse/chat/commit/271bb8f))
+
+
+
 ## <small>3.12.13 (2022-12-26)</small>
 
 * [#183698] Incluir Eventos do GA nos itens associados ao uso do microfone ([c4e4d9f](https://github.com/tecsinapse/chat/commit/c4e4d9f)), closes [#183698](https://github.com/tecsinapse/chat/issues/183698)

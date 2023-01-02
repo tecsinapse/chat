@@ -12,8 +12,10 @@ export const useStyle = makeStyles(() => ({
     background: '#f2f2f2',
   },
   title: {
-    padding: '5px',
+    padding: '0 5px',
     background: '#fff5c4',
     fontSize: '13px',
+    borderRadius: '10px',
+    color: '#303030',
   },
 }));

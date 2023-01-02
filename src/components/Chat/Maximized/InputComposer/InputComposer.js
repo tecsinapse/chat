@@ -52,11 +52,9 @@ export const InputComposer = ({
   droppedFiles,
   setDroppedFiles,
   uploadOptions,
-  reactGAWrapper,
+  onSendReactGAEvent,
 }) => {
   const classes = useStyle();
-  const reactGA = reactGAWrapper?.reactGA;
-  const connectionKey = reactGAWrapper?.connectionKey;
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
   const [micDenied, setMicDenied] = useState(false);
@@ -141,8 +139,7 @@ export const InputComposer = ({
   const style3 = { lineHeight: 1.2, letterSpacing: 0 };
   const size = 1.143;
   const onClick = () => {
-    reactGA.event({
-      category: connectionKey,
+    onSendReactGAEvent({
       label: 'CHAT USO DO MICROFONE',
       action: 'CLICK_GRAVAR_AUDIO',
     });
@@ -167,14 +164,12 @@ export const InputComposer = ({
 
   const closeMicrophoneModal = () => {
     if (micDenied) {
-      reactGA.event({
-        category: connectionKey,
+      onSendReactGAEvent({
         label: 'CHAT USO DO MICROFONE',
         action: 'CLICK_FECHAR_MICROFONE_BLOQUEADO',
       });
     } else {
-      reactGA.event({
-        category: connectionKey,
+      onSendReactGAEvent({
         label: 'CHAT USO DO MICROFONE',
         action: 'CLICK_FECHAR_PERMITIR_MICROFONE',
       });
@@ -322,7 +317,7 @@ export const InputComposer = ({
               {recording && (
                 <MicRecorder
                   onStopRecording={onStopRecording}
-                  reactGAWrapper={reactGAWrapper}
+                  onSendReactGAEvent={onSendReactGAEvent}
                 />
               )}
             </Row>
