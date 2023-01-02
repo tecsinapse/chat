@@ -45,6 +45,7 @@ export const InputComposer = ({
   onMediaSend,
   maxFileUploadSize,
   isBlocked,
+  blockedMessageTitle,
   blockedMessage,
   style,
   disabledSend,
@@ -54,7 +55,8 @@ export const InputComposer = ({
   reactGAWrapper,
 }) => {
   const classes = useStyle();
-  const { reactGA, connectionKey } = reactGAWrapper;
+  const reactGA = reactGAWrapper?.reactGA;
+  const connectionKey = reactGAWrapper?.connectionKey;
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
   const [micDenied, setMicDenied] = useState(false);
@@ -207,20 +209,31 @@ export const InputComposer = ({
   return (
     <>
       {isBlocked && blockedMessage && (
-        <TextComposer
-          onSend={onSend}
-          onKeyDown={onKeyDown}
-          onChange={onChange}
-          inputRef={inputRef1}
-          active={!disabledSend}
-          style={style}
-        >
-          <div className={classes.blockedMessage}>
-            <Typography variant="caption" color="textSecondary" style={style3}>
-              {blockedMessage}
+        <div>
+          <div className={classes.blockedMessageTitle}>
+            <Typography className={classes.title}>
+              {blockedMessageTitle}
             </Typography>
           </div>
-        </TextComposer>
+          <TextComposer
+            onSend={onSend}
+            onKeyDown={onKeyDown}
+            onChange={onChange}
+            inputRef={inputRef1}
+            active={!disabledSend}
+            style={style}
+          >
+            <div className={classes.blockedMessage}>
+              <Typography
+                variant="caption"
+                color="textSecondary"
+                style={style3}
+              >
+                {blockedMessage}
+              </Typography>
+            </div>
+          </TextComposer>
+        </div>
       )}
 
       {(micWaitResponse || micDenied) && (

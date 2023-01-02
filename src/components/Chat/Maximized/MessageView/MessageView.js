@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Divider, Typography } from '@material-ui/core';
 import { Message } from './Message/Message';
 import { Loading } from '../../Loading/Loading';
@@ -12,10 +12,6 @@ const MessageView = ({
   classes,
   theme,
   isLoading,
-  isBlocked,
-  blockedMessageTitle,
-  addBlockMessageInfo,
-  setAddBlockMessageInfo,
 }) => {
   const style = {
     display: 'flex',
@@ -24,25 +20,6 @@ const MessageView = ({
   const style1 = {
     flex: 1,
   };
-
-  useEffect(() => {
-    if (isBlocked && blockedMessageTitle && addBlockMessageInfo) {
-      const tempMessage = {
-        at: messages?.at(messages.length - 1)?.at,
-        id: new Date().getTime().toString(),
-        text: blockedMessageTitle,
-        style: 'INFO',
-        isTempMessage: true,
-      };
-
-      if (!messages.at(messages.length - 1)?.isTempMessage) {
-        messages?.push(tempMessage);
-      } else {
-        messages = messages.pop().push(tempMessage);
-      }
-      setAddBlockMessageInfo(false);
-    }
-  }, [isBlocked, blockedMessageTitle]);
 
   return (
     <>
