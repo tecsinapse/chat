@@ -30,6 +30,9 @@ const Maximized = ({
   onMessageResend,
   isBlocked,
   blockedMessage,
+  composerBlockedMessageTitle,
+  composerBlockedMessage,
+  composerStyle,
   chatList,
   onBackToChatList,
   location,
@@ -43,7 +46,6 @@ const Maximized = ({
   warningMessage,
   uploadOptions,
   backAction,
-  composerBlockedMessage,
   onSendReactGAEvent,
 }) => {
   const classes = useStyle();
@@ -134,7 +136,9 @@ const Maximized = ({
           onMediaSend={onMediaSend}
           maxFileUploadSize={maxFileUploadSize}
           isBlocked={isBlocked}
-          composerBlockedMessage={composerBlockedMessage}
+          blockedMessageTitle={composerBlockedMessageTitle}
+          blockedMessage={composerBlockedMessage}
+          style={composerStyle}
           disabledSend={disabledSend}
           droppedFiles={droppedFiles}
           setDroppedFiles={setDroppedFiles}

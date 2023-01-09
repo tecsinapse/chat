@@ -28,6 +28,7 @@ import { MicRecorder } from './MicRecorder/MicRecorder';
 import { CustomUploader, onAccept } from './CustomUploader/CustomUploader';
 import { PreviewList } from './PreviewList/PreviewList';
 import { microphoneByBrowser } from '../../../utils';
+import { useStyle } from './InputComposerStyle';
 
 const ENTER_KEYCODE = 13;
 const wasEnterPressed = function wasEnterPressed(event) {
@@ -44,13 +45,16 @@ export const InputComposer = ({
   onMediaSend,
   maxFileUploadSize,
   isBlocked,
-  composerBlockedMessage,
+  blockedMessageTitle,
+  blockedMessage,
+  style,
   disabledSend,
   droppedFiles,
   setDroppedFiles,
   uploadOptions,
   onSendReactGAEvent,
 }) => {
+  const classes = useStyle();
   const [writing, setWriting] = useState(false);
   const [recording, setRecording] = useState(false);
   const [micDenied, setMicDenied] = useState(false);
@@ -112,7 +116,6 @@ export const InputComposer = ({
     }
   };
 
-  const blockedMessageSpacing = { letterSpacing: '-0.1px' };
   const onKeyDown = e => {
     if (!writing && wasOnlyEnterPressed(e) && Object.keys(files).length > 0) {
       onMediaSend('', files);
@@ -131,8 +134,9 @@ export const InputComposer = ({
   };
   const onChange = e => setWriting(e.currentTarget.value !== '');
   const inputRef1 = ref => setInputRef(ref);
-  const style = { maxHeight: 37, maxWidth: 35 };
-  const style1 = { maxHeight: 26, maxWidth: 24 };
+  const style1 = { maxHeight: 37, maxWidth: 35 };
+  const style2 = { maxHeight: 26, maxWidth: 24 };
+  const style3 = { lineHeight: 1.2, letterSpacing: 0 };
   const size = 1.143;
   const onClick = () => {
     onSendReactGAEvent({
@@ -199,6 +203,34 @@ export const InputComposer = ({
 
   return (
     <>
+      {isBlocked && blockedMessage && (
+        <div>
+          <div className={classes.blockedMessageTitle}>
+            <Typography className={classes.title}>
+              {blockedMessageTitle}
+            </Typography>
+          </div>
+          <TextComposer
+            onSend={onSend}
+            onKeyDown={onKeyDown}
+            onChange={onChange}
+            inputRef={inputRef1}
+            active={!disabledSend}
+            style={style}
+          >
+            <div className={classes.blockedMessage}>
+              <Typography
+                variant="caption"
+                color="textSecondary"
+                style={style3}
+              >
+                {blockedMessage}
+              </Typography>
+            </div>
+          </TextComposer>
+        </div>
+      )}
+
       {(micWaitResponse || micDenied) && (
         <Dialog open>
           <DialogTitle>Permitir microfone</DialogTitle>
@@ -218,26 +250,6 @@ export const InputComposer = ({
 
       <PreviewList files={files} setFiles={setFiles} />
       <>
-        {isBlocked && composerBlockedMessage && (
-          <TextComposer
-            onSend={onSend}
-            onKeyDown={onKeyDown}
-            onChange={onChange}
-            inputRef={inputRef1}
-            active={!disabledSend}
-          >
-            <Row align="center" justifyContent="space-around">
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                style={blockedMessageSpacing}
-              >
-                {composerBlockedMessage}
-              </Typography>
-            </Row>
-          </TextComposer>
-        )}
-
         {!isBlocked && (
           <TextComposer
             onSend={onSend}
@@ -245,6 +257,7 @@ export const InputComposer = ({
             onChange={onChange}
             inputRef={inputRef1}
             active={!disabledSend && !isBlocked}
+            style={style}
           >
             <Row align="center">
               {!recording && (
@@ -272,13 +285,13 @@ export const InputComposer = ({
                     onMediaSend('', files);
                     setFiles({});
                   }}
-                  style={style}
+                  style={style1}
                 >
                   <Icon
                     path={mdiSend}
                     size={size}
                     color="#427fe1"
-                    style={style1}
+                    style={style2}
                   />
                 </IconButton>
               )}

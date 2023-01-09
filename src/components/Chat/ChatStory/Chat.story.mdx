@@ -58,9 +58,12 @@ Here you can check the code snippet for each story.
   <ChatStory
     isMaximizedOnly
     isBlocked
-    blockedMessage="Você não pode mais enviar mensagens para esse chat."
+    blockedMessage="Sessão expirada, inicie uma nova conversa"
+    composerBlockedMessageTitle="Sessão expirada"
+    composerBlockedMessage="Esta conversa expirou por atingir o limite de 24 horas definido pela Meta. Para enviar uma nova mensagem, clique no botão laranja ao lado e escolha um modelo existente ou crie um novo."
+    composerStyle={{ padding: '10px 15px 10px 15px' }}
+    initialMessages={dummyMessagesTextError}
     loadingEnabled
-    initialMessages={[]}
   />
 </Story>
 
@@ -81,10 +84,7 @@ Here you can check the code snippet for each story.
 ## Chat Grouped
 
 <Story name="Chat Grouped" parameters={{ docs: { disable: true } }}>
-  <ChatStory
-    isMaximizedOnly
-    initialMessages={dummyGroupedMessages}
-  />
+  <ChatStory isMaximizedOnly initialMessages={dummyGroupedMessages} />
 </Story>
 
 <Source id="chat--chat-grouped" />
@@ -92,7 +92,10 @@ Here you can check the code snippet for each story.
 ## Chat Warning
 
 <Story name="Chat Warning" parameters={{ docs: { disable: true } }}>
-  <ChatStory isMaximizedOnly warningMessage="O envio de mensagem irá expirar em 12 horas." />
+  <ChatStory
+    isMaximizedOnly
+    warningMessage="O envio de mensagem irá expirar em 12 horas."
+  />
 </Story>
 
 <Source id="chat--chat-warning" />

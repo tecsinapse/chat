@@ -10,6 +10,9 @@ export const ChatStory = ({
   error,
   isBlocked = false,
   blockedMessage = undefined,
+  composerBlockedMessageTitle = undefined,
+  composerBlockedMessage = undefined,
+  composerStyle = undefined,
   initialChatList = [],
   loadingEnabled = false,
   warningMessage,
@@ -294,6 +297,9 @@ export const ChatStory = ({
         isBlocked={blocked}
         disabledSend={isLoading && messages.length === 0}
         blockedMessage={blockedMessage}
+        composerBlockedMessageTitle={composerBlockedMessageTitle}
+        composerBlockedMessage={composerBlockedMessage}
+        composerStyle={composerStyle}
         messages={messages}
         title={isMultipleChat ? 'Transportadora Gomes' : 'Felipe Rodrigues'}
         subtitle={getSubtitle(defaultSub)}
