@@ -1,3 +1,12 @@
+## <small>3.2.15 (2023-01-09)</small>
+
+* [#183781] - Deixar mais claro para usr o motivo do uso de um modelo de mensagem ([0e78724](https://github.com/tecsinapse/chat/commit/0e78724)), closes [#183781](https://github.com/tecsinapse/chat/issues/183781)
+* [#183781] Deixar mais claro para usr o motivo do uso de um modelo de mensagem ([962d9dc](https://github.com/tecsinapse/chat/commit/962d9dc)), closes [#183781](https://github.com/tecsinapse/chat/issues/183781)
+* [#183781] Deixar mais claro para usr o motivo do uso de um modelo de mensagem ([7d5ca16](https://github.com/tecsinapse/chat/commit/7d5ca16)), closes [#183781](https://github.com/tecsinapse/chat/issues/183781)
+* [#183781] Deixar mais claro para usr o motivo do uso de um modelo de mensagem ([41cb4f7](https://github.com/tecsinapse/chat/commit/41cb4f7)), closes [#183781](https://github.com/tecsinapse/chat/issues/183781)
+
+
+
 ## <small>3.2.14 (2022-12-27)</small>
 
 * [#183698] Incluir Eventos do GA nos itens associados ao uso do microfone ([5f64792](https://github.com/tecsinapse/chat/commit/5f64792)), closes [#183698](https://github.com/tecsinapse/chat/issues/183698)
