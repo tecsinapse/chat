@@ -114,16 +114,6 @@ export const Message = ({
                 : undefined
             }
           >
-            {message.text && !isInfoStyle && (
-              <MessageText>
-                <Typography
-                  variant="body1"
-                  dangerouslySetInnerHTML={{
-                    __html: MessagePreviewUtils.normalizeInHtml(message.text),
-                  }}
-                />
-              </MessageText>
-            )}
             {message.medias &&
               message.medias.length > 0 &&
               message.medias.map(media => (
@@ -168,6 +158,16 @@ export const Message = ({
                   )}
                 </MessageMedia>
               ))}
+            {message.text && !isInfoStyle && (
+              <MessageText>
+                <Typography
+                  variant="body1"
+                  dangerouslySetInnerHTML={{
+                    __html: MessagePreviewUtils.normalizeInHtml(message.text),
+                  }}
+                />
+              </MessageText>
+            )}
             {message.title && (
               <MessageTitle
                 title={<Typography variant="body1">{message.title}</Typography>}

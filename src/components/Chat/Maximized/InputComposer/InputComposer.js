@@ -54,7 +54,7 @@ export const InputComposer = ({
   setDroppedFiles,
   uploadOptions,
   onSendReactGAEvent,
-  setOpenDefaultMessages,
+  openDefaultMessages,
   defaultMessage,
   setDefaultMessage,
 }) => {
@@ -73,7 +73,7 @@ export const InputComposer = ({
 
   const transformImages = useCallback(
     data => {
-      onAccept({ setFiles, files })(
+      onAccept({setFiles, files})(
         (Array.from(data.items) || [])
           .filter(
             item =>
@@ -400,9 +400,7 @@ export const InputComposer = ({
                 <IconButton
                   fill="true"
                   key="defaultmessages"
-                  onClick={() => {
-                    setOpenDefaultMessages(true);
-                  }}
+                  onClick={openDefaultMessages}
                 >
                   <Icon
                     path={mdiTextBoxMultiple}

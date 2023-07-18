@@ -47,7 +47,7 @@ const Maximized = ({
   uploadOptions,
   backAction,
   onSendReactGAEvent,
-  setOpenDefaultMessages,
+  openDefaultMessages,
   onDefaultMessageSend,
   defaultMessage,
   setDefaultMessage,
@@ -148,7 +148,7 @@ const Maximized = ({
           setDroppedFiles={setDroppedFiles}
           uploadOptions={uploadOptions}
           onSendReactGAEvent={onSendReactGAEvent}
-          setOpenDefaultMessages={setOpenDefaultMessages}
+          openDefaultMessages={openDefaultMessages}
           onDefaultMessageSend={onDefaultMessageSend}
           defaultMessage={defaultMessage}
           setDefaultMessage={setDefaultMessage}

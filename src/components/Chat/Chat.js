@@ -43,7 +43,7 @@ export const Chat = ({
   backAction,
   composerBlockedMessage,
   onSendReactGAEvent,
-  setOpenDefaultMessages,
+  openDefaultMessages,
   onDefaultMessageSend,
   defaultMessage,
   setDefaultMessage,
@@ -101,7 +101,7 @@ export const Chat = ({
                 uploadOptions={uploadOptions}
                 backAction={backAction}
                 onSendReactGAEvent={onSendReactGAEvent}
-                setOpenDefaultMessages={setOpenDefaultMessages}
+                openDefaultMessages={openDefaultMessages}
                 onDefaultMessageSend={onDefaultMessageSend}
                 defaultMessage={defaultMessage}
                 setDefaultMessage={setDefaultMessage}
