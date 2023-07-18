@@ -124,11 +124,6 @@ export const Message = ({
                 />
               </MessageText>
             )}
-            {message.title && (
-              <MessageTitle
-                title={<Typography variant="body1">{message.title}</Typography>}
-              />
-            )}
             {message.medias &&
               message.medias.length > 0 &&
               message.medias.map(media => (
@@ -173,6 +168,11 @@ export const Message = ({
                   )}
                 </MessageMedia>
               ))}
+            {message.title && (
+              <MessageTitle
+                title={<Typography variant="body1">{message.title}</Typography>}
+              />
+            )}
           </Bubble>
         )}
       </LiveChatMessage>

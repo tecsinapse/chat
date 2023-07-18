@@ -20,6 +20,7 @@ import {
   mdiMicrophone,
   mdiPaperclip,
   mdiSend,
+  mdiTextBoxMultiple,
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import { defaultGreyLight2 } from '@tecsinapse/ui-kit/build/utils/colors';
@@ -53,6 +54,9 @@ export const InputComposer = ({
   setDroppedFiles,
   uploadOptions,
   onSendReactGAEvent,
+  setOpenDefaultMessages,
+  defaultMessage,
+  setDefaultMessage,
 }) => {
   const classes = useStyle();
   const [writing, setWriting] = useState(false);
@@ -127,11 +131,16 @@ export const InputComposer = ({
     if (Object.keys(files).length > 0) {
       onMediaSend(text, files);
     } else {
-      onMessageSend(text);
+      onMessageSend(text, defaultMessage?.media);
     }
     setFiles({});
     setWriting(false);
   };
+
+  useEffect(() => {
+    setWriting(Boolean(defaultMessage));
+  }, [defaultMessage]);
+
   const onChange = e => setWriting(e.currentTarget.value !== '');
   const inputRef1 = ref => setInputRef(ref);
   const style1 = { maxHeight: 37, maxWidth: 35 };
@@ -248,7 +257,12 @@ export const InputComposer = ({
         </Dialog>
       )}
 
-      <PreviewList files={files} setFiles={setFiles} />
+      <PreviewList
+        files={files}
+        setFiles={setFiles}
+        defaultMessage={defaultMessage}
+        setDefaultMessage={setDefaultMessage}
+      />
       <>
         {!isBlocked && (
           <TextComposer
@@ -257,6 +271,7 @@ export const InputComposer = ({
             onChange={onChange}
             inputRef={inputRef1}
             active={!disabledSend && !isBlocked}
+            defaultValue={defaultMessage?.body}
             style={style}
           >
             <Row align="center">
@@ -295,10 +310,29 @@ export const InputComposer = ({
                   />
                 </IconButton>
               )}
+              {!writing && !recording && Boolean(defaultMessage?.media) && (
+                <IconButton
+                  fill="true"
+                  key="send"
+                  disabled={disabledSend}
+                  onClick={() => {
+                    onMessageSend(text, defaultMessage.media);
+                  }}
+                  style={style1}
+                >
+                  <Icon
+                    path={mdiSend}
+                    size={size}
+                    color="#427fe1"
+                    style={style2}
+                  />
+                </IconButton>
+              )}
 
               {!writing &&
                 isThereAudioSupport &&
                 Object.keys(files).length <= 0 &&
+                !defaultMessage?.media &&
                 !recording && (
                   <IconButton
                     fill="true"
@@ -358,6 +392,20 @@ export const InputComposer = ({
                 >
                   <Icon
                     path={mdiPaperclip}
+                    size={iconSize}
+                    color={defaultGreyLight2}
+                  />
+                </IconButton>
+
+                <IconButton
+                  fill="true"
+                  key="defaultmessages"
+                  onClick={() => {
+                    setOpenDefaultMessages(true);
+                  }}
+                >
+                  <Icon
+                    path={mdiTextBoxMultiple}
                     size={iconSize}
                     color={defaultGreyLight2}
                   />

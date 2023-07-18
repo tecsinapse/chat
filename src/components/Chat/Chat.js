@@ -43,6 +43,10 @@ export const Chat = ({
   backAction,
   composerBlockedMessage,
   onSendReactGAEvent,
+  setOpenDefaultMessages,
+  onDefaultMessageSend,
+  defaultMessage,
+  setDefaultMessage,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
@@ -97,6 +101,10 @@ export const Chat = ({
                 uploadOptions={uploadOptions}
                 backAction={backAction}
                 onSendReactGAEvent={onSendReactGAEvent}
+                setOpenDefaultMessages={setOpenDefaultMessages}
+                onDefaultMessageSend={onDefaultMessageSend}
+                defaultMessage={defaultMessage}
+                setDefaultMessage={setDefaultMessage}
               />
             </FixedWrapper.Maximized>
 

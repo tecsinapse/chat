@@ -47,6 +47,10 @@ const Maximized = ({
   uploadOptions,
   backAction,
   onSendReactGAEvent,
+  setOpenDefaultMessages,
+  onDefaultMessageSend,
+  defaultMessage,
+  setDefaultMessage,
 }) => {
   const classes = useStyle();
   const theme = useTheme();
@@ -144,6 +148,10 @@ const Maximized = ({
           setDroppedFiles={setDroppedFiles}
           uploadOptions={uploadOptions}
           onSendReactGAEvent={onSendReactGAEvent}
+          setOpenDefaultMessages={setOpenDefaultMessages}
+          onDefaultMessageSend={onDefaultMessageSend}
+          defaultMessage={defaultMessage}
+          setDefaultMessage={setDefaultMessage}
         />
       )}
     </div>
