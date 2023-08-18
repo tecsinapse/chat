@@ -47,10 +47,13 @@ const Maximized = ({
   uploadOptions,
   backAction,
   onSendReactGAEvent,
+  text,
+  setText,
 }) => {
   const classes = useStyle();
   const theme = useTheme();
   const [droppedFiles, setDroppedFiles] = useState(null);
+  let currentText = text;
 
   const onBackward =
     backAction ||
@@ -77,6 +80,15 @@ const Maximized = ({
 
   const dropZoneHeight = { height: '100%' };
 
+  const handleLoadMore = () => {
+    setText(currentText);
+    loadMore();
+  };
+
+  const handleChangeCurrentText = text => {
+    currentText = text;
+  };
+
   return (
     <div className={classes.root}>
       <ChatHeader
@@ -100,7 +112,7 @@ const Maximized = ({
       />
       <MessageList
         active
-        onScrollTop={location === CHAT_LOCATIONS.MESSAGES && loadMore}
+        onScrollTop={location === CHAT_LOCATIONS.MESSAGES && handleLoadMore}
         style={{
           padding,
         }}
@@ -144,6 +156,8 @@ const Maximized = ({
           setDroppedFiles={setDroppedFiles}
           uploadOptions={uploadOptions}
           onSendReactGAEvent={onSendReactGAEvent}
+          text={currentText}
+          updateText={text => handleChangeCurrentText(text)}
         />
       )}
     </div>

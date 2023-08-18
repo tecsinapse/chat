@@ -53,6 +53,8 @@ export const InputComposer = ({
   setDroppedFiles,
   uploadOptions,
   onSendReactGAEvent,
+  text,
+  updateText,
 }) => {
   const classes = useStyle();
   const [writing, setWriting] = useState(false);
@@ -132,7 +134,11 @@ export const InputComposer = ({
     setFiles({});
     setWriting(false);
   };
-  const onChange = e => setWriting(e.currentTarget.value !== '');
+
+  const onChange = e => {
+    setWriting(e.currentTarget.value !== '');
+    updateText(e.currentTarget.value);
+  };
   const inputRef1 = ref => setInputRef(ref);
   const style1 = { maxHeight: 37, maxWidth: 35 };
   const style2 = { maxHeight: 26, maxWidth: 24 };
@@ -258,6 +264,7 @@ export const InputComposer = ({
             inputRef={inputRef1}
             active={!disabledSend && !isBlocked}
             style={style}
+            defaultValue={text}
           >
             <Row align="center">
               {!recording && (
