@@ -23,7 +23,10 @@ import {
   mdiTextBoxMultiple,
 } from '@mdi/js';
 import Icon from '@mdi/react';
-import { defaultGreyLight2 } from '@tecsinapse/ui-kit/build/utils/colors';
+import {
+  defaultGreyLight2,
+  defaultGreyDisabled,
+} from '@tecsinapse/ui-kit/build/utils/colors';
 import { Button } from '@tecsinapse/ui-kit';
 import { MicRecorder } from './MicRecorder/MicRecorder';
 import { CustomUploader, onAccept } from './CustomUploader/CustomUploader';
@@ -73,7 +76,7 @@ export const InputComposer = ({
 
   const transformImages = useCallback(
     data => {
-      onAccept({setFiles, files})(
+      onAccept({ setFiles, files })(
         (Array.from(data.items) || [])
           .filter(
             item =>
@@ -401,11 +404,12 @@ export const InputComposer = ({
                   fill="true"
                   key="defaultmessages"
                   onClick={openDefaultMessages}
+                  disabled={writing}
                 >
                   <Icon
                     path={mdiTextBoxMultiple}
                     size={iconSize}
-                    color={defaultGreyLight2}
+                    color={!writing ? defaultGreyLight2 : defaultGreyDisabled}
                   />
                 </IconButton>
               </Row>
