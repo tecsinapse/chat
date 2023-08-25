@@ -72,12 +72,7 @@ const getMediaComponent = (mediaType, name, data) => {
   return <CardMedia component={component} alt={name} title={name} src={data} />;
 };
 
-export function PreviewList({
-  files,
-  setFiles,
-  defaultMessage,
-  setDefaultMessage,
-}) {
+export function PreviewList({ files, setFiles, message, setMessage }) {
   const classes = useStyle();
 
   const removeAttachment = uid =>
@@ -90,7 +85,7 @@ export function PreviewList({
     });
 
   const removeDefaultMessageAttachment = () => {
-    setDefaultMessage({ ...defaultMessage, media: null });
+    setMessage({ ...message, media: null });
   };
 
   return (
@@ -117,13 +112,13 @@ export function PreviewList({
           </>
         ))}
 
-        {Boolean(defaultMessage?.media) && (
+        {Boolean(message?.media) && (
           <Card classes={{ root: classes.card }}>
             <div className={classes.thumbnail}>
               {getMediaComponent(
-                defaultMessage.media.mediaType,
-                defaultMessage.media.name,
-                defaultMessage.media.url
+                message.media.mediaType,
+                message.media.name,
+                message.media.url
               )}
               <IconButton
                 key="remove"

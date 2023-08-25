@@ -45,8 +45,8 @@ export const Chat = ({
   onSendReactGAEvent,
   openDefaultMessages,
   onDefaultMessageSend,
-  defaultMessage,
-  setDefaultMessage,
+  message,
+  setMessage,
 }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(
@@ -103,8 +103,8 @@ export const Chat = ({
                 onSendReactGAEvent={onSendReactGAEvent}
                 openDefaultMessages={openDefaultMessages}
                 onDefaultMessageSend={onDefaultMessageSend}
-                defaultMessage={defaultMessage}
-                setDefaultMessage={setDefaultMessage}
+                message={message}
+                setMessage={setMessage}
               />
             </FixedWrapper.Maximized>
 

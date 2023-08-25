@@ -58,8 +58,9 @@ export const InputComposer = ({
   uploadOptions,
   onSendReactGAEvent,
   openDefaultMessages,
-  defaultMessage,
-  setDefaultMessage,
+  message,
+  setMessage,
+  updateText,
 }) => {
   const classes = useStyle();
   const [writing, setWriting] = useState(false);
@@ -134,17 +135,20 @@ export const InputComposer = ({
     if (Object.keys(files).length > 0) {
       onMediaSend(text, files);
     } else {
-      onMessageSend(text, defaultMessage?.media);
+      onMessageSend(text, message?.media);
     }
     setFiles({});
     setWriting(false);
   };
 
   useEffect(() => {
-    setWriting(Boolean(defaultMessage));
-  }, [defaultMessage]);
+    setWriting(Boolean(message.body));
+  }, [message]);
 
-  const onChange = e => setWriting(e.currentTarget.value !== '');
+  const onChange = e => {
+    setWriting(e.currentTarget.value !== '');
+    updateText(e.currentTarget.value);
+  };
   const inputRef1 = ref => setInputRef(ref);
   const style1 = { maxHeight: 37, maxWidth: 35 };
   const style2 = { maxHeight: 26, maxWidth: 24 };
@@ -263,8 +267,8 @@ export const InputComposer = ({
       <PreviewList
         files={files}
         setFiles={setFiles}
-        defaultMessage={defaultMessage}
-        setDefaultMessage={setDefaultMessage}
+        message={message}
+        setMessage={setMessage}
       />
       <>
         {!isBlocked && (
@@ -274,7 +278,7 @@ export const InputComposer = ({
             onChange={onChange}
             inputRef={inputRef1}
             active={!disabledSend && !isBlocked}
-            defaultValue={defaultMessage?.body}
+            defaultValue={message?.body}
             style={style}
           >
             <Row align="center">
@@ -313,13 +317,13 @@ export const InputComposer = ({
                   />
                 </IconButton>
               )}
-              {!writing && !recording && Boolean(defaultMessage?.media) && (
+              {!writing && !recording && Boolean(message?.media) && (
                 <IconButton
                   fill="true"
                   key="send"
                   disabled={disabledSend}
                   onClick={() => {
-                    onMessageSend(text, defaultMessage.media);
+                    onMessageSend(text, message.media);
                   }}
                   style={style1}
                 >
@@ -335,7 +339,7 @@ export const InputComposer = ({
               {!writing &&
                 isThereAudioSupport &&
                 Object.keys(files).length <= 0 &&
-                !defaultMessage?.media &&
+                !message?.media &&
                 !recording && (
                   <IconButton
                     fill="true"
