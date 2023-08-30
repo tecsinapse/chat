@@ -72,7 +72,7 @@ const getMediaComponent = (mediaType, name, data) => {
   return <CardMedia component={component} alt={name} title={name} src={data} />;
 };
 
-export function PreviewList({ files, setFiles, message, setMessage }) {
+export function PreviewList({ files, setFiles, message, setMessage, writing }) {
   const classes = useStyle();
 
   const removeAttachment = uid =>
@@ -85,7 +85,7 @@ export function PreviewList({ files, setFiles, message, setMessage }) {
     });
 
   const removeDefaultMessageAttachment = () => {
-    setMessage({ ...message, media: null });
+    setMessage({ body: writing ? message.body : '', media: null });
   };
 
   return (

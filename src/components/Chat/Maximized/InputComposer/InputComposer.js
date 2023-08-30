@@ -142,7 +142,7 @@ export const InputComposer = ({
   };
 
   useEffect(() => {
-    setWriting(Boolean(message.body));
+    setWriting(message.body !== '');
   }, [message]);
 
   const onChange = e => {
@@ -269,6 +269,7 @@ export const InputComposer = ({
         setFiles={setFiles}
         message={message}
         setMessage={setMessage}
+        writing={writing}
       />
       <>
         {!isBlocked && (
