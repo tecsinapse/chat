@@ -20,9 +20,13 @@ import {
   mdiMicrophone,
   mdiPaperclip,
   mdiSend,
+  mdiTextBoxMultiple,
 } from '@mdi/js';
 import Icon from '@mdi/react';
-import { defaultGreyLight2 } from '@tecsinapse/ui-kit/build/utils/colors';
+import {
+  defaultGreyLight2,
+  defaultGreyDisabled,
+} from '@tecsinapse/ui-kit/build/utils/colors';
 import { Button } from '@tecsinapse/ui-kit';
 import { MicRecorder } from './MicRecorder/MicRecorder';
 import { CustomUploader, onAccept } from './CustomUploader/CustomUploader';
@@ -53,6 +57,10 @@ export const InputComposer = ({
   setDroppedFiles,
   uploadOptions,
   onSendReactGAEvent,
+  openDefaultMessages,
+  message,
+  setMessage,
+  updateText,
 }) => {
   const classes = useStyle();
   const [writing, setWriting] = useState(false);
@@ -127,12 +135,20 @@ export const InputComposer = ({
     if (Object.keys(files).length > 0) {
       onMediaSend(text, files);
     } else {
-      onMessageSend(text);
+      onMessageSend(text, message?.media);
     }
     setFiles({});
     setWriting(false);
   };
-  const onChange = e => setWriting(e.currentTarget.value !== '');
+
+  useEffect(() => {
+    setWriting(message.body !== '');
+  }, [message]);
+
+  const onChange = e => {
+    setWriting(e.currentTarget.value !== '');
+    updateText(e.currentTarget.value);
+  };
   const inputRef1 = ref => setInputRef(ref);
   const style1 = { maxHeight: 37, maxWidth: 35 };
   const style2 = { maxHeight: 26, maxWidth: 24 };
@@ -248,7 +264,13 @@ export const InputComposer = ({
         </Dialog>
       )}
 
-      <PreviewList files={files} setFiles={setFiles} />
+      <PreviewList
+        files={files}
+        setFiles={setFiles}
+        message={message}
+        setMessage={setMessage}
+        writing={writing}
+      />
       <>
         {!isBlocked && (
           <TextComposer
@@ -257,6 +279,7 @@ export const InputComposer = ({
             onChange={onChange}
             inputRef={inputRef1}
             active={!disabledSend && !isBlocked}
+            defaultValue={message?.body}
             style={style}
           >
             <Row align="center">
@@ -295,10 +318,29 @@ export const InputComposer = ({
                   />
                 </IconButton>
               )}
+              {!writing && !recording && Boolean(message?.media) && (
+                <IconButton
+                  fill="true"
+                  key="send"
+                  disabled={disabledSend}
+                  onClick={() => {
+                    onMessageSend(text, message.media);
+                  }}
+                  style={style1}
+                >
+                  <Icon
+                    path={mdiSend}
+                    size={size}
+                    color="#427fe1"
+                    style={style2}
+                  />
+                </IconButton>
+              )}
 
               {!writing &&
                 isThereAudioSupport &&
                 Object.keys(files).length <= 0 &&
+                !message?.media &&
                 !recording && (
                   <IconButton
                     fill="true"
@@ -360,6 +402,19 @@ export const InputComposer = ({
                     path={mdiPaperclip}
                     size={iconSize}
                     color={defaultGreyLight2}
+                  />
+                </IconButton>
+
+                <IconButton
+                  fill="true"
+                  key="defaultmessages"
+                  onClick={openDefaultMessages}
+                  disabled={writing}
+                >
+                  <Icon
+                    path={mdiTextBoxMultiple}
+                    size={iconSize}
+                    color={!writing ? defaultGreyLight2 : defaultGreyDisabled}
                   />
                 </IconButton>
               </Row>

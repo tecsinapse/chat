@@ -47,10 +47,24 @@ const Maximized = ({
   uploadOptions,
   backAction,
   onSendReactGAEvent,
+  openDefaultMessages,
+  onDefaultMessageSend,
+  message,
+  setMessage,
 }) => {
   const classes = useStyle();
   const theme = useTheme();
   const [droppedFiles, setDroppedFiles] = useState(null);
+  let currentText = message?.body;
+
+  const handleLoadMore = () => {
+    setMessage({ ...message, body: currentText });
+    loadMore();
+  };
+
+  const handleChangeCurrentText = text => {
+    currentText = text;
+  };
 
   const onBackward =
     backAction ||
@@ -100,7 +114,7 @@ const Maximized = ({
       />
       <MessageList
         active
-        onScrollTop={location === CHAT_LOCATIONS.MESSAGES && loadMore}
+        onScrollTop={location === CHAT_LOCATIONS.MESSAGES && handleLoadMore}
         style={{
           padding,
         }}
@@ -144,6 +158,11 @@ const Maximized = ({
           setDroppedFiles={setDroppedFiles}
           uploadOptions={uploadOptions}
           onSendReactGAEvent={onSendReactGAEvent}
+          openDefaultMessages={openDefaultMessages}
+          onDefaultMessageSend={onDefaultMessageSend}
+          message={message}
+          setMessage={setMessage}
+          updateText={text => handleChangeCurrentText(text)}
         />
       )}
     </div>

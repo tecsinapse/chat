@@ -72,7 +72,7 @@ const getMediaComponent = (mediaType, name, data) => {
   return <CardMedia component={component} alt={name} title={name} src={data} />;
 };
 
-export function PreviewList({ files, setFiles }) {
+export function PreviewList({ files, setFiles, message, setMessage, writing }) {
   const classes = useStyle();
 
   const removeAttachment = uid =>
@@ -84,27 +84,52 @@ export function PreviewList({ files, setFiles }) {
       return filesCopy;
     });
 
+  const removeDefaultMessageAttachment = () => {
+    setMessage({ body: writing ? message.body : '', media: null });
+  };
+
   return (
     <div className={classes.rootPreview}>
       <div className={classes.flexContainer}>
         {Object.keys(files).map(uid => (
-          <Card key={uid} classes={{ root: classes.card }}>
+          <>
+            <Card key={uid} classes={{ root: classes.card }}>
+              <div className={classes.thumbnail}>
+                {getMediaComponent(
+                  files[uid].mediaType,
+                  files[uid].name,
+                  files[uid].data
+                )}
+                <IconButton
+                  key="remove"
+                  onClick={() => removeAttachment(uid)}
+                  className={classes.iconButtonClose}
+                >
+                  <Icon path={mdiClose} size={0.5} color={defaultWhite} />
+                </IconButton>
+              </div>
+            </Card>
+          </>
+        ))}
+
+        {Boolean(message?.media) && (
+          <Card classes={{ root: classes.card }}>
             <div className={classes.thumbnail}>
               {getMediaComponent(
-                files[uid].mediaType,
-                files[uid].name,
-                files[uid].data
+                message.media.mediaType,
+                message.media.name,
+                message.media.url
               )}
               <IconButton
                 key="remove"
-                onClick={() => removeAttachment(uid)}
+                onClick={() => removeDefaultMessageAttachment()}
                 className={classes.iconButtonClose}
               >
                 <Icon path={mdiClose} size={0.5} color={defaultWhite} />
               </IconButton>
             </div>
           </Card>
-        ))}
+        )}
       </div>
     </div>
   );
