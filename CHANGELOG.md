@@ -1,3 +1,13 @@
+## <small>3.2.16 (2023-09-18)</small>
+
+* [#TS-412] Utilizar respostas prontas para agilizar o atendimento ([f30e195](https://github.com/tecsinapse/chat/commit/f30e195)), closes [#TS-412](https://github.com/tecsinapse/chat/issues/TS-412)
+* [#TS-412] Utilizar respostas prontas para agilizar o atendimento ([43808c2](https://github.com/tecsinapse/chat/commit/43808c2)), closes [#TS-412](https://github.com/tecsinapse/chat/issues/TS-412)
+* [#TS-412] Utilizar respostas prontas para agilizar o atendimento ([37e0728](https://github.com/tecsinapse/chat/commit/37e0728)), closes [#TS-412](https://github.com/tecsinapse/chat/issues/TS-412)
+* [#TS-965] Analisar complexidade técnica de manter o texto digitado quando faz scroll das mensagens d ([ab44824](https://github.com/tecsinapse/chat/commit/ab44824)), closes [#TS-965](https://github.com/tecsinapse/chat/issues/TS-965)
+* [#TS-965] Analisar complexidade técnica de manter o texto digitado quando faz scroll das mensagens d ([4cccbd0](https://github.com/tecsinapse/chat/commit/4cccbd0)), closes [#TS-965](https://github.com/tecsinapse/chat/issues/TS-965)
+
+
+
 ## <small>3.2.15 (2023-01-09)</small>
 
 * [#183781] - Deixar mais claro para usr o motivo do uso de um modelo de mensagem ([0e78724](https://github.com/tecsinapse/chat/commit/0e78724)), closes [#183781](https://github.com/tecsinapse/chat/issues/183781)
