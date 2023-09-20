@@ -169,9 +169,14 @@ export const Message = ({
               </MessageText>
             )}
             {message.title && (
-              <MessageTitle
-                title={<Typography variant="body1">{message.title}</Typography>}
-              />
+              <MessageTitle>
+                <Typography
+                  variant="body1"
+                  dangerouslySetInnerHTML={{
+                    __html: MessagePreviewUtils.normalizeInHtml(message.title),
+                  }}
+                />
+              </MessageTitle>
             )}
           </Bubble>
         )}
