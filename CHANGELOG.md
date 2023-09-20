@@ -1,3 +1,9 @@
+## <small>3.2.17 (2023-09-20)</small>
+
+* [TS-2220] - Texto de uma mensagem prédefinida perde a formatação depois que o Histórico de Mensagens ([713145d](https://github.com/tecsinapse/chat/commit/713145d))
+
+
+
 ## <small>3.2.16 (2023-09-18)</small>
 
 * [#TS-412] Utilizar respostas prontas para agilizar o atendimento ([f30e195](https://github.com/tecsinapse/chat/commit/f30e195)), closes [#TS-412](https://github.com/tecsinapse/chat/issues/TS-412)
