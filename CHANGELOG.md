@@ -1,3 +1,9 @@
+## <small>3.2.18 (2023-09-25)</small>
+
+* [#TS-2221] Imagem vertical aparece "feia" no Histórico de Mensagens ([94e9c30](https://github.com/tecsinapse/chat/commit/94e9c30)), closes [#TS-2221](https://github.com/tecsinapse/chat/issues/TS-2221)
+
+
+
 ## <small>3.2.17 (2023-09-20)</small>
 
 * [TS-2220] - Texto de uma mensagem prédefinida perde a formatação depois que o Histórico de Mensagens ([713145d](https://github.com/tecsinapse/chat/commit/713145d))
