@@ -36,6 +36,11 @@ export const useStyle = makeStyles(theme => ({
   imageError: {
     opacity: '0.4',
   },
+  media: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   emptyBubble: {
     width: '75px',
     height: '50px',
@@ -46,7 +51,6 @@ export const useStyle = makeStyles(theme => ({
   thumbnail: {
     maxWidth: '300px',
     maxHeight: '200px',
-    border: '1px solid black',
   },
   errorDiv: {
     backgroundColor: theme.palette.error.main,

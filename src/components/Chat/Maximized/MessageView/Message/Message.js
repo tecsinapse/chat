@@ -136,7 +136,7 @@ export const Message = ({
                           )}
                         </div>
                       ) : (
-                        <>
+                        <div className={classes.media}>
                           {media.mediaType.startsWith('image') && (
                             <ImageLoader url={media.url} classes={classes} />
                           )}
@@ -144,7 +144,7 @@ export const Message = ({
                           {media.mediaType.startsWith('video') && (
                             <VideoLoader media={media} classes={classes} />
                           )}
-                        </>
+                        </div>
                       )}
                     </>
                   )}
