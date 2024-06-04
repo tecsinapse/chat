@@ -1,3 +1,9 @@
+## <small>3.2.21 (2024-06-04)</small>
+
+* [TS-6697] [QA] Menu de dropdown da mídia de video está abrindo no local errado ([e928d07](https://github.com/tecsinapse/chat/commit/e928d07))
+
+
+
 ## <small>3.2.18 (2023-09-25)</small>
 
 * [#TS-2221] Imagem vertical aparece "feia" no Histórico de Mensagens ([94e9c30](https://github.com/tecsinapse/chat/commit/94e9c30)), closes [#TS-2221](https://github.com/tecsinapse/chat/issues/TS-2221)
